@@ -199,7 +199,11 @@ namespace HRMS.Orbitweb
 
                 TotalLeaves = ts.TotalDays + 1;
                 strLeaves = new String[Convert.ToInt32(TotalLeaves)];
-                dsHolidaysList = objHolidayBOL.bindData();
+
+                objHolidayModel.UserID = Convert.ToInt32(txtempid.Text);
+                objHolidayModel.StartDate = Convert.ToDateTime(txtFromDate.Text.Trim());
+                objHolidayModel.EndDate = Convert.ToDateTime(txtToDate.Text.Trim());
+                dsHolidaysList = objHolidayBOL.bindHolidaysForLeaveApprovals(objHolidayModel);
 
                 for (int i = 0; i < TotalLeaves; i++)
                 {
