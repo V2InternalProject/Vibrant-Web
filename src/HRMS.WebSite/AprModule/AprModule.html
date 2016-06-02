@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="MyTest">
+<head>
+    <title></title>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/AprModule.js"></script>
+    <link href="CSS/bootstrap.min.css" rel="stylesheet" />
+    <link href="CSS/css.css" rel="stylesheet" />
+</head>
+<body ng-controller="AprController">
+    <div>
+        <div class="header">
+            <b>Employee Name : </b><span ng-bind="appraisalData1.empid"></span><br />
+            <b>Year : </b><span ng-bind="appraisalData1.year"></span>
+        </div>
+        
+        <div class="appraisal-question-section">
+            <div ng-repeat="data in tableData">
+                <h5 ng-bind="data.sectionid"></h5>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="30%">Questions</th>
+                                <th class="table-border-left">Rating / Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="questionsData in data.questions">
+                                <td width="30%">
+                                    <span ng-bind="questionsData.questionid"></span>
+                                </td>
+                                <td class="p-none">
+                                    <table class="table mb-none">
+                                        <tbody>
+                                            <tr class="table-style-none">
+                                                <td class="p-none" ng-repeat="ratingData in questionsData.rating">
+                                                    <table class="table table-bordered">
+                                                        <tr>
+                                                            <td><span ng-bind="ratingData.rating"></span></td>
+                                                            <td><span ng-bind="ratingData.comments"></span></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header1">
+            <div ng-repeat="data in listData" class="header">
+                <div ng-repeat="questionsData in data.questions">
+                    <b>Question :</b>
+                    <span ng-hide="data.editable" ng-bind="questionsData.questionid"></span>
+                    <form class="form-horizontal">
+                        <div ng-repeat="commentData in questionsData.rating" class="iner question-section">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="formGroupInputSmall">Stage :</label>
+                                <div class="col-sm-4">
+                                    <span ng-hide="commentData.editable" ng-bind="commentData.stageid"></span>
+                                    <input ng-show="commentData.editable" type="text" ng-model="commentData.stageid" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="formGroupInputSmall">Coments :</label>
+                                <div class="col-sm-4">
+                                    <span ng-hide="commentData.editable" ng-bind="commentData.comments"></span>
+                                    <input ng-show="commentData.editable" type="text" ng-model="commentData.comments" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

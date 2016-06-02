@@ -1,0 +1,64 @@
+﻿@model HRMS.Models.TravelExtensionViewModel
+@{
+    ViewBag.Title = "TravelExtensionDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Travel Extension (To be filled if current travel duration needs to be extended)</h2>
+    <div class="clearfix blueBorder">
+        <div class="leftcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                        @Html.Label("TRF NO")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        <input type="text" />
+                    </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                        @Html.Label("From Date")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif" alt="..." title="...">
+                    </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                        @Html.Label("Travel Extension Details")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        <textarea></textarea>
+                    </div>
+            </div>
+        </div>
+
+        <div class="rightcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                        @Html.Label("Requested By")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        <input type="text" />
+                    </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                        @Html.Label("To Date")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif" alt="..." title="...">
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="mrgnT30">
+        <input type="button" class="button" value="Save and Continue"/>
+    </div>
+</div>
+

@@ -1,0 +1,224 @@
+﻿@model HRMS.Models.ConfirmationViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")" class="selected">Configure Parameter</a>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">Configure Parameter Categories</a>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })">Configure Parameters for Roles</a>
+        </nav>
+    </div>
+
+    <div class="MainBody ProjectIndexbody SmartT">
+         <div id="table" class="ButtonContainer3 clearfix">
+            @*                <a href="@Url.Action("addparameter", "Confirmation", new { employeeId = @Model.SearchedUserDetails.EmployeeId })">
+            | Add |</a>*@<input type="button" class="ButtonGray mrgnR8" id="AddParameter" value="Add" onclick="AddParameters()" />
+            @*<a href="#">| Delete |</a>*@<input type="button" class="ButtonGray mrgnR8" id="DeleteParameter" value="Delete" onclick="Delete()" />
+            @*<a href="#">| Select All |</a>*@<input type="button" class="ButtonGray mrgnR8" id="selectAll" value="Select All" onclick="SelectAll()" />
+            <input type="button" class="ButtonGray mrgnR8" id="Deselect All" value="Deselect All" onclick="DeselectAll()" />
+           @* <input type="button" class="ButtonGray mrgnR8" id="back_configureParameter" value="Back" />*@
+        </div>
+
+        <div class="tablestyle3 clearfix">
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" class="TableJqgrid">
+                <thead>
+                    <tr>
+                        <td width="8%" class="tableHeaders">
+                            Order No.
+                        </td>
+                        <td width="20%" class="tableHeaders">
+                            Parameter
+                        </td>
+                        <td width="60%" class="tableHeaders">
+                            Description
+                        </td>
+                        <td width="7%" class="tableHeaders">
+                            Delete
+                        </td>
+                    </tr>
+                </thead>
+                <div id="competencyMainContainer">
+                    @foreach (var item in Model.CompetencyMasters.OrderBy(x => x.Compentancy).ToList())
+                    {
+                        <tr  class="tableRows">
+                            <td align="center" id="Competency_Id" class="confiremation-td">
+                                @Html.DisplayFor(modelItem => item.OrderNo, new { @readonly = "readonly" })
+                            </td>
+                            <td class="anchorhyperlink confiremation-td">
+                                <a href="@Url.Action("AddParameter", "Confirmation", new { orderID = item.OrderNo })" id="editRecord" class="tableLink">@item.Compentancy</a>
+                            </td>
+                            <td id="Description_type" class="confiremation-td">
+                                @Html.DisplayFor(modelItem => item.Description, new { @readonly = "readonly", style = "width:1300px" })
+                            </td>
+                            <td id="Delete" align="center" class="confiremation-td">
+                                @Html.CheckBoxFor(x => item.Checked, new { @class = "selectAll", @data = item.OrderNo })
+                            </td>
+                        </tr>
+                    }
+                </div>
+            </table>
+        </div>
+        <div class="TotalRecordsDiv">
+            <table>
+                <thead class="bluebutton1">
+                    <tr>
+                        <td class="bluebgtable1">
+                            @Html.LabelFor(x => x.RecordsCount)
+                            @Html.DisplayFor(x => x.RecordsCount)
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="DeleteSuccess" style="display: none" title="Record Deleted">
+            <center class="LoadingWrap">
+            The selected record is successfully deleted.
+        </center>
+        </div>
+        <div id="Error" style="display: none" title="Error">
+            <center class="LoadingWrap">
+            There is some error.
+        </center>
+        </div>
+        <div id="DeleteConfirm" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Are you sure, you want to delete selected record ?
+        </center>
+        </div>
+        <div id="NoItemSelected" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Please select Atleast one record to delete.
+        </center>
+        </div>
+        <div id="ErrorDeleteParameter" style="display: none" title="Error">
+            <center class="LoadingWrap"> The Paramter can't be delete as some roles are associated with it.</center>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $('#back_configureParameter').click(function () {
+        window.location.href = '@Url.Action("Index", "Confirmation")';
+    });
+
+    function AddParameters() {
+        window.location.href = '@Url.Action("Addparameter", "Confirmation")?orderID=' + null;
+    }
+    function SelectAll() {
+        $(".selectAll").prop("checked", "checked");
+    }
+    function DeselectAll() {
+        $(".selectAll").prop("checked", false);
+    }
+    function Delete() {
+        var collection = [];
+        $.each($("input:checked"), function (i, val) {
+            collection.push($(val).attr("data"));
+        });
+        if (collection.length == 0) {
+            $("#NoItemSelected").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteParameter", "Confirmation")',
+                            data: JSON.stringify(collection),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteConfirm").dialog("close");
+                                    $("#DeleteSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                location.reload();
+                                                $(".selectAll").prop("checked", false);
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteConfirm").dialog("close");
+                                    $("#ErrorDeleteParameter").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(".selectAll").removeAttr("checked");
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $("#DeleteConfirm").dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    }
+</script>

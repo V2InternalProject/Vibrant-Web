@@ -1,0 +1,511 @@
+﻿@model HRMS.Models.ProjectEndAppraisalFormModel
+@{
+    ViewBag.Title = "View Appraisal Form";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Resource Allocation
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ResourceIndex", "Resource")?EmpCode=" + loginempcode + "&PageID=" + val.nodeid +">
+                My Allocation
+            </a> <a href="@Url.Action("RMGViewPost", "Resource")?EmpCode=" + loginempcode + "&PageID=" + val.nodeid +">
+                Manage Resource
+            </a>
+        </nav>
+    </div>
+    <div class="MainBody ProjectEndAppraisalbody">
+        <div class="InnerContainer clearfix">
+            <input class="LinkBrown floatL Expensewrap" type="button" id="back_ApprisalForm"
+                   value="Back" />
+        </div>
+        <div class="disableThisForm">
+            <div class="FormContainerBox clearfix">
+                <div class="colOneThird clearfix">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Employee Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => Model.EmployeeName, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.EmployeeName, Model.EmployeeName, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Project Lead:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ProjectLead, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ProjectLead, Model.ProjectLead, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ProjectLead)</p>
+                            @Html.HiddenFor(x => x.ProjectLead, new { @id = "projectlead" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Joining Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate, new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" }))
+                            @Html.LabelFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.JoiningDate)</p>
+                            @Html.Hidden("JoiningDate", String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @id = "joiningDate", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="colOneThird clearfix">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Project Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => Model.ProjectName, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ProjectName, Model.ProjectName, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Project Manager:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => Model.ProjectManager, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ProjectManager, Model.ProjectManager, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Release Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.ReleaseDate, new { @readonly = "readonly", @class = "ClassDisabledFields" }))
+                            @Html.LabelFor(model => model.ReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.ReleaseDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ReleaseDate)</p>
+                            @Html.Hidden("ReleaseDate", String.Format("{0:MM/dd/yyyy}", Model.ReleaseDate), new { @id = "releaseDate", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="InnerContainer mrgnT20">
+                <table cellpadding="0" width="100%" cellspacing="0" border="0" class="TableJqgrid">
+                    <thead>
+                        <tr>
+                            <th width="70%" class="tableHeaders">
+                                Rating Scale
+                            </th>
+                            <th width="30%" class="tableHeaders">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RatingScale.OrderBy(x => x.RatingID).ToList())
+                        {
+                            <tr class="tableRows">
+                                <td id="" class="">
+                                    @Html.DisplayFor(modelItem => item.Rating, new { @readonly = "readonly", style = "width:1300px" })
+                                </td>
+                                <td class=" ">
+                                    @Html.DisplayFor(modelItem => item.Percentage, new { @readonly = "readonly", style = "width:1300px" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmProjectEndAppraisal" }))
+                {
+                    @Html.HiddenFor(x => x.EmployeeID)
+                    @Html.HiddenFor(x => x.ProjectID)
+                    @Html.HiddenFor(x => x.ProjectEndAppraisalFormStatus)
+                    @Html.HiddenFor(x => x.LoggedinUserEmployeeCode)
+                    @Html.HiddenFor(x => x.ProjectEmployeeRoleID)
+                    @Html.ValidationSummary(true)
+
+                    <table border="0" cellspacing="0" width="100%" id="ParmList_table" class="TableJqgrid mrgnT20">
+                        <thead>
+                            <tr>
+                                <th width="25%" class="tableHeaders">
+                                    Parameters
+                                </th>
+                                <th class="tableHeaders" width="35%" id="Reviewer2RatingHeaderTH">
+                                    Ratings (by Project Lead/Manager)
+                                </th>
+                                <th class="tableHeaders" width="40%" id="Reviewer1CommentsHeaderTH">
+                                    Remarks
+                                </th>
+                            </tr>
+                        </thead>
+                        <div>
+                            @if (Model.ProjectEndAppraisalParameterList != null)
+                            {
+                                foreach (var item in Model.ProjectEndAppraisalParameterList)
+                                {
+                                    if (item.ProjectEndAppraisalParameterID != null && item.ProjectEndAppraisalParameterID != 0)
+                                    {
+                                        <tr class="highlightRed parameterOfReviewer1 bluebgtable-confi tableRows">
+                                            <td style="display: none">
+                                                @Html.HiddenFor(modelItem => item.ProjectEndAppraisalParameterID)
+                                            </td>
+                                            <td style="display: none">
+                                                @Html.HiddenFor(modelItem => item.ProjectEndAppraisalFormID)
+                                            </td>
+                                            <td align="center" width="25%">
+                                                @Html.DisplayFor(modelItem => item.ProjectEndAppraisalParameter, new { @readonly = "readonly" })
+                                            </td>
+                                            <td align="center" class="one" width="35%">
+                                                @Html.DropDownListFor(model => item.ProjectEndAppraisalParameterRating, new SelectList(Model.RatingsList, Convert.ToInt32(item.ProjectEndAppraisalParameterRating)), new { @class = "ReviewerOneClass ClassDisabledFields", @id = "Ratings1_" + @item.ProjectEndAppraisalParameterID })
+                                                @Html.LabelFor(model => item.ProjectEndAppraisalParameterRating, new { @class = "ClassDisplayLabel" })
+                                                <span style="color: #E80C4D; display: none;" class="hide" id="span_Reviewer1Rating_@item.ProjectEndAppraisalParameterID">
+                                                    Invalid range.
+                                                </span><span style="color: #E80C4D; display: none;" class="hide" id="span_Reviewer1RatingRequired_@item.ProjectEndAppraisalParameterID">
+                                                    Required
+                                                </span>
+                                            </td>
+                                            <td align="center" class="one" height="80px" width="40%">
+                                                @Html.TextAreaFor(modelItem => item.ProjectEndAppraisalParameterRemarks, new { @class = "ReviewerCommentsClass requiredField disableReviewer1 reviewer1ParaFieldLimit ClassDisabledFields", @id = "Comments1_" + @item.ProjectEndAppraisalParameterID })
+                                                <div class="ClassTextareaDiv">
+                                                    @Html.LabelFor(model => item.ProjectEndAppraisalParameterRemarks, item.ProjectEndAppraisalParameterRemarks, new { @class = "ClassDisplayLabel" })
+                                                </div>
+                                                <span style="color: #E80C4D; display: none;" class="hide hideComments1_@item.ProjectEndAppraisalParameterID" id="span_Reviewer1CommentsRequired_@item.ProjectEndAppraisalParameterID">
+                                                    Required
+                                                </span><span id="spn_Comments1_@item.ProjectEndAppraisalParameterID" class="classSec3FieldLimit" style="display: none">
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </div>
+                    </table>
+                }
+            </div>
+            <div class="ButtonContainer1 clearfix">
+                <input type="button" value="Save" id="saveProjectEndAppraisalForm" class="ButtonGray" />
+                <input type="button" value="Submit" id="submitProjectEndAppraisalForm" class="ButtonGray" />
+            </div>
+        </div>
+    </div>
+    <div id="ProjectEndAppraisaldatasavedSuccessfully" style="display: none">
+        Project End Appraisal Form details saved successfully.
+    </div>
+    <div id="ProjectEndAppraisaldataSubmittedSuccessfully" style="display: none">
+        Project End Appraisal Form details submitted successfully.
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".ClassDisplayLabel, .ClassTextareaDiv").hide();
+        $("#JoiningDate, #ReleaseDate").addClass("ClassDisabledFields");
+        $("#back_ApprisalForm").click(function () {
+
+            parent.history.back();
+            return false;
+        });
+
+        $('#ProjectLead').val('@Model.ProjectLead');
+        $('#projectlead').val('@Model.ProjectLead');
+        $('#EmployeeName').attr('readonly', 'readonly');
+        $('#ProjectName').attr('readonly', 'readonly');
+        $('#ProjectManager').attr('readonly', 'readonly');
+        $('#JoiningDate').attr('readonly', 'readonly');
+        $('#JoiningDate').attr('disabled', 'disabled');
+        //$('#ReleaseDate').val('@Model.ReleaseDate');
+        $('#ReleaseDate').attr('readonly', 'readonly');
+        $('#ReleaseDate').attr('disabled', 'disabled');
+        $('.disableThisForm .ui-datepicker-trigger').hide();
+        //$('#ReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+
+        var SetMinDate  = new Date('@Model.AllocationStartDate');
+
+        SetMinDate.setDate(SetMinDate.getDate() + 1);
+        $('#ReleaseDate').datepicker("option", "minDate", SetMinDate);
+
+        // ProjectEnd Appraisal Form Status 0 means Submit. and 1 means only View Form
+        if ('@Model.ProjectEndAppraisalFormStatus' != 0) {
+            $('.disableThisForm').find('input, textarea, button, select').each(function () {
+                $(this).prop('disabled', true);
+            });
+            $("#saveProjectEndAppraisalForm").hide();
+            $("#submitProjectEndAppraisalForm").hide();
+            $('.disableThisForm .ui-datepicker-trigger').hide();
+        }
+
+        $(".requiredField").on("keyup", function (value, element) {
+            var id = $(this).attr("id");
+            var textboxValue = $("#" + id).val();
+            var classToHide = "hide" + id;
+            $("." + classToHide).hide();
+        });
+
+        $(".reviewer1ParaFieldLimit").on("keyup", function (value, element) {
+            var id = $(this).attr("id");
+            var spanId = "spn_" + id;
+            if ($("#" + id).val().length > 1000) {
+                $("#" + spanId).html("").append("Remarks can not be greater than 1000 characters.").addClass("field-validation-error").show();
+            }
+            else {
+                $("#" + spanId).html("").hide();
+            }
+
+        });
+
+        for(var i=1; i <= '@Model.ProjectEndAppraisalParameterList.Count'; i++)
+        {
+            $("#Ratings1_"+i).next().next().text($("#Ratings1_"+i+" :selected").text());
+        }
+        DisplayLabel();
+    }); //end of ready
+
+    //DisplayLabel() function is used to hide disabled fields and display respective value as Label.
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+
+            if ($(val).is(':disabled')) {
+                if (val.id.indexOf("Ratings1_") != -1) {
+                    //val.id.contains("Ratings1_") ||
+                    $(this).next().hide().next().show();
+                }
+                else if (val.id.indexOf("Comments1_") != -1) {
+                    //if (val.id.contains("Comments1_")) {
+                    $(this).hide().next().show().children().show();
+                }
+                else
+                    $(this).hide().next().show();
+            }
+        });
+    }//end function
+
+    window.onload=function()
+    {
+
+        var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["ResourceNodeLevelAccess"])));
+        if(stringNodeLevelAccessList==null)
+        {
+            // window.location.href='@Url.Action("LogOn", "Account")';
+        }
+        if(stringNodeLevelAccessList!=null)
+        {
+            if(stringNodeLevelAccessList.CanEdit==false ||'@Model.ProjectEndAppraisalFormStatus' != 0)
+            {
+                $('.disableThisForm').find('input, textarea, button, select').each(function ()
+                {
+                    $(this).prop('disabled', true);
+                });
+                $("#saveProjectEndAppraisalForm").hide();
+                $("#submitProjectEndAppraisalForm").hide();
+                $('.disableThisForm .ui-datepicker-trigger').hide();
+                $('#back_ApprisalForm').prop('disabled',false)
+            }
+        }
+    }
+
+    $("#ProjectLead").autocomplete({
+        source: function (request, response) {
+            $.getJSON('@Url.Action("SearchEmployeeAutoSuggestFoeSEM", "EmployeeDetails")', { term: request.term }, function (data) {
+                response($.map(data, function (el) {
+                    var emplyeeInformation = el.EmployeeName;
+                    return {
+                        label: emplyeeInformation,
+                        value: el.EmployeeID
+                    };
+                }));
+            });
+        }
+    });
+
+    $('#saveProjectEndAppraisalForm').off('click').on('click', function () {
+
+        // SaveProjectEndAppraisalForm("");
+
+        var status = SaveProjectEndAppraisalForm("Save");
+        return false;
+    });
+    $('#submitProjectEndAppraisalForm').off('click').on('click', function () {
+
+        var submitValidat = SubmitValidat();
+
+        if (submitValidat == "Fail") {
+            throw ("Error");
+        }
+
+        // SaveProjectEndAppraisalForm();
+
+        var status = SaveProjectEndAppraisalForm("Submit");
+        return false;
+
+    });
+    function SaveProjectEndAppraisalForm(state) {
+        var EmployeeID = '@Model.EmployeeID';
+        var ProjectID = '@Model.ProjectID';
+        var ProjectEndAppraisalFormStatus = '@Model.ProjectEndAppraisalFormStatus';
+        var ProjectLead = $("#ProjectLead").val();
+        var LoggedinUserEmployeeCode = '@Model.LoggedinUserEmployeeCode';
+        //var ReleaseDate = $('#ReleaseDate').val();
+        var ProjectEmployeeRoleID = '@Model.ProjectEmployeeRoleID';
+
+        ArrayOne = [];
+        var rows;
+
+        rows = $("#ParmList_table tr:gt(0)");
+
+        rows.each(function () {
+
+            var $tds = $(this).find('td');
+            var Id = $tds.eq(0).html().trim();
+            var FrmId = $tds.eq(1).html().trim();
+            var parmId = $(Id).attr("value");
+            var FormID = $(FrmId).attr("value");
+            var commentsID = "Comments1_" + parmId;
+            var rev1Comment = $("#" + commentsID).val();
+
+            var RatingsID = "Ratings1_" + parmId;
+            var rev1Rating = $("#" + RatingsID).val();
+            var ProjectEndAppraisalParameters = {
+                ProjectEndAppraisalFormID: FormID,
+                ProjectEndAppraisalParameterID: parmId,
+                ProjectEndAppraisalParameterRating: rev1Rating,
+                ProjectEndAppraisalParameterRemarks: rev1Comment,
+                EmployeeID: EmployeeID,
+                ProjectID: ProjectID,
+                LoggedinUserEmployeeCode: LoggedinUserEmployeeCode,
+                ProjectEndAppraisalFormStatus: ProjectEndAppraisalFormStatus,
+                State: state,
+                ProjectLead: ProjectLead,
+                //Releasedate: ReleaseDate,
+                ProjectEmployeeRoleID: ProjectEmployeeRoleID
+            };
+            ArrayOne.push(ProjectEndAppraisalParameters);
+        });
+
+        var postUrl = '@Url.Action("SaveProjectEndAppraisalFormDetails", "Resource")';
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            async: false,
+            data: JSON.stringify(ArrayOne),
+            contentType: "application/json; charset=utf-8",
+            success: function (results) {
+
+                //$("#loading").dialog("close");
+                //$("#loading").dialog("destroy");
+                if (results.status == true) {
+                    if (state == "Save") {
+                        $("#ProjectEndAppraisaldatasavedSuccessfully").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            title: "Resource Process",
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    } else {
+
+                        $("#ProjectEndAppraisaldataSubmittedSuccessfully").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            title: "Resource Process",
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    //window.location.href = '@Url.Action("RMGViewPost", "Resource")';
+                                    window.location.href = 'javascript:window.history.go(-1)';
+                                }
+                            }
+                        });
+
+                    }
+                } else if (results.status == "Error") {
+                    status = false;
+                    DisplayErrorDialog("Resource Process");
+                }
+
+            } //end success
+        });   //end postUrl1
+    }
+
+    function SubmitValidat() {
+        var returnVal = "Success";
+        var validationArray = [];
+        var minValue = parseInt('@ViewBag.minRating');
+        var maxValue = parseInt('@ViewBag.maxRating');
+        var rows;
+        rows = $("#ParmList_table tr:gt(0)");
+        rows.each(function () {
+            var $tds = $(this).find('td');
+            var id = $tds.eq(0).html();
+            var parmId = $(id).attr("value");
+
+            var spanidForRating = "span_Reviewer1RatingRequired_" + parmId;
+            var commentsId = "Comments1_" + parmId;
+            var rev1Comment = $("#" + commentsId).val();
+            var spanForComments = "span_Reviewer1CommentsRequired_" + parmId;
+            var spanIdForRatingReviewer1InvalidRange = "span_Reviewer1Rating_" + parmId;
+
+            var ratingsId = "Ratings1_" + parmId;
+            var rev1Rating = $("#" + ratingsId).val();
+
+            if ((rev1Comment == null || rev1Comment == "") && rev1Comment != undefined) {
+                if( commentsId!="Comments1_14")
+                {
+                    $("span_Reviewer1CommentsRequired_14").show() ;
+                    validationArray.push(true);
+                }
+                else{
+                    if ((rev1Comment == null || rev1Comment == "") && rev1Comment != undefined)
+                    {
+                        $("#" + spanForComments).show();
+                        validationArray.push(false);
+                    }
+
+                }
+
+            }
+            else {
+                $("#" + spanForComments).hide();
+                validationArray.push(true);
+            }
+            if ((rev1Rating == null || rev1Rating == "") && rev1Rating != undefined) {
+                $("#" + spanidForRating).show();
+                validationArray.push(false);
+            } else {
+                $("#" + spanidForRating).hide();
+                validationArray.push(true);
+            }
+            if ((rev1Rating < minValue || rev1Rating > maxValue || $.isNumeric(rev1Rating) == false) && rev1Rating != "" && rev1Rating != undefined) {
+                $("#" + spanIdForRatingReviewer1InvalidRange).show();
+                validationArray.push(false);
+            } else {
+                $("#" + spanIdForRatingReviewer1InvalidRange).hide();
+                validationArray.push(true);
+            }
+
+        });
+
+        $(validationArray).each(function (i, val) {
+            if (val == false) {
+                returnVal = "Fail";
+            }
+        });
+        return returnVal;
+    }
+</script>

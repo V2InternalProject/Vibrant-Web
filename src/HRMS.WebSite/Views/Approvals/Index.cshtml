@@ -1,0 +1,42 @@
+﻿@model HRMS.Models.EmployeeChangesApprovalViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Approvals";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+
+<section class="ConfirmationContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Approval</h2>
+        </div>
+        <nav class="sub-menu-colored"></nav>
+    </div>
+     <div class="MainBody">
+        <div class="Hrmain clearfix">
+            <div id="tabs" class="tabstyle">
+                <ul>
+                    @if (Model.EmployeeID > 0)
+                    {
+
+                        if (ViewBag.UserRole == "HR Admin" || ViewBag.UserRole == "RMG")
+                        {
+
+                        <li><a href="@Url.Action("EmployeeApprovals", "Approvals", new { employeeId = @Model.EmployeeID })">
+                            Employee Approvals</a> </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

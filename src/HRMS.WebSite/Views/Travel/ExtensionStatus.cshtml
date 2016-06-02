@@ -1,0 +1,372 @@
+﻿@model HRMS.Models.TravelStatus
+@{
+    ViewBag.Title = "Extension details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/travel.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+<script type="text/javascript">
+    $(document).click(function (e) {
+        if (!$(e.target).is('.EmpLink')) {
+            $("#PopUpOfEmpInfo").fadeOut();
+        }
+    });
+    $(document).ready(function () {
+
+        $(".Title").hide();
+
+        $("#btnShowStatusTravel").click(function () {
+            //jQuery("#TravelShowStatusTable").trigger("reloadGrid");
+            $("#TravelShowStatusTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#ShowStatusTravelDialog').dialog({
+                autoOpen: true,
+                modal: true,
+                width: 1000,
+                resizable: true,
+                title: "Show Status"
+            });
+        });
+
+        $("#txtExtSearchEmployee").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggest", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + "{" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName
+                        };
+                    }));
+                });
+            }
+        });
+
+        $("#extTravelField").change(function () {
+//            if ($("#extTravelField").val() != "") {
+//                var url = "GetFieldChildDetailsList/Travel";
+//                $("#FieldChild").show();
+//                $.getJSON(url, { TravelField: $("#extTravelField").val() }, function (data) {
+//                    //Clear the Model list
+//                    $("#FieldChild").empty();
+//                    $("#FieldChild").append("<option value='" + "" + "'>" + "" + "</option>");
+//                    //Foreach Model in the list, add a model option from the data returned
+//                    $.each(data, function (index, optionData) {
+
+//                        $("#FieldChild").append("<option value='" + optionData.Id + "'>" + optionData.Description + "</option>");
+//                    });
+//                });
+//            } else {
+//                $("#FieldChild").val("");
+//                $("#FieldChild").hide();
+//            }
+if ($("#extTravelField").val() != "") {
+if($("#extTravelField").val()=="Business Group"){
+$('#FieldChildListExtBG').show();
+$('#FieldChildListExtOU').hide();
+$('#FieldChildListExtSN').hide();
+}
+if($("#extTravelField").val()=="Organization Unit"){
+$('#FieldChildListExtBG').hide();
+$('#FieldChildListExtOU').show();
+$('#FieldChildListExtSN').hide();
+}
+if($("#extTravelField").val()=="Stage Name"){
+$('#FieldChildListExtBG').hide();
+$('#FieldChildListExtOU').hide();
+$('#FieldChildListExtSN').show();
+}				
+            } else {
+                $("#extTravelField").val("");
+                $("#extTravelField").hide();
+            }
+        });
+
+        $("#btnHeaderShowDetails").click(function () {
+            //$("#jqExtensionTable").trigger("reloadGrid");
+            $("#jqExtensionTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#travelIdToPassOnLinkClick").val(0);
+
+        $("#btnFillExtFormTravel").click(function () {
+            var TravelID = $("#travelIdToPassOnLinkClick").val();
+            var postUrl = '@Url.Action("GetStatusForNewExtensionForm", "Travel")';
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                async: false,
+                data: { TravelID: TravelID },
+                success: function (data) {
+                    if (data.status == false) {
+                        $("#PreviousExtensionNotAproved").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            open: function () {
+                                note_text = "Your New Travel Extension i.e.  " + data.newTrf + "<p>Still not Approved so You cannot apply for New Travel Extension Request</p>";
+                                $("#PreviousExtensionNotAproved").html(note_text)
+                            },
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $.preventDefault();
+                    }
+                    else {
+                        window.location.href = '@Url.Action("GetTravelFormDetails", "Travel")?IsNewForm=' + false + '&EncryptedTravelID=' + $("#travelIdToPassOnLinkClick").val() + '&viewDetails=' + 'Ext' + '&isExtensionOfOriginalForm=' + 'Yes';
+                    }
+                }
+            });
+        });
+
+
+
+        $('#btnShowDetailsTravel').click(function () {
+            window.location.href = '@Url.Action("GetTravelFormDetails", "Travel")?IsNewForm=' + false + '&EncryptedTravelID=' + $("#travelIdToPassOnLinkClick").val() + '&viewDetails=' + 'yes';
+        });
+
+
+        $("#jqExtensionTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadExtensionListGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { employeeId: function () { return '@ViewBag.EncryptedEmployeeId' }, term: function () { return $("#txtExtSearchEmployee").val(); },
+                Field: function () { return $("#extTravelField").val(); },
+                FieldChild: function () { if($("#extTravelField").val()=="Business Group") return $("#DDFieldChildListExtBG").val(); if($("#extTravelField").val()=="Organization Unit") return $("#FieldChildListExtOU").val();if($("#extTravelField").val()=="Stage Name") return $("#DDFieldChildListExtSN").val(); if($("#extTravelField").val()=="") return "";  }
+            },
+            // Specify the column names
+            colNames: ["StageId", "Reporting To", "TravelStageOrder", "TravelId", "EncryptedTravelId", "EncryptedEmployeeId", "EmployeeId", "Travel Request Number", "Employee Name", "Status", "Stage"],
+
+            // Configure the columns
+            colModel: [
+                { name: "StageId", index: "StageId", hidden: true, width: 100, align: "left" },
+                { name: "ReportingTo", index: "ReportingTo", hidden: true, width: 100, align: "left" },
+                { name: "TravelStageOrder", index: "TravelStageOrder", hidden: true, width: 100, align: "left" },
+                { name: "TravelId", index: "TravelId", hidden: true, width: 100, align: "left" },
+				{ name: "EncryptedTravelId", index: "EncryptedTravelId", hidden: true, width: 100, align: "left" },
+                { name: "EncryptedEmployeeId", index: "EncryptedEmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "TravelRequestNumber", index: "TravelRequestNumber", formatter: formatlink, width: 100, sortable: true, align: "left",sorttype:"int" },
+                { name: "Employeename", index: "Employeename", width: 100, align: "left" },
+                { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
+                { name: "stageName", index: "stageName", width: 100, align: "left" }
+
+            ],
+
+            // Grid total width and height
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            loadonce: true,
+            sortable: true,
+            pager: $("#jqExtensionDetailsPager"),
+
+            // Grid caption
+            //caption: "Travel Extension Inbox"
+        }).navGrid("#jqExtensionDetailsPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        function renderImages(cellvalue, options, rowobject) {
+            var obj = "";
+            for (var i = 0; i < 3; i++) {
+                if (rowobject['TravelStageOrder'] >= i) {
+                    if ((rowobject['Field'] == "Reject" && rowobject['TravelStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['TravelStageOrder'] == i)) {
+                        obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
+                    } else if (rowobject['TravelStageOrder'] != i) {
+                        if (rowobject['TravelStageOrder'] == 3 && i == 2)
+                            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                        else
+                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                    }
+                    else {
+                        obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                        if (rowobject['StageID'] == 7) {
+                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                        }
+                    }
+                } else {
+                    obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                }
+            }
+
+            return obj;
+        }
+
+    });
+
+    function formatlink(cellvalue, options, rowobject) {
+        return "<a href=# id=" + rowobject['TravelId'] + " class=EmpLink onClick = LinkClick(this," + "\"" + rowobject['EncryptedEmployeeId'] + "\"," + "\"" + rowobject['EncryptedTravelId'] + "\"," + rowobject['EmployeeId'] + "," + rowobject['StageId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+    }
+
+    function LinkClick(event, EncryptedEmployeeId, EncryptedTravelId, empId, stageId) {
+        var target = event.id;
+        var width = event.offsetWidth;
+        var table = $("#" + target).parent().parent().parent().parent();
+        var tableid = $(table).attr('id');
+
+        if (tableid == "jqExtensionTable") {
+            $('#btnFillExtFormTravel').show();
+            $('#btnShowStatusTravel').show();
+            $('#btnShowDetailsTravel').hide();
+        }
+
+        var positionlink = $("#" + target).offset();
+
+        $("#PopUpOfEmpInfo").css({
+            top: positionlink.top,
+            left: positionlink.left + width,
+            position: "absolute"
+        }).fadeIn();
+
+        $("#travelIdToPassOnLinkClick").val(EncryptedTravelId);
+        $("#travelEmpIdToPassOnLinkClick").val(EncryptedEmployeeId);
+        $('#InboxOrWatchListCallTravel').val(tableid);
+        $('#EmpIdToPassOnLinkClick').val(empId);
+    }
+
+</script>
+@*<div class="blueBorder-E">
+    <div style="margin-top: 10px;">
+        <table width="100%">
+            <tr>
+                <td colspan="10" align="left">
+                    <h2 class="title-bgcolor">
+                        @Html.Label("Extension Details")
+                        <span id="guide"><a class="LinkBrown floatR" href="@Url.Action("Index", "Travel")" id="BackPrevious">
+                            Back</a></span>
+                    </h2>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div class="confirmation-input-center">
+        <div class="clearfix confiremation-left">
+            <div class="confiremation-left">
+                @Html.Label("Employee Name")
+            </div>
+            <div class="confiremation-left">
+                <input type="text" name="searchValue" id="txtExtSearchEmployee" class="srchinput"
+                    height="20px" />
+            </div>
+        </div>
+        <div id="dynamicElement">
+        </div>
+        <div class="clearfix confiremation-left">
+            <div class="confiremation-left">
+                @Html.Label("Field")
+            </div>
+            <div class="confiremation-left">
+                @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetFieldList(), "Value", "Text"), "", new { id = "extTravelField" })
+            </div>
+        </div>
+        <div class="clearfix confiremation-left">
+            <div class="confiremation-left">
+                @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldChildList, "Id", "Description", "Select"), "Select", new { style = "display:none;" })
+            </div>
+        </div>
+        <input type="button" id="btnHeaderShowDetails" value="Show" class="button" />
+    </div>
+    <div class="tablestyle3">
+        <table id="jqExtensionTable" class="scroll">
+        </table>
+        <div id="jqExtensionDetailsPager">
+        </div>
+    </div>
+</div>*@
+<div id="ShowStatusTravelDialog" style="display: none; clear: both">
+    @{Html.RenderPartial("_TravelShowStatus", Model);}
+</div>
+<span id="InboxOrWatchListCallTravel" style="display: none;"></span>
+<div id="PreviousExtensionNotAproved" style="display: none">
+    @*<center>
+       Your Previous Extension Form not Approved so You cannot apply for new Travel Extension Request. 
+    </center>*@
+</div>
+<section class="TravelContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Travel</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a id="newReqLink" href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = true, encryptedTravelId = ViewBag.EncryptedTravelId, viewDetails = "NoExt" })">
+                New Request</a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })" class="selected">
+                    Extension Request</a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")">
+                        Saved/Submitted Request</a>
+        </nav>
+    </div>
+    <div class="MainBody ExtensionMainbody">
+        <div class="FormContainerBox  Extension ex-savedSUb clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="LabelDiv">
+                    <label for="From Date" class="select-type">
+                        Employee Name:
+                    </label>
+                </div>
+                <div class="InputDiv">
+                    <input type="text" name="searchValue" id="txtExtSearchEmployee" class="srchinput"
+                           height="20px" />
+                </div>
+                <div class="LabelDiv">
+                    <label for="Field" class="select-type">
+                        Field:
+                    </label>
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetFieldList(), "Value", "Text"), "", new { id = "extTravelField" })
+                </div>
+                @*   <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldChildList, "Id", "Description", "Select"), "Select", new { style = "display:none;" })
+                </div>*@
+                <div class="InputDiv" style="display: none" id="FieldChildListExtBG">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListBG, "Select", new { id = "DDFieldChildListExtBG" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListExtOU">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListOU, "Select", new { id = "DDFieldChildListExtOU" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListExtSN">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListSN, "Select", new { id = "DDFieldChildListExtSN" })
+                </div>
+                <div class="remain">
+                    <button id="btnHeaderShowDetails" type="button" class="ButtonGray">
+                        Show
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="tablestyle3 mrgnT33">
+            <table id="jqExtensionTable" class="scroll"></table>
+            <div id="jqExtensionDetailsPager">
+            </div>
+        </div>
+    </div>
+</section>
+<div id="PopUpOfEmpInfo" style="display: none;">
+    <ul class="exitbutton">
+        <li id="btnFillExtFormTravel">Fill Extension Form</li>
+        <li id="btnShowDetailsTravel">View Details</li>
+        <li id="btnShowStatusTravel">View Status</li>
+    </ul>
+    <table>
+        <tr style="display: none;">
+            <td>
+                <span id="travelIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+            <td>
+                <span id="travelEmpIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+        </tr>
+    </table>
+</div>

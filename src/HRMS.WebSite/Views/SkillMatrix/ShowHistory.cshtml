@@ -1,0 +1,253 @@
+﻿@model HRMS.Models.SkillMatrix.skillmatrix_history
+
+<link href="../../Content/New%20Design/rmg.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="/Scripts/New%20Design/jquery.selectBox.js"></script>
+<link href="/Content/New%20Design/jquery.selectBox%20(2).css" rel="stylesheet" />
+<link href="../../Content/themes/base/jquery.ui.autocomplete.css" rel="stylesheet" />
+@*@using (Ajax.BeginForm(new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "emailDialog" }))
+    {*@<div class="formrow clearfix">
+    <div class="leftcol">
+        <div class="LabelDiv">
+            @Html.Label("Main Skill:")
+        </div>
+        <div class="InputDiv">
+            @Html.DropDownListFor(x => x.ResourcePoolID, new SelectList(Model.resourcepoolListdata, "ResourcePoolId", "ResourcePoolName"), "Select")
+            @Html.HiddenFor(x => x.ResourcePoolID, new { @id = "respoolID" })
+        </div>
+    </div>
+    <div class="rightcol" id="showskillDiv">
+        <div class="LabelDiv">
+            @Html.Label("Sub Skill:")
+        </div>
+        <div class="InputDiv">
+            @Html.DropDownListFor(x => x.ToolId, new SelectList(Model.getskilllist, "ToolId", "description"), "Select")
+        </div>
+    </div>
+</div>
+
+<div id="divShowHistory">
+    <div class="tablestyle3">
+        <table id="jqShowHistoryTable"></table>
+        <div id="jqShowRevisionHistoryTablePager">
+        </div>
+
+    </div>
+</div>
+
+
+@* </td>
+    </tr>
+    <tr>*@ @*<td colspan="10" align="left">*@
+    @*<h2 class="title-bgcolor clearL">
+            @Html.Label("Show History")
+        </h2>*@
+    @*</td>
+            </tr>
+        </table>*@
+
+    @*<div class="clearfix">
+            <div class="confirmation-input-center">
+                <div class="clearfix confiremation-left">
+                    <div class="confiremation-left" style="float:left">
+
+
+
+                    </div>
+                </div>
+                <div id="showskillDiv" class="formcol clearfix">
+                    <div class="editor-label labelwidth floatL">
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+
+
+    <script type="text/javascript">
+        resID = "";
+        var skillIDName;
+        skillIDName = "";
+        id = "";
+        var DateType = 0;
+        $(function () {
+            $('select').selectBox({
+                hideOnWindowScroll: true,
+                keepInViewport: false
+            });
+        });
+        function ForNewOld(gridName, CellName) {
+            var mya = $("#" + gridName + "").getDataIDs();
+            var length = mya.length;
+            for (var i = 0; i < length; i++) {
+                var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                var rowSpanTaxCount = 1;
+                for (j = i + 1; j <= length; j++) {
+                    var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                    if (before[CellName] == end[CellName]) {
+                        rowSpanTaxCount++;
+                        if (CellName = "Description") {
+                            $("#" + gridName + "").jqGrid("setCell", mya[j], 'RatingType', 'Old');
+                            $("#" + gridName + "").jqGrid("setCell", mya[j - 1], 'RatingType', 'New');
+                        }
+
+                    } else {
+                        rowSpanTaxCount = 1;
+                        break;
+                    }
+                }
+            }
+        };
+
+
+        function RowMerger(gridName, CellName) {
+            var mya = $("#" + gridName + "").getDataIDs();
+            var length = mya.length;
+            for (var i = 0; i < length; i++) {
+                var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                var rowSpanTaxCount = 1;
+                for (j = i + 1; j <= length; j++) {
+
+                    var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                    if (before[CellName] == end[CellName]) {
+                        rowSpanTaxCount++;
+                        //if (CellName = "Description") {
+                        //    $("#" + gridName + "").jqGrid("setCell", mya[j-1], 'RatingType', 'New');
+                        //    $("#" + gridName + "").jqGrid("setCell", mya[j], 'RatingType', 'Old');
+                        //}
+                        $("#" + gridName + "").setCell(mya[j], CellName, '', {
+                            display: 'none'
+                        });
+
+                    } else {
+                        rowSpanTaxCount = 1;
+                        break;
+                    }
+                    $("#" + CellName + "" + mya[i] + "", $("#" + gridName)).attr("rowspan", rowSpanTaxCount);
+                }
+            }
+        };
+
+
+        $(document).ready(function () {
+
+            $("#jqShowHistoryTable").jqGrid({
+                // Ajax related configurations
+                url: '@Url.Action("History", "SkillMatrix")',
+                postData: { EmployeeId: function () { return '@Model.EmployeeIdInt' }, ResourcePoolID: function () { return resID }, ToolId: function () { return skillIDName } },//hardcoded for testing
+                datatype: "json",
+                mtype: "POST",
+                // Specify the column names 'Resource Pool Name', 'Skill Name', 'RatingType', 'Rating', 'Updated By', 'Updated On'
+                colNames: ["Rows", "EmployeeId", "Ranks", "Main Skill", "Sub Skills", "RatingType" ,"Rating", "Remarks", "Updated By", "Updated On"],
+                // Configure the columns
+                colModel: [
+                     { name: "ROWS", index: "ROWS", align: "left", hidden: true },
+                     { name: "EmployeeId", index: "EmployeeId", align: "left", hidden: true },
+                     { name: "Rank", index: "Rank", align: "left", hidden: true },
+                     {
+                         name: "Resourcepoolname", index: "Resourcepoolname", align: "left", cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                             return 'id=\'Resourcepoolname' + rowId + "\'";
+                         }
+                     },
+                     {
+                         name: "Description", index: "Description", align: "left", cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                             return 'id=\'Description' + rowId + "\'";
+                         }
+                     },
+                     { name: "RatingType", index: "RatingType", width: 35, align: "left", hidden: true },
+                     { name: "Ratings", index: "Ratings", align: "left" },
+                     { name: "Remark", index: "Remark", align: "left", hidden: true },
+                     { name: "UpdatedBy", index: "UpdatedBy", align: "left" },
+                    //{ name: "UpdatedOn", index: "UpdatedOn", align: "center", width: 200, formatter: 'date', datefmt: 'Y-m-d', formoptions: { elmsuffix: ' *' } },
+                     { name: "UpdatedOn", index: "UpdatedOn", align: "left" },
+                     //{ name: 'EmpChildDOB', width: 80, formatter: 'date', datefmt: 'm/d/Y', editable: true, edittype: 'text', editrules: { date: true }, formoptions: { elmsuffix: ' *' } },
+                ],
+                // Grid total width and height
+                width: 200,
+                loadonce: true,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqShowRevisionHistoryTablePager"),
+                rowNum: 20,
+                rowList: [20, 40, 60],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                gridComplete: function () {
+                    //var gridName = "jqShowHistoryTable";
+                    //RowMerger(gridName, 'Resourcepoolname');
+                    //RowMerger(gridName, 'Description');
+                    //ForNewOld(gridName, 'Description');
+                }
+            }).navGrid("#jqShowHistoryTablePager",
+                   { search: false, refresh: false, add: false, edit: false, del: false },
+                   {}, // settings for edit
+                   {},
+                   {}
+               );
+
+
+
+
+            $('#ResourcePoolID').change(function () {
+
+                var resourcePoolID = $(this).val();
+                skillIDName = "";
+                var name = $('#ResourcePoolID option:selected').text()
+                if (name == "Select") {
+                    resourcePoolID = 0;
+                    skillIDName = "";
+                }
+                    $.ajax({
+                        url: '@Url.Action("ShowSkillData", "SkillMatrix")',
+                        data: { employeeId: '@Model.EmployeeIdInt', ResourcePoolID: resourcePoolID },
+                        type: 'GET',
+                        success: function (result) {
+                            $('#ToolId').empty();
+                            $('#ToolId').selectBox("destroy");
+                            var selectValue = '<option value="' + 0 + '">' + "Select" + '</option>';
+                            $('#ToolId').append(selectValue);
+                            var counts = 1;
+                            $.each(result.results, function (index, value) {
+                                var optionhtml = '<option value="' + counts + '">' + result.results[index].Description + '</option>';
+
+                                $('#ToolId').append(optionhtml);
+                                counts++;
+                            });
+                            $('#ShowHistory #ResourcePoolID').val(resourcePoolID);
+                            resID = resourcePoolID;
+                            $("#jqShowHistoryTable").jqGrid('setGridParam', { datatype: 'json' })
+                       .trigger('reloadGrid', [{ page: 1 }]);
+                            $('#ToolId').selectBox('create');
+                        }
+                    });
+            });
+
+
+            $('#ToolId').change(function () {               
+                //$('#ToolId :selected').val();
+                var skillID = $("#ToolId option:selected").text();
+                var name = $("#ToolId option:selected").text();
+
+                //$('*[class*=selectBox-label]').each(function () {
+                //    skillIDName = $(this).text();
+                //});
+                skillIDName = skillID;
+                if (name == "Select") {
+                    resourcePoolID = 0;
+                    skillIDName = "";
+                }
+                //selectBox-label
+                $("#jqShowHistoryTable").jqGrid('setGridParam', { datatype: 'json' })
+                       .trigger('reloadGrid', [{ page: 1 }]);
+            });
+
+
+        });
+    </script>
+
+

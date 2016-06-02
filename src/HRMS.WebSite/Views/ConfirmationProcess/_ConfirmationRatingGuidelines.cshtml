@@ -1,0 +1,41 @@
+﻿@model List<HRMS.Models.GuideLines>
+<div id="Guide-txt">
+    @if (Model != null)
+    {
+
+        <table cellpadding="0" cellspacing="0" border="0" id="confirmationRatingGuidelines"
+            style="margin-top: 20px; margin-bottom: 30px;" class="TableJqgrid">
+            <thead>
+                <tr class="bluebgtable1">
+                    <th width="20%" class="tableHeaders">
+                        Rating Scale
+                    </th>
+                    <th width="25%" class="tableHeaders">
+                        Rating
+                    </th>
+                    <th width="55%" class="tableHeaders">
+                        Description
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr class="tableRows">
+                        <td align="center">
+                            @Html.DisplayFor(x => item.Percentage)
+                        </td>
+                        <td align="center">
+                            @Html.DisplayFor(x => item.Rating)
+                        </td>
+                        <td align="center">
+                            @Html.DisplayFor(x => item.Description)
+                        </td>
+                    </tr>
+                }
+            </thead>
+        </table>
+    }
+    else
+    {
+        <p><b>There is no guidLines.</b></p>
+    }
+</div>

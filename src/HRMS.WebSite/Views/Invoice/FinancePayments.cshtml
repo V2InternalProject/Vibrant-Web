@@ -1,0 +1,49 @@
+﻿@model HRMS.Models.FinancePaymentsModel
+@{
+    ViewBag.Title = "Finance Payments";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix SemContainer">
+    <ul>
+        <li><a href="@Url.Action("FinancePaymentTracking", "Invoice")">Screen 20</a></li>
+        <li><a href="@Url.Action("FinanceTrackingSummary", "Invoice")">Screen 21</a>
+        </li>
+        <li><a href="#" id="btnPaymentTrackingHistory">Screen 22</a></li>
+        <li><a href="#" id="btnTrackingSummaryHistory">Screen 23</a></li>
+    </ul>
+</div>
+<div id="PaymentTrackingHistoryPopUp" style="display: none">
+    @Html.Partial("_PaymentTrackingHistory", Model.PaymentTrackingHistory)
+</div>
+<div id="TrackingSummaryHistoryPopUp" style="display: none">
+    @Html.Partial("_TrackingSummaryHistory", Model.TrackingSummaryHistory)
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#btnPaymentTrackingHistory').click(function () {
+            $('#PaymentTrackingHistoryPopUp').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Finance Payment Tracking History"
+            });
+            $('#PaymentTrackingHistoryPopUp').dialog('open');
+        });
+
+        $('#btnTrackingSummaryHistory').click(function () {
+            $('#TrackingSummaryHistoryPopUp').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Finance Tracking Summary History"
+            });
+            $('#TrackingSummaryHistoryPopUp').dialog('open');
+        });
+    });
+</script>

@@ -1,0 +1,67 @@
+/** Minimal stand-alone css for dropdownchecklist support
+    We highly recommend using JQuery ThemeRoller instead
+*/
+.ui-dropdownchecklist {
+	font-size: medium;
+	color: black;
+}
+.ui-dropdownchecklist-selector {
+	height: 20px;
+	border: 1px solid #ddd;
+	background: #fff;
+}
+.ui-state-hover, .ui-state-active {
+	border-color: #5794bf;
+}
+.ui-dropdownchecklist-dropcontainer {
+	background-color: #fff;
+	border: 1px solid #999;
+}
+.ui-dropdownchecklist-item {
+}
+.ui-state-hover {
+	background-color: #8d979e;
+}
+.ui-state-disabled label {
+	color: #ccc;
+}
+.ui-dropdownchecklist-group {
+	font-weight: bold;
+	font-style: italic;
+}
+.ui-dropdownchecklist-indent {
+	padding-left: 7px;
+}
+/* Font size of 0 on the -selector and an explicit medium on -text required to eliminate
+   descender problems within the containers and still have a valid size for the text */
+.ui-dropdownchecklist-selector-wrapper {
+	vertical-align: middle;
+	font-size: 0px;
+}
+.ui-dropdownchecklist-selector {
+	padding: 1px 2px 2px 2px;
+	font-size: 0px;
+}
+.ui-dropdownchecklist-text {
+	font-size: medium;
+	/* line-height: 20px; */
+}
+.ui-dropdownchecklist-group {
+	padding: 1px 2px 2px 2px;
+}
+.ui-dropdownchecklist input{width:20px !important; margin-right:5px;}
+.ui-dropdownchecklist label{font-size:14px; line-height:20px;}
+#ddcl-LoginRole .ui-state-default,#ddcl-AssignedEmployeeName .ui-state-default,#ddcl-AddedTagName .ui-state-default{ border:1px solid #CFCFCF; height:30px; width:250px !important;}
+#ddcl-LoginRole span,#ddcl-AssignedEmployeeName span,#ddcl-AddedTagName span{font-size:12px; }
+
+/*modifications*/
+#accordion h3.ui-state-hover{background-color:#1c1c1c;}
+#ddcl-LoginRole-ddw input[type="checkbox"],#ddcl-AssignedEmployeeName-ddw input[type="checkbox"],#ddcl-AddedTagName-ddw input[type="checkbox"]{display:inline;margin-top:0px;}
+#ddcl-LoginRole-ddw{top:555px !important;z-index:2 !important;}
+#ddcl-AddedTagName-ddw{top:450px !important;z-index:2 !important; width:256px !important; }
+#ddcl-AssignedEmployeeName-ddw{top:411px!important; z-index:2 !important;}
+.ui-dropdownchecklist .ui-widget-content, .ui-dropdownchecklist .ui-widget-header{border:1px solid #CFCFCF;}
+#ddcl-LoginRole-ddw + a.selectBox-inline{display:none !important;}
+#ddcl-AssignedEmployeeName-ddw + a.selectBox-inline{display:none !important;}
+#ddcl-AddedTagName-ddw + a.selectBox-inline{display:none !important;}
+.ui-dropdownchecklist-text{color:#5D676F;font-size:16px}

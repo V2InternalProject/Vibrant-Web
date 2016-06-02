@@ -1,0 +1,649 @@
+﻿@model HRMS.Models.JourneyViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Travel/JourneyDetails.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // SetPageTitle('Journey Details');
+        var deletionIdSelected = 0;
+        selectedJourneyMode = "";
+        isJourneyRowInAddEditMode = false;
+        stringJourneyModeList = @(Html.Raw(Json.Encode(Model.JourneyModeList)));
+        var mode = [];
+        mode.push("Select");
+        $.each(stringJourneyModeList, function (index,value) {
+            mode.push(value.JourneyModeDescription);
+        });
+        $("#JourneyTable").jqGrid(
+                        {
+                            url: '@Url.Action("LoadJourneyGridTravel", "Travel")',
+                            datatype: "json",
+                            mtype: "POST",
+                            postData: { travelID: '@ViewBag.TravelID', TRFNO: '@ViewBag.TRFNo' },
+                            colNames: ["Travel ID","TRFNo","Employee ID", "Journey ID", "From Place", "To Place", "Journey Date", "Journey Mode","", "Additional Information", "Journey Mode Details", "Journey Mode Id", "View Ticket ", "View Ticket ", "TicketPath", "Journey Feedback", ""],
+                            colModel: [
+                                { name: "TravelID", index: "TravelID", width: 30, hidden: true, align: "left" },
+                                { name: "TRFNo", index: "TRFNo", width: 30, hidden: true, align: "left" },
+                                { name: "EmployeeID", index: "EmployeeID", width: 30, hidden: true, align: "left" },
+                                { name: "JourneyID", index: "JourneyID", editable: true, width: 30, hidden: true, align: "left" },
+                                { name: "FromPlace", index: "FromPlace", editable: true, align: "left", width: 130, editrules: { custom: true, custom_func: isJourneyFieldRequired }, editoptions: { maxlength: 1000 }, classes:"approvedFieldsClass" },
+        						{ name: "ToPlace", index: "ToPlace", editable: true, align: "left", width: 130, editrules: { custom: true, custom_func: isJourneyFieldRequired }, editoptions: { maxlength: 1000 }, classes:"approvedFieldsClass"  },
+                                { name: "JourneyDate", index: "JourneyDate", width: 85, editable: true, align: "left", editrules: { custom: true, custom_func: isJourneyFieldRequired }, formatter: 'date', formatoptions: { newformat: 'm/d/Y'}, classes:"approvedFieldsClass",
+                                    editoptions:{
+                                        readonly:true,
+                                        dataInit: function(element) {
+                                            $(element).datepicker({
+                                                dateFormat: 'mm/dd/yy',
+                                                changeMonth: true,
+                                                changeYear: true
+                                            }).bind("mouseover", function () {
+                                                var startDate = new Date($('#TravelStartDate').val());
+                                                var endDate = new Date($('#TravelEndDate').val());
+                                                $('#new_row_JourneyDate').val($('#TravelStartDate').val());
+                                                var ExtensionStartDate = new Date($('#TravelExtexsionStartDate').val());
+                                                var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+                                                if (ExtensionStartDate == 'Invalid Date' && ExtensionEndDate == 'Invalid Date') {
+                                                    if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                                                        //$(this).datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShowDay: OnselectDate
+                                                        $(this).datepicker("option","beforeShowDay",OnselectDate);
+                                                        //}).bind("mouseover", function () {
+
+                                                        var startDate1 = new Date($('#TravelStartDate').val());
+                                                        $(this).datepicker("option", "minDate", startDate1);
+                                                        $(this).trigger('change');
+                                                        // });
+                                                    } else {
+                                                        //$('#JourneyDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+                                                        $(this).datepicker("option", "yearRange", "-60:+10");
+                                                    }
+                                                } else {
+                                                    //$('#JourneyDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: ExtensionStartDate, maxDate: ExtensionEndDate, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+                                                    $(this).datepicker("option", "minDate", ExtensionStartDate);
+                                                    $(this).datepicker("option", "maxDate", ExtensionEndDate);
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                },
+                                { name: "JourneyMode", index: "JourneyMode", width: 100, editable: true, align: "left", edittype: "select", editrules: { required: true, custom: true, custom_func: isJourneyModeSelected }, editoptions: { value: mode, dataEvents: [{ type: 'change', fn: function (e) { ChangeJourneyMode(e); } }]}, classes:"approvedFieldsClass"  },
+                                { name: "JourneyModeHidden", index: "JourneyModeHidden", width: 30, hidden: true, align: "left" },
+                                { name: "AdditionalInformation", index: "AdditionalInformation", editable: true, width: 170, align: "left", editoptions: { maxlength: 100 }, classes:"approvedFieldsClass"  },
+                                { name: "JourneyModeDetails", index: "JouneyModeDetails", editable: true, width: 80, align: "left", editrules: { custom: true, custom_func: isJourneyAdminFieldRequired }, editoptions: { maxlength: 100 }, classes: "modeDetailsClass" },
+                                { name: "JourneyModeID", index: "JourneyModeID", editable: true, width: 30, hidden: true, align: "left" },
+                                { name: "TicketName", index: "TicketName", width: 80, align: "left", formatter: formatlinkDownload, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+//                                { name: "TicketNameUpload", index: "TicketNameUpload", width: 180, edittype: 'file', editable: true, hidden: true, align: "left", classes: "journeyUpload"},
+                                {name: "TicketNameUpload", index: "TicketNameUpload", width: 180, align: "left", hidden: true, formatter: uploadJourneyButton, classes: "UploadButtons journeyUpload" },
+                                { name: "JourneyFilePath", index: "JourneyFilePath", width: 30, hidden: true, align: "left" },
+                                { name: "JourneyFeedback", index: "JourneyFeedback", editable: true, width: 110, align: "left", editoptions: { maxlength: 100 }, classes: "feedbackClass" },
+                                { name: "Delete", index: "Delete", width: 30, align: "center", formatter: function () {
+                                    return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                                }
+                                }
+                            ],
+                            width: 700,
+                            shrinkToFit: false,
+                            // Paging
+                            toppager: false,
+                            jsonReader: { repeatitems: false },
+                            pager: $("#journeyTablePager"),
+                            rowNum: 5,
+                            rowList: [5, 10, 20],
+                            viewrecords: true, // Specify if "total number of records" is displayed
+                            height: 'auto',
+                            autowidth: true,
+                            //caption: "Journey Details",
+                            editurl: '@Url.Action("UploadJouneyDetails", "Travel")',
+                            gridComplete: function () {
+                                var viewstatus = '@ViewBag.StageID';
+                                if (viewstatus >= 1 && viewstatus <= 3) {
+                                    jQuery('#passportSave').hide();
+                                    //$('#btnAddJourneyDetail').hide();
+                                    //$('#btnSaveJourney').hide();
+                                    $("#gbox_JourneyTable").find('input,select').attr("disabled", true);
+                                }
+                                if (viewstatus == 3) {
+                                    //$('#btnAddJourneyDetail').show();
+                                    //$('#btnAddJourneyDetail').removeAttr("disabled", false);
+                                }
+                                if ('@ViewBag.viewDetailClick' == 'yes' || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || viewstatus == 2 || viewstatus == 1) {
+                                    $("#JourneyTable").hideCol("Delete");
+                                    //$('#btnAddJourneyDetail').hide();
+                                }
+                                if (('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3)) {
+                                    //$('#btnAddJourneyDetail').hide();
+                                }
+                            },
+                            onCellSelect: function (rowid, iCol) {
+                                var viewstatus = '@ViewBag.StageID';
+                                var rowData = $(this).getRowData(rowid);
+                                
+                                var columnName = $(this).jqGrid("getGridParam", "colModel");
+                                var colName = columnName[iCol];
+                                if(isJourneyRowInAddEditMode == false)
+                                {
+                                    var selectedDependantId = rowData['EmployeeID'];
+                                    $('#JourneyForm #JourneyDetail_JourneyModeID').val(rowData['JourneyModeID']);
+                                    selectedJourneyMode = rowData['JourneyModeHidden'];
+                                    $('#addTravelsJourneyDetails #JourneyId').val(rowData['JourneyID']);
+                                    if (colName['index'] == "Delete" && rowid != "new_row") {
+                                        if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.viewDetailClick' != 'yes') {
+                                            DeleteJourneyDetail(rowData['JourneyID']);
+                                        }
+                                        if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes')) {
+                                            return false;
+                                        }
+                                        else {
+                                            if(rowid != "new_row")
+                                                DeleteJourneyDetail(rowData['JourneyID']);
+                                        }
+                                    }
+                                    else {
+                                        if (('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes' && '@ViewBag.StageID' != 4 && '@ViewBag.IsLoggedInUser' == 'True')) {
+                                            return false;
+                                        }
+                                        else {
+                                            if ((viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True") || (viewstatus == 3 && '@ViewBag.UserRole' == "Travel_Admin")) {
+
+                                                $("#gbox_JourneyTable").find('input,select').removeAttr("disabled");
+                                                if ('@ViewBag.UserRole' == "Travel_Admin" && '@ViewBag.StageID' == 3) {
+
+                                                    var selecttext = rowData['JourneyMode'];
+
+                                                    if (selecttext == 'Bus' || selecttext == 'Cab' || selecttext == 'Shuttle' || selecttext == 'Other') {
+                                                        $('#empTicket').attr("disabled", "disabled");
+                                                    }
+                                                    else {
+                                                        $('#empTicket').removeAttr("disabled");
+                                                    }
+
+                                                    //$('#empTicket').removeAttr("disabled");
+                                                    $('#JourneyDetail_JourneyModeDetails').removeAttr("disabled");
+                                                    $('#JourneyDetail_FromPlace').removeAttr("disabled");
+                                                    $('#JourneyDetail_ToPlace').removeAttr("disabled");
+                                                    $('#JourneyDetail_JourneyMode').removeAttr("disabled");
+                                                    $('#JourneyDetail_AdditionalInformation').removeAttr("disabled");
+
+                                                    $('#JourneyDetail_JourneyFeedback').prop("disabled", true);
+                                                    $('#JourneyDate').removeAttr("disabled");
+                                                }
+                                                if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.viewDetailClick' == 'yes') {
+                                                    $('#JourneyDetail_JourneyModeDetails').prop("disabled", true);
+                                                    $('#JourneyDetail_FromPlace').prop("disabled", true);
+                                                    $('#JourneyDetail_ToPlace').prop("disabled", true);
+                                                    $('#JourneyDetail_JourneyMode').prop("disabled", true);
+                                                    $('#JourneyDetail_AdditionalInformation').prop("disabled", true);
+                                                    $('.ui-datepicker-trigger').hide();
+                                                    $('#empTicket').attr("disabled", "disabled");
+                                                    $('#JourneyDate').prop("disabled", true);
+                                                    $('#JourneyDetail_JourneyModeDetails').prop("disabled", true).addClass("bg-gray");
+                                                    $('.uploadtkt').hide();
+                                                }
+                                                //EditJourneyDetails(rowData);
+                                            }
+                                            if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || viewstatus == 3) {
+                                                return false;
+                                            }
+                                            else {
+                                                //EditJourneyDetails(rowData);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }).navGrid("#journeyTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        $("#JourneyTable").jqGrid('inlineNav', "#journeyTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            edittext:"Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+            addtext:"Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+            savetext:"Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            canceltext:"Cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        isJourneyRowInAddEditMode = true;
+                        $("#" + rowid + "_JourneyFeedback").parent().next().find('img').hide();
+                        $('#addTravelsJourneyDetails #JourneyId').val(0);
+                        $("#JourneyTable").jqGrid('hideCol', 'TicketName');
+                        $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
+                        $(".UploadButtons").children().hide();
+                        //                    $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[class="'+rowid+'_UploadLink"]').show();
+                        $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[type="button"]').show();
+                        if('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")
+                        {
+                            $(".modeDetailsClass").find("input").removeClass("bg-gray").removeAttr("disabled");
+                            $(".feedbackClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                        }
+                        else
+                        {
+                            $(".modeDetailsClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                        }
+                        if(('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
+                        {
+                            $(".feedbackClass").find("input").removeClass("bg-gray").removeAttr("disabled");
+                        }
+                        $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function (rowId) {
+                    isJourneyRowInAddEditMode = true;
+                    $("#JourneyTable").jqGrid('hideCol', 'TicketName');
+                    $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
+                    if('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")
+                    {
+                        $(".modeDetailsClass").find("input").removeClass("bg-gray").removeAttr("disabled");
+                        $(".feedbackClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                    }
+                    else
+                    {
+                        $(".modeDetailsClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                    }
+                    if(('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
+                    {
+                        $(".feedbackClass").find("input").removeClass("bg-gray").removeAttr("disabled");
+                    }
+                    $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                    if (selectedJourneyMode == 'Select' || selectedJourneyMode == 'Bus' || selectedJourneyMode == 'Cab' || selectedJourneyMode == 'Shuttle' || selectedJourneyMode == 'Other')
+                        $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                    else if('@ViewBag.UserRole' == "Travel_Admin")
+                        $(".journeyUpload").find("input").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
+
+                    if('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True")
+                    {
+                        $(".modeDetailsClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                        $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                        $(".approvedFieldsClass").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                        $(".feedbackClass").find("input").removeClass("bg-gray").removeAttr("disabled");
+                    }
+
+                    $(".UploadButtons").children().hide();
+                    $("#" + rowId + "_JourneyFeedback").parent().prev().prev().find('input[type="button"]').show();
+
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    TravelId: function () {
+                        return $('#JourneyForm #JourneyDetail_TravelID').val();
+                    },
+                    TRFNO: function () {
+                        return '@ViewBag.TRFNo';
+                    },
+                    JourneyModeIds: function(){
+                        return $('#JourneyForm #JourneyDetail_JourneyModeID').val();
+                    }
+                },
+                aftersavefunc: function (data, response) {
+                    isJourneyRowInAddEditMode = false;
+                    var result = $.parseJSON(response.responseText);
+                    jQuery("#JourneyTable").trigger("reloadGrid");
+                    $("#JourneyTable").jqGrid('showCol', 'TicketName');
+                    $("#JourneyTable").jqGrid('hideCol', 'TicketNameUpload');
+                    if (result.status == true) {
+                        $("#AddJourneySuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == false) {
+                        $("#AddJourneyErrorMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog("Journey Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Journey Details");
+                    }
+
+                },
+                errorfunc: null,
+                afterrestorefunc: function () {
+                    isJourneyRowInAddEditMode = false;
+                    $("#JourneyTable").jqGrid('showCol', 'TicketName');
+                    $("#JourneyTable").jqGrid('hideCol', 'TicketNameUpload');
+                    ClearJourneyTempDetails();
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        if(('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin"))
+        {
+            $("#journeyTablePager_left").css("visibility","visible");
+        }
+        else if('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True")
+        {
+            $("#JourneyTable_iladd").css("visibility","hidden");
+        }
+        else if('@ViewBag.StageID' == 4 && '@ViewBag.UserRole' == "Travel_Admin")
+        {
+            $("#journeyTablePager_left").css("visibility","hidden");
+        }
+        else
+            $("#journeyTablePager_left").css("visibility","hidden");
+
+        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 4) {
+            $("#JourneyTable_iladd").css("visibility","visible");
+        }
+    });//end ready
+
+    function uploadJourneyButton(cellvalue, options, rowobject) {
+        var uplaodBtn = "<input type='button' value='Upload' id=" + rowobject['JourneyID'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenJourneyUploadPopup() />"
+        var fileLbl = "<label id=" + rowobject['JourneyID'] + '_UploadedFileName' + "></label>";
+        return uplaodBtn + fileLbl;
+    }
+
+    function OpenJourneyUploadPopup() {
+        AddJourneyDetails();
+    }
+
+    function ClearJourneyTempDetails() {
+        $.ajax({
+            url: "DeleteJourneyUploadDetails/Travel",
+            type: 'POST',
+            data: { JourneyId: $('#addTravelsJourneyDetails #JourneyId').val()},
+            success: function (data) {
+
+            }
+        });
+    }
+
+    function formatlinkDownload(cellvalue, options, rowobject) {
+        if (cellvalue === undefined || cellvalue == null) {
+            cellvalue = '';
+            return cellvalue;
+        }
+        else {
+            return "<a href=# id=" + rowobject['JourneyID'] + " class=EmpLink onClick = LinkJourneyClick(this," + rowobject['TravelID'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+        }
+    }
+
+
+    var viewstatus = '@ViewBag.StageID';
+    if (viewstatus >= "1" && viewstatus <= "4") {
+        //$('#btnAddJourneyDetail').hide();
+        $('#JourneyDeatailsDiv').find('input, textarea, button, select, img').attr('disabled', 'disabled');
+        //$('#btnSaveJourney').hide();
+    }
+    if ('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+        //$('#btnAddJourneyDetail').hide();
+        $('#JourneyDeatailsDiv').find('input, textarea, button, select, img').removeAttr("disabled");
+        //$('#btnSaveJourney').show();
+    }
+    if (viewstatus == 0) {
+        //$('#btnAddJourneyDetail').show();
+        //$('#btnSaveJourney').show();
+    }
+
+    function ChangeJourneyMode(e) {
+        var modeName = e.target[e.target.selectedIndex].text;
+        var ID=0;
+        selectedJourneyMode = modeName;
+        if (modeName == 'Select' || modeName == 'Bus' || modeName == 'Cab' || modeName == 'Shuttle' || modeName == 'Other')
+            $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+        else if('@ViewBag.UserRole' == "Travel_Admin")
+            $(".journeyUpload").find("input").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
+
+        $.each(stringJourneyModeList,function(index, value) {
+            if(value.JourneyModeDescription == modeName)
+            {
+                ID=value.JourneyModeId;
+            }
+        });
+        $('#JourneyForm #JourneyDetail_JourneyModeID').val(ID);
+    }//
+
+    function isJourneyModeSelected(value,colname)
+    {
+        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "0")
+        {
+            $("#JourneyModeRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }//
+
+    function isJourneyFieldRequired(value,colname)
+    {
+        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "")
+        {
+            $("#JourneyFieldRequiredDialog span").html("").append(colname);
+            $("#JourneyFieldRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }//
+
+    function isJourneyAdminFieldRequired(value,colname)
+    {
+        if(('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin") && value == "")
+        {
+            $("#JourneyFieldRequiredDialog span").html("").append(colname);
+            $("#JourneyFieldRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }//
+
+    function OnselectDate(date) {
+        var startDate = new Date($('#TravelStartDate').val());
+        var endDate;
+        if ('@ViewBag.Extension' == "Ext") {
+            endDate = new Date($('#TravelExtensionEndDate').val());
+        }
+        else {
+            endDate = new Date($('#TravelEndDate').val());
+        }
+
+        if (date >= new Date(startDate) && date <= new Date(endDate)) {
+            return [true, '', "Available"];
+        }
+        else {
+            return [false, '', "unAvailable"];
+        }
+    }
+</script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "JourneyForm" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.JourneyDetail.TravelID)
+    @Html.HiddenFor(m => m.JourneyDetail.JourneyModeID)
+    @Html.HiddenFor(m => m.JourneyDetail.TravelID)
+    @Html.HiddenFor(m => m.JourneyDetail.TRFNo)
+    <h4 class="SmallHead">
+        Journey Details
+    </h4>
+    <div id="JourneyDeatailsDiv">
+        <div class="tablestyle3">
+            <table id="JourneyTable" class="scroll"></table>
+        </div>
+        <div id="journeyTablePager">
+        </div>
+    </div>
+}
+<div id="addJourneyDialog" style="display: none;">
+    @Html.Partial("_AddJourneyDetails", Model)
+</div>
+<div id="deleteJourneyDialogConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record?
+    </p>
+</div>
+<div id="expenseRecordSuccess" style="display: none;">
+    <p>
+        Journey details has been saved successfully.
+    </p>
+</div>
+<div id="deleteJourneyRecord" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="showJourneyDetails">
+</div>
+<div id="AddJourneySuccessMessege" title="Journey details" style="display: none;">
+    <p>
+        Journey details have been saved.
+    </p>
+</div>
+<div id="AddJourneyErrorMessege" style="display: none;">
+    <p>
+        Unable to add record.
+    </p>
+</div>
+<div id="JourneyUploadSuccessMessege" title="Journey details" style="display: none;">
+    <p>
+        File Selected successfully.
+    </p>
+</div>
+<div id="JourneyUploadErrorMessege" style="display: none;">
+    <p>
+        Unable to save file.
+    </p>
+</div>
+
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="JourneyModeRequiredDialog" title="Travel Journey details" style="display: none">
+    <p>
+        Please select value of Journey Mode.
+    </p>
+</div>
+<div id="JourneyFieldRequiredDialog" title="Travel Journey details" style="display: none">
+    The <span></span> field is required.
+</div>
+@*<script type="text/javascript">
+        $("#JourneyForm #btnAddJourneyDetail").bind('click', function () {
+            if (('@ViewBag.UserRole' == "Travel_Admin") && ('@ViewBag.StageID' == 3)) {
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+                $('#addTravelsJourneyDetails #JourneyId').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyID').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_FromPlace').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_ToPlace').val('');
+                //$('#addTravelsJourneyDetails #JourneyDate').val('');
+                //$('#addTravelsJourneyDetails #JourneyDate').val($('#TravelStartDate').val());
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyMode').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_AdditionalInformation').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyModeDetails').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyFeedback').val('');
+                $('#empTicket').removeAttr("disabled");
+                $('#JourneyDetail_JourneyModeDetails').removeAttr("disabled");
+                $('#JourneyDetail_FromPlace').removeAttr("disabled");
+                $('#JourneyDetail_ToPlace').removeAttr("disabled");
+                $('#JourneyDetail_JourneyMode').removeAttr("disabled");
+                $('#JourneyDetail_AdditionalInformation').removeAttr("disabled");
+                //$('#JourneyDetail_JourneyFeedback').removeAttr("disabled");
+                $('#JourneyDate').removeAttr("disabled");
+                //        $('#empTicket').val(Object['TicketName']);
+            }
+            else {
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+                $('#addTravelsJourneyDetails #JourneyId').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyID').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_FromPlace').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_ToPlace').val('');
+                //$('#addTravelsJourneyDetails #JourneyDate').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyMode').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_AdditionalInformation').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyModeDetails').val('');
+                $('#addTravelsJourneyDetails #JourneyDetail_JourneyFeedback').val('');
+            }
+            $('#addJourneyDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Add Journey Details"
+            });
+            $('#addJourneyDialog').dialog('open');
+        });
+    </script>*@ 

@@ -1,0 +1,2873 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{96B6D5C7-7209-4E39-90A4-C2BAC46F5B10}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRMS</RootNamespace>
+    <AssemblyName>HRMS</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=1.0.10618.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxControlToolkit.7.1213\lib\40\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin">
+      <HintPath>..\packages\AjaxMin.4.97.4951.28483\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="dotless.Core">
+      <HintPath>..\packages\dotless.1.4.1.0\lib\dotless.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah.Mvc">
+      <HintPath>..\packages\Elmah.MVC.2.1.1\lib\net40\Elmah.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MailActivity">
+      <HintPath>C:\Users\shraddha.mohite\Desktop\Vibrantweb\HRMS.WebSite\bin\MailActivity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.ApplicationBlocks.Data.2.0.0\lib\net45\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.SmartTag, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\Microsoft.Office.Interop.SmartTag.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\externaldll\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.ProcessingObjectModel.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\externaldll\Microsoft.ReportViewer.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.WebHelpers.3.2.2\lib\net45\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage">
+      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.4\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Spatial.5.2.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Cors">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.2\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization.Less">
+      <HintPath>..\packages\System.Web.Optimization.Less.1.3.3\lib\net40\System.Web.Optimization.Less.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
+    <Reference Include="System.Workflow.Runtime" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.2\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.2\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="common\HRMSResponse.cs" />
+    <Compile Include="common\HRMSPageLevelAccess.cs" />
+    <Compile Include="Controllers\AppraisalAdminController.cs" />
+    <Compile Include="Controllers\AppraisalController - Copy.cs" />
+    <Compile Include="Controllers\AppraisalMasterController.cs" />
+    <Compile Include="Controllers\AppraisalReviewController.cs" />
+    <Compile Include="Controllers\AppraisalReviewPost.cs" />
+    <Compile Include="Controllers\AppraisalSectionController.cs" />
+    <Compile Include="Controllers\AppraisalSectionPost.cs" />
+    <Compile Include="Controllers\AsyncController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
+    <Compile Include="Controllers\FreezeInitiation.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Executer.cs" />
+    <Compile Include="Helper\MenuHelper.cs" />
+    <Compile Include="ReportViewer.aspx.cs">
+      <DependentUpon>ReportViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportViewer.aspx.designer.cs">
+      <DependentUpon>ReportViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="V2IntranetDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>V2IntranetDataSet.xsd</DependentUpon>
+    </Compile>
+    <Content Include="angular.min.js" />
+    <Content Include="Content\AppraisalMaster\AppraisalMaster.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\New Design\helpdesk.css" />
+    <Content Include="Content\New Design\jquery.selectBox %282%29.css" />
+    <Content Include="Content\New Design\orbit.css" />
+    <Content Include="Content\New Design\pms.css" />
+    <Content Include="Content\New Design\reports.css" />
+    <Content Include="Content\New Design\rmg.css" />
+    <Content Include="Content\ng-grid.css" />
+    <Content Include="Content\ng-grid.min.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="HelpDesk\admin\AddSubCategoryAssignMent.aspx" />
+    <Content Include="HelpDesk\admin\AuthorizationErrorMessage.aspx" />
+    <Content Include="HelpDesk\admin\categoryMaster.aspx" />
+    <Content Include="HelpDesk\admin\CategoryWiseSearchReport.aspx" />
+    <Content Include="HelpDesk\admin\EditEmployeeDetail.aspx" />
+    <Content Include="HelpDesk\admin\index.aspx" />
+    <Content Include="HelpDesk\admin\IssueHealth.aspx" />
+    <Content Include="HelpDesk\admin\IssueStatusReport.aspx" />
+    <Content Include="HelpDesk\admin\Login.aspx" />
+    <Content Include="HelpDesk\admin\MemberWiseSearchReport.aspx" />
+    <Content Include="HelpDesk\admin\MoveIssue.aspx" />
+    <Content Include="HelpDesk\admin\printPage.aspx" />
+    <Content Include="HelpDesk\admin\ProblemPriorityMaster.aspx" />
+    <Content Include="HelpDesk\admin\ProblemSeverityMaster.aspx" />
+    <Content Include="HelpDesk\admin\ResolutionTimeMaster.aspx" />
+    <Content Include="HelpDesk\admin\ResolutionTimeReport.aspx" />
+    <Content Include="HelpDesk\admin\SLAReport.aspx" />
+    <Content Include="HelpDesk\admin\StatusMaster.aspx" />
+    <Content Include="HelpDesk\admin\SubCategoryAssignment.aspx" />
+    <Content Include="HelpDesk\admin\subCategoryMaster.aspx" />
+    <Content Include="HelpDesk\admin\SummaryReport.aspx" />
+    <Content Include="HelpDesk\admin\ViewCategoryEmpDetail.aspx" />
+    <Content Include="HelpDesk\admin\ViewEmployeeDetails.aspx" />
+    <Content Include="HelpDesk\admin\ViewIssueStatus.aspx" />
+    <Content Include="HelpDesk\admin\ViewMyIssues.aspx" />
+    <Content Include="HelpDesk\admin\ViewResolutionTimeReportDetails.aspx" />
+    <Content Include="HelpDesk\admin\ViewSelectedIssue.aspx" />
+    <Content Include="HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx" />
+    <Content Include="HelpDesk\admin\ViewSuperAdminIssues.aspx" />
+    <Content Include="HelpDesk\controls\AdminHeader.ascx" />
+    <Content Include="HelpDesk\controls\HelpDeskMastersTabs.ascx" />
+    <Content Include="HelpDesk\controls\HelpDeskReportsTabs.ascx" />
+    <Content Include="HelpDesk\Script\common.js" />
+    <Content Include="HelpDesk\Script\jquery-1.10.2.js" />
+    <Content Include="HelpDesk\Script\jquery-1.8.3.min.js" />
+    <Content Include="HelpDesk\Script\jquery-ui-1.10.4.custom.js" />
+    <Content Include="HelpDesk\Script\jquery-ui-1.10.4.custom.min.js" />
+    <Content Include="HelpDesk\Script\jquery.unobtrusive-ajax.js" />
+    <Content Include="HelpDesk\Script\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="HelpDesk\Script\jquery.validate.min.js" />
+    <Content Include="HelpDesk\Script\jquery.validate.unobtrusive.js" />
+    <Content Include="HelpDesk\Script\jquery.validate.unobtrusive.min.js" />
+    <Content Include="HelpDesk\Script\mm_menu.js" />
+    <Content Include="Images\712.gif" />
+    <Content Include="Images\New Design\cleared.png" />
+    <Content Include="Images\New Design\employee-bg.png" />
+    <Content Include="Images\New Design\not-conducted.png" />
+    <Content Include="Images\New Design\not-proceeded.png" />
+    <Content Include="Images\New Design\offer-issued.png" />
+    <Content Include="Images\New Design\on-hold.png" />
+    <Content Include="Images\New Design\pms-icon.png" />
+    <Content Include="Images\New Design\radio-button-off.png" />
+    <Content Include="Images\New Design\radio-button-on.png" />
+    <Content Include="Images\New Design\rejected.png" />
+    <Content Include="Images\New Design\search-icon.png" />
+    <Content Include="Images\new_v2logo.png" />
+    <Content Include="LeaveTransactionAutoComplete.asmx" />
+    <Content Include="App_Code\LeaveTransactionAutoComplete.cs">
+      <SubType>Component</SubType>
+    </Content>
+    <Compile Include="App_Start\AuthConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\CustomAuthorize.cs" />
+    <Compile Include="Class\IssueStatus.cs" />
+    <Compile Include="common\HRMSCustomFilter.cs" />
+    <Compile Include="Controllers\AccessRightsController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AppraisalController.cs" />
+    <Compile Include="Controllers\ConfigurationAppraisalController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Controllers\ApprovalsController.cs" />
+    <Compile Include="Controllers\ConfirmationController.cs" />
+    <Compile Include="Controllers\confirmation\ConfirmationProcessController.cs" />
+    <Compile Include="Controllers\EmployeeNodeController.cs" />
+    <Compile Include="Controllers\ExitConfigurationController.cs" />
+    <Compile Include="Controllers\ExpenseReimbursementController.cs" />
+    <Compile Include="Controllers\HelpDeskAdminController.cs" />
+    <Compile Include="Controllers\HelpDeskController.cs" />
+    <Compile Include="Controllers\InvoiceController.cs" />
+    <Compile Include="Controllers\Menu\ExitController.cs" />
+    <Compile Include="Controllers\EmployeeDetailsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\OrbitController.cs" />
+    <Compile Include="Controllers\OrganizationStructureController.cs" />
+    <Compile Include="Controllers\PersonalDetailsController.cs" />
+    <Compile Include="Controllers\PMSController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\ResourceController.cs" />
+    <Compile Include="Controllers\SEMController.cs" />
+    <Compile Include="Controllers\SkillMatrixController.cs" />
+    <Compile Include="Controllers\SmartTrackController.cs" />
+    <Compile Include="Controllers\TaskTimesheetController.cs" />
+    <Compile Include="Controllers\TravelController.cs" />
+    <Compile Include="Controllers\UploadsController.cs" />
+    <Compile Include="Extensions\HtmlExtensions.cs" />
+    <Compile Include="Extensions\MenuModel.cs" />
+    <Compile Include="Filters\PageAccessAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs">
+      <DependentUpon>AddSubCategoryAssignMent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\AddSubCategoryAssignMent.aspx.designer.cs">
+      <DependentUpon>AddSubCategoryAssignMent.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\AuthorizationErrorMessage.aspx.cs">
+      <DependentUpon>AuthorizationErrorMessage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\AuthorizationErrorMessage.aspx.designer.cs">
+      <DependentUpon>AuthorizationErrorMessage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\categoryMaster.aspx.cs">
+      <DependentUpon>categoryMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\categoryMaster.aspx.designer.cs">
+      <DependentUpon>categoryMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\CategoryWiseSearchReport.aspx.cs">
+      <DependentUpon>CategoryWiseSearchReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\CategoryWiseSearchReport.aspx.designer.cs">
+      <DependentUpon>CategoryWiseSearchReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\EditEmployeeDetail.aspx.cs">
+      <DependentUpon>EditEmployeeDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\EditEmployeeDetail.aspx.designer.cs">
+      <DependentUpon>EditEmployeeDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\IssueHealth.aspx.cs">
+      <DependentUpon>IssueHealth.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\IssueHealth.aspx.designer.cs">
+      <DependentUpon>IssueHealth.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\IssueStatusReport.aspx.cs">
+      <DependentUpon>IssueStatusReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\IssueStatusReport.aspx.designer.cs">
+      <DependentUpon>IssueStatusReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\MemberWiseSearchReport.aspx.cs">
+      <DependentUpon>MemberWiseSearchReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\MemberWiseSearchReport.aspx.designer.cs">
+      <DependentUpon>MemberWiseSearchReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\MoveIssue.aspx.cs">
+      <DependentUpon>MoveIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\MoveIssue.aspx.designer.cs">
+      <DependentUpon>MoveIssue.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\printPage.aspx.cs">
+      <DependentUpon>printPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\printPage.aspx.designer.cs">
+      <DependentUpon>printPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ProblemPriorityMaster.aspx.cs">
+      <DependentUpon>ProblemPriorityMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ProblemPriorityMaster.aspx.designer.cs">
+      <DependentUpon>ProblemPriorityMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ProblemSeverityMaster.aspx.cs">
+      <DependentUpon>ProblemSeverityMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ProblemSeverityMaster.aspx.designer.cs">
+      <DependentUpon>ProblemSeverityMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ResolutionTimeMaster.aspx.cs">
+      <DependentUpon>ResolutionTimeMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ResolutionTimeMaster.aspx.designer.cs">
+      <DependentUpon>ResolutionTimeMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ResolutionTimeReport.aspx.cs">
+      <DependentUpon>ResolutionTimeReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ResolutionTimeReport.aspx.designer.cs">
+      <DependentUpon>ResolutionTimeReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SLAReport.aspx.cs">
+      <DependentUpon>SLAReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SLAReport.aspx.designer.cs">
+      <DependentUpon>SLAReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\StatusMaster.aspx.cs">
+      <DependentUpon>StatusMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\StatusMaster.aspx.designer.cs">
+      <DependentUpon>StatusMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SubCategoryAssignment.aspx.cs">
+      <DependentUpon>SubCategoryAssignment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SubCategoryAssignment.aspx.designer.cs">
+      <DependentUpon>SubCategoryAssignment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\subCategoryMaster.aspx.cs">
+      <DependentUpon>subCategoryMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\subCategoryMaster.aspx.designer.cs">
+      <DependentUpon>subCategoryMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SummaryReport.aspx.cs">
+      <DependentUpon>SummaryReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\SummaryReport.aspx.designer.cs">
+      <DependentUpon>SummaryReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewCategoryEmpDetail.aspx.cs">
+      <DependentUpon>ViewCategoryEmpDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewCategoryEmpDetail.aspx.designer.cs">
+      <DependentUpon>ViewCategoryEmpDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewEmployeeDetails.aspx.cs">
+      <DependentUpon>ViewEmployeeDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewEmployeeDetails.aspx.designer.cs">
+      <DependentUpon>ViewEmployeeDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewIssueStatus.aspx.cs">
+      <DependentUpon>ViewIssueStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewIssueStatus.aspx.designer.cs">
+      <DependentUpon>ViewIssueStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewMyIssues.aspx.cs">
+      <DependentUpon>ViewMyIssues.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewMyIssues.aspx.designer.cs">
+      <DependentUpon>ViewMyIssues.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewResolutionTimeReportDetails.aspx.cs">
+      <DependentUpon>ViewResolutionTimeReportDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewResolutionTimeReportDetails.aspx.designer.cs">
+      <DependentUpon>ViewResolutionTimeReportDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSelectedIssue.aspx.cs">
+      <DependentUpon>ViewSelectedIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSelectedIssue.aspx.designer.cs">
+      <DependentUpon>ViewSelectedIssue.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.cs">
+      <DependentUpon>ViewSelectedIssueBySuperAdmin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.designer.cs">
+      <DependentUpon>ViewSelectedIssueBySuperAdmin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSuperAdminIssues.aspx.cs">
+      <DependentUpon>ViewSuperAdminIssues.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\admin\ViewSuperAdminIssues.aspx.designer.cs">
+      <DependentUpon>ViewSuperAdminIssues.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\controls\AdminHeader.ascx.cs">
+      <DependentUpon>AdminHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\controls\AdminHeader.ascx.designer.cs">
+      <DependentUpon>AdminHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\controls\HelpDeskMastersTabs.ascx.cs">
+      <DependentUpon>HelpDeskMastersTabs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\controls\HelpDeskMastersTabs.ascx.designer.cs">
+      <DependentUpon>HelpDeskMastersTabs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\controls\HelpDeskReportsTabs.ascx.cs">
+      <DependentUpon>HelpDeskReportsTabs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\controls\HelpDeskReportsTabs.ascx.designer.cs">
+      <DependentUpon>HelpDeskReportsTabs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\header.ascx.cs">
+      <DependentUpon>header.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\header.ascx.designer.cs">
+      <DependentUpon>header.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\ReportIssue.aspx.cs">
+      <DependentUpon>ReportIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\ReportIssue.aspx.designer.cs">
+      <DependentUpon>ReportIssue.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HelpDesk\ViewMyStatus.aspx.cs">
+      <DependentUpon>ViewMyStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\ViewMyStatus.aspx.designer.cs">
+      <DependentUpon>ViewMyStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\HRMSHelper.cs" />
+    <Compile Include="Orbitweb\AdminApproval.aspx.cs">
+      <DependentUpon>AdminApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\AdminApproval.aspx.designer.cs">
+      <DependentUpon>AdminApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\AdminLeaveApplicationForm.aspx.cs">
+      <DependentUpon>AdminLeaveApplicationForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\AdminLeaveApplicationForm.aspx.designer.cs">
+      <DependentUpon>AdminLeaveApplicationForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\BulkEntries.aspx.cs">
+      <DependentUpon>BulkEntries.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\BulkEntries.aspx.designer.cs">
+      <DependentUpon>BulkEntries.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\CompensationApplicationForm.aspx.cs">
+      <DependentUpon>CompensationApplicationForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\CompensationApplicationForm.aspx.designer.cs">
+      <DependentUpon>CompensationApplicationForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\CompensationApproval.aspx.cs">
+      <DependentUpon>CompensationApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\CompensationApproval.aspx.designer.cs">
+      <DependentUpon>CompensationApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\ConfigItems.aspx.cs">
+      <DependentUpon>ConfigItems.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\ConfigItems.aspx.designer.cs">
+      <DependentUpon>ConfigItems.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\HolidayList.aspx.cs">
+      <DependentUpon>HolidayList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\HolidayList.aspx.designer.cs">
+      <DependentUpon>HolidayList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveApplicationForm.aspx.cs">
+      <DependentUpon>LeaveApplicationForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveApplicationForm.aspx.designer.cs">
+      <DependentUpon>LeaveApplicationForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveApproval.aspx.cs">
+      <DependentUpon>LeaveApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveApproval.aspx.designer.cs">
+      <DependentUpon>LeaveApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveTransaction.aspx.cs">
+      <DependentUpon>LeaveTransaction.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\LeaveTransaction.aspx.designer.cs">
+      <DependentUpon>LeaveTransaction.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\ManualSignin.aspx.cs">
+      <DependentUpon>ManualSignin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\ManualSignin.aspx.designer.cs">
+      <DependentUpon>ManualSignin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\MonthlyLeaveUpload.aspx.cs">
+      <DependentUpon>MonthlyLeaveUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\MonthlyLeaveUpload.aspx.designer.cs">
+      <DependentUpon>MonthlyLeaveUpload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\OrbitMastersTabs.ascx.cs">
+      <DependentUpon>OrbitMastersTabs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\OrbitMastersTabs.ascx.designer.cs">
+      <DependentUpon>OrbitMastersTabs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\OutOfOffice.aspx.cs">
+      <DependentUpon>OutOfOffice.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\OutOfOffice.aspx.designer.cs">
+      <DependentUpon>OutOfOffice.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\OutOfOfficeApproval.aspx.cs">
+      <DependentUpon>OutOfOfficeApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\OutOfOfficeApproval.aspx.designer.cs">
+      <DependentUpon>OutOfOfficeApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\ShiftMaster.aspx.cs">
+      <DependentUpon>ShiftMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\ShiftMaster.aspx.designer.cs">
+      <DependentUpon>ShiftMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\SignInSignOut.aspx.cs">
+      <DependentUpon>SignInSignOut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\SignInSignOut.aspx.designer.cs">
+      <DependentUpon>SignInSignOut.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\SignInSignOutApproval.aspx.cs">
+      <DependentUpon>SignInSignOutApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\SignInSignOutApproval.aspx.designer.cs">
+      <DependentUpon>SignInSignOutApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\StartWorkflows.aspx.cs">
+      <DependentUpon>StartWorkflows.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\StartWorkflows.aspx.designer.cs">
+      <DependentUpon>StartWorkflows.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Orbitweb\Status.aspx.cs">
+      <DependentUpon>Status.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Orbitweb\Status.aspx.designer.cs">
+      <DependentUpon>Status.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recruitment\App_Code\OfficeFileReaderNew.cs" />
+    <Compile Include="Recruitment\Candidate.aspx.cs">
+      <DependentUpon>Candidate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Candidate.aspx.designer.cs">
+      <DependentUpon>Candidate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\CandidateInterviewSchedule.aspx.cs">
+      <DependentUpon>CandidateInterviewSchedule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\CandidateInterviewSchedule.aspx.designer.cs">
+      <DependentUpon>CandidateInterviewSchedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\CandidateSearch.aspx.cs">
+      <DependentUpon>CandidateSearch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\CandidateSearch.aspx.designer.cs">
+      <DependentUpon>CandidateSearch.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\App_Code\DynamicallyTemplatedGridView.cs" />
+    <Compile Include="Recruitment\HRInterviewAssessment.aspx.cs">
+      <DependentUpon>HRInterviewAssessment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\HRInterviewAssessment.aspx.designer.cs">
+      <DependentUpon>HRInterviewAssessment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\HRM.aspx.cs">
+      <DependentUpon>HRM.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\HRM.aspx.designer.cs">
+      <DependentUpon>HRM.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\HRMS.master.cs">
+      <DependentUpon>HRMS.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Interviewer.aspx.cs">
+      <DependentUpon>Interviewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Interviewer.aspx.designer.cs">
+      <DependentUpon>Interviewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\InterviewFeedback.aspx.cs">
+      <DependentUpon>InterviewFeedback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\InterviewFeedback.aspx.designer.cs">
+      <DependentUpon>InterviewFeedback.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\JoinEmployeePopup.aspx.cs">
+      <DependentUpon>JoinEmployeePopup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\JoinEmployeePopup.aspx.designer.cs">
+      <DependentUpon>JoinEmployeePopup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\MastersTable.aspx.cs">
+      <DependentUpon>MastersTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\MastersTable.aspx.designer.cs">
+      <DependentUpon>MastersTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\Recruiter.aspx.cs">
+      <DependentUpon>Recruiter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Recruiter.aspx.designer.cs">
+      <DependentUpon>Recruiter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RescheduleForm.aspx.cs">
+      <DependentUpon>RescheduleForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RescheduleForm.aspx.designer.cs">
+      <DependentUpon>RescheduleForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RRFApprover.aspx.cs">
+      <DependentUpon>RRFApprover.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RRFApprover.aspx.designer.cs">
+      <DependentUpon>RRFApprover.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RRFApproverComment.aspx.cs">
+      <DependentUpon>RRFApproverComment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RRFApproverComment.aspx.designer.cs">
+      <DependentUpon>RRFApproverComment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RRFList.aspx.cs">
+      <DependentUpon>RRFList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RRFList.aspx.designer.cs">
+      <DependentUpon>RRFList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RRFRequestor.aspx.cs">
+      <DependentUpon>RRFRequestor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RRFRequestor.aspx.designer.cs">
+      <DependentUpon>RRFRequestor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\SelectedCandidate.aspx.cs">
+      <DependentUpon>SelectedCandidate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\SelectedCandidate.aspx.designer.cs">
+      <DependentUpon>SelectedCandidate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\RRFStatus.aspx.cs">
+      <DependentUpon>RRFStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\RRFStatus.aspx.designer.cs">
+      <DependentUpon>RRFStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\SendMailPopUP.aspx.cs">
+      <DependentUpon>SendMailPopUP.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\SendMailPopUP.aspx.designer.cs">
+      <DependentUpon>SendMailPopUP.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\SLAForRRF.aspx.cs">
+      <DependentUpon>SLAForRRF.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\SLAForRRF.aspx.designer.cs">
+      <DependentUpon>SLAForRRF.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\UserControl\CandidateDataBank.ascx.cs">
+      <DependentUpon>CandidateDataBank.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\UserControl\CandidateDataBank.ascx.designer.cs">
+      <DependentUpon>CandidateDataBank.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\UserControl\RecruitementHeader.ascx.cs">
+      <DependentUpon>RecruitementHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\UserControl\RecruitementHeader.ascx.designer.cs">
+      <DependentUpon>RecruitementHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Recruitment\Welcome.aspx.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recruitment\Welcome.aspx.designer.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\AttendanceReport.aspx.cs">
+      <DependentUpon>AttendanceReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\AttendanceReport.aspx.designer.cs">
+      <DependentUpon>AttendanceReport.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\HRML.DAL.dll" />
+    <Content Include="Content\Default.css" />
+    <Content Include="Content\jquery-ui-1.8.13.custom.css" />
+    <Content Include="Content\jquery.jOrgChart.css" />
+    <Content Include="Content\New Design\common.css" />
+    <Content Include="Content\New Design\demo.css" />
+    <Content Include="Content\New Design\employee.css" />
+    <Content Include="Content\New Design\finance.css" />
+    <Content Include="Content\New Design\hr.css" />
+    <Content Include="Content\New Design\jquery.selectbox.css" />
+    <Content Include="Content\New Design\settings.css" />
+    <Content Include="Content\New Design\travel.css" />
+    <Content Include="Content\PersonalProfile.css" />
+    <Content Include="Content\TabHeader.css" />
+    <Content Include="Content\themes\base\images\arrow.jpg" />
+    <Content Include="Content\themes\base\images\calendar.gif" />
+    <Content Include="Content\themes\base\images\delete-icon.png" />
+    <Content Include="Content\themes\base\images\edit-icon.png" />
+    <Content Include="Content\themes\base\images\Green.png" />
+    <Content Include="Content\themes\base\images\Red.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\Yellow.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\themes\Menu\style-menu.css" />
+    <Content Include="Content\ui.dropdownchecklist.standalone.css" />
+    <Content Include="Content\ui.dropdownchecklist.themeroller.css" />
+    <Content Include="CSS\calendar.css" />
+    <Content Include="CSS\default.css" />
+    <Content Include="CSS\Orbit.css" />
+    <Content Include="CSS\StyleSheet.css" />
+    <Content Include="HelpDesk\header.ascx" />
+    <Content Include="HelpDesk\ReportIssue.aspx" />
+    <Content Include="HelpDesk\ViewMyStatus.aspx" />
+    <Content Include="Images\dropdown_arrow.png" />
+    <Content Include="Images\Loading.gif" />
+    <Content Include="Images\bg.png" />
+    <Content Include="Images\headbg.png" />
+    <Content Include="Images\key.png" />
+    <Content Include="Images\loading_animation.gif" />
+    <Content Include="Images\login.png" />
+    <Content Include="Images\loginfail-bg.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\MoveTop.png" />
+    <Content Include="Images\New Design\active-pegination.png" />
+    <Content Include="Images\New Design\add-field-icon.png" />
+    <Content Include="Images\New Design\add.png" />
+    <Content Include="Images\New Design\admin-bg.png" />
+    <Content Include="Images\New Design\admin-icon.png" />
+    <Content Include="Images\New Design\attendance-bg.png" />
+    <Content Include="Images\New Design\back-hover.png" />
+    <Content Include="Images\New Design\back.png" />
+    <Content Include="Images\New Design\browse-person-img.png" />
+    <Content Include="Images\New Design\calender-icon.png" />
+    <Content Include="Images\New Design\cancel-field-icon.png" />
+    <Content Include="Images\New Design\checkbox-off.png" />
+    <Content Include="Images\New Design\checkbox-on.png" />
+    <Content Include="Images\New Design\delete-icon.png" />
+    <Content Include="Images\New Design\delete.png" />
+    <Content Include="Images\New Design\dotted-line.png" />
+    <Content Include="Images\New Design\dp-icon.png" />
+    <Content Include="Images\New Design\dropdown-arrow-inverted.png" />
+    <Content Include="Images\New Design\dropdown-arrow.png" />
+    <Content Include="Images\New Design\edit-field-icon.png" />
+    <Content Include="Images\New Design\edit.png" />
+    <Content Include="Images\New Design\filter-hover.png" />
+    <Content Include="Images\New Design\filter.png" />
+    <Content Include="Images\New Design\finance-bg.png" />
+    <Content Include="Images\New Design\finance-icon.png" />
+    <Content Include="Images\New Design\go-to-top.png" />
+    <Content Include="Images\New Design\hr-bg.png" />
+    <Content Include="Images\New Design\HR-icon.png" />
+    <Content Include="Images\New Design\loader.GIF" />
+    <Content Include="Images\New Design\logout-icon.png" />
+    <Content Include="Images\New Design\logout.png" />
+    <Content Include="Images\New Design\main-bg.png" />
+    <Content Include="Images\New Design\nav-popup-bg.png" />
+    <Content Include="Images\New Design\next.png" />
+    <Content Include="Images\New Design\notification.png" />
+    <Content Include="Images\New Design\orbit-icon.png" />
+    <Content Include="Images\New Design\popup-arrow.png" />
+    <Content Include="Images\New Design\popup-close.png" />
+    <Content Include="Images\New Design\prev.png" />
+    <Content Include="Images\New Design\reports-icon.png" />
+    <Content Include="Images\New Design\save-field-icon.png" />
+    <Content Include="Images\New Design\save.png" />
+    <Content Include="Images\New Design\search.png" />
+    <Content Include="Images\New Design\settings-icon.png" />
+    <Content Include="Images\New Design\slide-menu-icon.png" />
+    <Content Include="Images\New Design\status-off.png" />
+    <Content Include="Images\New Design\status-on.png" />
+    <Content Include="Images\New Design\status-rejected.png" />
+    <Content Include="Images\New Design\tick.png" />
+    <Content Include="Images\New Design\user.png" />
+    <Content Include="Images\pic-dummy.jpg" />
+    <Content Include="Images\v2logo.png" />
+    <Content Include="Images\vibrantweb.png" />
+    <Content Include="Images\VibrantWebLogin.png" />
+    <Content Include="Images\white-arrow-nav.png" />
+    <Content Include="JavaScript\cal.js" />
+    <Content Include="JavaScript\common.js" />
+    <Content Include="JavaScript\jquery.selectbox-0.2.min.js" />
+    <Content Include="obj\Debug\HRMS.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\HRMS.dll" />
+    <Content Include="obj\Debug\HRMS.pdb" />
+    <Content Include="Orbitweb\AdminApproval.aspx" />
+    <Content Include="Orbitweb\AdminLeaveApplicationForm.aspx" />
+    <Content Include="Orbitweb\BulkEntries.aspx" />
+    <Content Include="Orbitweb\CompensationApplicationForm.aspx" />
+    <Content Include="Orbitweb\CompensationApproval.aspx" />
+    <Content Include="Orbitweb\ConfigItems.aspx" />
+    <Content Include="Orbitweb\HolidayList.aspx" />
+    <Content Include="Orbitweb\LeaveApplicationForm.aspx" />
+    <Content Include="Orbitweb\LeaveApproval.aspx" />
+    <Content Include="Orbitweb\LeaveTransaction.aspx" />
+    <Content Include="Orbitweb\ManualSignin.aspx" />
+    <Content Include="Orbitweb\MonthlyLeaveUpload.aspx" />
+    <Content Include="Orbitweb\OrbitMastersTabs.ascx" />
+    <Content Include="Orbitweb\OutOfOffice.aspx" />
+    <Content Include="Orbitweb\OutOfOfficeApproval.aspx" />
+    <Content Include="Orbitweb\ShiftMaster.aspx" />
+    <Content Include="Orbitweb\SignInSignOut.aspx" />
+    <Content Include="Orbitweb\SignInSignOutApproval.aspx" />
+    <Content Include="Orbitweb\StartWorkflows.aspx" />
+    <Content Include="Orbitweb\Status.aspx" />
+    <Content Include="Recruitment\Candidate.aspx" />
+    <Content Include="Recruitment\CandidateInterviewSchedule.aspx" />
+    <Content Include="Recruitment\CandidateSearch.aspx" />
+    <Content Include="Recruitment\Default.aspx" />
+    <Content Include="Recruitment\HRInterviewAssessment.aspx" />
+    <Content Include="Recruitment\HRM.aspx" />
+    <Content Include="Recruitment\Interviewer.aspx" />
+    <Content Include="Recruitment\InterviewFeedback.aspx" />
+    <Content Include="Recruitment\JoinEmployeePopup.aspx" />
+    <Content Include="Recruitment\MastersTable.aspx" />
+    <Content Include="Recruitment\Recruiter.aspx" />
+    <Content Include="Recruitment\RescheduleForm.aspx" />
+    <Content Include="Recruitment\RRFApprover.aspx" />
+    <Content Include="Recruitment\RRFApproverComment.aspx" />
+    <Content Include="Recruitment\RRFList.aspx" />
+    <Content Include="Recruitment\RRFRequestor.aspx" />
+    <Content Include="Recruitment\RRFStatus.aspx" />
+    <Content Include="Recruitment\SelectedCandidate.aspx" />
+    <Content Include="Recruitment\SendMailPopUP.aspx" />
+    <Content Include="Recruitment\SLAForRRF.aspx" />
+    <Content Include="Recruitment\UserControl\CandidateDataBank.ascx" />
+    <Content Include="Recruitment\UserControl\RecruitementHeader.ascx" />
+    <Content Include="Recruitment\Welcome.aspx" />
+    <Content Include="Reports\AttendanceReport.aspx" />
+    <Content Include="ReportViewer.aspx" />
+    <Content Include="Scripts\ajaxfileupload.js" />
+    <Content Include="Scripts\angular-animate.js" />
+    <Content Include="Scripts\angular-animate.min.js" />
+    <Content Include="Scripts\angular-aria.js" />
+    <Content Include="Scripts\angular-aria.min.js" />
+    <Content Include="Scripts\angular-cookies.js" />
+    <Content Include="Scripts\angular-cookies.min.js" />
+    <Content Include="Scripts\angular-csp.css" />
+    <Content Include="Scripts\angular-loader.js" />
+    <Content Include="Scripts\angular-loader.min.js" />
+    <Content Include="Scripts\angular-messages.js" />
+    <Content Include="Scripts\angular-messages.min.js" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-resource.js" />
+    <Content Include="Scripts\angular-resource.min.js" />
+    <Content Include="Scripts\angular-route.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular-sanitize.js" />
+    <Content Include="Scripts\angular-sanitize.min.js" />
+    <Content Include="Scripts\angular-scenario.js" />
+    <Content Include="Scripts\angular-touch.js" />
+    <Content Include="Scripts\angular-touch.min.js" />
+    <Content Include="Scripts\angular-ui-router.js" />
+    <Content Include="Scripts\angular-ui-router.min.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\AppraisalMaster\AppraisalInitiateController.js" />
+    <Content Include="Scripts\AppraisalMaster\FreezedListController.js" />
+    <Content Include="Scripts\AppraisalMaster\InitiatedController.js" />
+    <Content Include="Scripts\AppraisalMaster\ng-grid-csv-export.js" />
+    <Content Include="Scripts\AppraisalMaster\ReviewInitiationController.js" />
+    <Content Include="Scripts\AppraisalSection\angular.js" />
+    <Content Include="Scripts\AppraisalSection\angular.min.js" />
+    <Content Include="Scripts\AppraisalSection\AppraisalEmployee.js" />
+    <Content Include="Scripts\AppraisalSection\appraisalSection.js" />
+    <Content Include="Scripts\AppraisalSection\bootstrap-combined.min.css" />
+    <Content Include="Scripts\AppraisalSection\CSS.css" />
+    <Content Include="Scripts\AppraisalSection\Service.js" />
+    <Content Include="Scripts\AppraisalSection\ui-bootstrap-tpls-0.12.0.min.js" />
+    <Content Include="Scripts\AppraisalSection\underscore-min.js" />
+    <Content Include="Scripts\Appraisal\app.js" />
+    <Content Include="Scripts\Appraisal\AppraisalProcessCommon.js" />
+    <Content Include="Scripts\Appraisal\AppraisalShowStatus.js" />
+    <Content Include="Scripts\Appraisal\Controllers\BaseController.js" />
+    <Content Include="Scripts\Appraisal\Controllers\DetailController.js" />
+    <Content Include="Scripts\Appraisal\Controllers\ReviewController.js" />
+    <Content Include="Scripts\Appraisal\Controllers\SectionController.js" />
+    <Content Include="Scripts\Appraisal\Directives\CommandSet.js" />
+    <Content Include="Scripts\Appraisal\Directives\Menu.js" />
+    <Content Include="Scripts\Appraisal\Directives\render.js" />
+    <Content Include="Scripts\Appraisal\Directives\Test.js" />
+    <Content Include="Scripts\Appraisal\Factories\ApprisalDataFactory.js" />
+    <Content Include="Scripts\Appraisal\Filters\SpacedHeader.js" />
+    <Content Include="Scripts\Appraisal\global.js" />
+    <Content Include="Scripts\Appraisal\Values\All.js" />
+    <Content Include="Scripts\Appraisal\Views\Details.html" />
+    <Content Include="Scripts\Appraisal\Views\Section1.html" />
+    <Content Include="Scripts\Approvals\ApprovalsCommon.js" />
+    <Content Include="Scripts\AprModule.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Common.js" />
+    <Content Include="Scripts\ConfigurationAppraisal\AddAppraisalYears.js" />
+    <Content Include="Scripts\ConfigurationAppraisal\ConfigureAppraisalCategories.js" />
+    <Content Include="Scripts\ConfigurationAppraisal\ConfigureNewYear.js" />
+    <Content Include="Scripts\Configuration\ConfigurationCommon.js" />
+    <Content Include="Scripts\Confirmation\ConfirmInitiate.js" />
+    <Content Include="Scripts\Confirmation\ConfirmationCommon.js" />
+    <Content Include="Scripts\Confirmation\ConfirmationDetails.js" />
+    <Content Include="Scripts\Confirmation\CorporateContribution.js" />
+    <Content Include="Scripts\Confirmation\ConfirmationProcess.js" />
+    <Content Include="Scripts\Confirmation\ConfirmationDetailsRecord.js" />
+    <Content Include="Scripts\Confirmation\InboxWatchlistGrid.js" />
+    <Content Include="Scripts\Confirmation\ShowStatus.js" />
+    <Content Include="Scripts\Confirmation\ShowStatusConfirmation.js" />
+    <Content Include="Scripts\Confirmation\SkillsAquired.js" />
+    <Content Include="Scripts\Dialog\jquery-ui.custom.js" />
+    <Content Include="Scripts\Dialog\jquery.bgiframe-2.1.2.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.button.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.dialog.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.draggable.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.mouse.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.position.js" />
+    <Content Include="Scripts\Dialog\jquery.ui.resizable.js" />
+    <Content Include="Scripts\Employee.js" />
+    <Content Include="Scripts\EmployeeDetails\ExperienceDetails\GapExperienceDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\ExperienceDetails\PastExperienceDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\ExperienceDetails\TotalExperienceDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\ProjectDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\UploadEmployeeDocs.js" />
+    <Content Include="Scripts\EmployeeDetails\_BondDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\EmployeeDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\DesignationDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\EmployeeDisciplinaryDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\TravelDetails.js" />
+    <Content Include="Scripts\EmployeeDetails\EmployeeDetailsCommon.js" />
+    <Content Include="Scripts\Exit\ADMINPendingItemEmailForm.js" />
+    <Content Include="Scripts\Exit\AssetPendingItemEmailForm.js" />
+    <Content Include="Scripts\Exit\EmpSeparationApprovalsScreen.js" />
+    <Content Include="Scripts\Exit\ExitCommon.js" />
+    <Content Include="Scripts\Exit\ExitInterviewForm.js" />
+    <Content Include="Scripts\Exit\FinancePendingItemEmailForm.js" />
+    <Content Include="Scripts\Exit\HRPendingItemEmailForm.js" />
+    <Content Include="Scripts\Exit\ITPendingItemEmailForm.js" />
+    <Content Include="Scripts\Exit\SeparationADMINClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationAssetClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationFinanceClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationForm.js" />
+    <Content Include="Scripts\Exit\SeparationHRClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationITClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationProjectClearanceForm.js" />
+    <Content Include="Scripts\Exit\SeparationShowDetails.js" />
+    <Content Include="Scripts\Exit\SeparationShowStatus.js" />
+    <Content Include="Scripts\ExpenseReimbursement\ConfigureExpenseReimbursementProjects.js" />
+    <Content Include="Scripts\ExpenseReimbursement\ExpenseReimbursementForm.js" />
+    <Content Include="Scripts\ExpenseReimbursement\ExpenseReimbursementStatus.js" />
+    <Content Include="Scripts\ExpenseReimbursement\ShowstausReimbus.js" />
+    <Content Include="Scripts\Global.min.js" />
+    <Content Include="Scripts\GridView\grid.locale-en.js" />
+    <Content Include="Scripts\GridView\jquery-1.7.2.min.js" />
+    <Content Include="Scripts\GridView\jquery.jqGrid.min.js" />
+    <Content Include="Scripts\GridView\jquery.jqGrid.src.js" />
+    <Content Include="Content\themes\GridView\ui.jqgrid.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
+    <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_aa-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_aa.js" />
+    <Content Include="Scripts\i18n\angular-locale_af-na.js" />
+    <Content Include="Scripts\i18n\angular-locale_af-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_af.js" />
+    <Content Include="Scripts\i18n\angular-locale_agq-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_agq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ak-gh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ak.js" />
+    <Content Include="Scripts\i18n\angular-locale_am-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_am.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-001.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ae.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-bh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-dj.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-dz.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-eg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-eh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-il.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-iq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-jo.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-km.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-kw.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-lb.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ly.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-mr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-om.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ps.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-qa.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-sa.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-sd.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-so.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ss.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-sy.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-td.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-tn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar-ye.js" />
+    <Content Include="Scripts\i18n\angular-locale_ar.js" />
+    <Content Include="Scripts\i18n\angular-locale_as-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_as.js" />
+    <Content Include="Scripts\i18n\angular-locale_asa-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_asa.js" />
+    <Content Include="Scripts\i18n\angular-locale_ast-es.js" />
+    <Content Include="Scripts\i18n\angular-locale_ast.js" />
+    <Content Include="Scripts\i18n\angular-locale_az-cyrl-az.js" />
+    <Content Include="Scripts\i18n\angular-locale_az-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_az-latn-az.js" />
+    <Content Include="Scripts\i18n\angular-locale_az-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_az.js" />
+    <Content Include="Scripts\i18n\angular-locale_bas-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_bas.js" />
+    <Content Include="Scripts\i18n\angular-locale_be-by.js" />
+    <Content Include="Scripts\i18n\angular-locale_be.js" />
+    <Content Include="Scripts\i18n\angular-locale_bem-zm.js" />
+    <Content Include="Scripts\i18n\angular-locale_bem.js" />
+    <Content Include="Scripts\i18n\angular-locale_bez-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_bez.js" />
+    <Content Include="Scripts\i18n\angular-locale_bg-bg.js" />
+    <Content Include="Scripts\i18n\angular-locale_bg.js" />
+    <Content Include="Scripts\i18n\angular-locale_bm-latn-ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_bm-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_bm-ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_bm.js" />
+    <Content Include="Scripts\i18n\angular-locale_bn-bd.js" />
+    <Content Include="Scripts\i18n\angular-locale_bn-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_bn.js" />
+    <Content Include="Scripts\i18n\angular-locale_bo-cn.js" />
+    <Content Include="Scripts\i18n\angular-locale_bo-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_bo.js" />
+    <Content Include="Scripts\i18n\angular-locale_br-fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_br.js" />
+    <Content Include="Scripts\i18n\angular-locale_brx-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_brx.js" />
+    <Content Include="Scripts\i18n\angular-locale_bs-cyrl-ba.js" />
+    <Content Include="Scripts\i18n\angular-locale_bs-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_bs-latn-ba.js" />
+    <Content Include="Scripts\i18n\angular-locale_bs-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_bs.js" />
+    <Content Include="Scripts\i18n\angular-locale_byn-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_byn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca-ad.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca-es-valencia.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca-es.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca-fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca-it.js" />
+    <Content Include="Scripts\i18n\angular-locale_ca.js" />
+    <Content Include="Scripts\i18n\angular-locale_cgg-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_cgg.js" />
+    <Content Include="Scripts\i18n\angular-locale_chr-us.js" />
+    <Content Include="Scripts\i18n\angular-locale_chr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-arab-iq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-arab-ir.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-arab.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-iq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-ir.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-latn-iq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ckb.js" />
+    <Content Include="Scripts\i18n\angular-locale_cs-cz.js" />
+    <Content Include="Scripts\i18n\angular-locale_cs.js" />
+    <Content Include="Scripts\i18n\angular-locale_cy-gb.js" />
+    <Content Include="Scripts\i18n\angular-locale_cy.js" />
+    <Content Include="Scripts\i18n\angular-locale_da-dk.js" />
+    <Content Include="Scripts\i18n\angular-locale_da-gl.js" />
+    <Content Include="Scripts\i18n\angular-locale_da.js" />
+    <Content Include="Scripts\i18n\angular-locale_dav-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_dav.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-at.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-be.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-de.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-li.js" />
+    <Content Include="Scripts\i18n\angular-locale_de-lu.js" />
+    <Content Include="Scripts\i18n\angular-locale_de.js" />
+    <Content Include="Scripts\i18n\angular-locale_dje-ne.js" />
+    <Content Include="Scripts\i18n\angular-locale_dje.js" />
+    <Content Include="Scripts\i18n\angular-locale_dsb-de.js" />
+    <Content Include="Scripts\i18n\angular-locale_dsb.js" />
+    <Content Include="Scripts\i18n\angular-locale_dua-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_dua.js" />
+    <Content Include="Scripts\i18n\angular-locale_dyo-sn.js" />
+    <Content Include="Scripts\i18n\angular-locale_dyo.js" />
+    <Content Include="Scripts\i18n\angular-locale_dz-bt.js" />
+    <Content Include="Scripts\i18n\angular-locale_dz.js" />
+    <Content Include="Scripts\i18n\angular-locale_ebu-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_ebu.js" />
+    <Content Include="Scripts\i18n\angular-locale_ee-gh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ee-tg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ee.js" />
+    <Content Include="Scripts\i18n\angular-locale_el-cy.js" />
+    <Content Include="Scripts\i18n\angular-locale_el-gr.js" />
+    <Content Include="Scripts\i18n\angular-locale_el.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-001.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-150.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ag.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ai.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-as.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-au.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-bb.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-be.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-bm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-bs.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-bw.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-bz.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ca.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-cc.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ck.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-cx.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-dg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-dm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-fj.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-fk.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-fm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gb.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gd.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gh.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gi.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gu.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-gy.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-hk.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ie.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-im.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-io.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-iso.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-je.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-jm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ki.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-kn.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ky.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-lc.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-lr.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ls.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mh.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mo.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mp.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ms.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mt.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mu.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-mw.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-my.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-na.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-nf.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ng.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-nr.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-nu.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-nz.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-pg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ph.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-pk.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-pn.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-pr.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-pw.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-rw.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sb.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sc.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sd.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sh.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sl.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ss.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sx.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-sz.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-tc.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-tk.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-to.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-tt.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-tv.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-um.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-us.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-vc.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-vg.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-vi.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-vu.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-ws.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-zm.js" />
+    <Content Include="Scripts\i18n\angular-locale_en-zw.js" />
+    <Content Include="Scripts\i18n\angular-locale_en.js" />
+    <Content Include="Scripts\i18n\angular-locale_eo-001.js" />
+    <Content Include="Scripts\i18n\angular-locale_eo.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-419.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ar.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-bo.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-cl.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-co.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-cr.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-cu.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-do.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ea.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ec.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-es.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-gq.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-gt.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-hn.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ic.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-mx.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ni.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-pa.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-pe.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ph.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-pr.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-py.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-sv.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-us.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-uy.js" />
+    <Content Include="Scripts\i18n\angular-locale_es-ve.js" />
+    <Content Include="Scripts\i18n\angular-locale_es.js" />
+    <Content Include="Scripts\i18n\angular-locale_et-ee.js" />
+    <Content Include="Scripts\i18n\angular-locale_et.js" />
+    <Content Include="Scripts\i18n\angular-locale_eu-es.js" />
+    <Content Include="Scripts\i18n\angular-locale_eu.js" />
+    <Content Include="Scripts\i18n\angular-locale_ewo-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_ewo.js" />
+    <Content Include="Scripts\i18n\angular-locale_fa-af.js" />
+    <Content Include="Scripts\i18n\angular-locale_fa-ir.js" />
+    <Content Include="Scripts\i18n\angular-locale_fa.js" />
+    <Content Include="Scripts\i18n\angular-locale_ff-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_ff-gn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ff-mr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ff-sn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ff.js" />
+    <Content Include="Scripts\i18n\angular-locale_fi-fi.js" />
+    <Content Include="Scripts\i18n\angular-locale_fi.js" />
+    <Content Include="Scripts\i18n\angular-locale_fil-ph.js" />
+    <Content Include="Scripts\i18n\angular-locale_fil.js" />
+    <Content Include="Scripts\i18n\angular-locale_fo-fo.js" />
+    <Content Include="Scripts\i18n\angular-locale_fo.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-be.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-bf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-bi.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-bj.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-bl.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ca.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-cd.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-cf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-cg.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ci.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-dj.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-dz.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ga.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-gf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-gn.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-gp.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-gq.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ht.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-km.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-lu.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mc.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mg.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mq.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mr.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-mu.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-nc.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-ne.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-pf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-pm.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-re.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-rw.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-sc.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-sn.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-sy.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-td.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-tg.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-tn.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-vu.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-wf.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr-yt.js" />
+    <Content Include="Scripts\i18n\angular-locale_fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_fur-it.js" />
+    <Content Include="Scripts\i18n\angular-locale_fur.js" />
+    <Content Include="Scripts\i18n\angular-locale_fy-nl.js" />
+    <Content Include="Scripts\i18n\angular-locale_fy.js" />
+    <Content Include="Scripts\i18n\angular-locale_ga-ie.js" />
+    <Content Include="Scripts\i18n\angular-locale_ga.js" />
+    <Content Include="Scripts\i18n\angular-locale_gd-gb.js" />
+    <Content Include="Scripts\i18n\angular-locale_gd.js" />
+    <Content Include="Scripts\i18n\angular-locale_gl-es.js" />
+    <Content Include="Scripts\i18n\angular-locale_gl.js" />
+    <Content Include="Scripts\i18n\angular-locale_gsw-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_gsw-fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_gsw-li.js" />
+    <Content Include="Scripts\i18n\angular-locale_gsw.js" />
+    <Content Include="Scripts\i18n\angular-locale_gu-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_gu.js" />
+    <Content Include="Scripts\i18n\angular-locale_guz-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_guz.js" />
+    <Content Include="Scripts\i18n\angular-locale_gv-im.js" />
+    <Content Include="Scripts\i18n\angular-locale_gv.js" />
+    <Content Include="Scripts\i18n\angular-locale_ha-latn-gh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ha-latn-ne.js" />
+    <Content Include="Scripts\i18n\angular-locale_ha-latn-ng.js" />
+    <Content Include="Scripts\i18n\angular-locale_ha-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ha.js" />
+    <Content Include="Scripts\i18n\angular-locale_haw-us.js" />
+    <Content Include="Scripts\i18n\angular-locale_haw.js" />
+    <Content Include="Scripts\i18n\angular-locale_he-il.js" />
+    <Content Include="Scripts\i18n\angular-locale_he.js" />
+    <Content Include="Scripts\i18n\angular-locale_hi-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_hi.js" />
+    <Content Include="Scripts\i18n\angular-locale_hr-ba.js" />
+    <Content Include="Scripts\i18n\angular-locale_hr-hr.js" />
+    <Content Include="Scripts\i18n\angular-locale_hr.js" />
+    <Content Include="Scripts\i18n\angular-locale_hsb-de.js" />
+    <Content Include="Scripts\i18n\angular-locale_hsb.js" />
+    <Content Include="Scripts\i18n\angular-locale_hu-hu.js" />
+    <Content Include="Scripts\i18n\angular-locale_hu.js" />
+    <Content Include="Scripts\i18n\angular-locale_hy-am.js" />
+    <Content Include="Scripts\i18n\angular-locale_hy.js" />
+    <Content Include="Scripts\i18n\angular-locale_ia-fr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ia.js" />
+    <Content Include="Scripts\i18n\angular-locale_id-id.js" />
+    <Content Include="Scripts\i18n\angular-locale_id.js" />
+    <Content Include="Scripts\i18n\angular-locale_ig-ng.js" />
+    <Content Include="Scripts\i18n\angular-locale_ig.js" />
+    <Content Include="Scripts\i18n\angular-locale_ii-cn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ii.js" />
+    <Content Include="Scripts\i18n\angular-locale_in.js" />
+    <Content Include="Scripts\i18n\angular-locale_is-is.js" />
+    <Content Include="Scripts\i18n\angular-locale_is.js" />
+    <Content Include="Scripts\i18n\angular-locale_it-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_it-it.js" />
+    <Content Include="Scripts\i18n\angular-locale_it-sm.js" />
+    <Content Include="Scripts\i18n\angular-locale_it.js" />
+    <Content Include="Scripts\i18n\angular-locale_iw.js" />
+    <Content Include="Scripts\i18n\angular-locale_ja-jp.js" />
+    <Content Include="Scripts\i18n\angular-locale_ja.js" />
+    <Content Include="Scripts\i18n\angular-locale_jgo-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_jgo.js" />
+    <Content Include="Scripts\i18n\angular-locale_jmc-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_jmc.js" />
+    <Content Include="Scripts\i18n\angular-locale_ka-ge.js" />
+    <Content Include="Scripts\i18n\angular-locale_ka.js" />
+    <Content Include="Scripts\i18n\angular-locale_kab-dz.js" />
+    <Content Include="Scripts\i18n\angular-locale_kab.js" />
+    <Content Include="Scripts\i18n\angular-locale_kam-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_kam.js" />
+    <Content Include="Scripts\i18n\angular-locale_kde-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_kde.js" />
+    <Content Include="Scripts\i18n\angular-locale_kea-cv.js" />
+    <Content Include="Scripts\i18n\angular-locale_kea.js" />
+    <Content Include="Scripts\i18n\angular-locale_khq-ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_khq.js" />
+    <Content Include="Scripts\i18n\angular-locale_ki-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_ki.js" />
+    <Content Include="Scripts\i18n\angular-locale_kk-cyrl-kz.js" />
+    <Content Include="Scripts\i18n\angular-locale_kk-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_kk.js" />
+    <Content Include="Scripts\i18n\angular-locale_kkj-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_kkj.js" />
+    <Content Include="Scripts\i18n\angular-locale_kl-gl.js" />
+    <Content Include="Scripts\i18n\angular-locale_kl.js" />
+    <Content Include="Scripts\i18n\angular-locale_kln-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_kln.js" />
+    <Content Include="Scripts\i18n\angular-locale_km-kh.js" />
+    <Content Include="Scripts\i18n\angular-locale_km.js" />
+    <Content Include="Scripts\i18n\angular-locale_kn-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_kn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ko-kp.js" />
+    <Content Include="Scripts\i18n\angular-locale_ko-kr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ko.js" />
+    <Content Include="Scripts\i18n\angular-locale_kok-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_kok.js" />
+    <Content Include="Scripts\i18n\angular-locale_ks-arab-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_ks-arab.js" />
+    <Content Include="Scripts\i18n\angular-locale_ks.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksb-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksb.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksf-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksf.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksh-de.js" />
+    <Content Include="Scripts\i18n\angular-locale_ksh.js" />
+    <Content Include="Scripts\i18n\angular-locale_kw-gb.js" />
+    <Content Include="Scripts\i18n\angular-locale_kw.js" />
+    <Content Include="Scripts\i18n\angular-locale_ky-cyrl-kg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ky-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_ky.js" />
+    <Content Include="Scripts\i18n\angular-locale_lag-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_lag.js" />
+    <Content Include="Scripts\i18n\angular-locale_lb-lu.js" />
+    <Content Include="Scripts\i18n\angular-locale_lb.js" />
+    <Content Include="Scripts\i18n\angular-locale_lg-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_lg.js" />
+    <Content Include="Scripts\i18n\angular-locale_lkt-us.js" />
+    <Content Include="Scripts\i18n\angular-locale_lkt.js" />
+    <Content Include="Scripts\i18n\angular-locale_ln-ao.js" />
+    <Content Include="Scripts\i18n\angular-locale_ln-cd.js" />
+    <Content Include="Scripts\i18n\angular-locale_ln-cf.js" />
+    <Content Include="Scripts\i18n\angular-locale_ln-cg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ln.js" />
+    <Content Include="Scripts\i18n\angular-locale_lo-la.js" />
+    <Content Include="Scripts\i18n\angular-locale_lo.js" />
+    <Content Include="Scripts\i18n\angular-locale_lt-lt.js" />
+    <Content Include="Scripts\i18n\angular-locale_lt.js" />
+    <Content Include="Scripts\i18n\angular-locale_lu-cd.js" />
+    <Content Include="Scripts\i18n\angular-locale_lu.js" />
+    <Content Include="Scripts\i18n\angular-locale_luo-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_luo.js" />
+    <Content Include="Scripts\i18n\angular-locale_luy-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_luy.js" />
+    <Content Include="Scripts\i18n\angular-locale_lv-lv.js" />
+    <Content Include="Scripts\i18n\angular-locale_lv.js" />
+    <Content Include="Scripts\i18n\angular-locale_mas-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_mas-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_mas.js" />
+    <Content Include="Scripts\i18n\angular-locale_mer-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_mer.js" />
+    <Content Include="Scripts\i18n\angular-locale_mfe-mu.js" />
+    <Content Include="Scripts\i18n\angular-locale_mfe.js" />
+    <Content Include="Scripts\i18n\angular-locale_mg-mg.js" />
+    <Content Include="Scripts\i18n\angular-locale_mg.js" />
+    <Content Include="Scripts\i18n\angular-locale_mgh-mz.js" />
+    <Content Include="Scripts\i18n\angular-locale_mgh.js" />
+    <Content Include="Scripts\i18n\angular-locale_mgo-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_mgo.js" />
+    <Content Include="Scripts\i18n\angular-locale_mk-mk.js" />
+    <Content Include="Scripts\i18n\angular-locale_mk.js" />
+    <Content Include="Scripts\i18n\angular-locale_ml-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_mn-cyrl-mn.js" />
+    <Content Include="Scripts\i18n\angular-locale_mn-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_mn.js" />
+    <Content Include="Scripts\i18n\angular-locale_mr-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_mr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ms-latn-bn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ms-latn-my.js" />
+    <Content Include="Scripts\i18n\angular-locale_ms-latn-sg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ms-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ms.js" />
+    <Content Include="Scripts\i18n\angular-locale_mt-mt.js" />
+    <Content Include="Scripts\i18n\angular-locale_mt.js" />
+    <Content Include="Scripts\i18n\angular-locale_mua-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_mua.js" />
+    <Content Include="Scripts\i18n\angular-locale_my-mm.js" />
+    <Content Include="Scripts\i18n\angular-locale_my.js" />
+    <Content Include="Scripts\i18n\angular-locale_naq-na.js" />
+    <Content Include="Scripts\i18n\angular-locale_naq.js" />
+    <Content Include="Scripts\i18n\angular-locale_nb-no.js" />
+    <Content Include="Scripts\i18n\angular-locale_nb-sj.js" />
+    <Content Include="Scripts\i18n\angular-locale_nb.js" />
+    <Content Include="Scripts\i18n\angular-locale_nd-zw.js" />
+    <Content Include="Scripts\i18n\angular-locale_nd.js" />
+    <Content Include="Scripts\i18n\angular-locale_ne-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_ne-np.js" />
+    <Content Include="Scripts\i18n\angular-locale_ne.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-aw.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-be.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-bq.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-cw.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-nl.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-sr.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl-sx.js" />
+    <Content Include="Scripts\i18n\angular-locale_nl.js" />
+    <Content Include="Scripts\i18n\angular-locale_nmg-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_nmg.js" />
+    <Content Include="Scripts\i18n\angular-locale_nn-no.js" />
+    <Content Include="Scripts\i18n\angular-locale_nn.js" />
+    <Content Include="Scripts\i18n\angular-locale_nnh-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_nnh.js" />
+    <Content Include="Scripts\i18n\angular-locale_no-no.js" />
+    <Content Include="Scripts\i18n\angular-locale_no.js" />
+    <Content Include="Scripts\i18n\angular-locale_nr-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_nr.js" />
+    <Content Include="Scripts\i18n\angular-locale_nso-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_nso.js" />
+    <Content Include="Scripts\i18n\angular-locale_nus-sd.js" />
+    <Content Include="Scripts\i18n\angular-locale_nus.js" />
+    <Content Include="Scripts\i18n\angular-locale_nyn-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_nyn.js" />
+    <Content Include="Scripts\i18n\angular-locale_om-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_om-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_om.js" />
+    <Content Include="Scripts\i18n\angular-locale_or-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_or.js" />
+    <Content Include="Scripts\i18n\angular-locale_os-ge.js" />
+    <Content Include="Scripts\i18n\angular-locale_os-ru.js" />
+    <Content Include="Scripts\i18n\angular-locale_os.js" />
+    <Content Include="Scripts\i18n\angular-locale_pa-arab-pk.js" />
+    <Content Include="Scripts\i18n\angular-locale_pa-arab.js" />
+    <Content Include="Scripts\i18n\angular-locale_pa-guru-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_pa-guru.js" />
+    <Content Include="Scripts\i18n\angular-locale_pa.js" />
+    <Content Include="Scripts\i18n\angular-locale_pl-pl.js" />
+    <Content Include="Scripts\i18n\angular-locale_pl.js" />
+    <Content Include="Scripts\i18n\angular-locale_ps-af.js" />
+    <Content Include="Scripts\i18n\angular-locale_ps.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-ao.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-br.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-cv.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-gw.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-mo.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-mz.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-pt.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-st.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt-tl.js" />
+    <Content Include="Scripts\i18n\angular-locale_pt.js" />
+    <Content Include="Scripts\i18n\angular-locale_qu-bo.js" />
+    <Content Include="Scripts\i18n\angular-locale_qu-ec.js" />
+    <Content Include="Scripts\i18n\angular-locale_qu-pe.js" />
+    <Content Include="Scripts\i18n\angular-locale_qu.js" />
+    <Content Include="Scripts\i18n\angular-locale_rm-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_rm.js" />
+    <Content Include="Scripts\i18n\angular-locale_rn-bi.js" />
+    <Content Include="Scripts\i18n\angular-locale_rn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ro-md.js" />
+    <Content Include="Scripts\i18n\angular-locale_ro-ro.js" />
+    <Content Include="Scripts\i18n\angular-locale_ro.js" />
+    <Content Include="Scripts\i18n\angular-locale_rof-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_rof.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-by.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-kg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-kz.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-md.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-ru.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru-ua.js" />
+    <Content Include="Scripts\i18n\angular-locale_ru.js" />
+    <Content Include="Scripts\i18n\angular-locale_rw-rw.js" />
+    <Content Include="Scripts\i18n\angular-locale_rw.js" />
+    <Content Include="Scripts\i18n\angular-locale_rwk-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_rwk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sah-ru.js" />
+    <Content Include="Scripts\i18n\angular-locale_sah.js" />
+    <Content Include="Scripts\i18n\angular-locale_saq-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_saq.js" />
+    <Content Include="Scripts\i18n\angular-locale_sbp-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_sbp.js" />
+    <Content Include="Scripts\i18n\angular-locale_se-fi.js" />
+    <Content Include="Scripts\i18n\angular-locale_se-no.js" />
+    <Content Include="Scripts\i18n\angular-locale_se-se.js" />
+    <Content Include="Scripts\i18n\angular-locale_se.js" />
+    <Content Include="Scripts\i18n\angular-locale_seh-mz.js" />
+    <Content Include="Scripts\i18n\angular-locale_seh.js" />
+    <Content Include="Scripts\i18n\angular-locale_ses-ml.js" />
+    <Content Include="Scripts\i18n\angular-locale_ses.js" />
+    <Content Include="Scripts\i18n\angular-locale_sg-cf.js" />
+    <Content Include="Scripts\i18n\angular-locale_sg.js" />
+    <Content Include="Scripts\i18n\angular-locale_shi-latn-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_shi-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_shi-tfng-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_shi-tfng.js" />
+    <Content Include="Scripts\i18n\angular-locale_shi.js" />
+    <Content Include="Scripts\i18n\angular-locale_si-lk.js" />
+    <Content Include="Scripts\i18n\angular-locale_si.js" />
+    <Content Include="Scripts\i18n\angular-locale_sk-sk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sl-si.js" />
+    <Content Include="Scripts\i18n\angular-locale_sl.js" />
+    <Content Include="Scripts\i18n\angular-locale_smn-fi.js" />
+    <Content Include="Scripts\i18n\angular-locale_smn.js" />
+    <Content Include="Scripts\i18n\angular-locale_sn-zw.js" />
+    <Content Include="Scripts\i18n\angular-locale_sn.js" />
+    <Content Include="Scripts\i18n\angular-locale_so-dj.js" />
+    <Content Include="Scripts\i18n\angular-locale_so-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_so-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_so-so.js" />
+    <Content Include="Scripts\i18n\angular-locale_so.js" />
+    <Content Include="Scripts\i18n\angular-locale_sq-al.js" />
+    <Content Include="Scripts\i18n\angular-locale_sq-mk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sq-xk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sq.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-cyrl-ba.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-cyrl-me.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-cyrl-rs.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-cyrl-xk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-latn-ba.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-latn-me.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-latn-rs.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-latn-xk.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_sr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ss-sz.js" />
+    <Content Include="Scripts\i18n\angular-locale_ss-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_ss.js" />
+    <Content Include="Scripts\i18n\angular-locale_ssy-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_ssy.js" />
+    <Content Include="Scripts\i18n\angular-locale_st-ls.js" />
+    <Content Include="Scripts\i18n\angular-locale_st-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_st.js" />
+    <Content Include="Scripts\i18n\angular-locale_sv-ax.js" />
+    <Content Include="Scripts\i18n\angular-locale_sv-fi.js" />
+    <Content Include="Scripts\i18n\angular-locale_sv-se.js" />
+    <Content Include="Scripts\i18n\angular-locale_sv.js" />
+    <Content Include="Scripts\i18n\angular-locale_sw-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_sw-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_sw-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_sw.js" />
+    <Content Include="Scripts\i18n\angular-locale_swc-cd.js" />
+    <Content Include="Scripts\i18n\angular-locale_swc.js" />
+    <Content Include="Scripts\i18n\angular-locale_ta-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_ta-lk.js" />
+    <Content Include="Scripts\i18n\angular-locale_ta-my.js" />
+    <Content Include="Scripts\i18n\angular-locale_ta-sg.js" />
+    <Content Include="Scripts\i18n\angular-locale_ta.js" />
+    <Content Include="Scripts\i18n\angular-locale_te-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_te.js" />
+    <Content Include="Scripts\i18n\angular-locale_teo-ke.js" />
+    <Content Include="Scripts\i18n\angular-locale_teo-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_teo.js" />
+    <Content Include="Scripts\i18n\angular-locale_tg-cyrl-tj.js" />
+    <Content Include="Scripts\i18n\angular-locale_tg-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_tg.js" />
+    <Content Include="Scripts\i18n\angular-locale_th-th.js" />
+    <Content Include="Scripts\i18n\angular-locale_th.js" />
+    <Content Include="Scripts\i18n\angular-locale_ti-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_ti-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_ti.js" />
+    <Content Include="Scripts\i18n\angular-locale_tig-er.js" />
+    <Content Include="Scripts\i18n\angular-locale_tig.js" />
+    <Content Include="Scripts\i18n\angular-locale_tl.js" />
+    <Content Include="Scripts\i18n\angular-locale_tn-bw.js" />
+    <Content Include="Scripts\i18n\angular-locale_tn-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_tn.js" />
+    <Content Include="Scripts\i18n\angular-locale_to-to.js" />
+    <Content Include="Scripts\i18n\angular-locale_to.js" />
+    <Content Include="Scripts\i18n\angular-locale_tr-cy.js" />
+    <Content Include="Scripts\i18n\angular-locale_tr-tr.js" />
+    <Content Include="Scripts\i18n\angular-locale_tr.js" />
+    <Content Include="Scripts\i18n\angular-locale_ts-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_ts.js" />
+    <Content Include="Scripts\i18n\angular-locale_twq-ne.js" />
+    <Content Include="Scripts\i18n\angular-locale_twq.js" />
+    <Content Include="Scripts\i18n\angular-locale_tzm-latn-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_tzm-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_tzm.js" />
+    <Content Include="Scripts\i18n\angular-locale_ug-arab-cn.js" />
+    <Content Include="Scripts\i18n\angular-locale_ug-arab.js" />
+    <Content Include="Scripts\i18n\angular-locale_ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_uk-ua.js" />
+    <Content Include="Scripts\i18n\angular-locale_uk.js" />
+    <Content Include="Scripts\i18n\angular-locale_ur-in.js" />
+    <Content Include="Scripts\i18n\angular-locale_ur-pk.js" />
+    <Content Include="Scripts\i18n\angular-locale_ur.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-arab-af.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-arab.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-cyrl-uz.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-cyrl.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-latn-uz.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_uz.js" />
+    <Content Include="Scripts\i18n\angular-locale_vai-latn-lr.js" />
+    <Content Include="Scripts\i18n\angular-locale_vai-latn.js" />
+    <Content Include="Scripts\i18n\angular-locale_vai-vaii-lr.js" />
+    <Content Include="Scripts\i18n\angular-locale_vai-vaii.js" />
+    <Content Include="Scripts\i18n\angular-locale_vai.js" />
+    <Content Include="Scripts\i18n\angular-locale_ve-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_ve.js" />
+    <Content Include="Scripts\i18n\angular-locale_vi-vn.js" />
+    <Content Include="Scripts\i18n\angular-locale_vi.js" />
+    <Content Include="Scripts\i18n\angular-locale_vo-001.js" />
+    <Content Include="Scripts\i18n\angular-locale_vo.js" />
+    <Content Include="Scripts\i18n\angular-locale_vun-tz.js" />
+    <Content Include="Scripts\i18n\angular-locale_vun.js" />
+    <Content Include="Scripts\i18n\angular-locale_wae-ch.js" />
+    <Content Include="Scripts\i18n\angular-locale_wae.js" />
+    <Content Include="Scripts\i18n\angular-locale_wal-et.js" />
+    <Content Include="Scripts\i18n\angular-locale_wal.js" />
+    <Content Include="Scripts\i18n\angular-locale_xh-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_xh.js" />
+    <Content Include="Scripts\i18n\angular-locale_xog-ug.js" />
+    <Content Include="Scripts\i18n\angular-locale_xog.js" />
+    <Content Include="Scripts\i18n\angular-locale_yav-cm.js" />
+    <Content Include="Scripts\i18n\angular-locale_yav.js" />
+    <Content Include="Scripts\i18n\angular-locale_yi-001.js" />
+    <Content Include="Scripts\i18n\angular-locale_yi.js" />
+    <Content Include="Scripts\i18n\angular-locale_yo-bj.js" />
+    <Content Include="Scripts\i18n\angular-locale_yo-ng.js" />
+    <Content Include="Scripts\i18n\angular-locale_yo.js" />
+    <Content Include="Scripts\i18n\angular-locale_zgh-ma.js" />
+    <Content Include="Scripts\i18n\angular-locale_zgh.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-cn.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hans-cn.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hans-hk.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hans-mo.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hans-sg.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hans.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hant-hk.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hant-mo.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hant-tw.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hant.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-hk.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh-tw.js" />
+    <Content Include="Scripts\i18n\angular-locale_zh.js" />
+    <Content Include="Scripts\i18n\angular-locale_zu-za.js" />
+    <Content Include="Scripts\i18n\angular-locale_zu.js" />
+    <Content Include="Scripts\jquery-1.6.1.min.js" />
+    <Content Include="Scripts\jquery-1.8.2.js" />
+    <Content Include="Scripts\jquery-1.8.2.min.js" />
+    <Content Include="Scripts\jquery-1.8.3.js" />
+    <Content Include="Scripts\jquery-1.8.3.min.js" />
+    <Content Include="Scripts\AppraisalSection\angular.min.js.map" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Properties\PublishProfiles\HRMSVW3-29-2016.pubxml" />
+    <None Include="Properties\PublishProfiles\NewVW4-21.pubxml" />
+    <None Include="Properties\PublishProfiles\p1.pubxml" />
+    <None Include="Properties\PublishProfiles\Profile1.pubxml" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <None Include="Properties\PublishProfiles\UAT.pubxml" />
+    <None Include="Properties\PublishProfiles\Vibrant-Web-QABuildVer.pubxml" />
+    <None Include="Properties\PublishProfiles\VW3-21-2016.pubxml" />
+    <None Include="Properties\PublishProfiles\VWLatest3-25-2016.pubxml" />
+    <None Include="Properties\PublishProfiles\VwnewStage.pubxml" />
+    <None Include="Properties\PublishProfiles\vwqa.pubxml" />
+    <None Include="Properties\PublishProfiles\VWStage.pubxml" />
+    <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="Scripts\jquery-1.9.1.js" />
+    <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.13.custom.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.20.js" />
+    <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.23.js" />
+    <Content Include="Scripts\jquery-ui-1.9.2.js" />
+    <Content Include="Scripts\jquery.form.js" />
+    <Content Include="Scripts\jquery.jOrgChart.js" />
+    <Content Include="Scripts\jQuery.print.js" />
+    <Content Include="Scripts\jquery.ui.core.js" />
+    <Content Include="Scripts\jquery.ui.tabs.js" />
+    <Content Include="Scripts\jquery.ui.widget.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-2.1.0.debug.js" />
+    <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\main.js" />
+    <Content Include="Scripts\Menu\jquery_002.js" />
+    <Content Include="Scripts\Menu\scripts.js" />
+    <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\New Design\common.js" />
+    <Content Include="Scripts\New Design\jquery.mmenu.js" />
+    <Content Include="Scripts\New Design\jquery.selectbox-0.2.min.js" />
+    <Content Include="Scripts\New Design\jquery.selectBox.js" />
+    <Content Include="Scripts\New Design\TextareaAutoGrow.js" />
+    <Content Include="Scripts\ng-grid.js" />
+    <Content Include="Scripts\ng-grid.min.js" />
+    <Content Include="Scripts\PersonalDetails\PersonalDetailsCommon.js" />
+    <Content Include="Scripts\PersonalDetails\_ContactDetails.js" />
+    <Content Include="Scripts\PersonalDetails\_DeclarationsDetails.js" />
+    <Content Include="Scripts\PersonalDetails\_DependentDetails.js" />
+    <Content Include="Scripts\PersonalDetails\_PersonalDetails.js" />
+    <Content Include="Scripts\PersonalDetails\_CertificationDetails.js" />
+    <Content Include="Scripts\PersonalDetails\_EmployeeQualifications.js" />
+    <Content Include="Scripts\PersonalDetails\_MedicalHistory.js" />
+    <Content Include="Scripts\PersonalDetails\_ResidentialDetails.js" />
+    <Content Include="Scripts\Recruitment\HRMS.js" />
+    <Content Include="Scripts\Recruitment\jquery-1.7.min.js" />
+    <Content Include="Scripts\Recruitment\jquery-ui.min.js" />
+    <Content Include="Scripts\Recruitment\jquery.tmpl.js" />
+    <Content Include="Scripts\Recruitment\pop_up_window.js" />
+    <Content Include="Scripts\Service.js" />
+    <Content Include="Scripts\Travel\ConveynaceDetails.js" />
+    <Content Include="Scripts\Travel\ShowstausTravel.js" />
+    <Content Include="Scripts\Travel\JourneyDetails.js" />
+    <Content Include="Scripts\Travel\TravelOtherRequirement.js" />
+    <Content Include="Scripts\Travel\_AdminAccomodationDetails.js" />
+    <Content Include="Scripts\Travel\ClientDetails.js" />
+    <Content Include="Scripts\Travel\_TravelContactDetails.js" />
+    <Content Include="Scripts\Travel\_TravelPassportDetails.js" />
+    <Content Include="Scripts\Travel\_TravelVisaDetails.js" />
+    <Content Include="Scripts\ui-bootstrap-tpls-0.12.0.min.js" />
+    <Content Include="Scripts\ui.dropdownchecklist-1.4-min.js" />
+    <Content Include="Scripts\ui.dropdownchecklist.js" />
+    <Content Include="Scripts\Uploads\UploadsCommon.js" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalStatus.cshtml" />
+    <Content Include="Views\PersonalDetails\_ContactDetails.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Travel\_AccomodationAdminDetailsForm.cshtml" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\AppraisalMaster\ReviewInitiation.cshtml" />
+    <Content Include="Views\AppraisalMaster\Initiated.cshtml" />
+    <Content Include="Views\Shared\_NewPersonalLayout.cshtml" />
+    <Content Include="Views\AppraisalSection\AppraisalMainForm.cshtml" />
+    <Content Include="Views\AppraisalMaster\AppraisalInitiate.cshtml" />
+    <Content Include="Views\AppraisalMaster\FreezedList.cshtml" />
+    <Content Include="Views\AppraisalSection\AppraisalEmployee.cshtml" />
+    <Content Include="Views\Appraisal\Review.cshtml" />
+    <Content Include="Views\Shared\AppraisalMaster\AppraisalInitiate.cshtml" />
+    <Content Include="Views\Shared\AppraisalMaster\FreezedList.cshtml" />
+    <Content Include="Views\Shared\AppraisalMaster\Initiated.cshtml" />
+    <Content Include="Views\Shared\AppraisalMaster\ReviewInitiation.cshtml" />
+    <Content Include="Views\Shared\_blank.cshtml" />
+    <None Include="Web.Prod.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\UploadedFolder\" />
+    <Folder Include="CSS\New Design\" />
+    <Folder Include="Orbit\" />
+    <Folder Include="Uploads\AccomodationUploadDocs\" />
+    <Folder Include="Uploads\AppraisalAddProjectAchmnts\" />
+    <Folder Include="Uploads\DesigantionUploadDocs\" />
+    <Folder Include="Uploads\EmployeeUploadDocs\1471\Certificates\" />
+    <Folder Include="Uploads\EmployeeUploadDocs\1471\Financial Docs\" />
+    <Folder Include="Uploads\HRUploadDocs\Compensation\" />
+    <Folder Include="Uploads\HRUploadDocs\Complete dump\" />
+    <Folder Include="Uploads\RMGUploadDocs\Complete dump\" />
+    <Folder Include="Views\ConfirmationProcess\Mail\" />
+    <Folder Include="Views\Menu\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_ResidentialDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_PersonalLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AttendanceCheckerWF\AttendanceCheckerWF.csproj">
+      <Project>{D3261B5D-16AE-486E-819C-E8FE7781C910}</Project>
+      <Name>AttendanceCheckerWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{39b25fd2-c1cc-4a56-9a32-6aa2a956d2d4}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BOL\BOL.csproj">
+      <Project>{3127649E-449A-4568-8E60-3ED4DB9175D9}</Project>
+      <Name>BOL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BusinessLayerHelpDeskBranch\BusinessLayerHelpDeskBranch.csproj">
+      <Project>{586A1829-254E-4669-8400-2B6E67C326E9}</Project>
+      <Name>BusinessLayerHelpDeskBranch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
+      <Project>{3C9E9BFF-435B-415C-9836-0C0F9C0FEDE7}</Project>
+      <Name>BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
+      <Project>{3C9E9BFF-435B-415C-9836-0C0F9C0FEDE7}</Project>
+      <Name>BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CompensationWF\CompensationWF.csproj">
+      <Project>{5428FBBF-05A7-47B0-AB6B-2ADD123B956A}</Project>
+      <Name>CompensationWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\HRMS.DAL.csproj">
+      <Project>{516E072E-A971-47CC-A9FE-2F039E4FAFC7}</Project>
+      <Name>HRMS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayerHelpDeskBranch\DataLayerHelpDeskBranch.csproj">
+      <Project>{0695C22E-E26A-40D8-BCF8-15677AAD6D18}</Project>
+      <Name>DataLayerHelpDeskBranch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{680673AC-5102-4D2F-857F-0C1AF91675AF}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{680673AC-5102-4D2F-857F-0C1AF91675AF}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileLogger\FileLogger.csproj">
+      <Project>{A5D3E796-D746-4A13-9502-28E851DD9804}</Project>
+      <Name>FileLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HRMS.Models\HRMS.Models.csproj">
+      <Project>{DB176888-87DC-4CB6-BB14-2A3CE0523715}</Project>
+      <Name>HRMS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HRMS.Notification\HRMS.Notification.csproj">
+      <Project>{F4F14DFD-1ABB-4DC4-BA56-5130233F1FB8}</Project>
+      <Name>HRMS.Notification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HRMS.Resources\HRMS.Resources.csproj">
+      <Project>{A6286877-2019-4C44-BC51-F5E062AFBD16}</Project>
+      <Name>HRMS.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaveDetailsWF\LeaveDetailsWF.csproj">
+      <Project>{68A5706C-C8B1-4134-BA8E-D07063A1D379}</Project>
+      <Name>LeaveDetailsWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaveSchedulerWO\LeaveSchedulerWO.csproj">
+      <Project>{55CDFFCA-89C0-4829-AD5C-0F769D0EBA85}</Project>
+      <Name>LeaveSchedulerWO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeaveUploadWF\LeaveUploadWF.csproj">
+      <Project>{C6295005-8D09-4310-9787-2268661D0054}</Project>
+      <Name>LeaveUploadWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MailActivity\MailActivity.csproj">
+      <Project>{FE5CFDE8-FAFE-469A-A9DF-E5A43280F41F}</Project>
+      <Name>MailActivity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelHelpDeskBranch\ModelHelpDeskBranch.csproj">
+      <Project>{4B642853-5919-434D-9132-616C46940D01}</Project>
+      <Name>ModelHelpDeskBranch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{D3C06AA4-E61F-475F-AD75-D13B4B17567E}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OutOfOfficeWF\OutOfOfficeWF.csproj">
+      <Project>{7A5532A0-4E5D-485B-9906-45CC79CE6D44}</Project>
+      <Name>OutOfOfficeWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Recruitment.DAL\Recruitment.DAL.csproj">
+      <Project>{9967EAEC-7CA8-47B7-892C-00DE5AB7680A}</Project>
+      <Name>Recruitment.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RecruitmentMailActivity\RecruitmentMailActivity.csproj">
+      <Project>{D1C8C7A6-8CB0-4B95-BF5E-E85945B14697}</Project>
+      <Name>RecruitmentMailActivity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SignInSignOutWF\SignInSignOutWF.csproj">
+      <Project>{26D48BBB-4B71-4CA4-B1BE-8D8C7DE14FB8}</Project>
+      <Name>SignInSignOutWF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\V2Exception\V2Exception.csproj">
+      <Project>{ED2AE259-843C-4F22-8F6B-22269A46CE88}</Project>
+      <Name>V2Exception</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_SkillDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\Index.cshtml" />
+    <Content Include="Views\PersonalDetails\_AddSkillDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_SkillDetailRecords.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_AddEmployeeQualifications.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_EmployeeQualifications.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\SearchEmployee.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_HeaderLinks.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_EmployeeDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_MedicalHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_AddMedicalHistoryDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_DisciplinaryDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_AddDisciplinaryDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_DisplayDisciplinaryDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Uploads\Uploads.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_AddDesignationDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_DesignationDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_PersonalTravelDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_AddVisaDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_PersonalDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\LogOn.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_LogOnPartial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_ProjectDetails.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_TravelDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_CertificationDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PersonalDetails\_AddCertificationDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_SpousePersonalTravelDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_BondDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_AddPastExperienceDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_ExperienceDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_PastExperienceDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\NotAuthorized.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Uploads\_ShowHRDocHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_ShowEmpDocHistroy.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmployeeDetails\_TotalExperienceDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Themes\Orbit\Orbit.skin" />
+    <None Include="App_Code\LeaveAnomalyReport.xsc">
+      <DependentUpon>LeaveAnomalyReport.xsd</DependentUpon>
+    </None>
+    <None Include="App_Code\LeaveAnomalyReport.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>LeaveAnomalyReport.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App_Code\LeaveAnomalyReport.xss">
+      <DependentUpon>LeaveAnomalyReport.xsd</DependentUpon>
+    </None>
+    <None Include="obj\Debug\build.force" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
+    <Content Include="Error\Index.cshtml" />
+    <Content Include="Views\EmployeeDetails\_UploadEmployeeDocs.cshtml" />
+    <Content Include="Views\EmployeeDetails\_AddSpouseVisaDetails.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ChangePasswordSuccess.cshtml" />
+    <Content Include="Error\JavascriptNotSupported.cshtml" />
+    <Content Include="Views\Appraisal\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\local.pubxml" />
+    <None Include="Properties\PublishProfiles\PublishHRMS.pubxml" />
+    <Content Include="Views\EmployeeDetails\_AddBondDetails.cshtml" />
+    <Content Include="Views\PersonalDetails\_DependentDetails.cshtml" />
+    <Content Include="Views\PersonalDetails\_AddDependantDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_GapExperienceDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_AddGapExperienceDetails.cshtml" />
+    <Content Include="Views\PersonalDetails\_AddEmergencyContactDetails.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\OrganizationStructure\Index.cshtml" />
+    <Content Include="Views\Confirmation\Index.cshtml" />
+    <Content Include="Views\Approvals\Index.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfirmationDetails.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_AddCorporateContribution.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_PerformanceHinder.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ProjectAchievement.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_AddProjectAchievement.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_SkillsAquired.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_AddSkillsAquired.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_AdditionalQualification.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_AddAdditionalQualification.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ValueDriver.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfirmationProcessDetails.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ShowStatus.cshtml" />
+    <Content Include="Views\Exit\_ExitProcess.cshtml" />
+    <Content Include="Views\Exit\Index.cshtml" />
+    <Content Include="Views\Exit\_SeparationForm.cshtml" />
+    <Content Include="Views\Exit\_MailTemplateSeparation.cshtml" />
+    <Content Include="Views\Exit\_EmpSeparationApprovalsScreen.cshtml" />
+    <None Include="Properties\PublishProfiles\publishVibrantWeb_Pms.pubxml" />
+    <Content Include="Recruitment\HRMS.master" />
+    <Content Include="Reports\LeaveReport.rdlc" />
+    <Content Include="Reports\AttendanceReport.rdlc" />
+    <Content Include="Reports\LeaveTransactionReport.rdlc" />
+    <Content Include="Reports\CompensationReport.rdlc" />
+    <Content Include="Reports\OutOfOfficeReport.rdlc" />
+    <Content Include="Reports\ExpenseReport.rdlc">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Reports\AllocationvsplannedvsActualreport.rdlc" />
+    <Content Include="Reports\ProjectAllocationReport.rdlc" />
+    <Content Include="Reports\EmployeeDetail.rdlc" />
+    <Content Include="Reports\ResourceAllocationView.rdl" />
+    <Content Include="Reports\ResourceProjectDetails.rdl" />
+    <Content Include="Reports\SignInSignOutReport.rdlc">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Reports\TimeSheetData.rdlc">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Reports\ResourceServingNoticePeriod.rdlc" />
+    <Content Include="Reports\Resourcetobereleased.rdlc" />
+    <Content Include="Reports\VisaDetailReport.rdlc" />
+    <None Include="Properties\PublishProfiles\VW.pubxml" />
+    <Content Include="Scripts\version.json" />
+    <Content Include="Scripts\errors.json" />
+    <Content Include="Scripts\angular-touch.min.js.map" />
+    <Content Include="Scripts\angular-sanitize.min.js.map" />
+    <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\angular-resource.min.js.map" />
+    <Content Include="Scripts\angular-messages.min.js.map" />
+    <Content Include="Scripts\angular-loader.min.js.map" />
+    <Content Include="Scripts\angular-cookies.min.js.map" />
+    <Content Include="Scripts\angular-aria.min.js.map" />
+    <Content Include="Scripts\angular-animate.min.js.map" />
+    <Content Include="Scripts\jquery-1.9.1.min.map" />
+    <Content Include="Scripts\largeLoad.json" />
+    <None Include="Uploads\EmployeeUploadDocs\467\Bond Details\5.pdf" />
+    <None Include="Uploads\EmployeeUploadDocs\467\Bond Details\5_1.pdf" />
+    <Content Include="Views\Mail\_MailTemplate.cshtml" />
+    <Content Include="Views\Exit\_ADMINPendingItemEmailForm.cshtml" />
+    <Content Include="Views\Exit\_FinancePendingItemEmailForm.cshtml" />
+    <Content Include="Views\Exit\_HRPendingItemEmailForm.cshtml" />
+    <Content Include="Views\Exit\_ITPendingItemEmailForm.cshtml" />
+    <Content Include="Views\Exit\_SeparationADMINClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_SeparationFinanceClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_SeparationHRClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_WatchList_SeparationFinanceClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_SeparationITClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_InitiateSeperationTermination.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_GoalAspire.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfigurationDetailRecord.cshtml" />
+    <Content Include="Views\Confirmation\_SelectCompetencies.cshtml" />
+    <Content Include="Views\Exit\_ExitInterviewForm.cshtml" />
+    <Content Include="Views\PersonalDetails\_MailTemplateEmployee.cshtml" />
+    <Content Include="Views\Approvals\_EmployeeApprovals.cshtml" />
+    <Content Include="Views\Approvals\_EmployeeChangeDetails.cshtml" />
+    <Content Include="Views\Approvals\_MailTemplateApprovalStatus.cshtml" />
+    <Content Include="Views\organizationStructure\_AddBusinessGroupManager.cshtml" />
+    <Content Include="Views\organizationStructure\_AddOrganizationUnit.cshtml" />
+    <Content Include="Views\organizationStructure\_ConfigureBusinessGroup.cshtml" />
+    <Content Include="Views\organizationStructure\_ConfigureOrganizationStructure.cshtml" />
+    <Content Include="Views\Confirmation\_addParameter.cshtml" />
+    <Content Include="Views\Confirmation\_addParameterCategory.cshtml" />
+    <Content Include="Views\Confirmation\_AddRatingScale.cshtml" />
+    <Content Include="Views\Confirmation\_ApplicableRoles.cshtml" />
+    <Content Include="Views\Confirmation\_CompetenciesForRole.cshtml" />
+    <Content Include="Views\Confirmation\_ConfigureParameter.cshtml" />
+    <Content Include="Views\Confirmation\_ConfigureParameterCompetency.cshtml" />
+    <Content Include="Views\Confirmation\_SelectRoles.cshtml" />
+    <Content Include="Views\Approvals\_AdminQualificationApproval.cshtml" />
+    <Content Include="Views\Confirmation\_ConfigureRatingScales.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Error\JavascriptNotSupported.cshtml" />
+    <Content Include="Views\Confirmation\_ConfigureParameterRole.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_GuideLines.cshtml" />
+    <Content Include="Views\Approvals\_SkillChangeDetails.cshtml" />
+    <Content Include="Views\Approvals\_EmployeeCertificateDetails.cshtml" />
+    <Content Include="Views\Exit\_SeparationShowDetails.cshtml" />
+    <Content Include="Views\Exit\_SeparationShowStatus.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddBusinessGroup.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddDeliveryTeam.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddDeliveryUnitManager.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddExistingOU.cshtml" />
+    <Content Include="Views\OrganizationStructure\_ConfigureDeleveryTeam.cshtml" />
+    <Content Include="Views\OrganizationStructure\_ConfigureDeliveryUnit.cshtml" />
+    <Content Include="Views\OrganizationStructure\_selectResourceForDeliveryUnit.cshtml" />
+    <Content Include="Views\OrganizationStructure\_selectResourcesForBusinessGroup.cshtml" />
+    <Content Include="Views\OrganizationStructure\_selectResourcesForDeleveryTeam.cshtml" />
+    <Content Include="Views\HelpDesk\Index.cshtml" />
+    <Content Include="Views\Orbit\Index.cshtml" />
+    <Content Include="Views\PMS\Index.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfirmationProcess.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfirmInitiate.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_MailTemplate.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddOrganizationUnitDocumentCategory.cshtml" />
+    <Content Include="Views\OrganizationStructure\_ConfigureOrganizationUnit.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddOrganizationUnitManager.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddOUDeliveryUnit.cshtml" />
+    <Content Include="Views\OrganizationStructure\_selectOUResouces.cshtml" />
+    <Content Include="Views\ExitConfiguration\Index.cshtml" />
+    <Content Include="Views\ExitConfiguration\_CheckListDetails.cshtml" />
+    <Content Include="Views\ExitConfiguration\_ConfigurationSeperationChecklistDetails.cshtml" />
+    <Content Include="Views\ExitConfiguration\_ExitFeedbackChkList.cshtml" />
+    <Content Include="Views\ExitConfiguration\_ReasonDetails.cshtml" />
+    <Content Include="Views\ExitConfiguration\_SeparationStackholder.cshtml" />
+    <Content Include="Views\ExitConfiguration\_SeperationReasonDetails.cshtml" />
+    <Content Include="Views\ExitConfiguration\_SetSeparationStageApproversDetails.cshtml" />
+    <Content Include="Views\ExitConfiguration\_StakeHolder.cshtml" />
+    <Content Include="Views\SmartTrack\Index.cshtml" />
+    <Content Include="Views\Error\_CommonError.cshtml" />
+    <Content Include="Views\Exit\_SeparationProjectClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_projectPendingItemEmailForm.cshtml" />
+    <Content Include="Views\Account\LogIn.cshtml" />
+    <Content Include="Views\PersonalDetails\_AddDeclarationDetails.cshtml" />
+    <Content Include="Views\PersonalDetails\_DeclarationDetails.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\Index.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\ExpenseReimbursementForm.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\ExpenseReimbursementStatus.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\_AddExpenseDetails.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\ExpenseReimbusShowStatus.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\_ExpenseGuidelines.cshtml" />
+    <Content Include="Views\Travel\Index.cshtml" />
+    <Content Include="Views\Travel\ContactDetailsForm.cshtml" />
+    <Content Include="Views\Travel\VisaDetailsForm.cshtml" />
+    <Content Include="Views\Travel\ConveyanceAdminDetailsForm.cshtml" />
+    <Content Include="Views\Travel\OtherAdminDetailsForm.cshtml" />
+    <Content Include="Views\Travel\TravelExtensionDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_AddVisaDetails.cshtml" />
+    <Content Include="Views\Travel\_AddClientDetails.cshtml" />
+    <Content Include="Views\Travel\TravelDetailsFormIndex.cshtml" />
+    <Content Include="Views\Travel\_JourneyDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_AddAdminAccomodationDetails.cshtml" />
+    <Content Include="Views\Travel\_PassportDetails.cshtml" />
+    <Content Include="Views\Travel\_AddTravelEmergencyContactDetails.cshtml" />
+    <Content Include="Views\Travel\_TravelDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_ClientDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_PassportDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_TravelShowStatus.cshtml" />
+    <Content Include="Views\Travel\_AccomodationDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_ContactDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_VisaDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_OtherAdminDetailsForm.cshtml" />
+    <Content Include="Views\Travel\_AddTravelOtherRequirement.cshtml" />
+    <Content Include="Views\Travel\_AddJourneyDetails.cshtml" />
+    <Content Include="Views\Travel\_AddConveyanceDetails.cshtml" />
+    <Content Include="Views\Travel\TravelStatus.cshtml" />
+    <Content Include="Views\Travel\_ShowUplaodedOtherRequireData.cshtml" />
+    <Content Include="Views\Travel\_ConveyanceDetailsForm.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddExistingDU.cshtml" />
+    <Content Include="Views\Travel\ExtensionStatus.cshtml" />
+    <Content Include="Views\OrganizationStructure\_AddExistingDT.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\Index.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ConfigureAppraisalYear.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ConfigureNewYear.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ViewAppraisalRecords.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalParameters.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalRatingScale.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalStrengthImprove.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraiserReviewerMapping.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AddAppraisalParameter.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_EligibilityCriteria.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalRoles.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalDesignations.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ConfigureAppraisalDetails.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AddAppraisalYears.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AddAppraisalRatingScale.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_SelectDesignations.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\AppraisalStatusReportByYear.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AllSuccesfulIniEmployee.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_MailTemplateConfigureAppraisalProcess.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_EditAppraisalYear.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ShowAppraisalDocHistory.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_ConfigureAppraisalCategories.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AddEditConfigureAppraisalCategories.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AllConfirmDateEmployees.cshtml" />
+    <Content Include="Views\Travel\_TravelSendEmail.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\IndividualDevelopmentStatusReportByYear.cshtml" />
+    <Content Include="Views\HelpDeskAdmin\Index.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_InitiateIndividualDevelopment.cshtml" />
+    <Content Include="Views\Travel\EmployeeTravelStatusReport.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\_ConfigureExpenseReimbProjectNames.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\_AddEditConfigureExpProjects.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\ConfigureExpenseReimbDetails.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_AppraisalRatingCommentsReportByYear.cshtml" />
+    <Content Include="Views\ExitConfiguration\_AddEditExitFeedbackChecklist.cshtml" />
+    <Content Include="Views\ExitConfiguration\_AddEmployeeMultiClearance.cshtml" />
+    <Content Include="Views\ConfigurationAppraisal\_FileNotFound.cshtml" />
+    <Content Include="Views\EmployeeDetails\_EmployeePassportDetails.cshtml" />
+    <Content Include="Views\EmployeeDetails\_EmployeeVisaDetails.cshtml" />
+    <Content Include="Views\Travel\_VisaDetails.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordSuccess.cshtml" />
+    <Content Include="Views\ExpenseReimbursement\_ExpenseGuidelineForRoles.cshtml" />
+    <Content Include="Views\ConfirmationProcess\InboxWatchlistGrid.cshtml" />
+    <Content Include="Views\ConfirmationProcess\ConfirmationForm.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ProjectDetailsConfirmation.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ValuDriverConfirmation.cshtml" />
+    <Content Include="Views\SEM\Index.cshtml" />
+    <Content Include="Views\SEM\AddCustomer.cshtml" />
+    <Content Include="Views\SEM\_CustomerAddress.cshtml" />
+    <Content Include="Views\SEM\_CustomerContact.cshtml" />
+    <Content Include="Views\SEM\_CustomerContract.cshtml" />
+    <Content Include="Views\SEM\_AddInvoiceAddress.cshtml" />
+    <Content Include="Views\SEM\_AddContact.cshtml" />
+    <Content Include="Views\SEM\_AddContract.cshtml" />
+    <Content Include="Views\SEM\ProjectIndex.cshtml" />
+    <Content Include="Views\SEM\_AddPMSProjectDetails.cshtml" />
+    <Content Include="Views\SEM\_ProjectDocuments.cshtml" />
+    <Content Include="Views\SEM\_ProjectReviewers.cshtml" />
+    <Content Include="Views\SEM\_ProjectOwners.cshtml" />
+    <Content Include="Views\SEM\_IRApprovers.cshtml" />
+    <Content Include="Views\SEM\_IRGenerators.cshtml" />
+    <Content Include="Views\Invoice\GenerateInvoice.cshtml" />
+    <Content Include="Views\Invoice\AddInvoice.cshtml" />
+    <Content Include="Views\SEM\InvoiceApprovals.cshtml" />
+    <Content Include="Views\Invoice\_CheckList.cshtml" />
+    <Content Include="Views\SEM\_PIRStatus.cshtml" />
+    <Content Include="Views\SEM\InvoiceFinance.cshtml" />
+    <Content Include="Views\SEM\TaskTypeManage.cshtml" />
+    <Content Include="Views\SEM\_AddTaskType.cshtml" />
+    <Content Include="Views\SEM\TaskPracticeMap.cshtml" />
+    <Content Include="Views\SEM\GeneralTaskManage.cshtml" />
+    <Content Include="Views\SEM\_AddTaskName.cshtml" />
+    <Content Include="Views\SEM\CreateAssignTasks.cshtml" />
+    <Content Include="Views\SEM\AssignTask.cshtml" />
+    <Content Include="Views\SEM\GeneralTasks.cshtml" />
+    <Content Include="Views\SEM\_SelectMoreTasks.cshtml" />
+    <Content Include="Views\SEM\_TaskMapping.cshtml" />
+    <Content Include="Views\SEM\UploadTasks.cshtml" />
+    <Content Include="Views\SEM\UploadData.cshtml" />
+    <Content Include="Views\SEM\_AddExcel.cshtml" />
+    <Content Include="Views\SEM\TimesheetEntry.cshtml" />
+    <Content Include="Views\SEM\_AddTask.cshtml" />
+    <Content Include="Views\SEM\_TaskList.cshtml" />
+    <Content Include="Views\SEM\TimesheetView.cshtml" />
+    <Content Include="Views\SEM\TimesheetApprovals.cshtml" />
+    <Content Include="Views\SEM\ManageMilestones.cshtml" />
+    <Content Include="Views\AccessRights\Index.cshtml" />
+    <Content Include="Views\SEM\_AddContractFileDetails.cshtml" />
+    <Content Include="Views\SEM\_CustomerCreationEmail.cshtml" />
+    <Content Include="Views\SEM\_TaskClosure.cshtml" />
+    <Content Include="Views\SEM\ManageSubProjects.cshtml" />
+    <Content Include="Views\SEM\ManageModules.cshtml" />
+    <Content Include="Views\SEM\ManagePhases.cshtml" />
+    <Content Include="Views\SEM\ManageDocuments.cshtml" />
+    <Content Include="Views\SEM\PhasesView.cshtml" />
+    <Content Include="Views\SEM\PhasesPracticeMapping.cshtml" />
+    <Content Include="Views\SEM\PhaseManagement.cshtml" />
+    <Content Include="Views\SEM\TimesheetEntryView.cshtml" />
+    <Content Include="Views\SEM\_RevisionDetails.cshtml" />
+    <Content Include="Views\SEM\_ApproveRevision.cshtml" />
+    <Content Include="Views\SEM\_ShowHistory.cshtml" />
+    <Content Include="Views\SEM\ApproveTimesheet.cshtml" />
+    <Content Include="Views\SEM\CompleteTimesheet.cshtml" />
+    <Content Include="Views\SEM\_AddDocumentFileDetails.cshtml" />
+    <Content Include="Views\SEM\_PhasePracticeMapping.cshtml" />
+    <Content Include="Views\EmployeeNode\Index.cshtml" />
+    <Content Include="Views\Resource\ResourceIndex.cshtml" />
+    <Content Include="Views\Resource\ResourceAllocationView.cshtml" />
+    <Content Include="Views\Resource\ResourceAllocationDashboard.cshtml" />
+    <Content Include="Views\Resource\ManagerViewPost.cshtml" />
+    <Content Include="Views\Resource\RMGViewPost.cshtml" />
+    <Content Include="Views\Resource\UtilizationReport.cshtml" />
+    <Content Include="Views\Resource\SearchResource.cshtml" />
+    <Content Include="Views\Resource\_AddEditResourceDetails.cshtml" />
+    <Content Include="Views\Resource\_CustomerCreationEmail.cshtml" />
+    <Content Include="Views\Resource\ReallocationAndBulkReallocation.cshtml" />
+    <Content Include="Views\Resource\ProjectEndAppraisalForm.cshtml" />
+    <Content Include="Views\Resource\SampleReport.cshtml" />
+    <Content Include="Views\Resource\ReportView.cshtml" />
+    <Content Include="Views\Invoice\_SalesPeriod.cshtml" />
+    <Content Include="Views\Resource\AddEditResourceDetails.cshtml" />
+    <Content Include="Views\Invoice\_InvoiceCustomerAddress.cshtml" />
+    <Content Include="Views\Invoice\_AddSalesPeriod.cshtml" />
+    <Content Include="Views\Invoice\_AddContractDetails.cshtml" />
+    <Content Include="Views\SEM\_ProjectIRApprover.cshtml" />
+    <Content Include="Views\SEM\_ProjectIRFinanceApprover.cshtml" />
+    <Content Include="Views\Invoice\ConfigurationRole.cshtml" />
+    <Content Include="Views\Invoice\_InvoiceShowStatus.cshtml" />
+    <Content Include="Views\Invoice\_ConfigurationRole.cshtml" />
+    <Content Include="Views\Invoice\_ConfigurationRoleDetails.cshtml" />
+    <Content Include="Views\Invoice\_ShowPIRHistory.cshtml" />
+    <Content Include="Views\Invoice\FinancePayments.cshtml" />
+    <Content Include="Views\Invoice\FinancePaymentTracking.cshtml" />
+    <Content Include="Views\Invoice\FinanceTrackingSummary.cshtml" />
+    <Content Include="Views\Invoice\_PaymentTrackingHistory.cshtml" />
+    <Content Include="Views\Invoice\_TrackingSummaryHistory.cshtml" />
+    <Content Include="Views\Invoice\_InvoiceCreationEmail.cshtml" />
+    <Content Include="Views\Invoice\_AddCheckListDetails.cshtml" />
+    <Content Include="Views\Invoice\_PaymentTrackingShowHistory.cshtml" />
+    <Content Include="Views\Invoice\_TrackingSummaryShowHistory.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\PersonalDetails\SkillMatrix.cshtml" />
+    <Content Include="Views\Shared\HRMS.Master" />
+    <Content Include="Views\Travel\_FileNotFound.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ShowStatusConfirmation.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ProjectEndAppraisalForm.cshtml" />
+    <Content Include="Views\ConfirmationProcess\_ConfirmationRatingGuidelines.cshtml" />
+    <Content Include="Views\Exit\_SeparationAssetClearanceForm.cshtml" />
+    <Content Include="Views\Exit\_AssetPendingItemEmailForm.cshtml" />
+    <Content Include="Views\Error\ErrorMessage.cshtml" />
+    <Content Include="Views\Travel\_UploadClientFile.cshtml" />
+    <Content Include="Views\SkillMatrix\ConfigureSkillMatrixView.cshtml" />
+    <Content Include="Views\SkillMatrix\Index.cshtml" />
+    <Content Include="Views\SkillMatrix\Index_Skillmatrix.cshtml" />
+    <Content Include="Views\SkillMatrix\ShowHistory.cshtml" />
+    <Content Include="Views\SkillMatrix\_EmployeeSearchName.cshtml" />
+    <Content Include="Views\SkillMatrix\_SkillMatrix.cshtml" />
+    <Content Include="Views\SkillMatrix\_SkillMatrix_Upload.cshtml" />
+    <Content Include="Views\SEM\_FileNotFound.cshtml" />
+    <Content Include="Views\TaskTimesheet\Index.cshtml" />
+    <Content Include="Views\TaskTimesheet\TaskCreation.cshtml" />
+    <Content Include="Views\TaskTimesheet\TimeSheetEntry.cshtml" />
+    <Content Include="Views\TaskTimesheet\_TimeSheetApproval.cshtml" />
+    <Content Include="Views\TaskTimesheet\_TagConfiguration.cshtml" />
+    <Content Include="Views\TaskTimesheet\_AddTaskCreation.cshtml" />
+    <Content Include="Views\TaskTimesheet\PmsConfiguration.cshtml" />
+    <Content Include="Views\PersonalDetails\_DevelopmentPlanMain.cshtml" />
+    <Content Include="Views\PersonalDetails\_DevelopmentPlan.cshtml" />
+    <Content Include="Views\TaskTimesheet\_PMSConfigurationSettings.cshtml" />
+    <Content Include="Views\Uploads\_FileNotFound.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <None Include="V2IntranetDataSet.xsc">
+      <DependentUpon>V2IntranetDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="V2IntranetDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>V2IntranetDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="V2IntranetDataSet.xss">
+      <DependentUpon>V2IntranetDataSet.xsd</DependentUpon>
+    </None>
+    <Content Include="Views\Uploads\_UploadFile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HelpDesk\admin\AddSubCategoryAssignMent.aspx.resx">
+      <DependentUpon>AddSubCategoryAssignMent.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\AuthorizationErrorMessage.aspx.resx">
+      <DependentUpon>AuthorizationErrorMessage.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\categoryMaster.aspx.resx">
+      <DependentUpon>categoryMaster.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\CategoryWiseSearchReport.aspx.resx">
+      <DependentUpon>CategoryWiseSearchReport.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\EditEmployeeDetail.aspx.resx">
+      <DependentUpon>EditEmployeeDetail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\index.aspx.resx">
+      <DependentUpon>index.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\IssueHealth.aspx.resx">
+      <DependentUpon>IssueHealth.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\IssueStatusReport.aspx.resx">
+      <DependentUpon>IssueStatusReport.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\Login.aspx.resx">
+      <DependentUpon>Login.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\MemberWiseSearchReport.aspx.resx">
+      <DependentUpon>MemberWiseSearchReport.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\MoveIssue.aspx.resx">
+      <DependentUpon>MoveIssue.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\printPage.aspx.resx">
+      <DependentUpon>printPage.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ProblemPriorityMaster.aspx.resx">
+      <DependentUpon>ProblemPriorityMaster.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ProblemSeverityMaster.aspx.resx">
+      <DependentUpon>ProblemSeverityMaster.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\StatusMaster.aspx.resx">
+      <DependentUpon>StatusMaster.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\SubCategoryAssignment.aspx.resx">
+      <DependentUpon>SubCategoryAssignment.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\subCategoryMaster.aspx.resx">
+      <DependentUpon>subCategoryMaster.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\SummaryReport.aspx.resx">
+      <DependentUpon>SummaryReport.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewCategoryEmpDetail.aspx.resx">
+      <DependentUpon>ViewCategoryEmpDetail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewEmployeeDetails.aspx.resx">
+      <DependentUpon>ViewEmployeeDetails.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewIssueStatus.aspx.resx">
+      <DependentUpon>ViewIssueStatus.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewMyIssues.aspx.resx">
+      <DependentUpon>ViewMyIssues.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewResolutionTimeReportDetails.aspx.resx">
+      <DependentUpon>ViewResolutionTimeReportDetails.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewSelectedIssue.aspx.resx">
+      <DependentUpon>ViewSelectedIssue.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.resx">
+      <DependentUpon>ViewSelectedIssueBySuperAdmin.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\admin\ViewSuperAdminIssues.aspx.resx">
+      <DependentUpon>ViewSuperAdminIssues.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDesk\controls\AdminHeader.ascx.resx">
+      <DependentUpon>AdminHeader.ascx.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="Reports\AbsenteeismReport.rdlc" />
+    <Content Include="Reports\BenchReport.rdlc" />
+    <Content Include="Reports\BillAbilityReport.rdlc" />
+    <Content Include="Reports\ExitEmployeeReport .rdlc" />
+    <Content Include="Reports\ProjectTaskPlantVsActual.rdlc" />
+    <Content Include="Reports\TravelDelails.rdlc" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prod|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>25000</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

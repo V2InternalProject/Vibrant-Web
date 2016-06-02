@@ -1,0 +1,339 @@
+﻿@model HRMS.Models.ContactViewModel
+@{
+    ViewBag.Title = "ContactDetailsForm";
+
+}
+@*    $(".Title").hide();*@
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Travel/_TravelContactDetails.js")" type="text/javascript"></script>
+<h4 class="SmallHead">
+    Emergency Contact Details
+</h4>
+<div class="tablestyle3">
+    <table id="jqEmergencyContactTable"></table>
+</div>
+<div id="jqEmergencyContactTablePager">
+</div>
+<div id="deleteEmergencyContactDialogConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the record?
+    </p>
+</div>
+<div id="deleteEmergencyContact" style="display: none">
+    Record has been deleted
+</div>
+<div id="ValidContactNoDialog" title="Emergency Contact Details" style="display: none">
+    <p>
+        Contact Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidEmailDialog" title="Emergency Contact Details" style="display: none">
+    <p>
+        Please enter valid email id.
+    </p>
+</div>
+<div id="RelationRequiredDialog" title="Emergency Contact Details" style="display: none">
+    <p>
+        Please select value of Relation.
+    </p>
+</div>
+<div id="AddEmergencyContactSuccessMessege" style="display: none">
+    <p>
+        Emergency contact Details have been saved.
+    </p>
+</div>
+<div id="dialogActionEmergencyContact" style="display: none;">
+    @Html.Partial("_AddTravelEmergencyContactDetails", Model)
+</div>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "EmergencyContactFrm" }))
+{
+    @Html.HiddenFor(x => x.UniqueID)
+    @Html.HiddenFor(x => x.TravelId)
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        isEmergencyRowInEditMode = false;
+        var TravelId = '@Model.TravelId';
+        stringRelationList = @(Html.Raw(Json.Encode(ViewBag.RelationTypeList)));
+        var ddlRelation = [];
+        ddlRelation.push("Select");
+        $.each(stringRelationList, function (index, value) {
+            ddlRelation.push(value.Relation);
+        });
+        // Set up the jquery grid
+        $("#jqEmergencyContactTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: TravelId },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["EmployeeEmergencyContactId", "TraveId", "Name", "Address", "Contact No.", "Email Id", "", "Relationship", "IsAddedFromVB", ""],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeEmergencyContactId", index: "EmployeeEmergencyContactId", hidden: true, align: "left", visible: "false", editable: true },
+                { name: "TravelId", index: "TravelId", hidden: true, align: "left" },
+                { name: "Name", index: "Name", editable: true, editrules: { required: true }, editoptions: { maxlength: 1000 }, align: "left" },
+                { name: "EmgAddress", index: "EmgAddress", editable: true, editoptions: { maxlength: 4000 }, align: "left" },
+                { name: "ContactNo", index: "ContactNo", editable: true, editrules: { required: true, custom: true, custom_func: isValidContactNo }, editoptions: { maxlength: 100 }, align: "left" },
+                { name: "EmailId", index: "EmailId", editable: true, editrules: { custom: true, custom_func: isValidEmailAddress }, editoptions: { maxlength: 50 }, align: "left" },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" },
+                { name: "Relation", index: "Relation", align: "left", editable: true, editrules: { required: true, custom: true, custom_func: isRelationSelected }, edittype: "select", editoptions: { value: ddlRelation, dataEvents: [{ type: 'change', fn: function (e) { ChangeRelation(e); } }]} },
+                { name: "IsAddedFromVB", index: "IsAddedFromVB", hidden: true, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 25,
+                    align: "center",
+                    formatter: DeleteIconifNotNeeded
+                }
+            ],
+            // Grid total width and height
+            width: 750,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqEmergencyContactTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "EmployeeEmergencyContactId",
+            sortorder: "asc",
+            // Grid caption
+            editurl: '@Url.Action("AddTravelEmergencyContactDetails", "Travel")',
+            // caption: "Employee - Emergency Contact Details",
+            gridComplete: function () {
+                var viewstatus = '@ViewBag.StageID';
+                if (viewstatus >= 1 && viewstatus <= 3) {
+                    //jQuery('#btnAddEmergencyContactDetails').hide();
+                    $("#gbox_jqEmergencyContactTable").find('input,select').attr("disabled", true);
+                    $("#gbox_jqEmergencyContactTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                }
+                if ('@ViewBag.viewDetailClick' == 'yes') {
+                    $("#jqEmergencyContactTable").hideCol("Delete");
+                    $("#gbox_jqEmergencyContactTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var viewstatus = '@ViewBag.StageID';
+                var rowData = $(this).getRowData(rowid);
+                if(isEmergencyRowInEditMode == false)
+                {
+                    var deleteId = rowData['EmployeeEmergencyContactId']
+                    var isAddedFromVB = rowData['IsAddedFromVB']
+                    if (iCol == 9) {
+                        if ((viewstatus >= 1 && viewstatus <= 4) || ('@ViewBag.viewDetailClick' == 'yes') || isAddedFromVB == "true") {
+                            return false;
+                        }
+                        else {
+                            if(rowid != "new_row")
+                                DeleteTravelContactDetails(deleteId, '@Model.TravelId');
+                        }
+                    }
+                    else {
+                        if (isAddedFromVB == "true") {
+                            $("#jqEmergencyContactTable_iledit").css("visibility", "hidden");
+                        }
+                        else {
+                            $("#jqEmergencyContactTable_iledit").css("visibility", "visible");
+                        }
+                        //                        if ((viewstatus >= 1 && viewstatus <= 4) || ('@ViewBag.viewDetailClick' == 'yes') || isAddedFromVB == "true") {
+                        //                             //$("#jqEmergencyContactTablePager_left").css("visibility","hidden");
+                        //                            return false;
+                        //                        }
+                        //                        else {
+                        //                             $("#jqEmergencyContactTablePager_left").css("visibility","visible");
+                        //                            //EditTravelContactDetails(rowData);
+                        //                        }
+                    }
+                }
+            }
+        }).navGrid("#jqEmergencyContactTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqEmergencyContactTable").jqGrid('inlineNav', "#jqEmergencyContactTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            edittext:"Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+            addtext:"Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+            savetext:"Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            canceltext:"Cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        isEmergencyRowInEditMode = true;
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc:  function(rowId){
+                    isEmergencyRowInEditMode = true;
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    UniqueID: function () {
+                        return $('#EmergencyContactFrm #UniqueID').val();
+                    },
+                    TravelId: function () {
+                        return $('#EmergencyContactFrm #TravelId').val();
+                    }
+                },
+                aftersavefunc: function (data, response) {
+                    isEmergencyRowInEditMode = false;
+                    var result = $.parseJSON(response.responseText);
+                    jQuery("#jqEmergencyContactTable").trigger("reloadGrid");
+                    if (result.status == true)
+                        $("#AddEmergencyContactSuccessMessege").dialog({
+                            resizable: false,
+                            width: 300,
+                            modal: true,
+                            title: 'Emergency Contact Details',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog("Emergency Contact Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Emergency Contact Details");
+                    }
+
+                },
+                errorfunc: null,
+                afterrestorefunc: function(){
+                    isEmergencyRowInEditMode = false;
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        function DeleteIconifNotNeeded(cellvalue, options, rowobject) {
+            if (rowobject['IsAddedFromVB'] == true) {
+                return '';
+            }
+            else {
+                if ('@ViewBag.StageID' == 0) {
+                    return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                }
+                else {
+                    return '';
+                }
+            }
+        }
+        var viewstatus = '@ViewBag.StageID';
+        if ((viewstatus >= 1 && viewstatus <= 4) || ('@ViewBag.viewDetailClick' == 'yes'))
+            $("#jqEmergencyContactTablePager_left").css("visibility", "hidden");
+        else
+            $("#jqEmergencyContactTablePager_left").css("visibility", "visible");
+    });
+    function isValidContactNo(value, Colname) {
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+
+        var valid = pattern.test(value);
+
+        if (!valid) {
+            $("#ValidContactNoDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	            {
+	                "Ok": function () {
+	                    $(this).dialog("close");
+	                }
+	            }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function isValidEmailAddress(value, Colname) {
+        var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+
+        var valid = pattern.test(value);
+
+        if (!valid) {
+            $("#ValidEmailDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+			    {
+			        "Ok": function () {
+			            $(this).dialog("close");
+			        }
+			    }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function ChangeRelation(e) {
+        var relationName = e.target[e.target.selectedIndex].text;
+        var ID = 0;
+        $.each(stringRelationList, function (index, value) {
+            if (value.Relation == relationName) {
+                ID = value.uniqueID;
+            }
+        });
+        $('#EmergencyContactFrm #UniqueID').val(ID);
+    }
+
+    function isRelationSelected(value, colname) {
+        if (value == "0") {
+            $("#RelationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	      {
+	          "Ok": function () {
+	              $(this).dialog("close");
+	          }
+	      }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+</script>

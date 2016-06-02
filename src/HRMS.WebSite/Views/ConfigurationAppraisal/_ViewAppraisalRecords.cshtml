@@ -1,0 +1,36 @@
+﻿@model HRMS.Models.ViewYearModel
+@{
+    ViewBag.Title = "View Year Records";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+       View Year Records<a style="float: right; margin-right: 30px; margin-top: 3px; margin-bottom: 3px;
+    color: brown; font-weight:normal;color:#a52a2a; font-size:12px; line-height:22px;" href="/ConfigurationAppraisal/ConfigureAppraisalYear">Back</a></h2>
+    <div class="blueBorderTop clearfix appraisalRecords">
+    <br />
+        <div class="leftcol">
+            <h3>
+                Current Year</h3>
+            @*<a id="@Model.CurrentYearID" href="#">@Model.CurrentYearName</a>*@
+            @Html.DisplayFor(model => model.CurrentYearName, new { @id = @Model.CurrentYearID })
+        </div>
+        <div class="rightcol">
+            <h3>
+                Past Years</h3>
+            @foreach (var item in @Model.PastYearsList)
+            {
+                @*<a id="@item.PastYearID" href="#">@item.PastYearName</a><br />*@
+                @Html.DisplayFor(model => item.PastYearName, new { @id = item.PastYearID })<br />
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".Title").hide();
+    });
+</script>

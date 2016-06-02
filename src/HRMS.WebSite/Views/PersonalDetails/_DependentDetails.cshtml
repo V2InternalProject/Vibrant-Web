@@ -1,0 +1,406 @@
+﻿@model HRMS.Models.DependentDetailsViewModel
+@{
+    ViewBag.Title = "Dependent Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="@Url.Content("../../Scripts/PersonalDetails/_DependentDetails.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        var deletionIdSelected = 0;
+        SelectedDependentRowId = "";
+        isDependentRowInAddEditMode = false;
+        $('#DependantsDetailsForm #EmployeeId').val('@Model.EmployeeId');
+        stringRelationList = @(Html.Raw(Json.Encode(Model.RelationList)));
+        var relation = [];
+        relation.push("Select");
+        $.each(stringRelationList, function (index,value) {
+            relation.push(value.DependandsRelation);
+        });
+
+        // Set up the jquery grid
+        $("#dependantTable").jqGrid({
+            // Ajax related configurations
+
+            url: '@Url.Action("DependentDetailsLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.DependentEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee ID", "Dependant ID", "Name", "Relation", "", "Birth Date", "Age(Years)", ""],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "DependandsId", index: "DependandsId", hidden: true, editable: true, width: 100, align: "left" },
+                { name: "DependandsName", index: "DependandsName", width: 150, editable: true, editrules: { required: true }, editoptions: { maxlength: 1000}, align: "left" },
+                { name: "DependandsRelation", index: "DependandsRelation", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDependentRelation(e); } }]} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" },
+                { name: "DependandsBirthDate", index: "DependandsBirthDate", width: 70, editable: true, editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions:{
+                    readonly:true,
+                    dataEvents: [{ type: 'change', fn: function(e) {ChangeDependandsBirthDate(e); } }],
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true,
+                            maxDate: 0,
+                            yearRange: "-100:+10"
+                        });
+                    }
+                } },
+                { name: "DependandsAge", index: "DependandsAge", width: 50, editable: true, align: "left", classes: "DependandAgeClass" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 22,
+                    align: "center",
+                    formatter: function () {
+                        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					          || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')) &&
+					  ('@Model.EmpStatusMasterID' != 2)) {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            ],
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#dependantTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("SaveDependantInfo", "PersonalDetails")',
+            //caption: "Employee - Dependant Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#dependantTable").jqGrid('getGridParam', 'records');
+                //if (count == 0) {
+                //    $('#gbox_dependantTable').hide();
+                //}
+                //else {
+                //    $('#gbox_dependantTable').show();
+                //    if (count > 20) {
+
+                //        $('#dependantTablePager').show();
+                //    }
+                //    else {
+                //        $('#dependantTablePager').hide();
+                //    }
+                //}
+                if ('@Model.EmpStatusMasterID' == 2) {
+                    //$("#btnAddDependantDetails").hide();
+                    $("#gbox_dependantTable").find('input,select').attr("disabled", true);
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectedDependentRowId = rowid;
+                var rowData = $(this).getRowData(rowid);
+                if(isDependentRowInAddEditMode == false){
+                    var columnName = $(this).jqGrid("getGridParam", "colModel");
+                    var selectedDependantId = rowData['DependandsId'];
+                    $('#DependantsDetailsForm #uniqueID').val(rowData['uniqueID']);
+                    var colName = columnName[iCol];
+                    if (colName['index'] == "Delete" && rowid != "new_row") {
+                        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+                        || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId'))
+                         && ('@Model.EmpStatusMasterID' != 2)) {
+                            DeleteDependantDetail(selectedDependantId, '@ViewBag.DependentEmployeeId');
+                        }
+                    }
+                }@*else {
+                    if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId'))
+					 &&
+					('@Model.EmpStatusMasterID' != 2)) {
+                        EditDependantDetails(rowData);
+                    }
+                }*@
+            }
+        }).navGrid("#dependantTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+        $("#dependantTable").jqGrid('inlineNav', "#dependantTablePager",
+       {
+           edit: true,
+           editicon: "ui-icon-pencil",
+           edittext:"Edit",
+           add: true,
+           addicon: "ui-icon-plus",
+           addtext:"Add",
+           save: true,
+           saveicon: "ui-icon-disk",
+           savetext:"Save",
+           cancle: true,
+           cancelicon: "ui-icon-cancel",
+           canceltext:"Cancel",
+           addParams: {
+               useFormatter: false,
+               addRowParams: {
+                   oneditfunc: function (rowid) {
+                       isDependentRowInAddEditMode = true;
+                       $(".DependandAgeClass").find("input").attr("readonly","readonly");
+                       SelectedDependentRowId = rowid;
+                   }
+               }
+           },
+           editParams: {
+               keys: false,
+               oneditfunc: function (rowid) {
+                   isDependentRowInAddEditMode = true;
+                   $(".DependandAgeClass").find("input").attr("readonly","readonly");
+               },
+               sucessfunc: function (data) {
+               },
+               url: null,
+               extraparam: {
+                   RelationId: function () {
+                       return $('#DependantsDetailsForm #uniqueID').val();
+                   },
+                   EmployeeID: function () {
+                       return $('#DependantsDetailsForm #EmployeeId').val();
+                   }
+                   //ProjectID: function () {
+                   //    return $('#addProjectModule #ProjectID').val();
+                   //},
+                   //SelectedModuleName: function () {
+                   //    return $("#addProjectModule #SelectedModuleName").val();
+                   //}
+               },
+               aftersavefunc: function (data, response) {
+                   isDependentRowInAddEditMode = false;
+                   var results = $.parseJSON(response.responseText);
+                   $("#dependantTable").trigger("reloadGrid");
+                   if (results.status == true) {
+                       $("#AddDependantSuccessMessege").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+                   else if (results.status == "Error") {
+                       $("#errorDialog").dialog({
+                           resizable: false,
+                           height: 'auto',
+                           width: 'auto',
+                           modal: true,
+                           title: 'Dependent Details',
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       }); //end dialog
+                   }
+                   else {
+                       $("#AddDependantErrorMessege").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+
+               },
+               errorfunc: null,
+               afterrestorefunc: function(){
+                   isDependentRowInAddEditMode = false;
+               },
+               restoreAfterError: true,
+               mtype: "POST"
+           }
+       });
+
+        if ('@Model.EmpStatusMasterID' == 2) {
+            $("#dependantTable_iladd").css("visibility","hidden");
+        }
+        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId'))
+					 &&
+					('@Model.EmpStatusMasterID' != 2)) {
+            //EditDependantDetails(rowData);
+            $("#dependantTable_iledit").css("visibility","visible");
+        }
+        else
+            $("#dependantTable_iledit").css("visibility","hidden");
+
+    if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeId') {
+        //$("#btnAddDependantDetails").hide();
+        $("#dependantTablePager_left").css("visibility","hidden");
+    }
+    });
+</script>
+@*<h3 class="mrgnT15">
+        Dependant Details</h3>
+    <div class="clearfix NoTitleGridsContainer">
+        <fieldset class="">
+            <div id="addDependantsDialog" style="display: none">
+                @Html.Partial("_AddDependantDetails", Model)
+            </div>
+            <div class="clear">
+                @Html.HiddenFor(m => m.UserRole)
+                @Html.HiddenFor(x => x.EmployeeId)
+                <input type="button" value="Add Dependant Details" id="btnAddDependantDetails" class="button" />&nbsp;&nbsp;
+            </div>
+            <div class="tablestyle3">
+                <table id="dependantTable" class="scroll">
+                </table>
+            </div>
+            <div id="dependantTablePager">
+            </div>
+        </fieldset>
+    </div>
+    <div id="deleteDependantDialogConfirmation" style="display: none">
+        <p>
+            Are you sure you want to delete the selected record ?</p>
+    </div>
+    <div id="deleteDependantRecord" style="display: none;">
+        <p>
+            Record has been deleted successfully.
+        </p>
+    </div>*@
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && Model.EmployeeId != ViewBag.LoggedInEmployeeId)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })" class="selected">Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })">Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.DependentEmployeeId })"> Medical History</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody DependentMainbody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "DependantsDetailsForm" }))
+        {
+            @Html.HiddenFor(x => x.uniqueID)
+            @Html.HiddenFor(x => x.EmployeeId)
+            @Html.HiddenFor(x => x.UserRole)
+        }
+        <div class="FormContainerBox  dependent clearfix" style="display:none">
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Dependent Name:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Date Of Birth:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" placeholder="datepicker" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Dependent Relation:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Age(Years):</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fill-dtls clearfix" style="display:none">
+            <input type="button" value="Save" class="ButtonGray" />
+        </div>
+        <div class="mrgnT33">
+            <div class="tablestyle3">
+                <table id="dependantTable" class="scroll"></table>
+            </div>
+            <div id="dependantTablePager">
+            </div>
+        </div>
+    </div>
+    <div id="RelationRequiredDialog" title="Dependant details" style="display: none">
+        <p>
+            Please select value of Relation.
+        </p>
+    </div>
+    <div id="AddDependantSuccessMessege" title="Dependant details" style="display: none;">
+        <p>
+            Dependant details have been saved.
+        </p>
+    </div>
+    <div id="AddDependantErrorMessege" style="display: none;">
+        <p>
+            Unable to add record
+        </p>
+    </div>
+    <div id="DeleteConfirmation" style="display: none;">
+        <p>
+            Record has been deleted.
+        </p>
+    </div>
+    <div id="DeleteConfirmationDialog" style="display: none">
+        <p>
+            Are you sure you want to delete the record?
+        </p>
+    </div>
+</section>

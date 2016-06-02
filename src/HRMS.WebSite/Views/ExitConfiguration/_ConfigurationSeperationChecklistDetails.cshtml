@@ -1,0 +1,307 @@
+﻿@model HRMS.Models.ExitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script type="text/javascript">
+    $("#back_checklist").click(function () {
+        window.location.href = '@Url.Action("Index", "ExitConfiguration")';
+//        parent.history.back();
+//        return false;
+    });
+    $("#btnSelectAll").click(function () {
+        $(".case_checklist").attr("checked", "checked");
+    });
+    $("#btnDeselectAll").click(function () {
+        $(".case_checklist").removeAttr("checked");
+    });
+    function Add() {
+        window.location.href = '@Url.Action("ConfigureSeparationEditCheckList", "ExitConfiguration")?QuestionnaireID=' + null;
+    }
+
+    function Delete() {
+        var collection = [];
+        $.each($(".case_checklist:checked"), function (i, val) {
+            collection.push($(val).attr("data"));
+        });
+        if (collection == "") {
+            $("#NoItemSelectedtodeleteCheckList").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#Deletechecklist").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $(this).dialog('close');
+                        DeleteCall();
+                    },
+                    Close: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+        function DeleteCall() {
+            $.ajax({
+                url: '@Url.Action("DeleteCheckList", "ExitConfiguration")',
+                data: JSON.stringify(collection),
+                type: 'post',
+                datatype: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        $("#DeleteSuccess_checklist").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $('.case_checklist').attr('checked', false);
+                                    $(this).dialog("close");
+                                    location.reload();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#Errorindeletechecklist").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                Error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Errorindeletechecklist").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+</script>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")" class="selected">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Stages Approvers</a>
+        </nav>
+    </div>
+    <div class="MainBody sepconfig-reasonMainbody">
+        <div class="clearfix">
+            <h3 class="clearfix">Configure Checklist</h3>
+        </div>
+        <div class="Hrmain sep-check clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Check List:</label>
+                        </div>
+                        <div class="InputDiv">
+                           <input type="text" />
+                        </div>
+                    </div>
+                    <div class="clearL mrgnT20 leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Reason:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <select>
+                                <option>abc</option>
+                                <option>abc</option>
+                                <option>abc</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>*Checklist Description:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <textarea></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="ButtonGray mrgnL56 mrgnT20">Save</button>
+        <div class="reason-part2">
+            <button type="button" class="ButtonGray">Delete</button>
+            <button type="button" class="ButtonGray">Select All</button>
+            <button type="button" class="ButtonGray">Deselect All</button>
+
+            @*<table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="5%">Delete</th>
+                        <th class="tableHeaders" width="">CheckList</th>
+                        <th class="tableHeaders" width=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tableRows">
+                        <td>
+                            <input type="checkbox" id="c" />
+                            <label class="LabelForCheckbox" for="c"></label>
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <button type="button" class="ButtonGray saveR">Save</button>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="ButtonGray editR">Edit</button>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="tableRows configbottomcount">
+                        <td colspan="3">
+                            <span>Total Records = 22</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>*@
+
+            <table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="5%">
+                            Delete
+                        </th>
+                        <th class="tableHeaders">
+                            CheckList
+                        </th>
+                    </tr>
+                </thead>
+                <div>
+                    @foreach (var item in Model.seperationCheckList)
+                    {
+                        <tr class="tableRows">
+                            <td align="center">
+                                @Html.CheckBoxFor(x => item.isChecked, new { @class = "case_checklist", @data = item.QuestionnaireID })
+                                <input type="checkbox" id="c" />
+                                <label class="LabelForCheckbox" for="c"></label>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("ConfigureSeparationEditCheckList", "ExitConfiguration", new { QuestionnaireID = @item.QuestionnaireID })" id="@item.QuestionnaireID">@item.QuestionnaireName</a>
+                            </td>
+                        </tr>
+                    }
+                </div>
+                <tr class="tableRows configbottomcount bluebgtable1">
+                    <td colspan="3">
+                        <span>
+                            Total Records = @Html.DisplayFor(x => x.CountRecord)
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <div id="DeleteSuccess_checklist" style="display: none" title="Deleted Successfully">
+                <center class="LoadingWrap">
+                   Selected Record has been Deleted Successfully.
+            </center>
+            </div>
+            <div id="Deletechecklist" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                   Are you sure, you want to delete the selected records?
+            </center>
+            </div>
+            <div id="NoItemSelectedtodeleteCheckList" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                  Please select atleast one record to delete.
+            </center>
+            </div>
+            <div id="Errorindeletechecklist" style="display: none" title="Error">
+                <center class="LoadingWrap">
+                  There is some Error.
+            </center>
+            </div>
+        </div>
+    </div>
+</section>

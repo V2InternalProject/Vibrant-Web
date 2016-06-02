@@ -1,0 +1,79 @@
+﻿@model HRMS.Models.EmployeeMailTemplate
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "MailDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("From")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field floatL fieldwidth-mail">
+                @Html.TextBoxFor(model => model.From, new { @disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.From)
+                @Html.HiddenFor(model => model.From, new { id = "hdFrom" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("To")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field floatL fieldwidth-mail">
+                @Html.TextBoxFor(model => model.To)
+                @Html.ValidationMessageFor(model => model.To)
+                @Html.HiddenFor(model => model.To, new { id = "hdTo" })
+                <span id="ToErrorMessage" style="display: none; color: red">Please enter proper Email
+                    ID </span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("Cc")
+            </div>
+            <div class="editor-field floatL fieldwidth-mail">
+                <span class="top-txtarea">@Html.TextAreaFor(model => model.Cc)</span>
+                @Html.ValidationMessageFor(model => model.Cc)
+                @Html.HiddenFor(model => model.Cc, new { id = "hdCc" })
+                <span id="CCErrorMessage" style="display: none; color: red">Please enter proper Email
+                    IDs </span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("Subject")
+            </div>
+            <div class="editor-field floatL fieldwidth-mail">
+                @Html.TextBoxFor(model => model.Subject, null, new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.Subject)
+                @Html.HiddenFor(model => model.Subject, new { @id = "hdSubject" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("Note")
+            </div>
+            <div class="editor-field fieldwidth-mail floatL">
+                <p>
+                    The valid separators for the Email IDs are space(" "), comma(",") and semi-colon(";")."
+                </p>
+                @*@Html.Label("The valid separators for the Email IDs are space(" + " " + "), comma(" + "," + ") and semi-colon(" + ";" + ").")*@
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label floatL labelwidth-mail">
+                @Html.Label("Message")
+            </div>
+            <div class="editor-field floatL fieldwidth-mail">
+                @Html.TextAreaFor(model => model.Message)
+                @Html.ValidationMessageFor(model => model.Message)
+                @Html.HiddenFor(model => model.Message, new { @id = "txtAgeDependant" })
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="sendSeparationMail" type="submit" value="Send" class="button" />
+        </div>
+    </div>
+   
+        	
+}

@@ -1,0 +1,220 @@
+﻿@model HRMS.Models.DesignationDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function ()
+	{
+	    if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin')
+		{
+			$("#addNewDesignation :input").attr("disabled", true);
+		}
+	});
+</script>
+@using (Html.BeginForm("DesignationDetails", "EmployeeDetails", FormMethod.Post, new { id = "addNewDesignation" }))
+{
+	@Html.HiddenFor(x => x.EmployeeId)
+	@Html.HiddenFor(x => x.UniqueId)
+	@Html.ValidationSummary(true)
+     <div class="mrgnT25">
+	<div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.Year)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              @Html.EditorFor(x => x.Year)
+			@Html.ValidationMessageFor(x => x.Year)
+			@Html.HiddenFor(x => x.Year, new { @id = "year" })
+            </div>
+        </div>
+
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.Month)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              @Html.DropDownListFor(x => x.Month, new SelectList(Model.GetMonths(), "Text", "Text", "Select"))
+			@Html.ValidationMessageFor(x => x.Month)
+			@Html.HiddenFor(x => x.Month, new { @id = "month" })
+            </div>
+        </div>
+
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              	@Html.LabelFor(x => x.Grade)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              	@Html.DropDownListFor(x => x.Grade, (SelectList)ViewBag.GradeList)
+			@Html.ValidationMessageFor(x => x.Grade)
+			@Html.HiddenFor(x => x.Grade, new { @id = "grade" })
+            </div>
+        </div>
+
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.Level)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              @Html.DropDownListFor(x => x.Level, (SelectList)ViewBag.LevelList)
+			@Html.ValidationMessageFor(x => x.Level)
+			@Html.HiddenFor(x => x.Year, new { @id = "level" })
+            </div>
+        </div>
+		 <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.Designation)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              	@Html.TextBoxFor(x => x.Designation)
+			@Html.ValidationMessageFor(x => x.Designation)
+			@Html.HiddenFor(x => x.Designation, new { @id = "designation" })
+            </div>
+        </div>
+         <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.RoleDescription)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              	@Html.EditorFor(x => x.RoleDescription)
+			@Html.ValidationMessageFor(x => x.RoleDescription)
+			@Html.HiddenFor(x => x.RoleDescription, new { @id = "roleDescription" })
+            </div>
+        </div>
+         <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              	@Html.LabelFor(x => x.JoiningDesignation)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+              @Html.EditorFor(x => x.JoiningDesignation, new { @id = "JoiningDesignation" })
+			@Html.ValidationMessageFor(x => x.JoiningDesignation)
+			@Html.HiddenFor(x => x.JoiningDesignation, new { @id = "joiningDesignation" })
+            </div>
+        </div>
+        
+
+	</div>
+		
+	
+		<div class="clear popup_button ">
+			<div class="floatR">
+				<input id="saveDesignation" type="submit" value="Save" class="button mrgnR5" />
+				<input id="cancel" type="button" value="Reset" onclick="resetDiaglog()" class="button" />
+            </div>
+		</div>
+	
+    
+}
+<div id="successDesignationDialog" title="Designation Details" style="display: none">
+	<p>
+		Designation Details have been saved.</p>
+</div>
+<div id="errorDialog" title="Error" style="display: none">
+	<p>
+		There are some errors.</p>
+</div>
+<script type="text/javascript">
+	$(function ()
+	{
+		var postUrl = '@Url.Action("DesignationDetails", "EmployeeDetails")';
+
+		$('#saveDesignation').click(function ()
+		{
+			if($('#addNewDesignation').valid())
+			{
+				$.ajax({
+					url: postUrl,
+					type: 'POST',
+					data: $('#addNewDesignation').serialize(),
+					success: function (results)
+					{
+						if(results.status)
+						{
+							$('#newdesignationdialog').dialog("close");
+							jQuery("#jqDesignationTable").trigger("reloadGrid");
+
+							$("#successDesignationDialog").dialog({
+								resizable: false,
+								height: 140,
+								width: 300,
+								modal: true,
+								title: 'Designation Details',
+								buttons: {
+									Ok: function ()
+									{
+										$(this).dialog("close");
+									}
+								}
+							});
+						}
+						else
+						{
+							$("#errorDialog").dialog({
+								resizable: false,
+								height: 140,
+								width: 300,
+								title: 'Designation Details',
+								buttons: {
+									Ok: function ()
+									{
+										$(this).dialog("close");
+									}
+								}
+							});
+						}
+					}
+				});
+			}
+			return false;
+		});
+	});
+
+	$(document).ready(function ()
+	{
+		$("#Designation").autocomplete({
+			source: function (request, response)
+			{
+				$.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data)
+				{
+					response($.map(data, function (el)
+					{
+						return {
+							label: el.DesignationName,
+							value: el.DesignationName
+						};
+					}));
+				});
+			}
+		});
+
+		$("#JoiningDesignation").autocomplete({
+			source: function (request, response)
+			{
+				$.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data)
+				{
+					response($.map(data, function (el)
+					{
+						return {
+							label: el.DesignationName,
+							value: el.DesignationName
+						};
+					}));
+				});
+			}
+		});
+	});
+
+	var resetDiaglog = function ()
+	{
+		$(".field-validation-error").empty();
+		$('input').removeClass("input-validation-error");
+
+		$('#Year').val($('#year').val());
+		$('#Month').val($('#month').val());
+		$('#Grade option:contains(' + $('#grade').val() + ')').attr("selected", "selected"); 
+		$('#Level').val($('#level').val());
+		$('#Designation').val($('#designation').val());
+		$('#RoleDescription').val($('#roleDescription').val());
+		$('#JoiningDesignation').val($('#joiningDesignation').val());
+		$('#IsEdit').val('false');
+	}
+</script>

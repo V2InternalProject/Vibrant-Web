@@ -1,0 +1,141 @@
+﻿@model HRMS.Models.SeparationChecklist
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+    <script type="text/javascript">
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+        $("#back_approver").click(function () {
+            parent.history.back();
+            return false;
+        });
+
+        $('#selectCheckListDialog').click(function () {
+
+            $("#SeparationStageApproverDialog").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 1100,
+                modal: true,
+                title: "Resource Selection",
+                open: function (event, ui) {
+                    $('#SeparationStageApproverDialog').load("/ExitConfiguration/FeedbackChecklist?approverID=" + collection + "&searchstring=" + "").dialog('open');
+                },
+                close: function () {
+
+                    location.reload();
+                }
+            });
+        });
+
+        function FeedbackChecklist(id) {
+            DisplayLoadingDialog();
+            $.ajax({
+                url: '@Url.Action("FeedbackChecklist", "ExitConfiguration")',
+                data: { OrderNumber: id },
+                type: 'get',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#SeparationStageApproverDialog").empty().append(results);
+                    $("#SeparationStageApproverDialog").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 600,
+                        width: 1100,
+                        overflow: scroll,
+                        modal: true,
+                        title: "Resource Selection",
+                        close: function (event, ui) {
+                            $("#SeparationStageApproverDialog").dialog("destroy");
+                            location.reload();
+                            //$("#loading").dialog("close");
+                            //$("#loading").dialog("destroy");
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")" class="selected">Set Stages Approvers</a>
+        </nav>
+    </div>
+    <div class="MainBody sepconfig-reasonMainbody">
+        <div class="clearfix">
+            <h3 class="clearfix">Set Stages Approvers</h3>
+            @*<input type="button" class="ButtonGray backbtn" value="Back">*@
+        </div>
+        <div class="reason-part2">
+
+            <table cellpadding="0" cellspacing="0" border="0" width="98%" class="mrgnTN41 TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders">
+                            Order Number
+                        </th>
+                        <th class="tableHeaders">
+                            Stage
+                        </th>
+                        <th class="tableHeaders">
+                            Approver
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.seperationChecklist)
+                {
+                    <tr class="tableRows">
+                        <td align="left">
+                            @Html.DisplayFor(x => item.OrderNo)
+                        </td>
+                        <td align="left">
+                            @Html.DisplayFor(x => item.Stage)
+                        </td>
+                        @if (item.OrderNo == 3 || item.OrderNo == 4 || item.OrderNo == 5 || item.OrderNo == 6 || item.OrderNo == 8)
+                        {
+                            if (@item.Approver != null)
+                            {
+                                <td>
+                                    <a href="#" id="@item.OrderNo" onclick="FeedbackChecklist(this.id)">@item.Approver</a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <a href="#" id="@item.OrderNo" onclick="FeedbackChecklist(this.id)">Select Stakeholder</a>
+                                </td>
+                            }
+                        }
+                        else
+                        {
+                            <td>
+                                <label>
+                                    -
+                                </label>
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+            <div id="SeparationStageApproverDialog">
+            </div>
+        </div>
+    </div>
+</section>

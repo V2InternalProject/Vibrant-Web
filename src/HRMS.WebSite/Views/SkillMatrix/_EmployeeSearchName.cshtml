@@ -1,0 +1,750 @@
+﻿@model HRMS.Models.SkillMatrix.SearchByEmployeeNameModel
+<link href="../../Content/New%20Design/rmg.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="~/Scripts/New%20Design/jquery.selectBox.js"></script>
+<link href="~/Content/New%20Design/jquery.selectBox%20(2).css" rel="stylesheet" />
+<script type="text/javascript">
+    var ResourceID;
+    var RatingVal;
+    var SkillNames="";
+    var SkillDropId;
+    var GlobalSkillID;
+    var TempEmpID="";
+    var numberOfChecked="";
+    OnAddDelete=false;
+    $(document).ready(function () {
+        $(function () {
+            $('select').selectBox({
+                hideOnWindowScroll: true,
+                keepInViewport: false
+            });
+        });
+
+
+        $('#btnExportToExcel').hide();
+        $('#DetailInfo').hide();
+        $('#btnExportToExcel').click(function () {
+            window.location.href = '@Url.Action("ExportToExcelOfBulkAllocationon", "SkillMatrix")' + '?id=' + TempEmpID ;
+        }
+        );
+        $('#showHistory').click(function () {
+            count = jQuery("#jqSearchByEmployeeName").jqGrid('getGridParam', 'reccount');          
+
+            $.ajax(
+            {
+                url: '@Url.Action("SkillCount", "SkillMatrix")',
+                data: { employeeId: TempEmpID },
+                type: 'POST',
+                async:false,
+                success: function (result)
+                {
+
+                    if(result.status==false)
+                    {
+                        InitializeDialog($("#Historydialog"));
+                        $("#Historydialog").dialog("open");
+                    }
+                    else
+                    {
+                        $("#NoRecordInHistory").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            title: 'Show History',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+
+                }
+            });
+        });
+        $("#txtSearchEmployee").keyup(function() {
+
+            if (!this.value) {
+                $("#Employeename").html('');
+                $("#EmployeeId").html('');
+                $('#DetailInfo').hide();
+                $('#pager').hide();
+                $("#jqSearchByEmployeeName").jqGrid('clearGridData');
+
+            }
+
+        });
+        function InitializeDialog($element) {
+            var url='@Url.Action("ShowHistory", "SkillMatrix")?EmployeeId=' + TempEmpID;
+            $element.dialog({
+                autoOpen: false,
+                width:1200,
+                resizable: true,
+                draggable: true,
+                title: "History",
+                modal: true,
+                show: 'slide',
+                closeText: 'x',
+                dialogClass: 'alert',
+                closeOnEscape: true,
+                open: function (event, ui) {
+                    $element.load(url);
+                },
+                close: function () {
+                    $(this).dialog('close');
+                }
+            });
+        }
+        $('#btnDeleteSearch').click(function(){      
+            var Count = GetSelectedCheckbox();
+            if(numberOfChecked > 0)
+            {           
+                var temp=DeleteSearchByEmployeeName(SelectedId);
+            }
+            else if(numberOfChecked==0)
+            {
+                if(OnAddDelete==true)
+                {
+                    OnAddDelete=false;
+                    $("#OnAddDelete").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("destroy");
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    $("#CheckBoxNotSelected").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("destroy");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        var EmployeecodeGrid;
+        $("#txtSearchEmployee").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggestFoeSEM", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + "{" + el.EmployeeCode + "}";
+                        return {
+                            label: el.emplyeeInformation,
+                            value: el.EmployeeName,
+                            text: el.EmployeeCode,
+                            id:el.EmployeeId
+                        };
+                    }));
+                });
+            },
+            select: function (event, ui) {
+                GetEmployeeCode(event, ui);
+                EmployeecodeGrid = $('#EmployeeId').val();
+
+                if(EmployeecodeGrid!="")
+                {
+                    $('#DetailInfo').show();
+                }else
+                {
+                    $('#DetailInfo').hide();
+                }
+                jQuery("#jqSearchByEmployeeName").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid', [{ page: 1 }]);
+                $('#pager').show();
+            }
+
+        });
+        function GetEmployeeCode(event, ui) {
+            var EmployeeId = ui.item.text;
+            TempEmpID=ui.item.id;
+            document.getElementById('Employeename').innerHTML = ui.item.value;
+            document.getElementById('EmployeeId').innerHTML = ui.item.text;
+            document.getElementById('Employeename').value = ui.item.value;
+            document.getElementById('EmployeeId').value = ui.item.text;
+            $('#HideBeforeSelect').show();
+        }
+        ResoucePools = @(Html.Raw(Json.Encode(ViewBag.IsResource)));
+        var ResoucePool = [];
+        ResoucePool.push("Select");
+        $.each(ResoucePools, function (index,value) {
+            ResoucePool.push(value.ResourcePoolName);
+        });
+
+        var SkillName=[];
+        Ratings = @(Html.Raw(Json.Encode(ViewBag.IsRating)));
+        var Rating = [];
+        Rating.push("Select");
+        $.each(Ratings, function (index,value) {
+            Rating.push(value.Rating);
+        });
+        $("#jqSearchByEmployeeName").jqGrid({
+            url: '@Url.Action("LoadSearchByEmployeeName", "SkillMatrix")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { userEmployeecode: function () { return EmployeecodeGrid } },
+            colNames: ['','','EmployeeName', 'EmployeeCode','SkillID', 'ResourcePoolName', 'SkillName', 'Rating','Delete'],
+            colModel: [
+                { name: "ID", index: "ID", hidden: true, width: 100, align: "left",editable:true },
+                { name: "loggedInUserEmployeeCode", index: "loggedInUserEmployeeCode", align: "left", width: 20, editable: true, hidden: true },
+                { name: "EmployeeName", index: "EmployeeName", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeCode", index: "EmployeeCode", hidden: true, width: 100, align: "left" },
+                { name: "SkillID", index: "SkillID", hidden: true, width: 100, align: "left" ,editable:true},
+                { name: "ResourcePoolName", index: "ResourcePoolName", align: "left", width: 107,editable: true, editrules: { required: true, custom: true, custom_func: IsResourcePoolSelected }, edittype: "select", editoptions: { value: ResoucePool, dataEvents: [{ type: 'change', fn: function(e) { getResourcePoolName(e); } }]} },
+                { name: "Description", index: "Description", align: "left", width: 107,editable: true, editrules: { required: true, custom: true, custom_func: IsSkillSelected }, edittype: "select", editoptions: { value: SkillName, dataEvents: [{ type: 'change', fn: function(e) { getSkillName(e); } }]} },
+               // { name: "Rating", index: "Rating", align: "center", width: 107, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: Rating, dataEvents: [{ type: 'change', fn: function(e) { getRatings(e); } }]} },
+                { name: "Rating", index: "Rating", align: "left", width: 107, editable: true, editrules: { required: true, custom: true, custom_func: IsRatingSelected }, edittype: "select", editoptions: { value: Rating, dataEvents: [{ type: 'change', fn: function(e) { getRatings(e); } }]} },
+                { name: "Delete", index: "Delete", width: 100, align: "left", formatter: ForAppendCheckboxID},
+            ],
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: true,
+            rowNum: 20,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: '#pager',
+            loadonce: true,
+            sortname: "ResourcePoolName",
+            sortorder: "asc",
+            refresh:true,
+
+            editurl: '@Url.Action("SaveSearchEmployeeByName", "SkillMatrix")',
+            gridComplete: function () {
+
+                $('.selectBox-label').parents('td').find('select').removeAttr('style');
+                var Data = $('.selectBox-label').parents('td').find('a');
+                $(Data).each(function () {
+                    var obj = $(this);
+                    obj.remove();
+                });
+
+                jQuery('#jqSearchByEmployeeName').setColProp('ResourcePoolName',{editable:true});
+                jQuery('#jqSearchByEmployeeName').setColProp('Description',{editable:true});
+                $("#pager_left").css('visibility','visible');
+                //var count = jQuery("#jqSearchByEmployeeName").jqGrid('getGridParam', 'records');
+                var count = jQuery("#jqSearchByEmployeeName").jqGrid('getGridParam', 'reccount');
+                if(count > 0){
+                    $('#btnExportToExcel').show();
+                    $("#pager_left").css('visibility','visible');
+
+                }
+                else{
+                    $('#btnExportToExcel').hide();
+                    $("#pager_left").css('visibility','visible');
+                }
+            },
+            beforeRequest: function(){
+                $("#pager_left").css('visibility','hidden');
+            },
+            onCellSelect: function (rowid, iCol) {
+
+                jQuery('#jqSearchByEmployeeName').setColProp('ResourcePoolName',{editable:false});
+                jQuery('#jqSearchByEmployeeName').setColProp('Description',{editable:false});
+                rowData = jQuery("#jqSearchByEmployeeName").getRowData(rowid);
+                // rowData = jQuery("#jqSkillMatrixRatingTable").getRowData(rowid);
+
+                ResourcePoolName = rowData["ResourcePoolName"];
+                $.each(ResoucePools, function (index,value) {
+                    if(value.ResourcePoolName === ResourcePoolName)
+                    {
+                        resourcePoolId = value.ResourcePoolID;
+                    }
+                });
+                resouPoolID=resourcePoolId;
+                SkillNames = rowData["Description"];
+            },
+        }).navGrid("#pager",
+          { search: false, refresh: false, add: false, edit: false, del: false },
+          {}, // settings for edit
+          {},
+          {}
+         );
+
+        $("#jqSearchByEmployeeName").jqGrid('inlineNav', "#pager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        $('#undefined').hide();
+                        var count = jQuery("#jqSearchByEmployeeName").jqGrid('getGridParam', 'reccount');
+                        if(count==1)
+                        {
+                            $('#btnExportToExcel').hide();
+                            $("#pager_left").css('visibility','visible');
+                        }
+                        OnAddDelete=true;
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function (rowid) {
+
+
+                    ResourceID=resourcePoolId;
+                    var GlobalSkillID ;
+                    $.ajax({
+                        url: '@Url.Action("Show_Skill", "SkillMatrix")',
+                        data: { resourcePoolID: resouPoolID },
+                        type: 'GET',
+                        success: function (result) {
+                            $.each(result.results, function (index, value) {
+                                if(result.results[index].Description == SkillNames){
+                                    GlobalSkillID= result.results[index].SkillID;
+                                }
+                            });
+                            resourcePollID = $("#"+$('#jqSearchByEmployeeName').find('select:first')[0].id);
+                            SkillDropId = GlobalSkillID;
+                        }
+                    });
+
+                },
+                sucessfunc: function (data) {
+
+                },
+                url: null,
+                extraparam: {
+                    SkillID: function () {
+                        return SkillDropId;
+                    },
+                    ResourcePoolID:function(){
+                        return ResourceID;
+                    },
+                    Rating:function(){
+                        return RatingVal;
+                    },
+                    loggedInUserEmployeeCode: function () {
+                        return $('#EmployeeId').val();
+                    }
+                },
+                beforeSaveRow: function (options, rowid)
+                {},
+                afterrestorefunc: function(result)
+                {},
+                aftersavefunc: function (result,response) {
+                    var identifier = $.parseJSON(response.responseText);
+                    if(identifier.status==false)
+                    {
+                        $("#AddValidation").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery('#jqSearchByEmployeeName').setColProp('ResourcePoolName',{editable:false});
+                                    jQuery('#jqSearchByEmployeeName').setColProp('Description',{editable:false});
+                                    jQuery("#jqSearchByEmployeeName").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid', [{ page: 1 }]);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $("#SkillDetailsSucess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery('#jqSearchByEmployeeName').setColProp('ResourcePoolName',{editable:false});
+                                    jQuery('#jqSearchByEmployeeName').setColProp('Description',{editable:false});
+                                    //jQuery("#jqSearchByEmployeeName").trigger("reloadGrid");
+                                    jQuery("#jqSearchByEmployeeName").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid', [{ page: 1 }]);
+                                }
+                            }
+                        });
+                    }
+                },
+                errorfunc: null,
+                afterrestorefunc: function(result)
+                {
+                    jQuery('#jqSearchByEmployeeName').setColProp('ResourcePoolName',{editable:false});
+                    jQuery('#jqSearchByEmployeeName').setColProp('Description',{editable:false});
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        function getResourcePoolName(e) {
+            var Name = e.target[e.target.options.selectedIndex].text;
+            var resourcePoolId;
+            resouPoolID="";
+
+            if(Name=="Select")
+            {
+                resourcePoolId=0;
+            }
+            else
+            {
+                $.each(ResoucePools, function(index, value){
+                    if(value.ResourcePoolName == Name)
+                    {
+                        resourcePoolId=value.ResourcePoolID;
+                    }
+                });
+            }
+
+            resouPoolID=resourcePoolId;
+            ResourceID=resouPoolID;
+            $.ajax({
+                url: '@Url.Action("Show_Skill", "SkillMatrix")',
+                data: { resourcePoolID: resouPoolID },
+                type: 'GET',
+                success: function (results) {
+
+                    $('#'+e.target.parentNode.nextSibling.childNodes[0].id).empty();
+                    var selectValue = '<option value="' +
+                    0 + '">' + "Select" + '</option>';
+                    $('#' +e.target.parentNode.nextSibling.childNodes[0].id).append(selectValue);
+                    $.each(results.results, function (index, value) {
+                        var optionhtml = '<option value="' +
+                        results.results[index].SkillID + '">' + results.results[index].Description + '</option>';
+                        $('#'+e.target.parentNode.nextSibling.childNodes[0].id).append(optionhtml);
+                        //resultList=result;
+                    });
+
+                }
+            });
+        }
+
+    });
+    function getSkillName(e) {
+
+        //var Name = e.target[e.target.selectedIndex].text;
+        //var RatingValue= $("#new_row_Rating option:selected").text();
+        //var SkillDropId =$("#new_row_SkillID option:selected").value();
+        SkillDropId = e.target[e.target.selectedIndex].value;
+    }
+    function getRatings(e) {
+        //SkillDropId = e.target[e.target.selectedIndex].value;
+        RatingVal =e.target[e.target.options.selectedIndex].text;
+    }
+    function ForAppendCheckboxID(cellValue, options, rowdata, action) {
+        var A = '<input type="checkbox" class="chkForDelete" id=' + rowdata["ID"] + '>';
+        var B = '<label for=' + rowdata["ID"] + ' class="LabelForCheckbox"></label>';
+        return A + B;
+        //return '<input type="checkbox" class="chkForDelete" id=' + rowdata["ID"] + '>';
+    }
+    var SelectedId = [];
+    function GetSelectedCheckbox() {   
+//        numberOfChecked = $('input:checkbox:checked').length;
+        SelectedId = [];
+        $("#jqSearchByEmployeeName :checked").each(function (i, val) {        
+            if($(this).prop("id")!="" && $(this).prop("id")!="undefined")
+            {
+                SelectedId.push($(this).prop("id"));
+            }
+        });     
+        var Count;
+        numberOfChecked =SelectedId.length;
+        if(SelectedId.length == 0)
+        {
+            Count = 0;
+            return Count;
+        }
+        else
+        {
+            Count = 1;
+            return Count;
+        }
+    }
+
+    function DeleteSearchByEmployeeName(SelectedId) {    
+        $('#deleteSearchConfirmation').dialog(
+            {
+                autoOpen: false,
+                modal: true,
+                width: 300,
+                height: 'auto',
+                resizable: false,
+                buttons:
+                    {
+                        Ok: function () {
+                            $.ajax({
+                                url: '@Url.Action("DeleteSearchByEmployeeName", "SkillMatrix")',
+                                data: JSON.stringify({ "Id": SelectedId }),
+                                contentType : 'application/json',
+                                type: 'POST',
+                                success: function (data){
+                                    if (data.status == true) {
+                                        $("#deleteSearchConfirmation").dialog("close");
+                                        $("#deleteSearchSuccess").dialog({
+                                            modal: true,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 300,
+                                            buttons:
+                                            {
+                                                "OK": function () {
+                                                    $(this).dialog("close");
+                                                    $("#jqSearchByEmployeeName").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid", [{ page: 1 }]);
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                    else if (data.status == "Error") {
+                                        $("#deleteSearchConfirmation").dialog("close");
+                                        $("#errorDialog").dialog({
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                    $("#jqSearchByEmployeeName").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid", [{ page: 1 }]);
+                                                }
+                                            }
+                                        }); //end dialog
+                                        $("#jqSearchByEmployeeName").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid", [{ page: 1 }]);
+                                    }
+                                    else {
+                                        $("#deleteSearchConfirmation").dialog("close");
+                                        $("#errorDialog").dialog({
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            title: 'Error',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                    $("#jqSearchByEmployeeName").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid", [{ page: 1 }]);
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+
+                                }
+                            });
+
+                        },
+                        Cancel: function () {
+                            $(this).dialog('close');
+                        }
+                    }
+            }
+            );
+        $('#deleteSearchConfirmation').dialog('open');
+    }
+
+    //All The Validation Function
+
+    ////added by sat for validation
+
+    function IsResourcePoolSelected(value,colname)
+    {
+
+        if(value == "0")
+        {
+            $("#RequiredFieldForResourcePool").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function IsSkillSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFieldForSkill").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function IsRatingSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFieldForRating").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+</script>
+<div class="FormContainerBox clearfix">
+    <div class="formrow clearfix">
+        <div class="leftcol">
+            <div class="LabelDiv">
+                @Html.Label("Employee Name:")
+            </div>
+            <div class="InputDiv">
+                <input type="text" name="searchValue" id="txtSearchEmployee" class="srchinput" height="20px" />
+            </div>
+        </div>
+        <div id="dynamicElement">
+        </div>
+    </div>
+</div>
+<div class="clearfix InnerContainer" id="DetailInfo">
+    <div class="floatL">
+        @Html.Label("Employee Name:", new { @class = "prefix" })
+        <span id="Employeename" style="color: black; font-weight: bold" class="suffix"></span>
+    </div>
+    <div class="floatL">
+        @Html.Label("Employee Code:", new { @class = "prefix" })
+        <span id="EmployeeId" style="color: black; font-weight: bold" class="suffix"></span>
+    </div>
+</div>
+<div class="ButtonContainer2 clearfix">
+    <input type="button" class="ButtonGray mrgnR8" value="Show History" id="showHistory" />
+    <input type="button" class="ButtonGray mrgnR8" value="Export to Excel" id="btnExportToExcel" />
+    <input type="button" value="Delete" class="ButtonGray mrgnR8" id="btnDeleteSearch" />
+</div>
+<div id="Historydialog" title="" style="overflow: hidden; border-bottom-width: 15px;
+    border-color: cadetblue">
+</div>
+<div class="tablestyle3 NoTitleGridsContainer">
+    <table id="jqSearchByEmployeeName" class="scroll">
+    </table>
+    <div id="pager">
+    </div>
+</div>
+<div id="SkillDetailsSucess" style="display: none;" title="Search By Employee">
+    <p>
+        Skill Details Added Sucessfully.
+    </p>
+</div>
+<div id="RequiredFieldForRating" style="display: none;" title="Search By Employee">
+    <p>
+        Please select Rating.
+    </p>
+</div>
+<div id="deleteSearchConfirmation" style="display: none" title="Search By Employee">
+    <p>
+        Are you sure you want to delete the selected record?
+    </p>
+</div>
+<div id="deleteSearchSuccess" style="display: none;" title="Search By Employee">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="CheckBoxNotSelected" style="display: none" title="Search By Employee">
+    <center>
+
+        Checkbox not selected.
+    </center>
+</div>
+<div id="AddValidation" style="display: none" title="Search By Employee">
+    <center>
+        Please select all the fields.
+    </center>
+</div>
+<div id="OnAddDelete" style="display: none" title="Search By Employee">
+    <center>
+        Record can't be deleted.
+    </center>
+</div>
+<div id="DuplicateRecord" style="display: none" title="Search By Employee">
+    <center>
+        Record already existing.
+    </center>
+</div>
+<div id="ErrorInsert" style="display: none" title="Search By Employee">
+    <center>
+        Error While Updating Record!
+    </center>
+</div>
+<div id="RequiredFieldForResourcePool" style="display: none" title="Search By Employee">
+    <p>
+        Please select the Resource Pool Name.
+    </p>
+</div>
+<div id="RequiredFieldForSkill" style="display: none" title="Search By Employee">
+    <p>
+        Please select the the Skill Name.
+    </p>
+</div>
+<div id="NoRecordInHistory" title="Record Saved" style="display: none;">
+    <p>
+        No records found.
+    </p>
+</div>
+<div id="NoRecordPresent" title="Record Saved" style="display: none;">
+    <p>
+        No value present.
+    </p>
+</div>

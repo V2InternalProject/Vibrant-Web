@@ -1,0 +1,34 @@
+﻿@model HRMS.Models.ConfigurationViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+
+@{
+	CommonMethodsDAL dal = new CommonMethodsDAL();
+	string EncyptedEmploeeCode = dal.Encrypt((string)Session["SecurityKey"].ToString() + Model.SearchedUserDetails.EmployeeCode, true);
+	ViewBag.EncyptedEmploeeCode = EncyptedEmploeeCode;
+
+}
+
+<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+        PMS</h2>
+</div>
+<br />
+<br />
+<br />
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<iframe src="~/testpms2/Login.aspx?employeeCode=@ViewBag.EncyptedEmploeeCode&AsciiKey=@ViewBag.AsciiKey", width="100%" height="700" id="iframe" sandbox="allow-scripts allow-forms allow-same-origin" runat="server" seamless="seamless" frameborder="0">
+</iframe>
+<script type="text/javascript">
+    if ('@Model.SearchedUserDetails.UserRole' == "HR Admin" || '@Model.SearchedUserDetails.UserRole' == "HR Executive" || '@Model.SearchedUserDetails.UserRole' == "RMG") {
+        $('#frmSearchEmployeeLayout').show();
+    }
+    else {
+        $('#frmSearchEmployeeLayout').hide();
+    }
+</script>

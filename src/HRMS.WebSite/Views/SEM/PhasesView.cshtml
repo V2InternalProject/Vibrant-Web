@@ -1,0 +1,534 @@
+﻿@model HRMS.Models.PhasesViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Phases";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.ClassDisplayLabel').hide();
+        $('#PhaseStartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true,showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker
+        }).bind("mouseover", function () {
+            var Dates = @(Html.Raw(Json.Encode(ViewBag.Dates)));
+            var Jsondate = Dates.StartDate;
+            var JsonEdate = Dates.EndDate;
+           
+            var startDate = new Date(parseInt(Jsondate.substr(6)));
+            var endDate;
+            var TxtendDate = new Date($('#PhaseEndDate').val());
+            if(TxtendDate == 'Invalid Date')
+            {
+                endDate = new Date(parseInt(JsonEdate.substr(6)));
+            }
+            else
+            {
+                endDate = TxtendDate;
+            }
+
+            $('#PhaseStartDate').datepicker("option", "minDate", startDate);
+            $('#PhaseStartDate').datepicker("option", "maxDate", endDate);
+            $('#PhaseStartDate').trigger('change');
+        });
+        $('#PhaseEndDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker
+        }).bind("mouseover", function () {
+            var Dates = @(Html.Raw(Json.Encode(ViewBag.Dates)));
+            var Jsondate = Dates.StartDate;
+            var JsonEdate = Dates.EndDate;
+            var startDate;
+            var TxtStaDate = new Date($('#PhaseStartDate').val());
+            if(TxtStaDate == 'Invalid Date')
+            {
+                startDate = new Date(parseInt(Jsondate.substr(6)));
+            }
+            else
+            {
+                startDate = TxtStaDate;
+            }
+            var endDate = new Date(parseInt(JsonEdate.substr(6)));
+            $('#PhaseEndDate').datepicker("option", "minDate", startDate);
+            $('#PhaseEndDate').datepicker("option", "maxDate", endDate);
+            $('#PhaseEndDate').trigger('change');
+        });
+
+    });
+
+    //    $('#btnPhasesBack').click(function () {
+ 
+    //        window.location.href = "/SEM/ManagePhases";
+    //    });
+</script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="InnerContainer">
+            <div class="clearfix">
+                <a id="btnPhasesBack" class=" floatL Expensewrap" href="/SEM/ManagePhases">Back</a>
+            </div>
+        </div>
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "FrmIBPhaseDeatil" }))
+        {
+            @Html.HiddenFor(x => x.ProjectPhaseId)
+            @Html.HiddenFor(x => x.ProjectId)
+            <div class="FormContainerBox clearfix AddProjectForm">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Phase:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.Phases, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.Phases, Model.Phases, new { @id = "text_phases", @class = "ClassDisplayLabel" })
+                            @if (ViewBag.IBManagePhasesList != 0)
+                            {
+                                @Html.DropDownListFor(x => x.IBPhaseManageId, new SelectList(Model.IBManagePhasesList, "PhaseID", "PhaseName", "Select"), new { @class = "ClassDisabledFields dropdownHideShow" })
+                                @Html.LabelFor(emp => emp.IBPhaseManageId, new { @class = "ClassDisplayLabel", @id = "txt_IBPhaseManageId" })
+@*<p class="qualif-detail" id="validateResponsiblePerId">@Html.ValidationMessageFor(model => model.ResponsiblePerId)</p>*@
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Order Number:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.OrderNumber, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.OrderNumber, Convert.ToString(Model.OrderNumber), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.OrderNumber)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Start Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.StartDate, String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @id = "PhaseStartDate", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.StartDate, String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("End Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.EndDate, String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @id = "PhaseEndDate", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.EndDate, String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Peak Team Size:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PeakTeamSize, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.PeakTeamSize, Convert.ToString(Model.PeakTeamSize), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Percentage Efforts:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PercentageEfforts, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.PercentageEfforts, Convert.ToString(Model.PercentageEfforts), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PercentageEfforts)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Current Phase:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.CheckBoxFor(model => model.Currentphase)
+                            <label for="Currentphase" class="LabelForCheckbox">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Work (Hours):")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.WorkHours, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.WorkHours, Convert.ToString(Model.WorkHours), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Responsible Person:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ResponsiblePerId, new SelectList(Model.ResposiblePersoneList, "PersoneID", "PersonName", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.ResponsiblePerId, new { @class = "ClassDisplayLabel", @id = "txt_ResponsiblePerId" })
+                            <p class="qualif-detail" id="validateResponsiblePerId">@Html.ValidationMessageFor(model => model.ResponsiblePerId)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ButtonContainer1 clearfix">
+                <input type="button" value="Save" class="ButtonGray mrgnR11" id="BtnSavePhaseDetails" />
+            </div>
+        }
+        <div class="tablestyle3">
+            <table id="jqResourceDetailsTable">
+            </table>
+        </div>
+        <div id="jqResourceDetailsTablePager">
+        </div>
+        <div id="ExtensionStartDateValidatedialog" style="display: none;">
+        </div>
+        <div id="ExtensionEndDateValidatedialog" style="display: none;">
+        </div>
+        <div id="OrdernumberValidatedialog" title="Phase Details" style="display: none;">
+            <p>
+                Order Number already Exists.
+            </p>
+        </div>
+        <div id="PhaseSuccessMessege" title="Phase Details" style="display: none;">
+            <p>
+                Phase details have been saved.
+            </p>
+        </div>
+        <div id="PhaseExist" title="Phase Details" style="display: none;">
+            <p>
+                Phase already Exists.
+            </p>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.ClassDisplayLabel').hide();
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+
+        var ProjectIds = '@ViewBag.ProjectIds';
+        $('#FrmIBPhaseDeatil #ProjectId').val(ProjectIds);
+        @*if ('@ViewBag.IBManagePhasesList' != 0) {
+            $('#Phases').hide();
+            $('#IBPhaseManageId').hide().next().show();
+        }
+        else {
+            $('#Phases').show();
+            $('#IBPhaseManageId').hide().next().next().show();
+        }*@
+        var IBPhaseId = '@Model.ProjectId';
+        if (IBPhaseId == '') {
+            IBPhaseId = 0;
+        }
+
+        $("#jqResourceDetailsTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ResourceDetailsLoadGrid", "SEM")',
+            postData: { PhaseID: function () { return IBPhaseId } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Resource Name", "Task Name", "Start Date", "End Date", "Work (Hours)", "Actual Work (Hours)"],
+            // Configure the columns
+            colModel: [
+                { name: "ResponsiblePerson", index: "ResponsiblePerson", align: "left", width: 190 },
+                { name: "Phases", index: "Task", align: "left", width: 190 },
+                { name: "StartDate", index: "StartDate", align: "left", width: 80, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "EndDate", index: "EndDate", align: "left", width: 80, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "WorkHours", index: "WorkHrs", align: "left", width: 80 },
+                { name: "ActualHrs", index: "ActualHrs", align: "left", width: 80 },
+            ],
+
+
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            footerrow: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqResourceDetailsTablePager"),
+            //rowNum: 20,
+            sortable: true,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Resource Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqResourceDetailsTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqResourceDetailsTable').hide();
+                }
+                else {
+                    $('#gbox_jqResourceDetailsTable').show();
+                    if (count > 20) {
+                        $('#jqResourceDetailsTablePager').show();
+                    }
+                    else {
+                        $('#jqResourceDetailsTablePager').hide();
+                    }
+                }
+            },
+            loadComplete: function () {
+                $('.ui-jqgrid-sdiv').css('width', '100%');
+                $('.ui-jqgrid-ftable').css('width', '100%');
+                var $this = $(this),
+                sum = $this.jqGrid("getCol", "WorkHours", false, "sum"),
+                ActualTotal = $this.jqGrid("getCol", "ActualHrs", false, "sum")
+                $this.jqGrid("footerData", "set", { EndDate: "Total", WorkHours: sum, ActualHrs: ActualTotal });
+                var count = jQuery("#jqResourceDetailsTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqResourceDetailsTable').hide();
+                }
+                else {
+                    $('#gbox_jqResourceDetailsTable').show();
+                }
+
+                if('@ViewBag.ProjectPhaseId' != 0 && '@ViewBag.ProjectIds' != 0)
+                {
+                    $('#gbox_jqResourceDetailsTable').show();
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            }
+        }).navGrid("#jqResourceDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#ResponsiblePerId").change(function () {
+            var selectedValue = $(this)[0].value;
+            if (selectedValue != "")
+                $("#validateResponsiblePerId").hide();
+            else
+                $("#validateResponsiblePerId").show();
+        });
+
+
+        $('#BtnSavePhaseDetails').click(function () {
+            checkDatesAndOrderNumber();
+            SaveIBMangePhaseDetails();
+        });
+
+        $('#txt_IBPhaseManageId').text($('#IBPhaseManageId').find(":selected").text());
+        $('#txt_ResponsiblePerId').text($('#ResponsiblePerId').find(":selected").text());
+
+
+        if ('@ViewBag.IBManagePhasesList' != 0) {
+            $('#Phases').hide();
+            $('#IBPhaseManageId').hide().next().show();
+        }
+        else {
+            $('#Phases').show();
+            $('#IBPhaseManageId').hide().next().next().show();
+        }
+
+        $.each($(".ClassDisabledFields"), function (l, val) {
+           
+            if ($(val).is(':disabled')) {
+             
+                if ($(val).hasClass("dropdownHideShow")) {
+                   
+                    $(this).next().hide().next().show();
+                }
+                    //else if (val.classList.contains("textAreaHideShow")) {
+
+                    //    $(this).hide().next().show().children().show();
+                    //}
+                else if (val.id == "PhaseStartDate" || val.id == "PhaseEndDate") {
+                    $(this).hide().next().hide().next().show();
+                }
+                else {
+                    $(this).hide().next().show();
+                }
+            }
+        });
+
+        if('@Model.ProjectPhaseId' == 0) {
+            $('#text_phases').hide();
+        }
+
+
+    });
+
+    function checkDatesAndOrderNumber() {
+        var OrderNumbers = @(Html.Raw(Json.Encode(ViewBag.OrderNumbers)));
+        var a = [];
+        $.each(OrderNumbers, function (index,value) {
+            a.push(value.OrderNumber);
+        });
+        var Ordernum =  $('#OrderNumber').val();
+
+        $.each(a, function (index,value) {
+            if(value == Ordernum && '@Model.OrderNumber' != Ordernum)
+            {
+                $("#OrdernumberValidatedialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            else
+            {
+
+            }
+        });
+    }
+
+    function SaveIBMangePhaseDetails() {
+     
+        if ($('#FrmIBPhaseDeatil').valid()) {
+            OpenLoadingPopup();
+            var postUrlnew = '@Url.Action("SaveIBPhaseManageDetails", "SEM")';
+            $.ajax({
+                url: postUrlnew,
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: $('#FrmIBPhaseDeatil').serialize(),
+                success: function (results) {
+                  
+                    CloseLoadingPopup();
+                    if (results.status == true) {
+                        var CustID = results.ProjectPhaseID;
+                        $('#FrmIBPhaseDeatil #ProjectPhaseId').val(CustID);
+                        $("#PhaseSuccessMessege").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $.ajax({
+                                        url: '@Url.Action("PhasesView", "SEM")',
+                                        data: { ProjectPhaseId: CustID ,PhaseID: $('#FrmIBPhaseDeatil #ProjectId').val()},
+                                        type: "GET",
+                                        success: function (results) {
+                                            //$(this).dialog("close");
+                                            $('#gbox_jqResourceDetailsTable').show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else if(results.status == false && results.isPhaseExist == true){
+                        $("#PhaseExist").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == false) {
+                        $("#AddCustomerErrorMessege").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+                        DisplayErrorDialog("Save Customer Details");
+                    }
+                },
+                error: function (results) {
+                    CloseLoadingPopup();
+                    DisplayErrorDialog("Save Customer Details");
+                }
+            });
+        }
+        else
+            return false;
+    }
+
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>

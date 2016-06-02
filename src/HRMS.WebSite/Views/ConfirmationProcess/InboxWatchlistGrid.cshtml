@@ -1,0 +1,109 @@
+﻿@model HRMS.Models.ConfirmationDetailsViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<script src="@Url.Content("~/Scripts/Common.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="ConfirmationContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfirmationDetailList", "ConfirmationProcess")" class="selected">
+                Saved/Submitted Requests</a>
+        </nav>
+    </div>
+    <div class="MainBody">
+        <div class="Hrmain clearfix">
+            <div class="fill-dtls clearfix">
+                @using (Html.BeginForm("SearchEmployee", "ConfirmationProcess", FormMethod.Post, new { @id = "frmSearchEmployeeLayoutCnfmPrc" }))
+                {
+                    <div class="LabelDiv">
+                        @Html.Hidden("empId")
+                        <label id="lblsearch">@HRMS.Resources.EmployeeMessages.SearchEmployeeLabel.ToString()</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" name="searchValue" id="txtSearchTextConfirmation" class="srchinput" />
+                        <input class="button" id="btnSubmitSearchConfirmation" value="Search" type="hidden"
+                            onclick="searchEmployeeCnf()" />
+                    </div>
+                }
+                <input type="hidden" id="actionType" />
+                @Html.HiddenFor(m => m.hiddenid)
+                @Html.HiddenFor(c => c.ConfirmationID, new { @id = "hdnConfirmationId" })
+                <div class="LabelDiv">
+                    <label for="Field" class="select-type">
+                        Field:</label>
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetField(), "Value", "Text"), "")
+                </div>
+                @*<div class="InputDiv">
+								  @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldchildList), "", new { Style = "display:none;" })
+							</div>*@
+                <div class="InputDiv" style="display: none" id="FieldChildListConfBG">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListBG, "Select", new { id = "DDFieldChildListConfBG" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListConfOU">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListOU, "Select", new { id = "DDFieldChildListConfOU" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListConfSN">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListSN, "Select", new { id = "DDFieldChildListConfSN" })
+                </div>
+                <div class="remain">
+                    <button type="button" class="ButtonGray" id="btnshowFilter">
+                        Show</button>
+                </div>
+            </div>
+        </div>
+        <div class="tablestyle3">
+            <table id="ConfirmationTableInboxList" class="scroll">
+            </table>
+        </div>
+        <div id="ConfirmationTablePagerInboxList">
+        </div>
+    </div>
+</section>
+<div id="ShowStatusDialogConfirmation" style="display: none; clear: both">
+    @{Html.RenderPartial("_ShowStatusConfirmation", Model);}
+</div>
+<div id="LinkPopUpConfirmation" style="display: none;">
+    <ul class="exitbutton">
+        <li id="btnFillFormConfirmation" style="display: none">Fill Form</li>
+        <li id="btnShowStatusConfirmation">View Status</li>
+        <li id="btnShowDetailsConfirmation" style="display: none">View Details</li>
+        @* <li id="btnReviewerComments">Reviewer Comments</li>
+        <li id="btnManagerComments">Manager Comments</li>
+        <li id="btnHRComments">HR Comments</li>*@
+    </ul>
+</div>
+<script type="text/javascript">
+    $("#txtSearchTextConfirmation").keypress(function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            searchterm = $("#txtSearchTextConfirmation").val();
+            jQuery("#ConfirmationTableInboxList").trigger("reloadGrid");
+            jQuery("#ConfirmationTableWatchList").trigger("reloadGrid");
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(document).click(function (e) {
+        if (!$(e.target).is('.EmpLink')) {
+            $("#LinkPopUpConfirmation").fadeOut();
+        }
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+    });
+</script>
+<script src="@Url.Content("../../Scripts/Confirmation/InboxWatchlistGrid.js")" type="text/javascript"></script>

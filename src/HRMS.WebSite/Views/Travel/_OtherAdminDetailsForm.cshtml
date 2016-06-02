@@ -1,0 +1,249 @@
+﻿@model HRMS.Models.OtherAdminViewModel
+<script src="@Url.Content("../../Scripts/Travel/TravelOtherRequirement.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // SetPageTitle('Miscellaneous Details');
+        var deletionIdSelected = 0;
+        // Set up the jquery grid
+        $("#VisaTravelOtherDetailsTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("TravelOtherRequiementDetailLoadGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelId: '@ViewBag.TravelID' },
+            // Specify the column names
+            colNames: ["", "", "", "", "", "", "Type", "Currency", "Payment mode", "Amount in Cash", "Amount on card", "Card Details", " From Date", "To Date", "Details", "View File", "Received By Employee", ""],
+            // Configure the columns
+            colModel: [
+            //             { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'center' },
+              {name: "RequirementID", index: "RequirementID", hidden: true, width: 50, align: "left" },
+              { name: "ID", index: "ID", hidden: true, width: 50, align: "left" },
+              { name: "RequrementTypeID", index: "RequrementTypeID", hidden: true, width: 50, align: "left" },
+              { name: "AcceptanceID", index: "AcceptanceID", hidden: true, width: 50, align: "left" },
+               { name: "CurrencyID", index: "CurrencyID", hidden: true, width: 70, align: "left" },
+              { name: "FilePath", index: "FilePath", hidden: true, width: 50, align: "left" },
+              { name: "Description", index: "Description", width: 80, align: "left" },
+               { name: "CurrnyName", index: "CurrnyName", width: 50, align: "left" },
+               { name: "PaymentMode", index: "PaymentMode", width: 70, align: "left" },
+               { name: "Advacesamount", index: "Advacesamount", width: 55, align: "left" },
+               { name: "AmountOnCard", index: "AmountOnCard", width: 55, align: "left" },
+               { name: "CardDetails", index: "CardDetails", width: 70, align: "left" },
+                { name: "InsuranceFromDate", index: "InsuranceFromDate", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "InsuranceToDate", index: "InsuranceToDate", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+              { name: "Miscdetails", index: "Miscdetails", width: 70, align: "left" },
+              { name: "FileName", index: "FileName", width: 52, align: "left", formatter: formatlink },
+               { name: "ReceivedByEmployee", index: "ReceivedByEmployee", width: 60, align: "left" },
+	        { name: "Delete", index: "Delete", width: 25, align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+            ],
+
+            width: 700,
+            shrinkToFit: true,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#VisaTravelOtherDetailsTablePager"),
+            // caption: "Miscellaneous Details",
+            gridComplete: function () {
+                if (('@ViewBag.viewDetailClick' == 'yes') || ('@ViewBag.StageID' == "4")) {
+                    $("#VisaTravelOtherDetailsTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                }
+            },
+
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                // var travelId = rowData['VisaTravelID'];
+                var viewstatus = '@ViewBag.StageID';
+                var travelId = rowData['ID'];
+                var travelRequirementID = rowData['RequirementID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if ('@ViewBag.TravelID' == '@Model.ID' || '@Model.ID' == 0) {
+                    if (colName['index'] == "Delete") {
+                        if (viewstatus == "4" || viewstatus <= 2) {
+                            return false;
+                        }
+                        else
+                            DeleteOthertravelDetail(travelRequirementID, travelId);
+                    }
+                    else
+                    //if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+                        if (viewstatus == 4 && ('@ViewBag.UserRole' == 'Travel_Admin' || '@ViewBag.IsLoggedInUser' == "True")) {
+                            EditTravelOtherDetails(rowData);
+                        }
+                        else {
+                            if (viewstatus <= 2 || viewstatus == 4) {
+                                return false;
+                            }
+                            else
+                                EditTravelOtherDetails(rowData);
+                        }
+                }
+            }
+        }).navGrid("#VisaTravelOtherDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+
+        function formatlink(cellvalue, options, rowobject) {
+
+            if (cellvalue === undefined || cellvalue == null) {
+                cellvalue = '';
+                return cellvalue;
+            }
+            else {
+                return "<a href=# id=" + rowobject['RequirementID'] + " class=EmpLink onClick = LinkPassportClick(this," + rowobject['ID'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+            }
+
+        }
+        $("#btnAddTravelOtherDetails").click(function () {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $("#addTravelOtherDetailsDialog #requrementTypeID_id").next().find('.selectBox-label').text('Select');
+            $("#addTravelOtherDetailsDialog #acceptance_Id").next().find('.selectBox-label').text('Select');
+            $("#addTravelOtherDetailsDialog #CurrencyId").next().find('.selectBox-label').text('Select');
+            $('#addTravelOtherDetailsDialog #VisaTravelID').val('');
+            $("#addTravelOtherDetailsDialog #requrementTypeID_id").val('');
+            // $("#addTravelOtherDetailsDialog #sbSelector").val('');
+            $("#addTravelOtherDetailsDialog #RequirementID").val('');
+            $("#addTravelOtherDetailsDialog #acceptance_Id").val('');
+            $('#addTravelOtherDetailsDialog #descriptionid').val('');
+            $('#addTravelOtherDetailsDialog #acceptance').val('');
+            $('#addTravelOtherDetailsDialog #DetailID').val('');
+            // $('#addTravelOtherDetailsDialog #empPassport').val('');
+            $('#addTravelOtherDetailsDialog #FileEmpPassportField').val('');
+            $('#addTravelOtherDetailsDialog #CurrencyId').val('');
+            $('#addTravelOtherDetailsDialog #Advacesamount').val('');
+
+            $('#addTravelOtherDetailsDialog #CardDetails').val('');
+            $('#addTravelOtherDetailsDialog #AmountOnCard').val('');
+            $(".DdlAdvances").hide();
+            $(".DdlInsurance").hide();
+            $('#addTravelOtherDetailsDialog #cash').removeAttr('checked');
+            $('#addTravelOtherDetailsDialog #card').removeAttr('checked');
+            $('#addTravelOtherDetailsDialog #InsuranceFromDate').val('');
+            $('#addTravelOtherDetailsDialog #InsuranceToDate').val('');
+            $("#addTravelOtherDetailsDialog #FileEmpPassportField").val("No files selected");
+            $('#addTravelOtherDetailsDialog #empPassport').replaceWith($('#addTravelOtherDetailsDialog #empPassport').val("").clone(true));
+            $('#addTravelOtherDetailsDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 540,
+                resizable: false,
+                title: "Miscellaneous Details",
+                dialogClass: 'noclose'
+            });
+            $('#addTravelOtherDetailsDialog').dialog('open');
+        });
+        if ('@ViewBag.StageID' == "4")
+            $("#VisaTravelOtherDetailsTable").jqGrid('hideCol', 'Delete');
+    });
+
+    function LinkPassportClick(event, TravelID) {
+        var RequirementID = event.id;
+        window.location = '@Url.Action("DownloadOtherRequireUploadedFile", "Travel")?TravelID=' + TravelID + '&RequirementID=' + RequirementID;
+    }
+
+    var viewstatus = '@ViewBag.StageID';
+    var IsloggedUser = '@ViewBag.IsLoggedInUser';
+    if (viewstatus == "4") {
+        $("#ApproveTravelByAdmin").hide();
+        $("#RejectByAdmin").hide();
+        $("#btnAddTravelOtherDetails").hide();
+    }
+    if ('@ViewBag.UserRole' == 'Travel_Admin' && viewstatus <= 2 && viewstatus == 4) {
+        $('#ApproveTravelByAdmin').hide();
+        $('#RejectByAdmin').hide();
+        $('#btnAddTravelOtherDetails').hide();
+    }
+    else {
+        $('#btnAddTravelOtherDetails').show();
+        $('#RejectByAdmin').show();
+        $('#btnCancelTravelRequestForm').hide();
+    }
+        
+   
+</script>
+<h4 class="SmallHead">
+    Miscellaneous Details
+</h4>
+<div id="OtherAdmin">
+    <div id="addTravelOtherDetailsDialog" style="display: none">
+        @Html.Partial("_AddTravelOtherRequirement", Model)
+    </div>
+    <div class="ButtonContainer1">
+        <input type="button" hidden="hidden" value="Add Miscellaneous Details" id="btnAddTravelOtherDetails"
+            class="ButtonGray" />
+    </div>
+    <div class="tablestyle3">
+        <table id="VisaTravelOtherDetailsTable" class="scroll">
+        </table>
+    </div>
+    <div id="VisaTravelOtherDetailsTablePager">
+    </div>
+</div>
+@*<div id="ShowPassportDetails">
+</div>*@
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?</p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="SubmitConfirmationMessage" style="display: none">
+    Are you sure, you want to move process to the next stage?
+</div>
+<div id="ApproveAdmindialog" style="display: none;">
+    <p>
+        Travel request approved successfully.
+    </p>
+</div>
+<div id="RejectConfirmationMessage" style="display: none">
+    Are you sure, you want to move process to the previous stage?
+</div>
+<div id="RejectCommentDialog" style="display: none">
+    <div class="floatL">
+        Enter Comment<span class="mandatory">*</span> :</div>
+    <div class="floatL">
+        <textarea rows="5" cols="20" id="txtComment"></textarea></div>
+    <div style="display: none; color: red" id="ErrorComment" class="floatL">
+        Please Enter commment</div>
+    <div style="display: none; color: red" id="ErrorLengthComment" class="floatL">
+        Enter commments upto 400 characters</div>
+</div>
+<div id="RejectSuccessMessage" style="display: none">
+    Travel process has been moved to previous stage.
+</div>
+<div id="ErrorConvaeyAdmin" style="display: none">
+    Please add Journey Mode Details and Ticket Name in Journey Tab.
+</div>
+<div id="ErrorTravelAdmin" style="display: none">
+    Please select Is Eligible for Car Hire Details from Travel Tab and Save Details.
+</div>
+<div id="AccomadationGriDError" style="display: none">
+    Please add atleast one record in Accommodation Tab.
+</div>
+<div id="LocalCoGridError" style="display: none">
+    Please add atleast one record in Local Conveyance Tab.
+</div>
+<div id="MisceleGridError" style="display: none">
+    Please add atleast one record in Miscellaneous Tab.
+</div>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "OtherAdminForm" }))
+{
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(x => x.TravelId, new { @id = "TravelIdUser" }) 
+    @Html.HiddenFor(x => x.Comments) 
+    @Html.HiddenFor(x => x.StageID) 
+
+}

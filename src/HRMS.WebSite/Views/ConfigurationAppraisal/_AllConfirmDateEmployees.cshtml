@@ -1,0 +1,180 @@
+﻿@model HRMS.Models.EligibilityCriteriaModel
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+
+@Html.HiddenFor(modelItem => modelItem.allConfirmationDateEmployeeListCount, new { id = "ConfirmationDateEmpListCount" })
+@if (Model.allConfirmationDateEmployeeList != null)
+{
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_allEmployees">
+        <tr>
+            <td>
+                <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders" width="99%">
+                    <tr id="confDateEmpListTable">
+                        <th width="10%" class="bluebgtable1">
+                            Employee Code
+                        </th>
+                        <th class="bluebgtable1" width="20%">
+                            Employee Name
+                        </th>
+                        <th class="bluebgtable1" width="20%">
+                            Delivery Team
+                        </th>
+                        <th class="bluebgtable1" width="20%">
+                            Designation
+                        </th>
+                        <th class="bluebgtable1" width="20%">
+                            Probation Review Date
+                        </th>
+                        <th class="bluebgtable1" width="10%">
+                            Select
+                        </th>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="abc" id="SampleID" style="width: 100%; height: 500px; overflow: auto;">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" class="TablesBlueHeaders">
+                        @foreach (var item in Model.allConfirmationDateEmployeeList)
+                        {
+                            <tr id="@item.EmployeeID" class="confDatehighlightRed">
+                                <td align="center" width="10%">
+                                    @Html.DisplayFor(modelItem => item.EmployeeCode, new { @readonly = "readonly" })
+                                </td>
+                                <td width="20%">
+                                    @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                                </td>
+                                <td width="20%">
+                                    @Html.DisplayFor(modelItem => item.DeliveryTeam, new { @readonly = "readonly" })
+                                </td>
+                                <td width="20%">
+                                    @Html.DisplayFor(modelItem => item.Designation, new { @readonly = "readonly" })
+                                </td>
+                                <td width="20%">
+                                    @Html.DisplayFor(modelItem => item.ProbationReviewDate, new { @readonly = "readonly" })
+                                </td>
+                                <td align="center" width="10%">
+                                    @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "chkAllConfDateEmployees", @id = item.EmployeeID, @for = item.AppraisalYearID })
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+}
+<script type="text/javascript">
+    var confDateCountCheck = function () {
+        $("#ConfDateCurrentlySel").html("");
+        $("#ConfDateCurrentlySel").append($("#AllConfirmDateEmployeesDiv input:checked").length);
+    }
+    $("#AllConfirmDateEmployeesDiv input:checkbox").change(confDateCountCheck);
+
+    $(document).ready(function () {
+        $("#ConfDateEmpCount").html("");
+        $("#ConfDateEmpCount").append('@Model.allConfirmationDateEmployeeListCount');
+        $('#ConfirmationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: new Date, yearRange: "2003:c", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+    });
+
+    function GetIneligibileConfDateEmployees() {
+        DisplayLoadingDialog();  //checked
+        var employeeId = [];
+        var appraisalYearID = '@Model.ApprasialYearID';
+        $.each($('#AllConfirmDateEmployeesDiv input:checkbox'), function (i, val) {
+            employeeId.push($(val).attr("id"));
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetIneligibileEmployees", "ConfigurationAppraisal")',
+            data: JSON.stringify({ AppraisalEmployeeId: employeeId,
+                AppraisalYearID: appraisalYearID
+            }),
+            type: 'POST',
+            datatype: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (results.failedEmployeeID.length > 0) {
+                    highlightFailedConfDateEmployee(results.failedEmployeeID, "pageLoadFailedEmp");
+                }
+            },
+            error: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+            }
+        });
+    }
+
+    function highlightFailedConfDateEmployee(failedEmployeeID, successEmployeeID) {
+        if (successEmployeeID != "pageLoadFailedEmp") {
+            $("#allFailedEmpDialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        if (InitiateAppraisalButton != 'InitiateAppBtn' && InitiateAppraisalButton != "") {
+                            $.each(failedEmployeeID, function (i) {
+                                $.each($(".confDatehighlightRed"), function (l, val) {
+                                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                                        $("#" + $(val).attr("id") + ".confDatehighlightRed").css("color", "red");
+                                        $("#" + $(val).attr("id") + ".chkAllConfDateEmployees").prop("checked", false);
+                                    }
+                                });
+                            });
+                        }
+                        else {
+                            $.each(failedEmployeeID, function (i) {
+                                $.each($(".confDatehighlightRed"), function (l, val) {
+                                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                                        $("#" + $(val).attr("id")).css("color", "red");
+                                        $("#" + $(val).attr("id") + ".chkAllConfDateEmployees").prop("checked", false);
+                                    }
+                                });
+                            });
+                        }
+                        if (successEmployeeID.length > 0)
+                            showInitiatedEmployeeSuccess(successEmployeeID);
+                    } //end Ok
+                }
+            }); //end dialog
+        } //end if
+        else {
+            $.each(failedEmployeeID, function (i) {
+                $.each($(".confDatehighlightRed"), function (l, val) {
+                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                        $("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).css("color", "red");
+                        $("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).prop("checked", false);
+                        //$("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).attr("disabled", true);
+                        if ($.browser.mozilla)
+                            $("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).attr("disabled", true);
+                        else
+                            $("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).find("td").eq(5).attr("disabled", true);
+                        $("#AllConfirmDateEmployeesDiv" + " #" + $(val).attr("id")).removeClass('chkAllConfDateEmployees');
+                    }
+                });
+            });
+        } //end else
+    }
+</script>

@@ -1,0 +1,256 @@
+﻿@model HRMS.Models.EmployeeQualificationsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/_EmployeeQualifications.js" type="text/javascript"></script>
+@using (Html.BeginForm("AddEmployeeQualifications", "PersonalDetails", FormMethod.Post, new { id = "addEmployeeQualifications" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25 NoNegMrgnContainer">
+        @Html.HiddenFor(x => x.NewEmployeeQualification.EmployeeQualificationID)
+        @Html.HiddenFor(x => x.NewEmployeeQualification.EmployeeID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.Qualification):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.DropDownListFor(x => x.NewEmployeeQualification.Qualification, new SelectList(Model.QualificationList, "QualificationId", "Qualification"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Qualification)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Qualification, new { @id = "qualification" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.Degree):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.NewEmployeeQualification.Degree, new SelectList(Model.DegreeList, "DegreeId", "Degree"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Degree)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Degree, new { @id = "degree" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => x.NewEmployeeQualification.Specialization):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.NewEmployeeQualification.Specialization)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Specialization)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Specialization, new { @id = "specialization" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.Institute):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.NewEmployeeQualification.Institute)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Institute)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Institute, new { @id = "institute" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.University):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.NewEmployeeQualification.University)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.University)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.University, new { @id = "university" })</p>
+            </div>
+        </div>
+        @*<div class="formcol clearfix">
+			<div class="editor-label labelwidth floatL">
+				@Html.LabelFor(x => x.NewEmployeeQualification.Course)
+			</div>
+			<div class="editor-field fieldwidth floatL ">
+				@Html.EditorFor(x => x.NewEmployeeQualification.Course)
+				<p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Course)
+					@Html.HiddenFor(x => x.NewEmployeeQualification.Course, new { @id = "course" })</p>
+			</div>
+		</div>*@
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.Year):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.NewEmployeeQualification.Year, new SelectList(Model.YearList, "Year", "Year"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Year)
+                    <span id="spanYear" style="display: none; color: Red">The Year field is required</span>
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Year, new { @id = "year" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewEmployeeQualification.Type):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.NewEmployeeQualification.Type, new SelectList(Model.TypeList, "TypeId", "Type"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Type)
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Type, new { @id = "type" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> <label>
+                    Percentage/Grade:</label>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.NewEmployeeQualification.Percentage)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewEmployeeQualification.Percentage, "", new { @id = "percentageError" })
+                    @Html.HiddenFor(x => x.NewEmployeeQualification.Percentage, new { @id = "percentage" })
+                    <span id="pererror" style="color: Red; display: none"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="save" type="submit" value="Save" class="button mrgnR5" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialog()" class="button " />
+        </div>
+    </div>
+}
+@*<div id="AddQualificationSuccessMessege" style="display: none;">
+    <p>
+        Qualification Details have been saved.
+    </p>
+</div>
+<div id="AddQualificationErrorMessege" style="display: none;">
+    <p>
+        There are some errors.
+    </p>
+</div>
+<div id="mailError" title="Mail Error" style="display: none">
+    <p>
+        Mail Sending Failed.</p>
+</div>
+<div id="failedRecipient" title="Sending Failed" style="display: none">
+    <center>
+        <span>Could not send mail to </span><span id="span_failedRecipient"></span>
+    </center>
+</div>*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $('#NewEmployeeQualification_Year').rules("add", {
+        required: function () {
+            return ($('#NewEmployeeQualification_Year').val() == "0");
+        },
+        messages:
+			{
+			    required: "Please select Year."
+			}
+    });
+
+    $(function () {
+        $('#NewEmployeeQualification_Year').change(function () {
+            if ($(this).val() != "0") {
+                $('#spanYear').hide();
+            }
+            else {
+                $('#spanYear').show();
+            }
+        });
+
+        var postUrl = '@Url.Action("SaveEmployeeQualifications", "PersonalDetails")';
+        $('#addEmployeeQualifications').submit(function () {
+            if ($('#NewEmployeeQualification_Year').val() == 0) {
+                $('#spanYear').show();
+                return false;
+            }
+            else
+                $('#spanYear').hide();
+            var per = $('#NewEmployeeQualification_Percentage').val();
+            if (isNaN(per) == false) {
+                if (per > 100 || per < 0) {
+                    $('#percentageError').removeClass('field-validation-valid');
+                    $('#percentageError').addClass('field-validation-error');
+                    $('#percentageError').text("Please enter valid percentage.");
+                    return false;
+                }
+            }
+            if ($(this).valid()) {
+                DisplayLoadingDialog(); // Checked global.js
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#addEmployeeQualifications').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results.status == true) {
+                            $($('#btnEmpSendEmail')).removeAttr('disabled');
+                            $('#addQualificationsDialog').dialog("close");
+                            jQuery("#employeeTable").trigger("reloadGrid");
+
+                            $("#AddQualificationSuccessMessege").dialog({
+                                title: 'Qualification Details',
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        emptyDialog();
+
+                                        if ('@Model.UserRole' != 'HR Admin') {
+                                            DisplayLoadingDialog(); // Checked global.js
+                                            //CallSendMailforQualification('@ViewBag.QualificationEmployeeID');
+                                        }
+
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $('#addQualificationsDialog').dialog("close");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Qualification Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        jQuery("#employeeTable").trigger("reloadGrid");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $('#addQualificationsDialog').dialog("close");
+                            $("#AddQualificationErrorMessege").dialog({
+                                title: 'Qualification Details',
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        jQuery("#employeeTable").trigger("reloadGrid");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>

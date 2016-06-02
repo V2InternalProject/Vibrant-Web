@@ -1,0 +1,95 @@
+﻿@model HRMS.Models.OrganizationStructure
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/jquery.jOrgChart.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery.jOrgChart.js" type="text/javascript"></script>
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+@foreach (var item in Model.BusinessGroups)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#' + '@item.BusinessGroupID').jOrgChart();
+        });
+    </script>
+}
+<section class="Container SettingconfigContainer">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Organization Structure</h2>
+        </div>
+        <nav class="sub-menu-colored">
+           @* <a href="#" class="selected" id="Skill">Search By Skill</a>*@
+        </nav>
+    </div>
+    <div class="MainBody SkillBody">
+        @foreach (var BusinessGroup in Model.BusinessGroups)
+        {
+            <ul id='@BusinessGroup.BusinessGroupID' style="display: none">
+                <li>
+                    <label title="Business Group : @BusinessGroup.businessgroup">@BusinessGroup.businessgroup</label><br>
+                    @for (int i = 0; i < BusinessGroup.EmployeeList.Count; i++)
+                    {
+                        <label>
+                            Manager : @BusinessGroup.EmployeeList[i].EmployeeName</label>
+                    }
+                    <ul>
+                        @foreach (var organizationunit in Model.OrganizationUnits)
+                        {
+                            if (organizationunit.BusinessGroupID == BusinessGroup.BusinessGroupID)
+                            {
+                            <li>
+                                <label title="Organization Unit :">@organizationunit.Location</label><br />
+                                @for (int i = 0; i < organizationunit.EmployeeName.Count; i++)
+                                {
+                                    <label title="Organization Unit : @organizationunit.Location || Manager : @organizationunit.EmployeeName[i]">
+                                        Manager : @organizationunit.EmployeeName[i]</label>
+                                }
+                                <ul>
+                                    @foreach (var deliveryunit in Model.DeliveryUnits)
+                                    {
+                                        if (deliveryunit.OUPoolID == organizationunit.OUPoolID && deliveryunit.BusinessGroupID == BusinessGroup.BusinessGroupID)
+                                        {
+                                        <li>
+                                            <label title="Delivery Unit : @deliveryunit.ResourcePoolName">@deliveryunit.ResourcePoolName</label><br />
+                                            @for (int i = 0; i < deliveryunit.EmployeeName.Count; i++)
+                                            {
+                                                <label title="Organization Unit : @deliveryunit.ResourcePoolName || Manager : @deliveryunit.EmployeeName[i]">
+                                                    Manager : @deliveryunit.EmployeeName[i]</label>
+                                            }
+                                            <ul>
+                                                @foreach (var deliveryteam in Model.DeliveryTeams)
+                                                {
+                                                    if (deliveryteam.ResourcePoolID == deliveryunit.ResourcePoolID && deliveryteam.BusinessGroupID == BusinessGroup.BusinessGroupID)
+                                                    {
+                                                    <li>
+                                                        <label title="Delivery Team : @deliveryteam.GroupName || Delivery Team Head : @deliveryteam.EmployeeName">@deliveryteam.GroupName</label><br />
+                                                        @if (deliveryteam.EmployeeName != null)
+                                                        {
+                                                            <label title="Delivery Team : @deliveryteam.GroupName || Delivery Team Head : @deliveryteam.EmployeeName">
+                                                                Delivery Team Head: @deliveryteam.EmployeeName</label>
+                                                        }
+                                                    </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        }
+    </div>
+</section>

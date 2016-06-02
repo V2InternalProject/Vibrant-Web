@@ -1,0 +1,136 @@
+﻿@model HRMS.Models.ProjectDetailsViewModel
+@{
+    ViewBag.Title = "Project Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+<script type="text/javascript">
+
+    var loadprojectUrl = '@Url.Action("LoadProjectDetails", "EmployeeDetails")';
+    var encryptedEmployeeId = '@ViewBag.employeeId';
+    var modelEmployeeId = '@Model.EmployeeId';
+    var HRAdmin = '@HRMS.Models.UserRoles.HRAdmin';
+    var Empstatusmasterid = '@Model.EmpStatusMasterID';
+</script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/ProjectDetails.js")" type="text/javascript"></script>
+
+@*<h3 class="mrgnT15">
+    Project Details</h3>*@
+@*<div class="clearfix">
+    @Html.HiddenFor(m => m.UserRole)
+    <fieldset class="NoTitleGridsContainer">
+        <div class="tablestyle3">
+            <table id="jqProjectDetailsTable" class="scroll">
+            </table>
+            <div id="jqProjectTablePager" />
+        </div>
+        <div id="ProjectDetailsDialog" style="display: none">
+        </div>
+    </fieldset>
+</div>*@
+
+                <section class="EmployeeContainer Container">
+					<div class="FixedHeader">
+						<div class="clearfix">
+							<h2 class="MainHeading">Employee Details</h2>
+						</div>
+						<nav class="sub-menu-colored">
+							@*<a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Employee</a>
+							<a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Designation</a>
+							<a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Passport / Visa</a>
+                            <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Disciplinary</a>
+                            <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })" class="selected">Project</a>
+                            <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Experience</a>
+                            <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Upload Documents</a>
+                            <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.employeeId })">Bonds</a>*@
+
+           @if (ViewBag.EmployeeId != null)
+                     {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+            }
+                        </nav>
+					</div>
+					<div class="MainBody">
+                       @* <div class="FormContainerBox ProjectDetails clearfix">
+
+                            <div class="leftcol">
+                                <div class="formrow clearfix">
+                                    <div class="LabelDiv">
+                                        <label>* Year:</label>
+                                    </div>
+                                    <div class="InputDiv">
+                                        <select>
+                                            <option>abc</option>
+                                            <option>abc</option>
+                                            <option>abc</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="formrow clearfix">
+                                    <div class="LabelDiv">
+                                        <label>* Designation:</label>
+                                    </div>
+                                    <div class="InputDiv">
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                        @*<div class="ButtonContainer1">
+                            <input type="button" class="ButtonGray mrgnR11" value="Save" />
+                        </div>*@
+
+                        <div class="mrgnT33">
+                            <div class="tablestyle3" id="ProjectDetailsContainer">
+                                <table id="jqProjectDetailsTable" class="scroll"></table>
+                                <div id="jqProjectTablePager" />
+                            </div>
+                        </div>
+					</div>
+               </section>

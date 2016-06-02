@@ -1,0 +1,41 @@
+﻿@model HRMS.Models.FinanceTrackingSummaryModel
+
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "" }))
+{
+    @Html.HiddenFor(x => x.Total)
+    @Html.HiddenFor(x => x.CollectionAmount)
+    @Html.HiddenFor(x => x.LastPaymentDate)
+
+}
+<table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable"
+    class="mrgnT10 tablestyle2">
+    <thead>
+        <tr class="bluebgtable1">
+            <td align="center" width="30%">
+                Total
+            </td>
+            <td align="center" width="30%">
+                Collected Amount
+            </td>
+            <td align="center" width="40%">
+                Last Payment Date
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OutStandingDataHistoryList)
+        {
+            <tr>
+                <td align="center">
+                    @item.Total
+                </td>
+                <td align="center">
+                    @item.CollectionAmount
+                </td>
+                <td align="center">
+                    @item.LastPaymentDate
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

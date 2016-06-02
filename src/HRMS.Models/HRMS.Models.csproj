@@ -1,0 +1,313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DB176888-87DC-4CB6-BB14-2A3CE0523715}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRMS.Models</RootNamespace>
+    <AssemblyName>HRMS.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prod|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Prod\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v12.1, Version=12.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v12.1.Core, Version=12.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v12.1, Version=12.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v12.1, Version=12.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppraisalReport\AppraisalStatusReport.cs" />
+    <Compile Include="AppraisalReport\AppraisalStatusReportViewModel.cs" />
+    <Compile Include="AppraisalReport\IndividualDevelopmentStatusReport.cs" />
+    <Compile Include="Appraisal\AppraisalMaster.cs" />
+    <Compile Include="Appraisal\AppraisalProcessFourModel.cs" />
+    <Compile Include="Appraisal\AppraisalProcessStatus.cs" />
+    <Compile Include="Appraisal\AppraisalProcessThreeModel.cs" />
+    <Compile Include="Appraisal\AppraisalProccessShowStatus.cs" />
+    <Compile Include="Appraisal\AppraiseeUploadDestnModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AddAppraisalParaModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AddAppraisalRatingScale.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalDesignationsModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalParametersModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalRatingModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalRolesModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalStatusModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalStrengthImproveModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraisalYearModel.cs" />
+    <Compile Include="ConfigurationAppraisal\AppraiserReviewerMappingModel.cs" />
+    <Compile Include="ConfigurationAppraisal\ConfigureYearModel.cs" />
+    <Compile Include="ConfigurationAppraisal\EligibilityCriteriaModel.cs" />
+    <Compile Include="ConfigurationAppraisal\ViewYearModel.cs" />
+    <Compile Include="Appraisal\AppraisalProcessIndexModel.cs" />
+    <Compile Include="Appraisal\AppraisalProcessModel.cs" />
+    <Compile Include="Appraisal\AppraiseeDetailsModel.cs" />
+    <Compile Include="Appraisal\AppraisalViewModel.cs" />
+    <Compile Include="Configuration\AccessRightsViewModel.cs" />
+    <Compile Include="Configuration\ConfigurationViewModel.cs" />
+    <Compile Include="Configuration\EmployeeNodeViewModel.cs" />
+    <Compile Include="Confirmation\AddNewCategory.cs" />
+    <Compile Include="Confirmation\addParameter.cs" />
+    <Compile Include="Confirmation\AddRatingScale.cs" />
+    <Compile Include="Exit\addReasonVM.cs" />
+    <Compile Include="Exit\ConfigurationSeparationCheckListViewModel.cs" />
+    <Compile Include="Exit\exitFeedbackChecklistVM.cs" />
+    <Compile Include="Exit\ExitViewModel.cs" />
+    <Compile Include="Exit\FeedbackChkListVM.cs" />
+    <Compile Include="Exit\SeparationChecklist.cs" />
+    <Compile Include="Exit\StackHolderVM.cs" />
+    <Compile Include="Exit\StageApproversVM.cs" />
+    <Compile Include="ConfirmationProcess\ConfigurationDetailsViewModel.cs" />
+    <Compile Include="ConfirmationProcess\ConfirmationDetailsViewModel.cs" />
+    <Compile Include="ConfirmationProcess\ConfirmationFormViewModel.cs" />
+    <Compile Include="ConfirmationProcess\ConfirmationParameter.cs" />
+    <Compile Include="ConfirmationProcess\ConfirmationProcess.cs" />
+    <Compile Include="ConfirmationProcess\InitiatConfirmationProcess.cs" />
+    <Compile Include="Confirmation\ApplicableRolesViewModel.cs" />
+    <Compile Include="Confirmation\AssocieteDriverAndComepetency.cs" />
+    <Compile Include="Confirmation\ConfigureParameterCategory.cs" />
+    <Compile Include="Confirmation\ConfigureParametersforRoles.cs" />
+    <Compile Include="Confirmation\ConfigureRatingScales.cs" />
+    <Compile Include="Confirmation\ConfirmationViewModel.cs" />
+    <Compile Include="ExpenseReimbursement\ExpenseReimbursementShowStatus.cs" />
+    <Compile Include="ExpenseReimbursement\ExpenseReimbursementViewModel .cs" />
+    <Compile Include="ExpenseReimbursement\ExpenseReimbursementStatus.cs" />
+    <Compile Include="Invoice\ConfigurationRoleModel.cs" />
+    <Compile Include="Invoice\TrackingSummaryHistoryModel.cs" />
+    <Compile Include="Invoice\PaymentTrackingHistoryModel.cs" />
+    <Compile Include="Invoice\FinanceTrackingSummaryModel.cs" />
+    <Compile Include="Invoice\FinancePaymentTrackingModel.cs" />
+    <Compile Include="Invoice\FinancePaymentsModel.cs" />
+    <Compile Include="Invoice\InvoiceCustomerAddressPopUp.cs" />
+    <Compile Include="Invoice\AddSalesPeriodPopUp.cs" />
+    <Compile Include="Invoice\SalesPeriodModel.cs" />
+    <Compile Include="Mail\MailTemplateViewModel.cs" />
+    <Compile Include="Menu\ExitProcess\EmpSeparationApprovals.cs" />
+    <Compile Include="Menu\ExitProcess\ExitInterviewViewModel.cs" />
+    <Compile Include="Menu\ExitProcess\EmpSeperationTerminationViewModel.cs" />
+    <Compile Include="Menu\ExitProcess\ExitProcessViewModel.cs" />
+    <Compile Include="EmployeeDetails\CalenderLocationDetails.cs" />
+    <Compile Include="Attributes\DateGreaterThanAttribute.cs" />
+    <Compile Include="EmployeeDetails\EmployeeDisciplinaryDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\GradeListDetails.cs" />
+    <Compile Include="EmployeeDetails\LoginRolesDetails.cs" />
+    <Compile Include="EmployeeDetails\OfficeLocationListDetails.cs" />
+    <Compile Include="EmployeeDetails\RoleList.cs" />
+    <Compile Include="EmployeeDetails\ShiftDetails.cs" />
+    <Compile Include="Enums\Common.cs" />
+    <Compile Include="Menu\ExitProcess\FinanceClearance.cs" />
+    <Compile Include="Error\ErrorViewModel.cs" />
+    <Compile Include="Menu\ExitProcess\SeparationMailTemplate.cs" />
+    <Compile Include="organizationStructure\OrganizationStructure.cs" />
+    <Compile Include="Reports\ReportIndex.cs" />
+    <Compile Include="Resource\AddEditResourseModel.cs" />
+    <Compile Include="Resource\ProjectEndAppraisalFormModel.cs" />
+    <Compile Include="Resource\ManagerViewPostModel.cs" />
+    <Compile Include="Resource\ResourceAllocationDashboardModel.cs" />
+    <Compile Include="Resource\ResourceAllocationViewModel.cs" />
+    <Compile Include="Resource\ResourceIndexModel.cs" />
+    <Compile Include="Resource\RMGViewPostModel.cs" />
+    <Compile Include="Resource\SearchResourceModel.cs" />
+    <Compile Include="Resource\UtilizationReportModel.cs" />
+    <Compile Include="SEM\AddCustomerModel.cs" />
+    <Compile Include="SEM\AddAddressModel.cs" />
+    <Compile Include="SEM\AddContract.cs" />
+    <Compile Include="SEM\AddProjectModel.cs" />
+    <Compile Include="SEM\CheckListPopUp.cs" />
+    <Compile Include="SEM\AddTaskType.cs" />
+    <Compile Include="SEM\AddTaskName.cs" />
+    <Compile Include="SEM\AssignTaskModel.cs" />
+    <Compile Include="SEM\AddExcel.cs" />
+    <Compile Include="SEM\AddTaskModel.cs" />
+    <Compile Include="SEM\ApproveTSDetailsModel.cs" />
+    <Compile Include="SEM\ApproveRevisionModel.cs" />
+    <Compile Include="SEM\ApproveTimesheetModel.cs" />
+    <Compile Include="SEM\CompleteTimesheetModel.cs" />
+    <Compile Include="Invoice\AddInvoiceModel.cs" />
+    <Compile Include="SEM\SEMEmployeeListDetails.cs" />
+    <Compile Include="SEM\ShowHistoryModel.cs" />
+    <Compile Include="SEM\RevisionDetailsModel.cs" />
+    <Compile Include="SEM\TimesheetEntryViewModel.cs" />
+    <Compile Include="SEM\PhaseManagementModel.cs" />
+    <Compile Include="SEM\PhasesPracticeMappingModel.cs" />
+    <Compile Include="SEM\PhasesViewModel.cs" />
+    <Compile Include="SEM\ManageDocumentsModel.cs" />
+    <Compile Include="SEM\ManagePhasesModel.cs" />
+    <Compile Include="SEM\ManageModulesModel.cs" />
+    <Compile Include="SEM\ManageSubProjectsModel.cs" />
+    <Compile Include="SEM\TaskClosure.cs" />
+    <Compile Include="SEM\ManageMilestonesModel.cs" />
+    <Compile Include="SEM\TimesheetApprovalsModel.cs" />
+    <Compile Include="SEM\TimesheetViewModel.cs" />
+    <Compile Include="SEM\TaskListModel.cs" />
+    <Compile Include="SEM\TimesheetEntryModel.cs" />
+    <Compile Include="SEM\UploadDataModel.cs" />
+    <Compile Include="SEM\UploadTasksModel.cs" />
+    <Compile Include="SEM\TaskMapping.cs" />
+    <Compile Include="SEM\SelectMoreTasks.cs" />
+    <Compile Include="SEM\CreateAssignTasksModel.cs" />
+    <Compile Include="SEM\GeneralTaskManageModel.cs" />
+    <Compile Include="SEM\GeneralTasksModel.cs" />
+    <Compile Include="SEM\TaskPracticeMapModel.cs" />
+    <Compile Include="SEM\TaskTypeManageModel.cs" />
+    <Compile Include="SEM\InvoiceFinanceModel.cs" />
+    <Compile Include="SEM\PIRStatus.cs" />
+    <Compile Include="SEM\InvoiceApprovalsModel.cs" />
+    <Compile Include="Invoice\GenerateInvoiceModel.cs" />
+    <Compile Include="SEM\ProjectDocuments.cs" />
+    <Compile Include="SEM\ProjectReviewers.cs" />
+    <Compile Include="SEM\ProjectOwners.cs" />
+    <Compile Include="SEM\PMSProjectDetailsViewModel.cs" />
+    <Compile Include="SEM\CustomerAddress.cs" />
+    <Compile Include="SEM\CustomerContact.cs" />
+    <Compile Include="SEM\CustomerContract.cs" />
+    <Compile Include="SEM\SEMViewModel.cs" />
+    <Compile Include="SkillMatrix\ConfigurationSkillMatrix.cs" />
+    <Compile Include="SkillMatrix\Details.cs" />
+    <Compile Include="SkillMatrix\DetailsModel.cs" />
+    <Compile Include="SkillMatrix\SearchByEmployeeNameModel.cs" />
+    <Compile Include="SkillMatrix\SkillMatrixSearchAll.cs" />
+    <Compile Include="SkillMatrix\SkillMatrixShowHistoryModel.cs" />
+    <Compile Include="TaskTimesheet\PmsConfiguration.cs" />
+    <Compile Include="TaskTimesheet\TaskCreationModel.cs" />
+    <Compile Include="TaskTimesheet\TimeSheetApprovalModel.cs" />
+    <Compile Include="TaskTimesheet\TimesheetModel.cs" />
+    <Compile Include="TaskTimesheet\TimesheetTagModel.cs" />
+    <Compile Include="Travel\AccomodationAdminViewModel.cs" />
+    <Compile Include="Travel\AccomodationViewModel.cs" />
+    <Compile Include="Travel\ClientViewModel.cs" />
+    <Compile Include="Travel\ConveyanceAdminViewModel.cs" />
+    <Compile Include="Travel\TravelMailTemplate.cs" />
+    <Compile Include="Travel\JourneyViewModel.cs" />
+    <Compile Include="Travel\OtherAdminViewModel.cs" />
+    <Compile Include="Travel\PassportViewModel.cs" />
+    <Compile Include="PersonalDetails\ApprovalEmployeeDetails.cs" />
+    <Compile Include="Menu\ExitProcess\SeparationShowDetails.cs" />
+    <Compile Include="Menu\ExitProcess\SeparationShowStatus.cs" />
+    <Compile Include="PersonalDetails\CertificationDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\EmployeeWorkingType.cs" />
+    <Compile Include="PersonalDetails\CountryDetails.cs" />
+    <Compile Include="PersonalDetails\DeclarationDetailsViewModel.cs" />
+    <Compile Include="PersonalDetails\DeclarationsDetails.cs" />
+    <Compile Include="PersonalDetails\DependantDetails.cs" />
+    <Compile Include="PersonalDetails\DependentDetailsViewModel.cs" />
+    <Compile Include="PersonalDetails\EmergencyContactViewModel.cs" />
+    <Compile Include="PersonalDetails\EmployeeChangesApprovalViewModel.cs" />
+    <Compile Include="PersonalDetails\EmployeeMailTemplate.cs" />
+    <Compile Include="PersonalDetails\EmployeeQualifications.cs" />
+    <Compile Include="EmployeeDetails\BondDetailsViewModel.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="EmployeeDetails\EmployeeExperienceDetails.cs" />
+    <Compile Include="EmployeeDetails\EmpoyeeDependentDetails.cs" />
+    <Compile Include="EmployeeDetails\LocationListDetails.cs" />
+    <Compile Include="EmployeeDetails\PastEmployeeExperienceDetails.cs" />
+    <Compile Include="EmployeeDetails\PastEmployeeExperienceViewModel.cs" />
+    <Compile Include="EmployeeDetails\ProjectDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\ProjectListDetails.cs" />
+    <Compile Include="EmployeeDetails\ProjectRoleList.cs" />
+    <Compile Include="EmployeeDetails\ResourcePoolListDetails.cs" />
+    <Compile Include="EmployeeDetails\ResourcePoolManagerList.cs" />
+    <Compile Include="PersonalDetails\SearchedUserDetails.cs" />
+    <Compile Include="PersonalDetails\SkillDetailsViewModel.cs" />
+    <Compile Include="Account\AccountModels.cs" />
+    <Compile Include="PersonalDetails\CertificationDetailsModel.cs" />
+    <Compile Include="EmployeeDetails\ClientListDetails.cs" />
+    <Compile Include="PersonalDetails\ContactDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\DesignationDetails.cs" />
+    <Compile Include="EmployeeDetails\DesignationDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\Designations.cs" />
+    <Compile Include="EmployeeDetails\CountryDetails.cs" />
+    <Compile Include="EmployeeDetails\EducationalDetailsModel.cs" />
+    <Compile Include="EmployeeDetails\EmployeeDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\EmployeeDetails.cs" />
+    <Compile Include="PersonalDetails\EmployeeQualificationsViewModel.cs" />
+    <Compile Include="EmployeeDetails\EmployeeListDetails.cs" />
+    <Compile Include="EmployeeDetails\EmployeeSearchResulViewtModel.cs" />
+    <Compile Include="EmployeeDetails\EmployeeStatusListDetails.cs" />
+    <Compile Include="PersonalDetails\MedicalHistoryDetails.cs" />
+    <Compile Include="PersonalDetails\MedicalHistoryDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\GroupListDetails.cs" />
+    <Compile Include="PersonalDetails\PersonalDetailsViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PersonalDetails\ResidentialDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\ResourcePoolMasterListDetails.cs" />
+    <Compile Include="PersonalDetails\SkillDetails.cs" />
+    <Compile Include="EmployeeDetails\TravelDetailsViewModel.cs" />
+    <Compile Include="EmployeeDetails\UploadEmployeeDocumentsViewModel.cs" />
+    <Compile Include="EmployeeDetails\UploadHRDocumentsViewModel.cs" />
+    <Compile Include="Travel\ContactViewModel.cs" />
+    <Compile Include="Travel\TravelEmergencyContactViewModel.cs" />
+    <Compile Include="Travel\TravelExtensionViewModel.cs" />
+    <Compile Include="Travel\TravelReport.cs" />
+    <Compile Include="Travel\TravelShowStatus.cs" />
+    <Compile Include="Travel\TravelStatus.cs" />
+    <Compile Include="Travel\TravelViewModel.cs" />
+    <Compile Include="Travel\TravelViewModelIndex.cs" />
+    <Compile Include="Travel\VisaViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HRMS.Resources\HRMS.Resources.csproj">
+      <Project>{A6286877-2019-4C44-BC51-F5E062AFBD16}</Project>
+      <Name>HRMS.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

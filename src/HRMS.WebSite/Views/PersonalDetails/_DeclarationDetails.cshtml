@@ -1,0 +1,413 @@
+﻿@model HRMS.Models.DeclarationDetailsViewModel
+@{
+    ViewBag.Title = "Declaration Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="~/Scripts/Global.min.js"></script>
+<script src="@Url.Content("../../Scripts/PersonalDetails/_DeclarationsDetails.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        stringRelationList = @(Html.Raw(Json.Encode(Model.RelationList)));
+        var relation = [];
+        relation.push("Select");
+        $.each(stringRelationList, function (index,value) {
+            relation.push(value.DependandsRelation);
+        });
+
+        stringStatusList = @(Html.Raw(Json.Encode(Model.EmployeeList)));
+        var status = [];
+        status.push("Select");
+        $.each(stringStatusList, function (index,value) {
+            status.push(value.V2EmployeeName);
+        });
+
+        var deletionIdSelected = 0;
+        SelectedDeclarationRowId = "";
+        isDeclarationRowInAddEditMode = false;
+        $('#DeclarationDetailsForm #EmployeeID').val('@Model.EmployeeID');
+
+        // Set up the jquery grid
+        $("#declarationTable").jqGrid({
+            // Ajax related configurations
+
+            url: '@Url.Action("DeclarationDetailsLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.declarationEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee ID", "Declaration ID", "Name", "Relation", "", "V2 Employee Status", "", "V2 Employee Code", ""],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 100, align: "left" },
+                { name: "DeclarationId", index: "DeclarationId", editable: true, hidden: true, width: 100, align: "left" },
+                { name: "Name", index: "Name", editable: true, editrules: { required: true }, width: 150, align: "left" },
+                { name: "RelationshipName", index: "RelationshipName", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDeclarationRelation(e); } }]} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" },
+                { name: "V2EmployeeName", index: "V2EmployeeName", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isStatusSelected}, edittype: "select", editoptions: { value: status, dataEvents: [{ type: 'change', fn: function(e) {ChangeStatus(e); } }]} },
+                { name: "V2EmployeeID", index: "V2EmployeeID", hidden: true, align: "left", visible: "false" },
+                { name: "EmployeeCode", index: "EmployeeCode", editable: true, editrules: { required: true, custom: true, custom_func: isValidEmployeeCode }, editoptions: { maxlength: 10}, width: 70, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 22,
+                    align: "center",
+                    formatter: function () {
+                        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')
+					          || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')) &&
+					  ('@Model.EmpStatusMasterID' != 2)) {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            ],
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#DeclarationTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            shrinkToFit: true,
+            autowidth: false,
+            editurl: '@Url.Action("SaveDecalrationInfo", "PersonalDetails")',
+            //caption: "Employee - Declaration Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#declarationTable").jqGrid('getGridParam', 'records');
+                //if (count == 0) {
+                //    $('#gbox_declarationTable').hide();
+                //}
+                //else {
+                //    $('#gbox_declarationTable').show();
+                //    if (count > 20) {
+
+                //        $('#DeclarationTablePager').show();
+                //    }
+                //    else {
+                //        $('#DeclarationTablePager').hide();
+                //    }
+                //}
+                if ('@Model.EmpStatusMasterID' == 2) {
+                    //$("#btnAddDeclarationDetails").hide();
+                    $("#gbox_DeclarationTable").find('input,select').attr("disabled", true);
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectedDeclarationRowId = rowid;
+                var rowData = $(this).getRowData(rowid);
+                var columnName = $(this).jqGrid("getGridParam", "colModel");
+                if(isDeclarationRowInAddEditMode == false){
+                    var selectedDeclarationId = rowData['DeclarationId'];
+                    var colName = columnName[iCol];
+                    $('#DeclarationDetailsForm #uniqueID').val( rowData['uniqueID']);
+                    $('#DeclarationDetailsForm #V2EmployeeID').val( rowData['V2EmployeeID']);
+                    if (colName['index'] == "Delete" && rowid != "new_row") {
+                        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')
+                        || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID'))
+                         && ('@Model.EmpStatusMasterID' != 2)) {
+                            DeleteDecalrationDetail(selectedDeclarationId, '@ViewBag.declarationEmployeeId');
+                        }
+                    }
+                }@*else {
+                    if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID'))
+					 &&
+					('@Model.EmpStatusMasterID' != 2)) {
+                        //EditDeclarationDetails(rowData);
+                    }
+                }*@
+            }
+        }).navGrid("#DeclarationTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+        $("#declarationTable").jqGrid('inlineNav', "#DeclarationTablePager",
+      {
+          edit: true,
+          editicon: "ui-icon-pencil",
+          edittext: "Edit",
+          add: true,
+          addicon: "ui-icon-plus",
+          addtext: "Add",
+          save: true,
+          saveicon: "ui-icon-disk",
+          savetext: "Save",
+          cancle: true,
+          cancelicon: "ui-icon-cancel",
+          canceltext: "Cancel",
+          addParams: {
+              useFormatter: false,
+              addRowParams: {
+                  oneditfunc: function (rowid) {
+                      isDeclarationRowInAddEditMode = true;
+                      SelectedDeclarationRowId = rowid;
+                  }
+              }
+          },
+          editParams: {
+              keys: false,
+              oneditfunc: function (rowid) {
+                  isDeclarationRowInAddEditMode = true;
+              },
+              sucessfunc: function (data) {
+              },
+              url: null,
+              extraparam: {
+                  RelationId: function () {
+                      return $('#DeclarationDetailsForm #uniqueID').val();
+                  },
+                  StatusID: function () {
+                      return $('#DeclarationDetailsForm #V2EmployeeID').val();
+                  },
+                  EmployeeId: function() {
+                      return $('#DeclarationDetailsForm #EmployeeID').val();
+                  }
+              },
+              aftersavefunc: function (data, response) {
+                  isDeclarationRowInAddEditMode = false;
+                  var results = $.parseJSON(response.responseText);
+                  $("#declarationTable").trigger("reloadGrid");
+                  if (results.status == true) {
+                      $("#AddDeclarationSuccessMessege").dialog({
+                          resizable: false,
+                          height: 140,
+                          width: 300,
+                          modal: true,
+                          dialogClass: "noclose",
+                          buttons: {
+                              Ok: function () {
+                                  $(this).dialog("close");
+                              }
+                          }
+                      });
+                  }
+                  else if (results.status == "Error") {
+                      DisplayErrorDialog('Declaration Details');
+                  }
+                  else {
+                      $("#AddDeclarationErrorMessege").dialog({
+                          resizable: false,
+                          height: 140,
+                          width: 300,
+                          modal: true,
+                          dialogClass: "noclose",
+                          buttons: {
+                              Ok: function () {
+                                  $(this).dialog("close");
+                              }
+                          }
+                      });
+                  }
+
+              },
+              errorfunc: null,
+              afterrestorefunc: function(){
+                  isDeclarationRowInAddEditMode = false;
+              },
+              restoreAfterError: true,
+              mtype: "POST"
+          }
+      });
+
+    if ('@Model.EmpStatusMasterID' == 2)
+        $("#declarationTable_iladd").css("visibility","hidden");
+
+    if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')
+    || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID'))
+     &&
+    ('@Model.EmpStatusMasterID' != 2)) {
+        //EditDeclarationDetails(rowData);
+        $("#declarationTable_iledit").css("visibility","visible");
+    }
+    else
+        $("#declarationTable_iledit").css("visibility","hidden");
+
+    if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') {
+        //$("#btnAddDeclarationDetails").hide();
+        $("#DeclarationTablePager_left").css("visibility","hidden");
+    }
+ });//end document ready
+</script>
+@*<h3 class="mrgnT15">
+        Declaration Details</h3>
+    <div class="clearfix">
+        <fieldset class="NoTitleGridsContainer">
+            <div id="addDeclarationDialog" style="display: none">
+                @Html.Partial("_AddDeclarationDetails", Model)
+            </div>
+            <div class="clear">
+                @Html.HiddenFor(m => m.UserRole)
+                @Html.HiddenFor(x => x.EmployeeID)
+                <input type="button" value="Add Declaration Details" id="btnAddDeclarationDetails" class="button" />&nbsp;&nbsp;
+            </div>
+            <div class="tablestyle3">
+                <table id="declarationTable" class="scroll">
+                </table>
+            </div>
+            <div id="DeclarationTablePager">
+            </div>
+        </fieldset>
+    </div>
+    <div id="deleteDependantDialogConfirmation" style="display: none">
+        <p>
+            Are you sure you want to delete the selected record ?</p>
+    </div>
+    <div id="deleteDependantRecord" style="display: none;">
+        <p>
+            Record has been deleted successfully.
+        </p>
+    </div>*@
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && Model.EmployeeID != ViewBag.LoggedInEmployeeId)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })" class="selected">
+                    Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Medical History</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody DeclarationMainbody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "DeclarationDetailsForm" }))
+        {
+            @Html.HiddenFor(x => x.uniqueID)
+            @Html.HiddenFor(x => x.V2EmployeeID)
+            @Html.HiddenFor(x => x.EmployeeID)
+            @Html.HiddenFor(x => x.UserRole)
+        }
+        @*<div class="FormContainerBox  Declaration clearfix">*@ @*<div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    <label>* Name:</label>
+                </div>
+                <div class="InputDiv">
+                    <input type="text" />
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    <label>* V2 Employee Status:</label>
+                </div>
+                <div class="InputDiv">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+                    </div>*@ @*<div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    <label>* Relation:</label>
+                </div>
+                <div class="InputDiv">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    <label>Employee Code:</label>
+                </div>
+                <div class="InputDiv">
+                    <input type="text" />
+                </div>
+            </div>
+                    </div>*@ @*</div>*@ @*<div class="fill-dtls clearfix">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>*@
+        <div class="mrgnT33">
+            <div class="tablestyle3">
+                <table id="declarationTable" class="scroll">
+                </table>
+            </div>
+            <div id="DeclarationTablePager">
+            </div>
+        </div>
+    </div>
+</section>
+<div id="RelationRequiredDialog" title="Dependant details" style="display: none">
+    <p>
+        Please select value of Relation.
+    </p>
+</div>
+<div id="StatusRequiredDialog" title="Dependant details" style="display: none">
+    <p>
+        Please select value of V2 Employee Status.
+    </p>
+</div>
+<div id="AddDeclarationSuccessMessege" title="Declaration details" style="display: none;">
+    <p>
+        Declaration details have been saved.
+    </p>
+</div>
+<div id="AddDeclarationErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the record?
+    </p>
+</div>
+<div id="ValidEmployeeCodeDialog" title="Dependant details" style="display: none">
+    <p>
+        Please enter only positive numeric value for V2 Employee Code.
+    </p>
+</div>

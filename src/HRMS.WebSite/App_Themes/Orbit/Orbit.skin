@@ -1,0 +1,102 @@
+﻿<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White">
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+
+        <asp:CheckBox  runat="server" style="font-family:Verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;" />
+
+	     <asp:Label  runat="server" style="font-family:Verdana;
+	font-size:11px;
+	font-style:normal;
+	font-weight:bold;
+	color: Green;" SkinID="lblSuccess"></asp:Label>
+	  <asp:Label  runat="server" style="font-family:Verdana;
+	font-size:11px;
+	font-style:normal;
+	font-weight:bold;
+	color: Red;" SkinID="lblError"></asp:Label>
+
+        <asp:DropDownList runat="server" style="font-family:Verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;
+	border-top: 1px solid #ADADAD;
+	border-right: 1px solid #ADADAD;
+	border-bottom: 1px solid #ADADAD;
+	border-left: 1px solid #ADADAD;">
+        </asp:DropDownList>
+
+        <asp:LinkButton  runat="server"  CssClass="textGray"  ></asp:LinkButton>
+
+        <asp:ListBox  runat="server" style="font-family:verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;
+	border-top: 1px solid #ADADAD;
+	border-right: 1px solid #ADADAD;
+	border-bottom: 1px solid #ADADAD;
+	border-left: 1px solid #ADADAD;">
+      </asp:ListBox>
+
+        <asp:CheckBoxList  runat="server" style="font-family:verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;
+	border-top: 1px ;
+	border-right: 1px ;
+	border-bottom: 1px ;
+	border-left: 1px ;">
+	 </asp:CheckBoxList>
+
+        <asp:RadioButton runat="server" style="font-family:verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;" />
+
+        <asp:RadioButtonList  runat="server" style="font-family:verdana;
+	font-size:11px;
+	font-style:normal;
+	color:#333333;
+	border-top: 1px solid #ADADAD;
+	border-right: 1px solid #ADADAD;
+	border-bottom: 1px solid #ADADAD;
+	border-left: 1px solid #ADADAD;">
+        </asp:RadioButtonList>
+
+        <asp:FileUpload  runat="server" style="font-family:verdana; " />
+
+        <asp:Panel  runat="server"  style="font-family:verdana;font-size:11px; font-style:normal;	color:#333333;">
+        </asp:Panel>
+
+    <asp:RequiredFieldValidator  runat="server"  style="font-family:verdana; font-size:11px; font-style:normal; font-weight:bold; color:red;"></asp:RequiredFieldValidator>
+    <asp:RangeValidator  runat="server"  style="font-family:verdana; font-size:11px; font-style:normal; font-weight:bold; color:red;"></asp:RangeValidator>
+    <asp:RegularExpressionValidator runat="server"  style="font-family:verdana; font-size:11px; font-style:normal; font-weight:bold; color:red;"></asp:RegularExpressionValidator>
+    <asp:CompareValidator runat="server"  style="font-family:verdana; font-size:11px; font-style:normal; font-weight:bold; color:red;"></asp:CompareValidator>
+    <asp:CustomValidator  runat="server" style="font-family:verdana; font-size:11px; font-style:normal; font-weight:bold; color:red;"></asp:CustomValidator>
+    <asp:ValidationSummary runat="server"  style="font-family:verdana; font-size:11px; font-style:normal; color:red;" />
+
+    <asp:LoginName  runat="server" style="font-family:verdana;font-size:11px;font-style:normal;color:#333333;" />
+
+    <asp:LoginStatus  runat="server" CssClass="logout" />
+
+   <asp:Menu CssClass="orbitmenu"   DynamicSelectedStyle-ItemSpacing=2  DynamicHorizontalOffset=3 runat="server" Orientation="Horizontal" DynamicEnableDefaultPopOutImage=False StaticEnableDefaultPopOutImage=False>
+        <StaticMenuItemStyle Font-Names=verdana Font-Size="11px" ForeColor="#FFFFFF" Font-Bold="true" Height=15px />
+        <StaticHoverStyle   Font-Names="verdana" Font-Size="11px" ForeColor="#515151" Font-Bold=true />
+        <DynamicHoverStyle  Font-Names="verdana" Font-Size="10px" ForeColor="#515151" Font-Bold=true />
+        <DynamicMenuStyle  BorderColor="#FFFFFF" BorderWidth="1"   BackColor="#40A3CC" Font-Names="verdana" Font-Size="10px" Font-Bold=true ForeColor="#FFFFFF"  HorizontalPadding="3px" VerticalPadding="3px" />
+        <DynamicMenuItemStyle CssClass="borderBot" Width=100% BackColor="#40A3CC" Font-Names="verdana" Font-Size="11px" Font-Bold=true ForeColor="#FFFFFF"  HorizontalPadding="3px" VerticalPadding="3px" />
+    </asp:Menu>

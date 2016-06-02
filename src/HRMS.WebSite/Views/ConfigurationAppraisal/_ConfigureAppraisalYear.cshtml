@@ -1,0 +1,39 @@
+﻿@model HRMS.Models.AppraisalYearModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")" class="selected">Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")">Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody SmartT">
+        <div class=" FormContainerBox clearfix ProjectIndexFliter">
+            <div class=" leftcol">
+                 <div class="formrow clearfix">
+                     <a href="@Url.Action("ConfigureNewYear", "ConfigurationAppraisal")" class="tableLink">Configure New Appraisal Year</a>
+                  </div>
+                  <div class="formrow clearfix">
+                       <a href="@Url.Action("ViewYearRecords", "ConfigurationAppraisal")" class="tableLink">View Appraisal Year Records</a>
+                   </div>
+        </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $(".Title").hide();
+    });
+</script>

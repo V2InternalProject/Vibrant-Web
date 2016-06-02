@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3206B3CB-0C64-4823-B111-9949150F2432}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataLayerHelpDesk</RootNamespace>
+    <AssemblyName>DataLayerHelpDesk</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationBlocks.Data">
+      <HintPath>..\..\..\..\..\Vibrantweb\HRMS.WebSite\bin\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="clsDLCategory.cs" />
+    <Compile Include="clsDLCategoryWiseSearchReport.cs" />
+    <Compile Include="clsDLgraphIssueStatus.cs" />
+    <Compile Include="clsDLIssueAssignment.cs" />
+    <Compile Include="clsDLIssueHealth.cs" />
+    <Compile Include="clsDlIssueStatus.cs" />
+    <Compile Include="clsDLLogin.cs" />
+    <Compile Include="clsDLMemberWiseSearchReport.cs" />
+    <Compile Include="clsDLProblemPriority.cs" />
+    <Compile Include="clsDLProblemSeverity.cs" />
+    <Compile Include="clsDLReportIssue.cs" />
+    <Compile Include="clsDLResolutionTime.cs" />
+    <Compile Include="clsDLResolutionTimeReport.cs" />
+    <Compile Include="clsDLSLAReport.cs" />
+    <Compile Include="clsDLStatus.cs" />
+    <Compile Include="clsDLSubCategory.cs" />
+    <Compile Include="clsDLSubCategoryAssignment.cs" />
+    <Compile Include="clsDLSummaryReport.cs" />
+    <Compile Include="clsDLViewMyIssues.cs" />
+    <Compile Include="clsDLViewMyStatus.cs" />
+    <Compile Include="clsMemberWiseSearchResults.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileLoggerHelpdesk\FileLoggerHelpdesk.csproj">
+      <Project>{682B9BF3-0A18-4345-A8AF-2DCC659CF9C5}</Project>
+      <Name>FileLoggerHelpdesk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelHelpdesk\ModelHelpdesk.csproj">
+      <Project>{8DD229A5-2133-4CB3-8537-8F7E78A1CB39}</Project>
+      <Name>ModelHelpdesk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\V2ExceptionHelpdesk\V2ExceptionHelpdesk.csproj">
+      <Project>{278CD1CC-7D12-4E76-A077-FE462285B1DA}</Project>
+      <Name>V2ExceptionHelpdesk</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

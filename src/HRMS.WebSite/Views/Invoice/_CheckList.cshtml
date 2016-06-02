@@ -1,0 +1,66 @@
+﻿@model HRMS.Models.AddInvoiceModel
+@{
+    ViewBag.Title = "Check List";
+}
+<div>
+    @using (Html.BeginForm("", "", new { @id = "frmCheckList" }))
+    {
+        <div id="dvCheckList">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable"
+                class="TableJqgrid">
+                <thead>
+                    <tr class="bluebgtable1">
+                        <td align="left" width="5%" class="tableHeaders">
+                            Sr. No.
+                        </td>
+                        <td align="left" width="45%" class="tableHeaders">
+                            Checklist Item
+                        </td>
+                        <td align="left" width="5%" class="tableHeaders">
+                            Yes
+                        </td>
+                        <td align="left" width="45%" class="tableHeaders">
+                            Comments
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                        @foreach (var item in Model.LstCheckList)
+                        {
+
+                        <tr class="tableRows">
+                            <td align="left" width="5%">
+                                @Html.DisplayFor(modelItem => item.RFIChecklistItemID, new { @readonly = "readonly" })
+                            </td>
+                            <td align="left" width="45%">
+                                @Html.DisplayFor(modelItem => item.RFIChecklistItem, new { @readonly = "readonly" })
+                            </td>
+                            <td align="left" width="5%">
+
+                               @* @Html.DisplayFor(modelItem => item.RFIChecklistItemResponse, new { @readonly = "readonly" })*@
+                                @if(item.RFIChecklistItemResponse == true)
+                                {
+                                    @Html.Label("Yes");
+                                }
+                                else
+                                    {
+                                      @Html.Label("No");
+                                    }
+                            </td>
+                            <td align="left" width="45%">
+                                @Html.DisplayFor(modelItem => item.Comments, new { @readonly = "readonly" })
+                            </td>
+                        </tr>
+
+                  }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @*<div class="bluebutton1 clearB floatR">
+        <div class="bluebgtable1"> Total Count:
+        </div>
+    </div>*@
+</div>

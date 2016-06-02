@@ -1,0 +1,67 @@
+﻿@model HRMS.Models.LogOnModel
+@{
+    ViewBag.Title = "Log In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/themes/base/tabcss")
+@Styles.Render("~/Content/themes/base/sitecss")
+@Scripts.Render("~/bundles/tabjquery")
+@Scripts.Render("~/bundles/jqueryValidation")
+@Scripts.Render("~/bundles/GridViewJquery")
+@Scripts.Render("~/bundle/CommonFile")
+<script type="text/javascript">
+    $(document).ready(function () {
+//        if ('@Model.IsValidSession' == 'False') {
+//            $("#InvalidSession").dialog({
+//                closeOnEscape: false,
+//                autoOpen: false,
+//                title: 'Login Failed',
+//                resizable: false,
+//                height: 'auto',
+//                width: 'auto',
+//                modal: true,
+//                dialogClass: "noclose",
+//                buttons: {
+//                    Ok: function () {
+//                        window.location.href = '@Model.LogOffURL';
+//                        $("#InvalidSession").dialog("close");
+//                    }
+//                }
+//            });
+//            $("#InvalidSession").dialog("open");
+//        }
+//        else {
+            $("#LoginFaild").dialog({
+                closeOnEscape: false,
+                autoOpen: false,
+                title: 'Login Failed',
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        window.location.href = '@Model.LogOffURL';
+                        $("#LoginFaild").dialog("close");
+                    }
+                }
+            });
+            $("#LoginFaild").dialog("open");
+       //}
+    });
+</script>
+<div class="loginfail-pad">
+    <div id="LoginFaild" style="display: none">
+        <center class="LoadingWrap">
+            The user name or password provided is incorrect.
+        </center>
+    </div>
+</div>
+<div class="loginfail-pad">
+    <div id="InvalidSession" style="display: none">
+        <center class="LoadingWrap">
+           Unauthorized Login.
+        </center>
+    </div>
+</div>

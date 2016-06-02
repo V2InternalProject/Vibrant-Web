@@ -1,0 +1,85 @@
+﻿@model HRMS.Models.InvoiceCustomerAddress
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "AddAddressForm" }))
+{
+    @Html.HiddenFor(x => x.CustomerID)
+}
+<div class="tablestyle3" id="InvoiceAddressTableContainer">
+    <table id="jqInvoiceAddressTable">
+    </table>
+</div>
+<div id="jqInvoiceAddressTablePager">
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function () {
+        $("#jqInvoiceAddressTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("GetCustomerAddressLoadGrid", "Invoice")',
+            postData: { CustomerID: $('#CustomerID').val() },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","Address","", "Country", "State", "City", "Zip Code", "Phone Number", "Email Address", "Details"],
+            // Configure the columns
+            colModel: [
+                { name: "CustomerAddressID", index: "CustomerAddressID", align: "left", width:90,hidden:true },
+                { name: "Address", index: "Address", align: "left", width:90,formatter : addHiperLinkForAddress },
+                { name: "Address", index: "Address", align: "left", width:90,hidden:true },
+                { name: "Country", index: "Country", align: "left", width: 90 },
+                { name: "state", index: "state", align: "left", width: 90 },
+                { name: "City", index: "City", align: "left", width: 90 },
+                { name: "ZipCode", index: "ZipCode", align: "left", width: 80 },
+                { name: "PhoneNumber", index: "PhoneNumber", align: "left", width: 80 },
+                { name: "EmailID", index: "EmailID", align: "left", width: 90 },
+                { name: "Details", index: "Details", align: "left", width: 90 }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqInvoiceAddressTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Invoice",
+              gridComplete: function () {
+                var count = jQuery("#jqInvoiceAddressTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqInvoiceAddressTable').hide();
+                    $("#InvoiceAddressTableContainer").append("<p class='ErrorInvoiceAddress'>No records found, Please contact to Finance Approver.</p>")
+                    $('#CustomerAddressDetails').parent().css('width','500px');
+                    $('#CustomerAddressDetails').parent().css('margin-left','-250px');
+                    $('#CustomerAddressDetails').parent().css('left','50%');
+                }
+            },
+            onCellSelect: function(rowid, iCol) {
+			}
+        }).navGrid("#jqInvoiceAddressTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        });
+
+    function addHiperLinkForAddress(cellValue, options, rowdata, action) {
+       return "<a href= '#' onclick=retreiveDataForAddressFeild('"+options.rowId+"') >" + cellValue + "</a>";
+    }
+    function retreiveDataForAddressFeild(value) {
+        var rowData = $("#jqInvoiceAddressTable").getRowData(value);
+        $('#txtCustomerAddress').val(rowData["Address"]);
+        $('#CustomerAddressID').val(rowData["CustomerAddressID"]);
+        $("#CustomerAddressDetails").dialog("destroy");
+    }
+</script>

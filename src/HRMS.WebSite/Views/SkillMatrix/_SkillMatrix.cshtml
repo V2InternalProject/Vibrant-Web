@@ -1,0 +1,402 @@
+﻿@model HRMS.Models.SkillMatrix.SkillMatrixSearchAll
+<link href="../../Content/New%20Design/rmg.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<div class="FormContainerBox clearfix">
+    <div class="formrow clearfix">
+        <div class="leftcol">
+            <div class="LabelDiv">
+                @Html.Label("Main Skill:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(x => x.ResourcePoolName, new SelectList(Model.ResourcePoolListDetails, "ResourcePoolId", "ResourcePoolName"), "Select")
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="LabelDiv">
+                @Html.Label("Sub Skill:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(x => x.SkillName, new SelectList(Model.SkillListDetails, "SkillID", "SkillName"), "Select")
+            </div>
+        </div>
+    </div>
+</div>
+<div class="">
+<Center><span id="ErrorNew" style="color:red"></span></Center>
+</div>
+    <div class="ButtonContainer2 clearfix">
+        <input type="button" class="ButtonGray" value="Export to Excel" id="BtnExportToexcelResourceSelf" />
+    </div>
+
+    <div class="tablestyle3 NoTitleGridsContainer" id="CurrentResourceContainer">
+        <table id="jqManageModuleTable"></table>
+        <div id="jqManageModuleTablePager">
+        </div>
+    </div>
+
+
+    <div id="TableError" style="display:none" title="Search By Skill">
+        <center>
+            Please select resource pool name before export to excel.
+        </center>
+    </div>
+
+    <div id="DataNotFoundSkillSearch" style="display:none" title="Search By Skill">
+        <center>
+            No records found.
+        </center>
+    </div>
+
+    <div id="SelectResourcePoolName" style="display:none" title="Search By Skill">
+        <center>
+            Please select a resource pool name.
+        </center>
+    </div>
+    @*<div class="clearfix">
+            <div class="confirmation-input-center">
+                <div class="clearfix confiremation-left">
+                    <div class="confiremation-left" style="float: left">
+                        @Html.Label("Resource Pool Name")
+                        @Html.DropDownListFor(x => x.ResourcePoolName, new SelectList(Model.ResourcePoolListDetails, "ResourcePoolId", "ResourcePoolName"), "Select")
+                    </div>
+                </div>
+                <div class="confirmation-right" style="float: right">
+                    @Html.Label("Skill Name")
+                    @Html.DropDownListFor(x => x.SkillName, new SelectList(Model.SkillListDetails, "SkillID", "SkillName"), "Select")
+                </div>
+            </div>
+            <input type="button" class="button floatR mrgnT10" value="Export to Excel" id="BtnExportToexcelResourceSelf" />
+        </div>*@
+
+    @*<div class="tablestyle3 NoTitleGridsContainer" id="CurrentResourceContainer">
+            <table id="jqManageModuleTable"></table>
+            <div id="jqManageModuleTablePager">
+            </div>
+        </div>*@
+
+
+
+
+    <script type="text/javascript">
+        tempResourcePoolId = "";
+        tempSkillId = "";
+        projectName = "SkillMatrix";
+        finalColumn = "";
+        ResourceId = "";
+        $(document).ready(function () {
+            $("#BtnExportToexcelResourceSelf").hide();
+            $('#BtnExportToexcelResourceSelf').click(function () {
+                var CurrentCount = jQuery("#jqManageModuleTable").jqGrid('getGridParam', 'records');
+                if (CurrentCount == 0 || CurrentCount == undefined) {
+                    $("#TableError").dialog({
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("destroy");
+                            }
+                        }
+                    });
+                }
+                else {
+                    window.location.href = '@Url.Action("ScreenExportToExcel", "SkillMatrix")' + '?FinalCol=' + finalColumn + '&ProjectName=' + projectName + '&ResourcePoolID=' + tempResourcePoolId + "&SkillId=" + tempSkillId;
+                }
+            });
+
+            var ColN, ColM, ColD, capEN;
+            var sPath = window.location.pathname;
+            var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
+
+
+            $('#ResourcePoolName').change(function () {
+               
+                tempResourcePoolId = $('#ResourcePoolName').val();
+                tempSkillId = "";
+                finalColumn = "Select";
+                $("#SkillName").val($("#SkillName option:first").val());
+                ResourceId = $('#ResourcePoolName').val();
+                $.ajax({
+                    url: '@Url.Action("GetSkillListBasedOnResourcePoolID", "SkillMatrix")',
+                    data: { ResourcePoolID: ResourceId },
+                    type: 'POST',
+                    datatype: 'json',
+                    async: false,
+                    success: function (result, columnName, Data) {
+                       
+                        $("#ErrorNew").html("");
+                        $("#BtnExportToexcelResourceSelf").show();
+                        if ($('#ResourcePoolName option:selected').text() == "Select") {
+                            $('#SkillName').selectBox("destroy");
+                            $('#SkillName').empty();
+                            var selectValue = '<option value="' +
+                            0 + '">' + "Select" + '</option>';
+                            $('#SkillName').append(selectValue);
+                            $("#SelectResourcePoolName").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("destroy");
+                                    }
+                                }
+                            });
+                            $("#jqManageModuleTable").GridUnload();
+                            $.preventDefault();
+                        }
+                        else {
+                            if (result.Error == true) {
+                                $("#ResourcePoolName").val($("#ResourcePoolName option:first").val());
+                                $('#SkillName').selectBox("destroy");
+                                $('#SkillName').empty();
+                                var selectValue = '<option value="' +
+                                0 + '">' + "Select" + '</option>';
+                                $('#SkillName').append(selectValue);
+                                //$('#SkillName').append($("<option></option>")
+                                // .attr("value", '')
+                                // .text("Select"));
+                                $('#SkillName').selectBox('create');
+                                $("#ErrorNew").html("No Record Found");
+                                $("#BtnExportToexcelResourceSelf").hide();
+                                //$("#DataNotFoundSkillSearch").dialog({
+                                //    resizable: false,
+                                //    height: 140,
+                                //    width: 300,
+                                //    modal: true,
+                                //    buttons: {
+                                //        Ok: function () {
+                                //            $(this).dialog("destroy");
+                                //        }
+                                //    }
+                                //});
+
+                                $("#jqManageModuleTable").GridUnload();
+
+                            }
+
+                        }
+                      
+                        if (result.results != undefined) {
+                            var SkillList = JSON.parse(result.results);
+
+                            $('#SkillName').empty();
+                            $('#SkillName').selectBox("destroy");
+                            var selectValue = '<option value="' +
+                            0 + '">' + "Select" + '</option>';
+                            $('#SkillName').append(selectValue);
+                            //$('#SkillName').append($("<option></option>")
+                            //          .attr("value", value.ProjectTaskTypeId)
+                            //          .text(value.TaskName));
+                            $.each(SkillList, function (index, value) {
+                                var optionhtml = '<option value="' +
+                            SkillList[index].SkillID + '">' + SkillList[index].SkillName + '</option>';
+                                $('#SkillName').append(optionhtml);
+
+                            });
+                            $('#SkillName').selectBox('create');
+                        }
+                    }
+                });
+
+                $.ajax({
+                    url: '@Url.Action("LoadSkillMatrixGrid", "SkillMatrix")',
+                    data: { ResourceIdValue: ResourceId, SkillId: tempSkillId },
+                    type: 'POST',
+                    datatype: 'json',
+                    async: false,
+                    success: function (data) {                        
+                        if (data.Error == true) {
+                            $("#ResourcePoolName").val($("#ResourcePoolName option:first").val());
+                            $("#ErrorNew").html("No Record Found");
+                            //$("#DataNotFoundSkillSearch").dialog({
+                            //    resizable: false,
+                            //    height: 140,
+                            //    width: 300,
+                            //    modal: true,
+                            //    buttons: {
+                            //        Ok: function () {
+                            //            $(this).dialog("destroy");
+                            //        }
+                            //    }
+                            //});
+                            $("#jqManageModuleTable").GridUnload();
+                            $.preventDefault();
+                        }
+                        var Coldata = JSON.parse(data.results.rows);
+                        ColN = data.results.rowsHead; //jqgrid heading data
+                        ColM = data.results.rowsM; // its column model
+                        ColD = Coldata; // Data
+                        createGrid();
+                    },
+                    error: function () {                        
+                        $("#ErrorNew").html("No Record Found");
+                        //$("#DataNotFoundSkillSearch").dialog({
+                        //    resizable: false,
+                        //    height: 140,
+                        //    width: 300,
+                        //    modal: true,
+                        //    buttons: {
+                        //        Ok: function () {
+                        //            $(this).dialog("destroy");
+                        //        }
+                        //    }
+                        //});
+                        $("#jqManageModuleTable").GridUnload();
+                    }
+                });
+                $.preventDefault();
+            });
+            function createGrid() {
+
+                $("#jqManageModuleTable").GridUnload();
+                jQuery("#jqManageModuleTable").jqGrid({
+                    datatype: 'json',
+                    url: '@Url.Action("LoadSkillMatrixGrid", "SkillMatrixController")',
+                    mtype: 'POST',
+                    colNames: ColN,
+                    colModel: ColM,
+                    ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                    width: 700,
+                    jsonReader: { repeatitems: false },
+                    pager: $("#jqManageModuleTablePager"),
+                    toppager: false,
+                    bottompager: false,
+                    viewrecords: true,
+                    height: 'auto',
+                    autowidth: false
+                });
+                for (var i = 0; i <= ColD.length; i++) {
+                    jQuery("#jqManageModuleTable").jqGrid('addRowData', i + 1, ColD[i]);
+                }
+            }
+            jQuery("#jqManageModuleTable").jqGrid('navGrid', '#jqManageModuleTablePager', { edit: false, add: false, del: false }, null, null, true, { multipleSearch: true });
+            $('#jqManageModuleTablePager').hide();
+            $('#SkillName').change(function () {
+                tempSkillId = $('#SkillName').val();
+                var skillname = $('#SkillName option:selected').text();
+                finalColumn = skillname;
+                if (skillname == "Select") {
+                    $.ajax({
+                        url: '@Url.Action("LoadSkillMatrixGrid", "SkillMatrix")',
+                        data: { ResourceIdValue: ResourceId, SkillId: 0 },
+                        type: 'POST',
+                        datatype: 'json',
+                        async: false,
+                        success: function (data) {
+                            if (data.Error == true) {
+                                $("#ErrorNew").html("No Record Found");
+                                //$("#DataNotFoundSkillSearch").dialog({
+                                //    resizable: false,
+                                //    height: 140,
+                                //    width: 300,
+                                //    modal: true,
+                                //    buttons: {
+                                //        Ok: function () {
+                                //            $(this).dialog("destroy");
+                                //        }
+                                //    }
+                                //});
+                                $("#jqManageModuleTable").GridUnload();
+                                $.preventDefault();
+                            }
+                            $("#jqManageModuleTable").GridUnload();
+                            var Coldata = JSON.parse(data.results.rows);
+                            ColN = data.results.rowsHead; //jqgrid heading data
+                            ColM = data.results.rowsM; // its column model
+                            ColD = Coldata; // Data
+                            createGrid();
+                        },
+                        error: function (data) {
+
+                            if (data.Error == true) {
+                                $("#ErrorNew").html("No Record Found");
+                                //$("#DataNotFoundSkillSearch").dialog({
+                                //    resizable: false,
+                                //    height: 140,
+                                //    width: 300,
+                                //    modal: true,
+                                //    buttons: {
+                                //        Ok: function () {
+                                //            $(this).dialog("destroy");
+                                //        }
+                                //    }
+                                //});
+                            }
+                            $("#jqManageModuleTable").GridUnload();
+                        }
+                    });
+                }
+                else {
+                    $.ajax({
+                        url: '@Url.Action("LoadSkillMatrixGrid", "SkillMatrix")',
+                        data: { ResourceIdValue: ResourceId, SkillId: tempSkillId },
+                        type: 'POST',
+                        datatype: 'json',
+                        async: false,
+                        success: function (data) {
+                            if (data.Error == true) {
+                                $("#ErrorNew").html("No Record Found");
+                                //$("#DataNotFoundSkillSearch").dialog({
+                                //    resizable: false,
+                                //    height: 140,
+                                //    width: 300,
+                                //    modal: true,
+                                //    buttons: {
+                                //        Ok: function () {
+                                //            $(this).dialog("destroy");
+                                //        }
+                                //    }
+                                //});
+                                $("#jqManageModuleTable").GridUnload();
+                                $.preventDefault();
+                            }
+                            var Coldata = JSON.parse(data.results.rows);
+                            ColN = data.results.rowsHead; //jqgrid heading data
+                            ColM = data.results.rowsM; // its column model
+                            ColD = Coldata; // Data
+                            createGrid();
+                        },
+                        error: function (data) {
+                            if (data.Error == true) {
+                                $("#ErrorNew").html("No Record Found");
+                                //$("#DataNotFoundSkillSearch").dialog({
+                                //    resizable: false,
+                                //    height: 140,
+                                //    width: 300,
+                                //    modal: true,
+                                //    buttons: {
+                                //        Ok: function () {
+                                //            $(this).dialog("destroy");
+                                //        }
+                                //    }
+                                //});
+                            }
+                            $("#jqManageModuleTable").GridUnload();
+                        }
+                    });
+                }
+                if (skillname != "Select") {
+                    $.each(ColN, function (index, value) {
+
+                        var hideSkillId = value;
+                        if (hideSkillId == "Employee Code") {
+                        }
+                        else if (hideSkillId == "Employee Name") {
+                        }
+                        else if (hideSkillId != skillname) {
+                            $("#jqManageModuleTable").jqGrid('hideCol', hideSkillId);
+                        }
+                    });
+                    ColN.length = 0;
+                    ColN;
+                }
+            });
+        });
+
+    </script>
+
+

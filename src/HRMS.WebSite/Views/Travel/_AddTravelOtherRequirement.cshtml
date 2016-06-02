@@ -1,0 +1,309 @@
+﻿@model HRMS.Models.OtherAdminViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Travel/TravelOtherRequirement.js" type="text/javascript"></script>
+@using (Html.BeginForm("SaveTravelOtherRequiementDetailsInfo", "Travel", FormMethod.Post, new { @id = "addTravelOtherDetails" }))
+{
+    @Html.ValidationSummary(true)
+
+
+    <div class="PopUpForm">
+        @Html.HiddenFor(x => x.ID)
+        @Html.HiddenFor(x => x.RequirementID)
+        @Html.HiddenFor(x => x.isFormValid)
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("*Requirement Type:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(model => model.RequrementTypeID, new SelectList(Model.requirementTypeList, "RequrementTypeID", "Description", "Select"), "Select", new { @id = "requrementTypeID_id", @class = "ValidationDropDown" })
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.RequrementTypeID)
+                @Html.HiddenFor(model => model.RequrementTypeID, new { id = "descriptionid" })
+            </p>
+        </div>
+    </div>
+    <div class="DdlAdvances formrow clearfix">
+        <div class="LabelDiv">
+            @Html.Label("*Currency:")
+        </div>
+        <div class="InputDiv">
+            @Html.DropDownListFor(model => model.CurrencyID, new SelectList(Model.CurrencyList, "CurrencyID", "CurrencyName", "Select"), "Select", new { @id = "CurrencyId" })
+            <p class="qualif-detail">
+                @Html.ValidationMessageFor(model => model.CurrencyList)
+            @Html.HiddenFor(model => model.CurrencyID, new { id = "hdnCurcyid" })
+        </p>
+    </div>
+</div>
+<div class="formrow clearfix DdlInsurance">
+    <div class="LabelDiv">
+        @Html.Label("*Insurance From Date:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(x => x.InsuranceFromDate, String.Format("{0:dd-MMM-yyyy}", Model.InsuranceFromDate), new { @readonly = "readonly" })
+        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.InsuranceFromDate)</p>
+        @Html.HiddenFor(x => x.InsuranceFromDate, new { @id = "hdnInsuranceFromDate" })
+    </div>
+</div>
+<div class="formrow clearfix DdlInsurance">
+    <div class="LabelDiv">
+        @Html.Label("*Insurance To Date:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(x => x.InsuranceToDate, String.Format("{0:dd-MMM-yyyy}", Model.InsuranceToDate), new { @readonly = "readonly" })
+        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.InsuranceToDate)</p>
+        @Html.HiddenFor(x => x.InsuranceToDate, new { @id = "hdnInsuranceToDate" })
+    </div>
+</div>
+<div class="mrgnT15 DdlAdvances formrow clearfix HideCash resetshowcash">
+    <div class="LabelDiv">
+        @Html.Label("Cash:")
+    </div>
+    @Html.CheckBoxFor(model => model.cash)
+    <label for="cash" class="LabelForCheckbox">
+    </label>
+</div>
+<div class="mrgnT15 ChkCashSelected formrow clearfix DdlAdvances HideCash">
+    <div class="LabelDiv">
+        @Html.Label("*Amount in cash:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(model => model.Advacesamount)
+        <p class="qualif-detail">
+            @Html.ValidationMessageFor(x => x.Advacesamount) @Html.Label("(Kindly enter the amount)", new { @id = "lblAmount" })
+            @Html.HiddenFor(model => model.Advacesamount, new { id = "hdnamount" })
+        </p>
+    </div>
+</div>
+<div class="mrgnT15 DdlAdvances formrow clearfix HideCard resetshowcard">
+    <div class="LabelDiv">
+        @Html.Label("Card:")
+    </div>
+    @Html.CheckBoxFor(model => model.card)
+    <label for="card" class="LabelForCheckbox">
+    </label>
+</div>
+<div class="mrgnT15 ChkCardSelected formrow clearfix DdlAdvances HideCard">
+    <div class="LabelDiv">
+        @Html.Label("*Card Details:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(model => model.CardDetails)
+        @Html.HiddenFor(model => model.CardDetails, new { id = "hdnCardDetails" })
+    </div>
+</div>
+<div class="mrgnT15 ChkCardSelected formrow clearfix DdlAdvances HideCard">
+    <div class="LabelDiv">
+        @Html.Label("*Amount on card:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(model => model.AmountOnCard)
+        <p class="qualif-detail">
+            @Html.ValidationMessageFor(x => x.AmountOnCard)
+        @Html.HiddenFor(model => model.AmountOnCard, new { id = "hdnAmountOnCard" })
+    </p>
+</div>
+</div>
+<div class="formrow clearfix">
+    <div class="LabelDiv">
+        @Html.Label("View Details:")
+    </div>
+    <div class="InputDiv">
+        @Html.TextBoxFor(model => model.Miscdetails, new { @id = "DetailID", @disabled = "disabled" })
+        <p class="qualif-detail">
+            @Html.ValidationMessageFor(model => model.Miscdetails)
+        @Html.HiddenFor(model => model.Miscdetails, new { id = "details" })
+    </p>
+</div>
+</div>
+<div class="formrow clearfix">
+    <div class="LabelDiv">
+        @Html.Label("Upload File:")
+    </div>
+    <div class="InputDiv positionR Height36 BrowseSpacingFix">
+        <input type="file" name="doc" id="empPassport" size="24" data-val-required="please select a file to Upload"
+               class="FileUploadBtn" />
+        <div class="BrowserVisible">
+            <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                                                                                      id="FileEmpPassportField" class="FileField" value="No files selected" />
+        </div>
+        <p>
+            <span id="FileUploadError" class="field-validation-error"></span>
+        </p>
+    </div>
+</div>
+<div class="formrow clearfix">
+    <div class="LabelDiv">
+        @Html.Label("Received By Employee:")
+    </div>
+    <div class="InputDiv">
+        @Html.DropDownListFor(model => model.AcceptanceID, new SelectList(Model.employeeAceptionsList, "AcceptanceID", "ReceivedByEmployee", "Select"), "Select", new { @id = "acceptance_Id" })
+        <p class="qualif-detail">
+            @Html.ValidationMessageFor(model => model.AcceptanceID)
+        @Html.HiddenFor(model => model.AcceptanceID, new { id = "acceptance" })
+    </p>
+</div>
+</div>
+<div class="clear popup_button ">
+    <div class="floatR clearfix">
+        <input id="saveTravelOtherdetails" type="submit" value="Save" class="ButtonGray mrgnR11" />
+        <input id="cancelTravelOtherdetails" type="button" value="Cancel" class="ButtonGray" />
+    </div>
+</div>
+</div>
+}
+<div id="AddTravelOtherDetailsSuccessMessege" title="Miscellaneous details" style="display: none;">
+    <p>
+        Miscellaneous details have been saved.
+    </p>
+</div>
+<div id="ErrorAdvances" title="Miscellaneous details" style="display: none;">
+    <p>
+        Please select Payment Mode Cash or Card.
+    </p>
+</div>
+<div id="ErrorCurrency" title="Miscellaneous details" style="display: none;">
+    <p>
+        Please select Currency.
+    </p>
+</div>
+@*<div id="ShowPassportDetails">
+    </div>*@
+<div id="AddTravelOtherDetailsErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="ErrorAmountInCash" title="Miscellaneous details" style="display: none;">
+    <p>
+        Please enter Amount in Cash.
+    </p>
+</div>
+<div id="ErrorAmountCardnCardDetails" title="Miscellaneous details" style="display: none;">
+    <p>
+        Please enter Amount on Card and Card details.
+    </p>
+</div>
+<div id="ErrorInsuranceDate" title="Miscellaneous details" style="display: none;">
+    <p>
+        Insurance From date should be less than Insurance to date.
+    </p>
+</div>
+<div id="ErrorInsuranceDateRequired" title="Miscellaneous details" style="display: none;">
+    <p>
+        Please enter Insurance From date and Insurance to date.
+    </p>
+</div>
+<script type="text/javascript">
+    $('#InsuranceFromDate').datepicker({
+        dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+        beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker, buttonImageOnly: true
+    });
+    $('#InsuranceToDate').datepicker({
+        dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+        beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker, buttonImageOnly: true
+    });
+
+    $(document).ready(function () {
+        $("#addTravelOtherDetails #isFormValid").val(true);
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-29px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-32px' });
+
+        });
+        //For Browse Button
+        $("#empPassport").bind("change", function (event) {
+            $("#FileEmpPassportField").val($(this).val());
+        });
+
+
+        $('#DetailID').removeAttr("disabled", "disabled");
+        //$("#acceptance_Id").attr("disabled", "disabled");
+        $("#acceptance_Id").selectBox('disable');
+        $('.ChkCashSelected').hide();
+        $('.ChkCardSelected').hide();
+        $(".DdlAdvances").hide();
+        $(".DdlInsurance").hide();
+
+        var viewstatus = '@ViewBag.StageID';
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+
+        if (viewstatus == "4" && IsloggedUser == "True") {
+            $("#addTravelOtherDetails").find("input,select").attr("disabled", "disabled");
+            $(".resetClass").hide();
+            $("#saveTravelOtherdetails").hide();
+            $('#requrementTypeID_id').selectBox('disable');
+            $('#CurrencyId').selectBox('disable');
+            $("#cancelTravelOtherdetails").hide();
+        }
+        if ('@ViewBag.UserRole' == 'Travel_Admin' && viewstatus == 3) {
+            //$('#acceptance_Id').removeAttr("disabled");
+            $('#acceptance_Id').selectBox("enable");
+        }
+        if ('@ViewBag.UserRole' == 'Travel_Admin' && viewstatus == 4) {
+            $("#addTravelOtherDetails").find("input,select").attr("disabled", "disabled");
+            $('#requrementTypeID_id').selectBox('disable');
+            $('#CurrencyId').selectBox('disable');
+            //$('#acceptance_Id').removeAttr("disabled");
+            $('#acceptance_Id').selectBox("enable");
+            $(".resetClass").removeAttr("disabled");
+            $("#saveTravelOtherdetails").removeAttr("disabled");
+        }
+        //save dependent details
+        $("#saveTravelOtherdetails").off('click').on('click', function () {
+            saveTravelOtherdetailsFunction(viewstatus);
+        });
+
+        $("#cancelTravelOtherdetails").click(function () {
+            $('#addTravelOtherDetailsDialog').dialog('close');
+        });
+
+
+        $('#requrementTypeID_id').change(function () {
+            var ddlVal = $('#requrementTypeID_id option:selected').text();
+            if (ddlVal == 'Advances') {
+                $(".DdlAdvances").show();
+                if ($("#cash").is(':checked'))
+                    $('.ChkCashSelected').show();
+                else
+                    $('.ChkCashSelected').hide();
+
+                if ($("#card").is(':checked'))
+                    $('.ChkCardSelected').show();
+                else
+                    $('.ChkCardSelected').hide();
+            }
+            else {
+                $(".DdlAdvances").hide();
+            }
+
+
+            if (ddlVal == 'Medical Insurance') {
+                $(".DdlInsurance").show();
+
+            }
+            else {
+                $(".DdlInsurance").hide();
+            }
+
+        });
+
+        $('#cash').click(function () {
+            if ($("#cash").is(':checked'))
+                $('.ChkCashSelected').show();
+            else
+                $('.ChkCashSelected').hide();
+        });
+
+        $('#card').click(function () {
+            if ($("#card").is(':checked'))
+                $('.ChkCardSelected').show();
+            else
+                $('.ChkCardSelected').hide();
+        });
+    });
+</script>

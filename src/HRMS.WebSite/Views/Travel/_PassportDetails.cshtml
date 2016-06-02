@@ -1,0 +1,31 @@
+﻿@model HRMS.Models.PassportViewModel
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="tablestyle3">
+    <table border="0" cellpadding="0" cellspacing="0" class="TableJqgrid" width="100%">
+        <tr align="center" class="tableRows">
+            <td align="right" width="30%" class="infoDisplayHead">
+                <div class="display-label">
+                    <b>File Name </b>
+                </div>
+            </td>
+            <td align="left" width="70%">
+                <div class="display-field">
+                    @Html.ActionLink(Model.PassportFileName, "DownloadPassportFile", "Travel", new { @Model.PassportFileName, @Model.DocumentID, @Model.EmployeeID }, null)
+                </div>
+            </td>
+        </tr>
+        <tr align="center" class="tableRows">
+            <td align="right" class="infoDisplayHead">
+                <div class="display-label">
+                    <b>Upload Date </b>
+                </div>
+            </td>
+            <td align="left">
+                <div class="display-field">
+                    @Model.CreatedDate
+                </div>
+            </td>
+        </tr>
+    </table>

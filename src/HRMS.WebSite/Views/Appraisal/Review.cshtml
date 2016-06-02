@@ -1,0 +1,80 @@
+﻿@{
+    Layout = "~/Views/Shared/_blank.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="http://angular-ui.github.com/ng-grid/css/ng-grid.css" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AppraisalMaster/AppraisalMaster.css" rel="stylesheet" />
+<style>
+    .review {
+        background: white;
+        border: 1px solid lightgrey;
+    }
+
+    th, tr, td {
+        padding: 10px;
+    }
+
+    tbody tr:first-child {
+        background: lightgrey;
+    }
+
+    .review h5 {
+        color: #B80000;
+    }
+
+    table {
+        margin-top: -10px;
+    }
+
+    .review h4 {
+        padding: 10px;
+        display: inline-block;
+        border: 1px solid grey;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<section class="AppraisalContainer" ng-app="ApprisalReview" ng-controller="ReviewController">
+    <div class="FixedHeader">
+        <div class="clearfix">
+        </div>
+        <div class="appraisal-page review">
+            <div>
+                <h2 class="MainHeading" style="
+                    display:inline-block;">
+                    Appraisal Review
+                </h2>
+                <a ng-click="gotoPreviousPage()" style=" color: #337ab7; float: right; margin-top: 20px;" href="">Back</a>
+                <a ng-click="printDiv()" style=" color: #337ab7; float: right; margin-top: 20px; margin-right: 20px;" href="">Print</a>
+                <div><span> <b>Employee code :</b>{{appriasee.EmployeeCode}}</span>  <span> <b>Employee Name :</b>{{appriasee.FullName}}</span></div>
+                <div ng-repeat="section in viewData track by $index">
+                    <div ng-switch on="section.isDataAvailable">
+
+                        <div ng-switch-when="true">
+                            <h4>Section {{$index+1}}  {{section.SectionName}}</h4>
+                            <table cellpadding="2" cellspacing="2" border="1" width="100%">
+                                <tr>
+                                    <th ng-repeat=" (key, value) in section.SectionQuestion |objOrder">
+                                        {{value.value }}
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="question in section.SectionData">
+                                    <td ng-repeat=" (key, value) in section.SectionQuestion |objOrder">
+                                        {{question[value.key]|texttodate}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div ng-switch-default>
+                            <h3> User has not filled data for Section:-  <b><u><i>{{section.SectionName}}</i></u></b> </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</section>
+
+@Scripts.Render("~/Appriasal/js")

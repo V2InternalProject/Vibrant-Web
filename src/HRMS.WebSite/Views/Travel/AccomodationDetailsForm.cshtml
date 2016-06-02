@@ -1,0 +1,119 @@
+﻿@model HRMS.Models.AccomodationViewModel
+@{
+    ViewBag.Title = "AccomodationDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Accomodation, Local Travel, Hardware and Software Requirement</h2>
+    <div class="clearfix blueBorder">
+        <div class="leftcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Accomodation Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Shuttle Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Hard Drive Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Softwares Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <textarea></textarea>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="rightcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Airport Pick up Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Laptop Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("USB Drive Needed")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option value="one">One</option>
+                        <option value="two">Two</option>
+                        <option value="three">Three</option>
+                        <option value="four">Four</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Additional Information")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <textarea></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mrgnT30">
+        <input type="button" class="button" value="Save" />
+        <input type="button" class="button" value="Submit" />
+        <input type="button" class="button" value="Cancle Travel Request" />
+    </div>
+</div>

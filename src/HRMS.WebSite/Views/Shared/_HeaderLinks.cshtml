@@ -1,0 +1,798 @@
+﻿@model HRMS.Models.SearchedUserDetails
+@using HRMS.DAL
+<div class="navDiv clearfix">
+    <ul class="nav-main">
+        @{
+            CommonMethodsDAL dal = new CommonMethodsDAL();
+            string encyptedEmploeeId = dal.Encrypt(this.Session["SecurityKey"].ToString() + Convert.ToString(Model.EmployeeId), true);
+        }
+        @if (Model.UserRole == @HRMS.Models.UserRoles.HRAdmin || Session["MaxUserRole"] == "HR Admin")
+        {
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/EmployeeDetails") ? " class=selected" : String.Empty)><a  href="@Url.Action("Index", "EmployeeDetails", new { employeeId = encyptedEmploeeId })">
+                Employee Details</a> </li>
+            <li  @(url.StartsWith("/PersonalDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = encyptedEmploeeId })">
+                Personal Details</a> </li>
+            <li @(url.StartsWith("/Uploads") ? " class=selected" : String.Empty)><a href="@Url.Action("Uploads", "Uploads")">
+                Uploads</a> </li>
+            <li @(url.StartsWith("/Approvals") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "Approvals")">
+                Approvals</a> </li>
+@* <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Menu</a>
+                <ul>
+                    <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a>
+                    </li>
+                    <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">
+                        Confirmation Process</a></li>
+                    <li><a href="@Url.Action("Index", "ExpenseReimbursement")">
+                        Expense Reimbursement</a></li>
+                    <li><a href="@Url.Action("Index", "Travel")">
+                        Travel Detail</a></li>
+                </ul>
+            </li>*@
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Departments</a>
+                <ul class="sub-menu">
+                    <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">HR <span
+                        style="float: right;">
+                        <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                                Process</a> </li>
+                            <li><a href="@Url.Action("AppraisalProcessIndex", "Appraisal")">Appraisal Process</a></li>
+                            <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Expense") ? " class=selected" : String.Empty)><a href="#">Finance
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu expense-submenu">
+                            <li><a href="@Url.Action("Index", "ExpenseReimbursement")">Expense Reimbursement</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Travel") ? " class=selected" : String.Empty)><a href="#">Admin
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="#" class="travelclick">Travel Process</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            
+            <li @(Request.Url.AbsolutePath.StartsWith("/Configuration") ? " class=selected" : String.Empty)>
+                <a href="#">Configurations</a>
+                <ul class="sub-menu config-submenu">
+                    <li><a href="@Url.Action("Index", "Configuration")">Configuration</a></li>
+                    <li><a href='@Url.Action("Index", "ExitConfiguration")'>Separation Process</a></li>
+                    <li><a href='@Url.Action("Index", "Confirmation")'>Confirmation and Appraisal Process</a></li>
+                    <li><a href='@Url.Action("Index", "organizationStructure")'>Organization Structure</a></li>
+                    <li><a href='@Url.Action("ConfigureOrganizationStructure", "organizationStructure")'>
+                        Configure Organization Structure</a></li>
+                    <li><a href='@Url.Action("Index", "AccessRights")'>Access Rights Mapping</a></li>
+                    <li><a href='@Url.Action("Index", "EmployeeNode")'>Employee Node Mapping</a></li>
+                    @*@if (User.IsInRole("Expense_Admin"))
+                    {
+                        <li><a href='@Url.Action("ConfigureExpenseReimbDetails", "ExpenseReimbursement")'>Configure
+                            Expense Reimbursement Project Names</a></li>
+                                 
+                    }*@
+                </ul>
+            </li>
+            <li><a href="#">Applications</a>
+                <ul class="sub-menu">
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">HelpDesk</a> </li>
+                    @if (User.IsInRole("Helpdesk") || User.IsInRole("Super Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/HelpDeskAdmin") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "HelpDeskAdmin")">HelpDeskAdmin</a> </li>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/PMS") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "PMS")">PMS</a> </li>
+                    }
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">SmarTrack</a> </li>
+                    }
+                    @if (User.IsInRole("Project _Creator") || User.IsInRole("Project_Approver") || Model.IsProjectReviewer == true)
+                    { 
+                        <li id="mainShow"><a href="#">PMS New<span style="float: right;"><img src="../../Images/white-arrow-nav.png" /></span></a>
+                            <ul class="side-menu" id="mainMenu">
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        else if (Model.UserRole == @HRMS.Models.UserRoles.HRExecutive)
+        {
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/EmployeeDetails") ? " class=selected" : String.Empty)><a  href="@Url.Action("Index", "EmployeeDetails", new { employeeId = encyptedEmploeeId })">
+                Employee Details</a> </li>
+            <li  @(url.StartsWith("/PersonalDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = encyptedEmploeeId })">
+                Personal Details</a> </li>
+@*  <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Menu</a>
+                <ul>
+                    <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                    <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                        Process</a> </li>
+                    <li><a href="@Url.Action("Index", "ExpenseReimbursement")">
+                        Expense Reimbursement</a></li>
+                        <li><a href="@Url.Action("Index", "Travel")">
+                        Travel Detail</a></li>
+
+                </ul>
+            </li>*@
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Departments</a>
+                <ul class="sub-menu">
+                    <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">HR <span
+                        style="float: right;">
+                        <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                                Process</a> </li>
+                            <li><a href="@Url.Action("AppraisalProcessIndex", "Appraisal")">Appraisal Process</a></li>
+                            <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Expense") ? " class=selected" : String.Empty)><a href="#">Finance
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu expense-submenu">
+                            <li><a href="@Url.Action("Index", "ExpenseReimbursement")">Expense Reimbursement <span
+                                style="float: right;">
+                                <img src="../../Images/white-arrow-nav.png" /></span></a></li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Travel") ? " class=selected" : String.Empty)><a href="#">Admin</a>
+                        <ul class="side-menu">
+                            <li><a href="#" class="travelclick">Travel Process</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="#">Applications</a>
+                <ul class="sub-menu">
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">HelpDesk</a> </li>
+                    @if (User.IsInRole("Helpdesk") || User.IsInRole("Super Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/HelpDeskAdmin") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "HelpDeskAdmin")">HelpDeskAdmin</a> </li>
+                    }
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">SmarTrack</a> </li>
+                    }
+                    @if (User.IsInRole("Project _Creator") || User.IsInRole("Project_Approver") || Model.IsProjectReviewer == true)
+                    { 
+                        <li id="mainShow"><a href="#">PMS New<span style="float: right;"><img src="../../Images/white-arrow-nav.png" /></span></a>
+                            <ul class="side-menu" id="mainMenu">
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+@* else if (Model.UserRole == @HRMS.Models.UserRoles.Finance)
+        {
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/Uploads") ? " class=selected" : String.Empty)><a  href="@Url.Action("Uploads", "Uploads")">
+                Upload Docs</a> </li>
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Menu</a>
+                <ul>
+                    <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                    <li><a href="@Url.Action("ConfirmationProcess", "Confirmation")">Confirmation Process</a>
+                    </li>
+                     <li><a class="nav-radius-bottom" href="@Url.Action("Index", "ExpenseReimbursement")">
+                        Expense Reimbursement</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Applications</a>
+                <ul>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">
+                            Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">
+                            HelpDesk</a> </li>
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">
+                                SmartTrack</a> </li>
+                    }
+                </ul>
+            </li>
+        }*@
+        else if (Model.UserRole == @HRMS.Models.UserRoles.RMG || User.IsInRole("Expense_Admin"))
+        {
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/EmployeeDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "EmployeeDetails", new { employeeId = encyptedEmploeeId })">
+                Employee Details</a></li>
+            <li  @(url.StartsWith("/PersonalDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = encyptedEmploeeId })">
+                Personal Details</a></li>
+            if (Model.UserRole == @HRMS.Models.UserRoles.RMG)
+            {
+            <li @(url.StartsWith("/Uploads") ? " class=selected" : String.Empty)><a href="@Url.Action("Uploads", "Uploads")">
+                Uploads</a></li>
+            <li @(url.StartsWith("/Approvals") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "Approvals")">
+                Approvals</a></li>
+            }
+@*<li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Menu</a>
+                <ul>
+                    <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                    <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                        Process</a> </li>
+                         <li><a href="@Url.Action("Index", "ExpenseReimbursement")">
+                        Expense Reimbursement</a></li>
+                        <li><a href="@Url.Action("Index", "Travel")">
+                        Travel Detail</a></li>
+                </ul>
+            </li>*@
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Departments</a>
+                <ul class="sub-menu">
+                    <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">HR <span
+                        style="float: right;">
+                        <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                                Process</a> </li>
+                            <li><a href="@Url.Action("AppraisalProcessIndex", "Appraisal")">Appraisal Process</a></li>
+                            <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Expense") ? " class=selected" : String.Empty)><a href="#">Finance
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu expense-submenu">
+                            <li><a href="@Url.Action("Index", "ExpenseReimbursement")">Expense Reimbursement</a></li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Travel") ? " class=selected" : String.Empty)><a href="#">Admin
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="#" class="travelclick">Travel Process</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li @(Request.Url.AbsolutePath.StartsWith("/Configuration") ? " class=selected" : String.Empty)>
+                <a href="#">Configurations</a>
+                <ul class="sub-menu config-submenu">
+                    <li><a href="@Url.Action("Index", "Configuration")">Configuration</a></li>
+                    @if (Model.UserRole == @HRMS.Models.UserRoles.RMG)
+                    {
+                        <li><a href='@Url.Action("Index", "organizationStructure")'>Organization Structure</a></li>
+                        <li><a href='@Url.Action("ConfigureOrganizationStructure", "organizationStructure")'>
+                            Configure Organization Structure</a></li>
+                    }
+@* @if (User.IsInRole("Expense_Admin"))
+                    {
+                        <li><a href='@Url.Action("ConfigureExpenseReimbDetails", "ExpenseReimbursement")'>Configure
+                            Expense Reimbursement Project Names</a></li>
+                    }*@
+                </ul>
+            </li>
+            <li><a href="#">Applications</a>
+                <ul class="sub-menu">
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">HelpDesk</a> </li>
+                    @if (User.IsInRole("Helpdesk") || User.IsInRole("Super Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/HelpDeskAdmin") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "HelpDeskAdmin")">HelpDeskAdmin</a> </li>
+                    }
+                    @if (Model.UserRole == @HRMS.Models.UserRoles.RMG)
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/PMS") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "PMS")">PMS</a> </li>
+                    }
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">SmarTrack</a> </li>
+                    }
+                    @if (User.IsInRole("Project _Creator") || User.IsInRole("Project_Approver") || Model.IsProjectReviewer == true || User.IsInRole("Manager"))
+                    { 
+                        <li id="mainShow"><a href="#">PMS New<span style="float: right;"><img src="../../Images/white-arrow-nav.png" /></span></a>
+                            <ul class="side-menu" id="mainMenu">
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        else if (Model.UserRole == @HRMS.Models.UserRoles.TravelAdmin || User.IsInRole("Travel_Admin"))
+        {
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/EmployeeDetails") ? " class=selected" : String.Empty)><a  href="@Url.Action("Index", "EmployeeDetails", new { employeeId = encyptedEmploeeId })">
+                Employee Details</a></li>
+            <li  @(url.StartsWith("/PersonalDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = encyptedEmploeeId })">
+                Personal Details</a></li>
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Departments</a>
+                <ul class="sub-menu">
+                    <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">HR <span
+                        style="float: right;">
+                        <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                                Process</a> </li>
+                            <li><a href="@Url.Action("AppraisalProcessIndex", "Appraisal")">Appraisal Process</a></li>
+                            <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Expense") ? " class=selected" : String.Empty)><a href="#">Finance
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu expense-submenu">
+                            <li><a href="@Url.Action("Index", "ExpenseReimbursement")">Expense Reimbursement</a></li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Travel") ? " class=selected" : String.Empty)><a href="#">Admin
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="#" class="travelclick">Travel Process</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li> 
+            <li @(Request.Url.AbsolutePath.StartsWith("/Configuration") ? " class=selected" : String.Empty)>
+                <a href="#">Configurations</a>
+                <ul class="sub-menu config-submenu">
+                    <li><a href="@Url.Action("Index", "Configuration")">Configuration</a></li>
+                </ul>
+            </li>         
+            <li><a href="#">Applications</a>
+                <ul class="sub-menu">
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">HelpDesk</a> </li>
+                    @if (User.IsInRole("Helpdesk") || User.IsInRole("Super Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/HelpDeskAdmin") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "HelpDeskAdmin")">HelpDeskAdmin</a> </li>
+                    }
+                    @if (this.Session["Current_DU"] == null || this.Session["Current_DU"] == "")
+                    {
+                        Response.Redirect(System.Configuration.ConfigurationManager.AppSettings["Log-OffURL"], true);
+                    }
+                    else
+                    {
+                        if (((User.IsInRole("Manager")) || (User.IsInRole("PMS_DT")) || (User.IsInRole("PMS_DU"))) && ((this.Session["Current_DU"].ToString() == "0") || (this.Session["Current_DU"].ToString() == "6") || (this.Session["Current_DU"].ToString() == "11") || (this.Session["Current_DU"].ToString() == "12") || (this.Session["Current_DU"].ToString() == "13") || (User.IsInRole("PMO"))))
+                        {                           
+                        <li @(Request.Url.AbsolutePath.StartsWith("/PMS") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "PMS")">PMS</a> </li>
+                        }
+                    }
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">SmarTrack</a> </li>
+                    }
+                    @if (User.IsInRole("Project _Creator") || User.IsInRole("Project_Approver") || Model.IsProjectReviewer == true)
+                    { 
+                        
+                    }
+                </ul>
+            </li>
+        }
+        else
+        {
+@* <li><a>Reporting</a></li>*@
+            var url = Request.Url.AbsolutePath;
+            <li @(url.StartsWith("/EmployeeDetails") ? " class=selected" : String.Empty)><a  href="@Url.Action("Index", "EmployeeDetails", new { employeeId = encyptedEmploeeId })">
+                Employee Details</a></li>
+            <li  @(url.StartsWith("/PersonalDetails") ? " class=selected" : String.Empty)><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = encyptedEmploeeId })">
+                Personal Details</a></li>
+@*<li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Menu</a>
+                <ul>
+                    <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                    <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                        Process</a> </li>
+                         <li><a href="@Url.Action("Index", "ExpenseReimbursement")">
+                        Expense Reimbursement</a></li>
+                        <li><a href="@Url.Action("Index", "Travel")">
+                        Travel Detail</a></li> 
+                </ul>
+            </li>*@
+            <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">Departments</a>
+                <ul class="sub-menu">
+                    <li @(url.StartsWith("/Exit") ? " class=selected" : String.Empty)><a href="#">HR <span
+                        style="float: right;">
+                        <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="@Url.Action("ConfigureParameter", "ConfirmationProcess")">Confirmation
+                                Process</a> </li>
+                            <li><a href="@Url.Action("AppraisalProcessIndex", "Appraisal")">Appraisal Process</a></li>
+                            <li><a href="@Url.Action("ExitProcess", "Exit")">Separation Process</a> </li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Expense") ? " class=selected" : String.Empty)><a href="#">Finance
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu expense-submenu">
+                            <li><a href="@Url.Action("Index", "ExpenseReimbursement")">Expense Reimbursement</a></li>
+                        </ul>
+                    </li>
+                    <li @(url.StartsWith("/Travel") ? " class=selected" : String.Empty)><a href="#">Admin
+                        <span style="float: right;">
+                            <img src="../../Images/white-arrow-nav.png" /></span></a>
+                        <ul class="side-menu">
+                            <li><a href="#" class="travelclick">Travel Process</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>          
+            <li><a href="#">Applications</a>
+                <ul class="sub-menu">
+                    <li @(Request.Url.AbsolutePath.StartsWith("/Orbit") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "Orbit")">Orbit</a> </li>
+                    <li @(Request.Url.AbsolutePath.StartsWith("/HelpDesk") ? " class=selected" : String.Empty)>
+                        <a href="@Url.Action("Index", "HelpDesk")">HelpDesk</a> </li>
+                    @if (User.IsInRole("Helpdesk") || User.IsInRole("Super Admin"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/HelpDeskAdmin") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "HelpDeskAdmin")">HelpDeskAdmin</a> </li>
+                    }
+                    @if (this.Session["Current_DU"] == null || this.Session["Current_DU"] == "")
+                    {
+                        Response.Redirect(System.Configuration.ConfigurationManager.AppSettings["Log-OffURL"], true);
+                    }
+                    else
+                    {
+                        if (((User.IsInRole("Manager")) || (User.IsInRole("PMS_DT")) || (User.IsInRole("PMS_DU"))) && ((this.Session["Current_DU"].ToString() == "0") || (this.Session["Current_DU"].ToString() == "6") || (this.Session["Current_DU"].ToString() == "11") || (this.Session["Current_DU"].ToString() == "12") || (this.Session["Current_DU"].ToString() == "13") ))
+                        {                           
+                        <li @(Request.Url.AbsolutePath.StartsWith("/PMS") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "PMS")">PMS</a> </li>
+                        }
+                    }
+                    @if (User.IsInRole("HRM") || User.IsInRole("Requestor") || User.IsInRole("Approver") || User.IsInRole("Interviewer") || User.IsInRole("Recruiter") || User.IsInRole("Group Head"))
+                    {
+                        <li @(Request.Url.AbsolutePath.StartsWith("/SmartTrack") ? " class=selected" : String.Empty)>
+                            <a href="@Url.Action("Index", "SmartTrack")">SmarTrack</a> </li>
+                    }
+                    @if (User.IsInRole("Project _Creator") || User.IsInRole("Project_Approver") || Model.IsProjectReviewer == true)
+                    { 
+                        <li id="mainShow"><a href="#">PMS New<span style="float: right;"><img src="../../Images/white-arrow-nav.png" /></span></a>
+                            <ul class="side-menu" id="mainMenu">
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        @*<li @(Request.Url.AbsolutePath.StartsWith("/Appraisal") ? " class=selected" : String.Empty)><a  href="@Url.Action("Index", "Appraisal", new { employeeId = Model.EmployeeId })">Appraisal</a></li>*@
+    </ul>
+    <div style="text-align: right" class="userlog">
+        @Html.Partial("_LogOnPartial")
+    </div>
+</div>
+@*Following line is commented for the security issue on 3/9/2013*@ @* @Html.Hidden("hdnEmployeeId", Model.EmployeeId)*@
+@if (!string.IsNullOrEmpty(Model.EmployeeFullName))
+{
+    <div style="background-color: #F2F2F2;" class="clearfix">
+        <div class="userName">
+            <span>
+                @Model.EmployeeFullName
+            </span>
+            @if (!string.IsNullOrEmpty(Model.EmployeeCode))
+            {
+                <span style="left: 20px;">{@Model.EmployeeCode} </span>
+            }
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    //     old
+    //    $(function () {
+    //        $(".menu").hover(
+    //            function () { $(".sub").slideToggle(400); },
+    //            function () { $(".sub").hide(); }
+    //        );
+    //    });
+
+    // rima 1
+
+    $(document).ready(function () {
+    ra=inv=p=c=t=ts=0;
+
+    var stringViewableNodeList = @(Html.Raw(Json.Encode(Session["ViewNode"])));
+    var LoginEmpCode = '@Session["LoggedInEmployee"]';
+    startULMenu = "<ul class='side-menu resource-submenu'>";
+    endULMenu = "</ul>";
+    if (stringViewableNodeList != null) {
+    if (stringViewableNodeList.length > 0) {
+    $.each(stringViewableNodeList, function (i, val) {
+
+    if (val.NodeName == "Customer") {
+    var newLi = "<li id='cu'><a href=/SEM/Index?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+    $("#mainMenu").append(newLi);
+    newLi = "";
+        } //for Customer
+
+    if (val.NodeName == "Manage Project" ||val.NodeName == "Manage Milestones"||val.NodeName == "Manage Sub-Projects"||val.NodeName == "Manage Modules" ||val.NodeName == "Manage Phases"||val.NodeName == "Manage Documents") {
+      if(p==0){
+      var newLi = "<li id='p'><a href=#>Project<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a><ul class='side-menu' id='forProject'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      p=1;
+      }
+        } //for Project Menu
+
+      if (val.NodeName == "Manage Project") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ProjectIndex?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forProject").append(newLi);
+      newLi = "";
+        }//for Project - Manage Project
+
+      if (val.NodeName == "Manage Milestones") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ManageMilestones?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forProject").append( newLi );
+      newLi = "";
+        }//for Project - Manage Milestones
+
+      if (val.NodeName == "Manage Sub-Projects") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ManageSubProjects?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forProject").append( newLi );
+      newLi = "";
+        }//for Project - Manage Sub-Projects
+
+      if (val.NodeName == "Manage Modules") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ManageModules?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forProject").append( newLi);
+      newLi = "";
+        }//for Project - Manage Sub-Modules
+
+        if (val.NodeName == "Manage Phases") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ManagePhases?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forProject").append(newLi);
+      newLi = "";
+        }//for Project - Manage Phases
+
+      if (val.NodeName == "Manage Documents") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/ManageDocuments?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forProject").append(newLi);
+      newLi = "";
+        }//for Project - Manage Documents
+
+      if (val.NodeName == "Phase Management" ||val.NodeName == "Phases and Practice Mapping"||val.NodeName == "Sales Period"||val.NodeName == "Configuration Role") {
+      if(c==0){
+      var newLi = "<li id='c'><a href=#>Configurations<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a><ul class='side-menu configure-submenu' id='forConfigurations'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      c=1;
+      }
+        } //for Configurations
+
+      if (val.NodeName == "Phase Management") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/PhaseManagement?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forConfigurations").append(newLi);
+      newLi = "";
+        }//for Configurations - Phase Management
+
+      if (val.NodeName == "Phases and Practice Mapping") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/PhasesPracticeMapping?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forConfigurations").append(newLi);
+      newLi = "";
+        }//for Configurations - Phases and Practice Mapping
+
+      if (val.NodeName == "Sales Period") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/SalesPeriod?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forConfigurations").append(newLi);
+      newLi = "";
+        }//for Configurations - Sales Period
+
+      if (val.NodeName == "Configuration Role") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/ConfigurationRole?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forConfigurations").append(newLi);
+      newLi = "";
+        }//for Configurations - Configuration Role
+
+
+      if (val.NodeName == "My Allocation" ||val.NodeName == "Manage Resource"||val.NodeName == "Resource Allocation View"||val.NodeName == "Utilization Report") {
+      if(ra==0){
+      var newLi = "<li id='ra'><a href=#>Resource Allocation<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a><ul class='side-menu resource-submenu' id='forResource'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      ra=1;
+      }
+        } //for Resource Allocation menu
+
+      if (val.NodeName == "My Allocation") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Resource/ResourceIndex?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forResource").append(newLi);
+      newLi = "";
+        }//for Resource Allocation - My Allocation
+
+      if (val.NodeName == "Manage Resource") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Resource/RMGViewPost?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forResource").append(newLi);
+      newLi = "";
+        }//for Resource Allocation - Manage Resource
+
+      //if (val.NodeName == "Resource Allocation View") {
+      //var newLi = "<li id='" + val.NodeID + "'><a href=/Resource/ReportView?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      //  $("#forResource").append( newLi);
+      //newLi = "";
+      //  }//for Resource Allocation - Resource Allocation View
+
+      if (val.NodeName == "Utilization Report") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Resource/UtilizationReport?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forResource").append( newLi);
+      newLi = "";
+        }//for Resource Allocation - Utilization Report
+
+      if (val.NodeName == "Task Type Management" ||val.NodeName == "Task Type and Practice Mapping"||val.NodeName == "Generic Task Management"||val.NodeName == "Create and Assign Tasks"||val.NodeName == "Generic Tasks"||val.NodeName == "Upload Tasks") {
+      if(t==0){
+      var newLi = "<li id='t'><a href=#>Tasks<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a> <ul class='side-menu tasks-submenu' id='forTasks'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      t=1;
+      }
+        } //for Tasks menu
+
+      if (val.NodeName == "Task Type Management") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/TaskTypeManage?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Tasks -  Task Type Management
+
+      if (val.NodeName == "Task Type and Practice Mapping") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/TaskPracticeMap?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Tasks - Task Type and Practice Mapping
+
+      if (val.NodeName == "Generic Task Management") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/GeneralTaskManage?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Taks - Generic Task Management
+
+      if (val.NodeName == "Create and Assign Tasks") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/CreateAssignTasks?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Taks - Create and Assign Tasks
+
+      if (val.NodeName == "Generic Tasks") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/GeneralTasks?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Taks - Generic Tasks
+
+      if (val.NodeName == "Upload Tasks") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/UploadTasks?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTasks").append( newLi);
+      newLi = "";
+        }//for Taks - Upload Tasks
+
+      if (val.NodeName == "Entry & View" ||val.NodeName == "View"||val.NodeName == "Approvals") {
+      if(ts==0){
+      var newLi = "<li id='ts'><a href=#>Timesheet<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a><ul class='side-menu' id='forTimesheet'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      ts=1;
+      }
+        } //for Timesheet 
+
+    if (val.NodeName == "Entry & View") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/TimesheetEntryView?TextLink=IRGenerator&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forTimesheet").append( newLi );
+      newLi = "";
+        }//for Timesheet - Entry & View
+
+      if (val.NodeName == "View") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/TimesheetView?TextLink=IRApproval&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTimesheet").append( newLi );
+      newLi = "";
+        }//for Timesheet - View
+
+      if (val.NodeName == "Approvals") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/SEM/TimesheetApprovals?TextLink=FinanceApproval&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forTimesheet").append( newLi );
+      newLi = "";
+        }//for Timesheet - Approvals
+
+      if (val.NodeName == "Generate Invoice" ||val.NodeName == "Invoice Approvals"||val.NodeName == "Invoice(Finance)"||val.NodeName == "Payment Data" || val.NodeName == "Outstanding Data") {
+      if(inv==0){
+      var newLi = "<li id='inv'><a href=#>Invoicing<span style='float: right;'><img src='../../Images/white-arrow-nav.png' /></span></a><ul class='side-menu' id='forInvoicing'>";
+      $("#mainMenu").append(newLi);
+      newLi = "";
+      inv=1;
+      }
+        } //for Invoicing menu
+
+    if (val.NodeName == "Generate Invoice") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/GenerateInvoice?TextLink=IRGenerator&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+      $("#forInvoicing").append( newLi);
+      newLi = "";
+        }//for Invoicing - Generate Invoice
+
+      if (val.NodeName == "Invoice Approvals") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/GenerateInvoice?TextLink=IRApproval&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forInvoicing").append( newLi );
+      newLi = "";
+        }//for Invoicing - Invoice Approvals
+
+      if (val.NodeName == "Invoice(Finance)") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/GenerateInvoice?TextLink=FinanceApproval&EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forInvoicing").append( newLi );
+      newLi = "";
+        }//for Invoicing - Invoice(Finance)
+
+      if (val.NodeName == "Payment Data") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/FinancePaymentTracking?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forInvoicing").append(newLi );
+      newLi = "";
+        }//for Invoicing - Payment Data
+
+      if (val.NodeName == "Outstanding Data") {
+      var newLi = "<li id='" + val.NodeID + "'><a href=/Invoice/FinanceTrackingSummary?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID + ">" + val.NodeName + "</a></li>";
+        $("#forInvoicing").append( newLi);
+      newLi = "";
+        }//for Invoicing - Outstanding Data
+
+    });//End of Each
+    }//end of >0
+    }//End of !=null
+
+        if ('@Model.EmployeeFullName' != "") {
+            $(".Title").css("margin-top", "-36px");
+        }
+        else {
+
+            $(".Title").css("width", "100%");
+            $(".Title").css("background-color", "#F2F2F2");
+        }
+        $('.nav-main li').hover(function () {
+
+            $(this).children('.sub-menu').slideUp(0).slideDown(400);
+        }, function () {
+            $(this).children('.sub-menu').slideUp(0);
+        });
+
+        //        $(".sub-menu li").hover(function () {
+
+        //            $(this).children('.side-menu').slideDown(400);
+        //        }, function () {
+        //            $(this).children('.side-menu').slideUp(0);
+        //        });
+    });//End of ready function
+
+    // rima 2
+    //    $('.nav-main li').hover(
+    //		function () {
+    //		    $(this).find('.sub-menu').stop(true, true).slideDown('slow');
+    //		},
+    //		function () {
+    //		    $(this).find('.sub-menu').stop(true, true).slideUp('fast');
+    //		}
+    //	);
+    //		$('.sub-menu li').hover(
+    //		function () {
+    //		    $(this).find('.side-menu').stop(true, true).slideDown('slow');
+    //		},
+    //		function () {
+    //		    $(this).find('.side-menu').stop(true, true).slideUp('fast');
+    //		}
+    //	);
+
+    $('.travelclick').click(function () {
+        window.location.href = '@Url.Action("Index", "Travel")?Appchk=' + '@HRMS.Models.YesNoCondition.Yes';
+    });
+</script>

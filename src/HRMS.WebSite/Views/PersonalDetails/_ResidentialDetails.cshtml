@@ -1,0 +1,1115 @@
+﻿@model HRMS.Models.ResidentialDetailsViewModel
+@{
+    ViewBag.Title = "Residential Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    function MarkSameAddress() {
+        if ($('#chkAddress').is(':checked')) {
+            var currentadd = $("#txtCurrentAddress").val();
+            var currentState = $("#txtCurrentState").val();
+            var currentCity = $("#txtCurrentCity").val();
+            var currentZipCode = $("#txtCurrentZipCode").val();
+            $("#txtAddress").val(currentadd);
+            $("#txtAddress").next().children().text(currentadd);
+            $("#txtState").val(currentState);
+            $("#txtState").next().text(currentState);
+            $("#txtCity").val(currentCity);
+            $("#txtCity").next().text(currentCity);
+            $("#txtZipCode").val(currentZipCode);
+            $("#txtZipCode").next().text(currentZipCode);
+            $("#ddlCountry")[0].selectedIndex = $("#ddlCurrentCountry")[0].selectedIndex;
+            $("#txtAddress").attr('readonly', 'readonly');
+            $("#txtState").attr('readonly', 'readonly');
+            $("#txtCity").attr('readonly', 'readonly');
+            $("#txtZipCode").attr('readonly', 'readonly');
+            $(".Permenant").attr('disabled', 'disabled');
+            $("#ddlCountry").next().find(".sbSelector").text($("#ddlCurrentCountry").next().find(".sbSelector").text());
+            $("#ddlCountry").next().next().text($("#ddlCurrentCountry").next().find(".sbSelector").text());
+            DisplayLabel();
+        }
+        else {
+            $("#txtAddress").val('');
+            $("#txtState").val('');
+            $("#txtCity").val('');
+            $("#txtZipCode").val('');
+            $("#ddlCountry").val("Select");
+            $("#txtAddress").removeAttr('readonly').show().next().hide();
+            $("#txtState").removeAttr('readonly').show().next().hide();
+            $("#txtCity").removeAttr('readonly').show().next().hide();
+            $("#txtZipCode").removeAttr('readonly').show().next().hide();
+            $(".Permenant").removeAttr("disabled");
+            $("#ddlCountry").next().show().next().hide();
+            $("#ddlCountry").next().find(".sbSelector").text("Select");
+        }
+    }
+
+    function RestoreValues() {
+        $("#txtAddress").val($("#hdnAddress").val());
+        $("#txtState").val($("#hdnState").val());
+        $("#txtCity").val($("#hdnCity").val());
+        $("#txtZipCode").val($("#hdnZipCode").val());
+        $("#ddlCountry").val($("#hdCountry").val());
+        $("#txtCurrentAddress").val($("#hdnCurrentAddress").val());
+        $("#txtCurrentState").val($("#hdnCurrentState").val());
+        $("#txtCurrentCity").val($("#hdnCurrentCity").val());
+        $("#txtCurrentZipCode").val($("#hdnCurrentZipCode").val());
+        $("#ddlCurrentCountry").val($("#hdCurrentCountry").val());
+
+        $("#ddlCurrentCountry").next().find(".sbSelector").text($("#ddlCurrentCountry :selected").text());
+        $("#ddlCountry").next().find(".sbSelector").text($("#ddlCountry :selected").text());
+    }
+
+    //DisplayLabel() function is used to hide disabled fields and display respective value as Label.
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                if (val.id == "ddlCurrentCountry" || val.id == "ddlCountry") {
+                    $(this).next().hide().next().show().append("</br>");
+                }
+                else if (val.id == "txtCurrentAddress" || val.id == "txtAddress") {
+                    $(this).hide().next().show().children().show();
+                }
+                else
+                    $(this).hide().next().show();
+            }
+        });
+    }//end function
+
+    $(document).ready(function () {
+        //hide Labels and Textarea Div intially.
+        $(".ClassDisplayLabel, .ClassTextareaDiv").hide();
+
+        $('#EmployeeId').val('@Model.EmployeeId');
+        if (('@Model.EmpStatusMasterID' == 2) || ((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@Model.SearchedUserID')) {
+            jQuery('form#frmResident').find('textarea,select,input').attr('disabled', 'disabled');
+            $("#saveResidentials").hide();
+            $('#btnCancel').hide();
+        }
+        else {
+            $("#saveResidentials").show();
+            $('#btnCancel').show();
+        }
+
+        if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' && ('@Model.EmpStatusMasterID' != 2)) {
+            $("#frmResident :input").removeAttr("disabled");
+        }
+
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' && ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' || $('#UserRole').val() != '@HRMS.Models.UserRoles.RMG') && ('@Model.EmpStatusMasterID' != 2))
+            || ('@ViewBag.loggedinEmployeeID' == '@Model.SearchedUserID')) {
+            $("#frmResident :input").removeAttr("disabled");
+            var ApprovedMessage = "Field change is Approved";
+            var RejectedMessage = "Field change approval is Rejected";
+            var onHoldMessage = "Field change approval is On Hold";
+            $.ajax({
+                url: '@Url.Action("ResidentialChanges", "PersonalDetails")',
+                type: 'GET',
+                async: false,
+                cache: false,
+                data: { employeeId: '@ViewBag.residentialEmployeeID' },
+                //datatype: 'json',
+                success: function (result) {
+                    if (result.label != null) {
+                        $.each(result.label, function (l) {
+                            $.each(result.approvalMessage, function (i) {
+                                if (result.label[l] == $("#lblcurrentaddress").text() && $("#txtCurrentAddress").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtCurrentAddress").removeAttr("disabled");
+                                        $("#spCurrentAddress").html('');
+                                        $("#spCurrentAddress").append(result.approvalMessage[l]);
+                                        $("#spCurrentAddress").css("color", "green");
+                                        $("#spCurrentAddress").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtCurrentAddress").removeAttr("disabled");
+                                        $("#spCurrentAddress").html('');
+                                        $("#spCurrentAddress").append(result.approvalMessage[l]);
+                                        $("#spCurrentAddress").css("color", "red");
+                                        $("#spCurrentAddress").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCurrentAddress").html('');
+                                        $("#spCurrentAddress").append(result.approvalMessage[l]);
+                                        $("#spCurrentAddress").css("color", "red");
+                                        $("#spCurrentAddress").show();
+                                        $("#txtCurrentAddress").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCurrentAddress").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcurrentcountry").text() && $("#ddlCurrentCountry").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#ddlCurrentCountry").removeAttr("disabled");
+                                        $("#spCurrentCountry").html('');
+                                        $("#spCurrentCountry").append(result.approvalMessage[l]);
+                                        $("#spCurrentCountry").css("color", "green");
+                                        $("#spCurrentCountry").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#ddlCurrentCountry").removeAttr("disabled");
+                                        $("#spCurrentCountry").html('');
+                                        $("#spCurrentCountry").append(result.approvalMessage[l]);
+                                        $("#spCurrentCountry").css("color", "red");
+                                        $("#spCurrentCountry").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCurrentCountry").html('');
+                                        $("#spCurrentCountry").append(result.approvalMessage[l]);
+                                        $("#spCurrentCountry").css("color", "red");
+                                        $("#spCurrentCountry").show();
+                                        $("#ddlCurrentCountry").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCurrentCountry").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcurrentstate").text() && $("#txtCurrentState").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtCurrentState").removeAttr("disabled");
+                                        $("#spCurrentState").html('');
+                                        $("#spCurrentState").append(result.approvalMessage[l]);
+                                        $("#spCurrentState").css("color", "green");
+                                        $("#spCurrentState").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtCurrentState").removeAttr("disabled");
+                                        $("#spCurrentState").html('');
+                                        $("#spCurrentState").append(result.approvalMessage[l]);
+                                        $("#spCurrentState").css("color", "red");
+                                        $("#spCurrentState").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCurrentState").html('');
+                                        $("#spCurrentState").append(result.approvalMessage[l]);
+                                        $("#spCurrentState").css("color", "red");
+                                        $("#spCurrentState").show();
+                                        $("#txtCurrentState").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCurrentState").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcurrentcity").text() && $("#txtCurrentCity").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtCurrentCity").removeAttr("disabled");
+                                        $("#spCurrentCity").html('');
+                                        $("#spCurrentCity").append(result.approvalMessage[l]);
+                                        $("#spCurrentCity").css("color", "green");
+                                        $("#spCurrentCity").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtCurrentCity").removeAttr("disabled");
+                                        $("#spCurrentCity").html('');
+                                        $("#spCurrentCity").append(result.approvalMessage[l]);
+                                        $("#spCurrentCity").css("color", "red");
+                                        $("#spCurrentCity").show();
+                                    }
+
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCurrentCity").html('');
+                                        $("#spCurrentCity").append(result.approvalMessage[l]);
+                                        $("#spCurrentCity").css("color", "red");
+                                        $("#spCurrentCity").show();
+                                        $("#txtCurrentCity").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCurrentCity").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcurrentzipcode").text() && $("#txtCurrentZipCode").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtCurrentZipCode").removeAttr("disabled");
+                                        $("#spCurrentZipCode").html('');
+                                        $("#spCurrentZipCode").append(result.approvalMessage[l]);
+                                        $("#spCurrentZipCode").css("color", "green");
+                                        $("#spCurrentZipCode").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtCurrentZipCode").removeAttr("disabled");
+                                        $("#spCurrentZipCode").html('');
+                                        $("#spCurrentZipCode").append(result.approvalMessage[l]);
+                                        $("#spCurrentZipCode").css("color", "red");
+                                        $("#spCurrentZipCode").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCurrentZipCode").html('');
+                                        $("#spCurrentZipCode").append(result.approvalMessage[l]);
+                                        $("#spCurrentZipCode").css("color", "red");
+                                        $("#spCurrentZipCode").show();
+                                        $("#txtCurrentZipCode").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCurrentZipCode").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lbladdress").text() && $("#txtAddress").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtAddress").removeAttr("disabled");
+                                        $("#spAddress").html('');
+                                        $("#spAddress").append(result.approvalMessage[l]);
+                                        $("#spAddress").css("color", "green");
+                                        $("#spAddress").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtAddress").removeAttr("disabled");
+                                        $("#spAddress").html('');
+                                        $("#spAddress").append(result.approvalMessage[l]);
+                                        $("#spAddress").css("color", "red");
+                                        $("#spAddress").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spAddress").html('');
+                                        $("#spAddress").append(result.approvalMessage[l]);
+                                        $("#spAddress").css("color", "red");
+                                        $("#spAddress").show();
+                                        $("#txtAddress").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spAddress").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcountry").text() && $("#ddlCountry").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#ddlCountry").removeAttr("disabled");
+                                        $("#spCountry").html('');
+                                        $("#spCountry").append(result.approvalMessage[l]);
+                                        $("#spCountry").css("color", "green");
+                                        $("#spCountry").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#ddlCountry").removeAttr("disabled");
+                                        $("#spCountry").html('');
+                                        $("#spCountry").append(result.approvalMessage[l]);
+                                        $("#spCountry").css("color", "red");
+                                        $("#spCountry").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCountry").html('');
+                                        $("#spCountry").append(result.approvalMessage[l]);
+                                        $("#spCountry").css("color", "red");
+                                        $("#spCountry").show();
+                                        $("#ddlCountry").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCountry").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblstate").text() && $("#txtState").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtState").removeAttr("disabled");
+                                        $("#spState").html('');
+                                        $("#spState").append(result.approvalMessage[l]);
+                                        $("#spState").css("color", "green");
+                                        $("#spState").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtState").removeAttr("disabled");
+                                        $("#spState").html('');
+                                        $("#spState").append(result.approvalMessage[l]);
+                                        $("#spState").css("color", "red");
+                                        $("#spState").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spState").html('');
+                                        $("#spState").append(result.approvalMessage[l]);
+                                        $("#spState").css("color", "red");
+                                        $("#spState").show();
+                                        $("#txtState").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spState").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblcity").text() && $("#txtCity").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtCity").removeAttr("disabled");
+                                        $("#spCity").html('');
+                                        $("#spCity").append(result.approvalMessage[l]);
+                                        $("#spCity").css("color", "green");
+                                        $("#spCity").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtCity").removeAttr("disabled");
+                                        $("#spCity").html('');
+                                        $("#spCity").append(result.approvalMessage[l]);
+                                        $("#spCity").css("color", "red");
+                                        $("#spCity").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spCity").html('');
+                                        $("#spCity").append(result.approvalMessage[l]);
+                                        $("#spCity").css("color", "red");
+                                        $("#spCity").show();
+                                        $("#txtCity").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spCity").hide();
+                                    }
+                                    return false;
+                                }
+
+                                if (result.label[l] == $("#lblzipcode").text() && $("#txtZipCode").val() != "") {
+                                    if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                        $("#txtZipCode").removeAttr("disabled");
+                                        $("#spZipCode").html('');
+                                        $("#spZipCode").append(result.approvalMessage[l]);
+                                        $("#spZipCode").css("color", "green");
+                                        $("#spZipCode").show();
+                                    }
+                                    else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                        $("#txtZipCode").removeAttr("disabled");
+                                        $("#spZipCode").html('');
+                                        $("#spZipCode").append(result.approvalMessage[l]);
+                                        $("#spZipCode").css("color", "red");
+                                        $("#spZipCode").show();
+                                    }
+                                    else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                        $("#spZipCode").html('');
+                                        $("#spZipCode").append(result.approvalMessage[l]);
+                                        $("#spZipCode").css("color", "red");
+                                        $("#spZipCode").show();
+                                        $("#txtZipCode").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#spZipCode").hide();
+                                    }
+                                    return false;
+                                }
+
+                            }); //end approvalMsg each
+                        }); //end label each
+                    } //end if
+                    else if (result.status == "Error") {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Residential Details',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Residential Details',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                },
+                error: function (result) {
+                    if (result) {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                }    // End of error
+            }); //end ajax
+        } //end user if
+
+        var postUrl = '@Url.Action("ResidentialDetails", "PersonalDetails")';
+        $('#frmResident').submit(function () {
+            if ($(this).valid()) {
+                $('#frmResident #EmployeeId').val('@ViewBag.residentialDecryptedEmployeeID');
+                $("#hdnCurrentZipCode").val($("#txtCurrentZipCode").val());
+                $("#hdnCurrentCity").val($("#txtCurrentCity").val());
+                $("#hdnCurrentState").val($("#txtCurrentState").val());
+                $("#hdCurrentCountry").val($("#ddlCurrentCountry").val());
+                $("#hdnCurrentAddress").val($("#txtCurrentAddress").val());
+                $("#hdnAddress").val($("#txtAddress").val());
+                $("#hdnState").val($("#txtState").val());
+                $("#hdnCity").val($("#txtCity").val());
+                $("#hdnZipCode").val($("#txtZipCode").val());
+                $("#hdCountry").val($("#ddlCountry").val());
+
+                DisplayLoadingDialog(); // Checked global.js
+                if ($('#chkAddress').is(':checked')) {
+                    var currentadd = $("#txtCurrentAddress").val();
+                    var currentState = $("#txtCurrentState").val();
+                    var currentCity = $("#txtCurrentCity").val();
+                    var currentZipCode = $("#txtCurrentZipCode").val();
+                    $("#txtAddress").val(currentadd);
+                    $("#txtState").val(currentState);
+                    $("#txtCity").val(currentCity);
+                    $("#txtZipCode").val(currentZipCode);
+                    $("#ddlCountry")[0].selectedIndex = $("#ddlCurrentCountry")[0].selectedIndex;
+                }
+                var currentCountry = $('#ddlCurrentCountry').val();
+                var country = $('#ddlCountry').val();
+                if (country.toString() == 0 || currentCountry.toString() == 0) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ResidentialerrorDialog").dialog({
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        title: 'Personal Details',
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                return
+                            }
+                        }
+                    });
+                    return false;
+                }
+                if ('@ViewBag.loggedinEmployeeID' == '@Model.SearchedUserID') {
+                    $("#lblCurrentAddress").val($("#lblcurrentaddress").text());
+                    $("#lblCurrentCountry").val($("#lblcurrentcountry").text());
+                    $("#lblCurrentState").val($("#lblcurrentstate").text());
+                    $("#lblCurrentCity").val($("#lblcurrentcity").text());
+                    $("#lblCurrentZipCode").val($("#lblcurrentzipcode").text());
+                    $("#lblAddress").val($("#lbladdress").text());
+                    $("#lblCountry").val($("#lblcountry").text());
+                    $("#lblState").val($("#lblstate").text());
+                    $("#lblCity").val($("#lblcity").text());
+                    $("#lblZipCode").val($("#lblzipcode").text());
+                    $.ajax({
+                        url: '@Url.Action("ResidentialChanges", "PersonalDetails")',
+                        type: 'POST',
+                        data: $('#frmResident').serialize(),
+                        datatype: 'json',
+                        success: function (result) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            if (result.label != null) {
+                                $.each(result.label, function (i) {
+                                    if (result.label[i] == $("#lblcurrentaddress").text() && $("#txtCurrentAddress").val() != "") {
+                                        $("#spCurrentAddress").html('');
+                                        $("#spCurrentAddress").append(result.approvalMessage);
+                                        $("#spCurrentAddress").css("color", "red");
+                                        $("#spCurrentAddress").show();
+                                        $("#txtCurrentAddress").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcurrentcountry").text() && $("#ddlCurrentCountry").val() != "") {
+                                        $("#spCurrentCountry").html('');
+                                        $("#spCurrentCountry").append(result.approvalMessage);
+                                        $("#spCurrentCountry").css("color", "red");
+                                        $("#spCurrentCountry").show();
+                                        $("#ddlCurrentCountry").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcurrentstate").text() && $("#txtCurrentState").val() != "") {
+                                        $("#spCurrentState").html('');
+                                        $("#spCurrentState").append(result.approvalMessage);
+                                        $("#spCurrentState").css("color", "red");
+                                        $("#spCurrentState").show();
+                                        $("#txtCurrentState").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcurrentcity").text() && $("#txtCurrentCity").val() != "") {
+                                        $("#spCurrentCity").html('');
+                                        $("#spCurrentCity").append(result.approvalMessage);
+                                        $("#spCurrentCity").css("color", "red");
+                                        $("#spCurrentCity").show();
+                                        $("#txtCurrentCity").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcurrentzipcode").text() && $("#txtCurrentZipCode").val() != "") {
+                                        $("#spCurrentZipCode").html('');
+                                        $("#spCurrentZipCode").append(result.approvalMessage);
+                                        $("#spCurrentZipCode").css("color", "red");
+                                        $("#spCurrentZipCode").show();
+                                        $("#txtCurrentZipCode").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lbladdress").text() && $("#txtAddress").val() != "") {
+                                        $("#spAddress").html('');
+                                        $("#spAddress").append(result.approvalMessage);
+                                        $("#spAddress").css("color", "red");
+                                        $("#spAddress").show();
+                                        $("#txtAddress").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcountry").text() && $("#ddlCountry").val() != "") {
+                                        $("#spCountry").html('');
+                                        $("#spCountry").append(result.approvalMessage);
+                                        $("#spCountry").css("color", "red");
+                                        $("#spCountry").show();
+                                        $("#ddlCountry").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblstate").text() && $("#txtState").val() != "") {
+                                        $("#spState").html('');
+                                        $("#spState").append(result.approvalMessage);
+                                        $("#spState").css("color", "red");
+                                        $("#spState").show();
+                                        $("#txtState").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblcity").text() && $("#txtCity").val() != "") {
+                                        $("#spCity").html('');
+                                        $("#spCity").append(result.approvalMessage);
+                                        $("#spCity").css("color", "red");
+                                        $("#spCity").show();
+                                        $("#txtCity").attr("disabled", "disabled");
+                                    }
+                                    if (result.label[i] == $("#lblzipcode").text() && $("#txtZipCode").val() != "") {
+                                        $("#spZipCode").html('');
+                                        $("#spZipCode").append(result.approvalMessage);
+                                        $("#spZipCode").css("color", "red");
+                                        $("#spZipCode").show();
+                                        $("#txtZipCode").attr("disabled", "disabled");
+                                    }
+                                }); //end label each
+                            } //end if
+
+                            if (result.status == true) {
+                                $("#successResiDialog").dialog({
+                                    closeOnEscape: false,
+                                    title: 'Residential Details',
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog('destroy');
+                                            DisplayLoadingDialog(); // Checked global.js
+                                            $.ajax({
+                                                url: '@Url.Action("MailSend", "PersonalDetails")',
+                                                type: 'POST',
+                                                async: false,
+                                                data: { employeeId: '@ViewBag.residentialEmployeeID', Module: "Residential Details" },
+                                                success: function (data) {
+                                                    $("#loading").dialog("close");
+                                                    $("#loading").dialog("destroy");
+                                                    //$("#successResiDialog").dialog('destroy');
+                                                    if (data.validCcId == true && data.validtoId == true) {
+                                                        if (data.status == true) {
+                                                            $("#mailSendSuccess").dialog({
+                                                                closeOnEscape: false,
+                                                                resizable: false,
+                                                                height: 'auto',
+                                                                title: "Mail Sent",
+                                                                width: 300,
+                                                                modal: true,
+                                                                dialogClass: 'noclose',
+                                                                buttons: {
+                                                                    Ok: function () {
+                                                                        $(this).dialog('close');
+                                                                        window.location.reload();
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        else
+                                                            window.location.reload();
+
+                                                    }
+                                                    else if (data.status == "Error") {
+                                                        $("#errorDialog").dialog({
+                                                            resizable: false,
+                                                            height: 'auto',
+                                                            width: 'auto',
+                                                            modal: true,
+                                                            title: 'Mail Error',
+                                                            buttons: {
+                                                                Ok: function () {
+                                                                    $(this).dialog("close");
+                                                                    window.location.reload();
+                                                                }
+                                                            }
+                                                        }); //end dialog
+                                                    }
+                                                    else if (data.status == "ErrorRecipient") {
+                                                        $("#failedRecipient #span_failedRecipient").append(data.failedRecipient);
+                                                        $("#failedRecipient").dialog({
+                                                            closeOnEscape: false,
+                                                            resizable: false,
+                                                            height: 'auto',
+                                                            width: 'auto',
+                                                            modal: true,
+                                                            dialogClass: 'noclose',
+                                                            buttons: {
+                                                                Ok: function () {
+                                                                    $(this).dialog('close');
+                                                                    window.location.reload();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    else {
+                                                        if (data.validCcId == false) {
+                                                            $("#InvalidEmail").dialog({
+                                                                closeOnEscape: false,
+                                                                resizable: false,
+                                                                height: 'auto',
+                                                                width: 300,
+                                                                modal: true,
+                                                                dialogClass: 'noclose',
+                                                                buttons: {
+                                                                    Ok: function () {
+                                                                        $(this).dialog('close');
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        if (data.validtoId == false) {
+                                                            $("#InvalidEmail").dialog({
+                                                                closeOnEscape: false,
+                                                                resizable: false,
+                                                                height: 'auto',
+                                                                width: 300,
+                                                                modal: true,
+                                                                dialogClass: 'noclose',
+                                                                buttons: {
+                                                                    Ok: function () {
+                                                                        $(this).dialog('close');
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        return false;
+                                                    }
+                                                },
+                                                error: function () {
+                                                    $("#loading").dialog("close");
+                                                    $("#loading").dialog("destroy");
+                                                    //$("#successResiDialog").dialog('destroy');
+                                                    $("#mailError").dialog({
+                                                        resizable: false,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        modal: true,
+                                                        title: 'Mail Error',
+                                                        dialogClass: "noclose",
+                                                        buttons: {
+                                                            Ok: function () {
+                                                                $(this).dialog("close");
+                                                                window.location.reload();
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }); // end sendmail ajax
+                                        }
+                                    }
+                                });
+                            } //end if==true
+                            else if (result.status == "Error") {
+                                $("#errorDialog").dialog({
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 'auto',
+                                    modal: true,
+                                    title: 'Residential Details',
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                }); //end dialog
+                            }
+                            else {
+                                $("#NoChange").dialog({
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 'auto',
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                }); //end dialog
+                            }
+                            //DisplayLabel();
+                        }, //end main success
+                        error: function (result) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.reload();
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                    }); //end ajax
+                } //end if
+                else {
+                    if ($('#frmResident').valid()) {
+                        DisplayLoadingDialog(); // Checked global.js
+                        $.ajax({
+                            url: postUrl,
+                            cache: false,
+                            type: 'POST',
+                            data: $('#frmResident').serialize(),
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#successResiDialog").dialog({
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        title: 'Residential Details',
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.reload();
+                                            }
+                                        }
+                                    });
+                                }
+                                else if (results.status == "Error") {
+                                    $("#errorDialog").dialog({
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        title: 'Residential Details',
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.reload();
+                                            }
+                                        }
+                                    }); //end dialog
+                                }
+                                else {
+                                    $("#errorDialog").dialog({
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        title: 'Residential Details',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.reload();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } //end valid
+
+                } //end else
+            }
+            return false;
+        });
+
+        //assign Selected Dropdown Value to its respective Label.
+        $("#ddlCurrentCountry").next().next().text($("#ddlCurrentCountry :selected").text());
+        $("#ddlCountry").next().next().text($("#ddlCountry :selected").text());
+        DisplayLabel();
+    });    // End of document.ready
+</script>
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && Model.SearchedUserID != ViewBag.loggedinEmployeeID)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })" class="selected">Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })">Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.residentialEmployeeID })"> Medical History</a>
+            }
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody ResidenceMainbody">
+        @using (Html.BeginForm("ResidentialDetails", "PersonalDetails", FormMethod.Post, new { id = "frmResident" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => m.UserRole)
+            @Html.HiddenFor(model => model.EmployeeId)
+            @Html.HiddenFor(m => m.lblCurrentAddress, new { @id = "lblCurrentAddress" })
+            @Html.HiddenFor(m => m.lblCurrentCountry, new { @id = "lblCurrentCountry" })
+            @Html.HiddenFor(m => m.lblCurrentState, new { @id = "lblCurrentState" })
+            @Html.HiddenFor(m => m.lblCurrentCity, new { @id = "lblCurrentCity" })
+            @Html.HiddenFor(m => m.lblCurrentZipCode, new { @id = "lblCurrentZipCode" })
+            @Html.HiddenFor(m => m.lblAddress, new { @id = "lblAddress" })
+            @Html.HiddenFor(m => m.lblCountry, new { @id = "lblCountry" })
+            @Html.HiddenFor(m => m.lblState, new { @id = "lblState" })
+            @Html.HiddenFor(m => m.lblCity, new { @id = "lblCity" })
+            @Html.HiddenFor(m => m.lblZipCode, new { @id = "lblZipCode" })
+
+            <h4 class="reshead">Current Address</h4>
+            <div class="FormContainerBox  residence clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>* Current Address:</label>*@
+                            * @Html.Label("Current Address: ", new { @id = "lblcurrentaddress" })
+                        </div>
+                        <div class="InputDiv">
+                            @*<textarea></textarea>*@
+                            @Html.TextAreaFor(model => model.CurrentAddress, new { @id = "txtCurrentAddress", @class = "ClassDisabledFields" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.CurrentAddress, Model.CurrentAddress, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            @Html.HiddenFor(model => model.CurrentAddress, new { @id = "hdnCurrentAddress" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CurrentAddress)</p>
+                            <span id="spCurrentAddress" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv mrgnB10">
+                            @*<label>* Current State:</label>*@
+                             * @Html.Label("Current State: ", new { @id = "lblcurrentstate" })
+                        </div>
+                        <div class="InputDiv mrgnB10">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.CurrentState, new { @id = "txtCurrentState", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.CurrentState, Model.CurrentState, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.CurrentState, new { @id = "hdnCurrentState" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CurrentState)</p>
+                            <span id="spCurrentState" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                        <div class="LabelDiv clearL">
+                            @*<label>* Current City:</label>*@
+                           * @Html.Label("Current City: ", new { @id = "lblcurrentcity" })
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.CurrentCity, new { @id = "txtCurrentCity", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.CurrentCity, Model.CurrentCity, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.CurrentCity, new { @id = "hdnCurrentCity" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CurrentCity)</p>
+                            <span id="spCurrentCity" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>* Current Country:</label>*@
+                           * @Html.Label("Current Country", new { @id = "lblcurrentcountry" }):
+                        </div>
+                        <div class="InputDiv">
+                            @*<select>
+                                    <option>abc</option>
+                                    <option>abc</option>
+                                    <option>abc</option>
+                                </select>*@
+                            @Html.DropDownListFor(x => x.CurrentCountry, new SelectList(Model.CurrentCountryList, "CountryId", "CountryName", "Select"), new { @id = "ddlCurrentCountry", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.CurrentCountry, new { @id = "lblCurrentCountry", @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CurrentCountry)</p>
+                            @Html.HiddenFor(model => model.CurrentCountry, new { id = "hdCurrentCountry" })
+                            <span id="spCurrentCountry" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            @*<label>* Current Zip Code:</label>*@
+                           * @Html.Label("Current Zip Code: ", new { @id = "lblcurrentzipcode" })
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.CurrentZipCode, new { @id = "txtCurrentZipCode", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.CurrentZipCode, Model.CurrentZipCode, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.CurrentZipCode, new { @id = "hdnCurrentZipCode" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CurrentZipCode)</p>
+                            <span id="spCurrentZipCode" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <div class="commondivider mrgnL30 mrgnR30 mrgnT33"></div>
+
+    <h4 class="res-per-addd">Permanent Address</h4>
+            <div class="Container96 clearfix">
+                <input type="checkbox" id="chkAddress" onclick="MarkSameAddress();" />
+                <label for="chkAddress" class="LabelForCheckbox">Same as Current Address</label>
+            </div>
+
+            <div class="FormContainerBox  residence clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>* Permanent Address:</label>*@
+                           * @Html.Label("Permanent Address:", new { @id = "lbladdress" })
+                        </div>
+                        <div class="InputDiv">
+                            @*<textarea></textarea>*@
+                            @Html.TextAreaFor(model => model.Address, new { @id = "txtAddress", @class = "ClassDisabledFields Permenant" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.Address, Model.Address, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            @Html.HiddenFor(model => model.Address, new { @id = "hdnAddress" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Address)</p>
+                            <span id="spAddress" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv mrgnB10"><span class="hiddenstar">*</span>
+                            @*<label>* Permanent State:</label>*@
+                            <span class="hiddenstar">* </span> @Html.Label("Permanent State", new { @id = "lblstate" }):
+                        </div>
+                        <div class="InputDiv mrgnB10">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.State, new { @id = "txtState", @class = "ClassDisabledFields Permenant" })
+                            @Html.LabelFor(model => model.State, Model.State, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.State, new { @id = "hdnState" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.State)</p>
+                            <span id="spState" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                        <div class="LabelDiv clearL"><span class="hiddenstar">*</span>
+                            @*<label>* Permanent City:</label>*@
+                            <span class="hiddenstar">* </span>@Html.Label("Permanent City", new { @id = "lblcity" }):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.City, new { @id = "txtCity", @class = "ClassDisabledFields Permenant" })
+                            @Html.LabelFor(model => model.City, Model.City, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.City, new { @id = "hdnCity" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.City)</p>
+                            <span id="spCity" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv"><span class="hiddenstar">*</span>
+                            @*<label>* Permanent Country:</label>*@
+                            <span class="hiddenstar">* </span>@Html.Label("Permanent Country ", new { @id = "lblcountry" }):
+                        </div>
+                        <div class="InputDiv">
+                            @*<select>
+                                    <option>abc</option>
+                                    <option>abc</option>
+                                    <option>abc</option>
+                                </select>*@
+                            @Html.DropDownListFor(x => x.country, new SelectList(Model.CountryList, "CountryId", "CountryName", "Select"), new { @id = "ddlCountry", @class = "ClassDisabledFields Permenant" })
+                            @Html.LabelFor(model => model.country, new { @id = "lblCountry", @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.country)</p>
+                            @Html.HiddenFor(model => model.country, new { id = "hdCountry" })
+                            <span id="spCountry" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv"><span class="hiddenstar">*</span>
+                            @*<label>* Permanent Zip Code:</label>*@
+                            <span class="hiddenstar">* </span>@Html.Label("Permanent ZipCode", new { @id = "lblzipcode" }):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.ZipCode, new { @id = "txtZipCode", @class = "ClassDisabledFields Permenant" })
+                            @Html.LabelFor(model => model.ZipCode, Model.ZipCode, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.ZipCode, new { @id = "hdnZipCode" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ZipCode)</p>
+                            <span id="spZipCode" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1">
+               <input type="submit" value="Save" class="ButtonGray mrgnR11" id="saveResidentials" />
+                <input type="button" id="btnCancel" value="Reset" onclick="RestoreValues();" class="ButtonGray" />
+            </div>
+           @* <div class="fill-dtls clearfix">
+            </div>*@
+        }
+    </div>
+    <div id="successResiDialog" title="Residential Details" style="display: none">
+        <p>
+            Residential Details have been saved.
+        </p>
+    </div>
+    <div id="ResidentialerrorDialog" title="Error" style="display: none">
+        <p>
+            Please Select Country
+        </p>
+    </div>
+    <div id="NoChange" title="No Changes" style="display: none">
+        <p>
+            No Changes Made.
+        </p>
+    </div>
+    <div id="mailError" title="Mail Error" style="display: none">
+        <p>
+            Mail Sending Failed, Please check the entered EmailId's.
+        </p>
+    </div>
+    <div id="failedRecipient" title="Sending Failed" style="display: none">
+        <center><span>Could not send mail to<br /> </span><span id="span_failedRecipient"></span></center>
+    </div>
+    <div id="mailSendSuccess" style="display: none" title="Mail Sent">
+      <p>
+            Mail Sent Succesfully.
+      </p>
+    </div>
+</section>

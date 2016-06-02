@@ -1,0 +1,119 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Orbit.master.cs" Inherits="Orbit" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+     <title>Orbit </title>
+     <link rel="SHORTCUT ICON" href="images/v2logo.ico"/>
+   
+       <link href="CSS/Orbit.css"type="text/css" rel="stylesheet" />
+        <link href="../CSS/Orbit.css"type="text/css" rel="stylesheet" />
+       <link href="/CSS/calendar.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                
+                    <td  valign="top">
+                      <%--  <table cellpadding="0" cellspacing="0" border="0" width="100%"  background="/OrbitWeb/images/topbackgroundbg.jpg"  style="background-repeat:repeat-x" >
+                            <tr>
+                            <td align="left"  valign="top" style="width: 580px; height: 88px">
+                                <asp:Image ID="imgOrbitHeader" runat="server"  ImageUrl="~/images/orbit_header_left.jpg"  AlternateText="" BorderWidth="0" />
+                                </td>
+                                 <td  valign="top" align="left" style="height: 88px"></td>
+                               
+                                <td valign="top" align="right" style="height: 88px" >
+                                <asp:Image ID="imgV2Logo" runat="server"  ImageUrl="~/images/Orbit_headerright.jpg"  AlternateText="" BorderWidth="0" />
+                                </td>
+                              
+                            </tr>
+                        </table>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #40A3CC;
+                            font-family: tahoma; font-size: 10px; font-style: normal; font-weight: bolder;
+                            color: #FFFFFF; height: 30px;">
+                            <tr>
+                                <td width="1%">
+                                    <img id="Img5" runat="server" src="Images/dots1.gif" alt="" width="11" height="24" />
+                                </td>
+                                <td width="30%">
+                                    
+
+                                   <%-- <asp:Menu CssClass="navWrapper" ID="Menu1" DynamicSelectedStyle-ItemSpacing="2" 
+                                        runat="server" Orientation="Horizontal" DynamicEnableDefaultPopOutImage="False"
+                                        StaticEnableDefaultPopOutImage="False" DataSourceID="smdsOrbitMenu" 
+                                        DynamicVerticalOffset="7" StaticSubMenuIndent="12px" 
+                                        StaticBottomSeparatorImageUrl="~/images/divider.gif">
+                                    </asp:Menu>--%>
+                                </td>
+                              <%--  <td  width="9%" align="left">&nbsp;&nbsp;&nbsp;<A href="/OrbitWeb/FAQ.htm" target = "_blank" class="logout" id="m1tlm1">FAQ&nbsp;&nbsp;</A>&nbsp;&nbsp;<asp:Image ID="imgSeperator" 
+
+runat="server" ImageUrl="~/images/divider.gif"></asp:image>&nbsp;&nbsp;</td>--%>
+                                <%--<td width="21%" align="left">&nbsp;<asp:LoginStatus ID="lgstOrbitMaster" runat="server" OnLoggingOut="lgstOrbitMaster_LoggingOut"  />
+                                </td>--%>
+
+<%--                                <td width="36%" align="right">
+                                    Switch Application
+                                        <asp:DropDownList ID="ddlSwitchApplication" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlSwitchApplication_SelectedIndexChanged">
+                                        <asp:ListItem Value="0" Selected="True">Select Application</asp:ListItem>
+                                        <asp:ListItem Value="1">PMS</asp:ListItem>
+                                        <asp:ListItem Value="2">HelpDesk</asp:ListItem>
+                                        
+                                    </asp:DropDownList>
+                                </td>--%>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" align="right" style="background-color: #FFFFFF; font-family: verdana;
+                        font-size: 10px; font-style: normal; font-weight: bolder; color: #515151; padding-right: 12px;
+                        height: 24px;">
+                        
+                        <asp:Label ID="lblUser" runat="server"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</asp:ContentPlaceHolder>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 50px;">
+                    </td>
+                </tr>
+               <%-- <tr>
+                    <td style="background-color: #f2f2f2; height: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="copyright" align="center" style="background-color: #40a3cc; height: 20px;">
+                        © 2008 V2Solutions, Inc.
+                    </td>
+                </tr>--%>
+            </table>
+        </div>
+       <%-- <asp:SiteMapDataSource ID="smdsOrbitMenu" runat="server" ShowStartingNode="False" />--%>
+    </form>
+</body>
+</html>

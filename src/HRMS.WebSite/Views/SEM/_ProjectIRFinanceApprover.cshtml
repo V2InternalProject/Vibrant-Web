@@ -1,0 +1,392 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+@{
+
+}
+<h4 class="SmallHead">
+    Project IR Finance Approvers
+</h4>
+@*<input type="button" value="Add Project Reviewers" class="button mrgnT10" />*@
+<div class="ButtonContainer2 clearfix">
+    <input type="button" id="SelectAllIRFinanceApproverBtn" value="Select All" class="ButtonGray mrgnR8" />
+    <input type="button" id="DeselectAllIRFinanceApproverBtn" value="Deselect All" class="ButtonGray mrgnR8" />
+    <input type="button" id="DeleteIRFinanceApproverBtn" value="Delete" class="ButtonGray mrgnR8" />
+</div>
+<div class="tablestyle3">
+    <table id="jqAddProjectIRFinanceApproverTable"></table>
+</div>
+<div id="jqAddProjectIRFinanceApproverTablePager">
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" ) {
+            $('#SelectAllIRFinanceApproverBtn').hide();
+            $('#DeselectAllIRFinanceApproverBtn').hide();
+            $('#DeleteIRFinanceApproverBtn').hide();
+        }
+        else {
+            $('#SelectAllIRFinanceApproverBtn').show();
+            $('#DeselectAllIRFinanceApproverBtn').show();
+            $('#DeleteIRFinanceApproverBtn').show();
+        }
+        if('@Model.SearchedUserDetails.IsProjectReviewer' == 'True' && '@Model.IsProjectApprover' != 'True')
+        {
+            $('#SelectAllIRFinanceApproverBtn,#DeselectAllIRFinanceApproverBtn,#DeleteIRFinanceApproverBtn').hide();
+        }
+        stringList = @(Html.Raw(Json.Encode(ViewBag.ProjectIRFinanceApproverName)));
+        var Name = [];
+        var Glob_ProjectReviewerId;
+        Name.push("Select");
+        $.each(stringList, function (index,value) {
+            Name.push(value.EmployeeName);
+        });
+
+        $("#jqAddProjectIRFinanceApproverTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ProjectIRFinanceApproverDetailsLoadGrid", "SEM")',
+            postData: { ProjectID: '@Model.ProjectID' },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Name","", "Role", "Delete"],
+            // Configure the columns
+            colModel: [
+                { name: "ProjectIRFinanceApproverId", index: "ProjectIRFinanceApproverId", align: "left",editable: true, width: 50, hidden: true },
+                { name: "IRFinanceApproverProjectID", index: "IRFinanceApproverProjectID", align: "left", width: 50, editable: true, hidden: true },
+                { name: "IRFinanceApproverEmployeeName", index: "IRFinanceApproverEmployeeName", align: "left", width: 150, editable: true, editrules: { required: true, custom: true, custom_func: isEmployeeSelectedIRFinanceApprover }, edittype: "select", editoptions: { value: Name, dataEvents: [{ type: 'change', fn: function(e) {myfunctionIRFinanceApprover(e); } }]} },
+                { name: "IRFinanceApproverEmployeeId", index: "IRFinanceApproverEmployeeId", align: "left", width: 100, editable: true, hidden: true },
+                { name: "IRFinanceApproverRoleDescription", index: "IRFinanceApproverRoleDescription", align: "left", width: 100, editable: false, editrules: { required: false },edittype: "Text"  },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 50,
+                    align: "left",
+                    sortable: false,
+                    formatter: DeleteProjectIRFinanceApprover
+
+                    //}
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddProjectIRFinanceApproverTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            //sortname: "",
+            //sortorder: "asc",
+            loadonce: true,
+            editurl: '@Url.Action("SaveProjectIRFinanceApproverDetails", "SEM")',
+            // Grid caption
+            //caption: "Project Reviewers",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqAddProjectIRFinanceApproverTable").jqGrid('getGridParam', 'records');
+
+                if (count > 20) {
+                    $('#jqAddProjectIRFinanceApproverTablePager_center').show();
+                }
+                else {
+                    $('#jqAddProjectIRFinanceApproverTablePager_center').hide();
+                }
+
+                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG") {
+                    $('#jqAddProjectIRFinanceApproverTable_iladd').css('visibility','hidden');
+                    $('#jqAddProjectIRFinanceApproverTable_iledit').css('visibility','hidden');
+                    $('#jqAddProjectIRFinanceApproverTable_ilsave').css('visibility','hidden');
+                    $('#jqAddProjectIRFinanceApproverTable_ilcancel').css('visibility','hidden');
+                }
+                else {
+                    $('#jqAddProjectIRFinanceApproverTable_iladd').css('visibility','visible');
+                    $('#jqAddProjectIRFinanceApproverTable_iledit').css('visibility','visible');
+                    $('#jqAddProjectIRFinanceApproverTable_ilsave').css('visibility','visible');
+                    $('#jqAddProjectIRFinanceApproverTable_ilcancel').css('visibility','visible');
+                }
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var Glob_ProjectReviewerId = rowData['ProjectIRFinanceApproverId'];
+                var employeeID=rowData['IRFinanceApproverEmployeeId'];
+                var RoleDescription=rowData['IRFinanceApproverRoleDescription'];
+                $('#addIRFinanceApproverDetails #IRFinanceApproverEmployeeId').val(employeeID);
+                $('#addIRFinanceApproverDetails #IRFinanceApproverRoleDescription').val(RoleDescription);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                //                if (colName['index'] == "Delete") {
+                //                if ('@Model.IsProjectApprover' != 'True') {
+                //                        DeleteProjectReviewerDetails(Glob_ProjectReviewerId);
+                //                    }
+                //                }
+            },
+        }).navGrid("#jqAddProjectIRFinanceApproverTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $('#addIRFinanceApproverDetails #IRFinanceApproverProjectID').val('@ViewBag.ProjectId');
+
+        $("#jqAddProjectIRFinanceApproverTable").jqGrid('inlineNav', "#jqAddProjectIRFinanceApproverTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        $("label[for='undefined']").hide();
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function(rowid){
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    ProjectID: function () {
+                        return $('#addIRFinanceApproverDetails #IRFinanceApproverProjectID').val();
+                    },
+                    EmployeeId: function () {
+                        return $('#addIRFinanceApproverDetails #IRFinanceApproverEmployeeId').val();
+                    },
+                    RoleDescription: function () {
+                        return $('#addIRFinanceApproverDetails #IRFinanceApproverRoleDescription').val();
+                    }
+                },
+                beforeSaveRow: function(options, rowid) {
+                },
+                aftersavefunc: function (result) {
+                    $("#SaveIRFinanceApproverDetails").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqAddProjectIRFinanceApproverTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                            }
+                        }
+                    });
+
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+        var SelectedProjectIRFinanceApproverId = [];
+        function GetSelectedCheckboxForIRFinanceApprover() {
+            SelectedProjectIRFinanceApproverId = [];
+            $("#jqAddProjectIRFinanceApproverTable :checked").each(function (i, val) {
+                SelectedProjectIRFinanceApproverId.push($(this).prop("id"));
+            });
+        }
+        $('#SelectAllIRFinanceApproverBtn').on('click', function () {
+            SelectedProjectIRFinanceApproverId = [];
+            $(".ModuleChkIRFinanceApprover").each(function (i, val) {
+                $(".ModuleChkIRFinanceApprover").attr("checked", true);
+                SelectedProjectIRFinanceApproverId.push($(this).prop("id"));
+            });
+        });
+        $('#DeselectAllIRFinanceApproverBtn').on('click', function () {
+            SelectedProjectIRFinanceApproverId = [];
+            $(".ModuleChkIRFinanceApprover").each(function (i, val) {
+                $(".ModuleChkIRFinanceApprover").attr("checked", false);
+            });
+        });
+
+        $('#DeleteIRFinanceApproverBtn').on('click', function () {
+            GetSelectedCheckboxForIRFinanceApprover();
+            DeleteProjectIRFinanceApproverDetails(SelectedProjectIRFinanceApproverId);
+        });
+
+
+
+    });
+
+    function DeleteProjectIRFinanceApprover(cellValue, options, rowdata, action) {
+        var A= '<input type="checkbox" class="ModuleChkIRFinanceApprover" id=' + rowdata['ProjectIRFinanceApproverId'] + '>';
+        var B= '<label for=' + rowdata['ProjectIRFinanceApproverId'] + ' class="LabelForCheckbox"></label>';
+        return A+B;
+    }
+
+
+    function myfunctionIRFinanceApprover(e) {
+        var Name = e.target[e.target.selectedIndex].text;
+        var ID;
+        var Role;
+        $.each(stringList,function(index, value){
+            if($.trim(value.EmployeeName.replace(/ /g,'')) == $.trim(Name.replace(/ /g,'')))
+            {
+                ID=value.EmployeeId;
+            }
+        });
+        if(ID != undefined)
+        {
+            $.ajax({
+                url:'@Url.Action("GetReviewerRole", "SEM")',
+                data:{ EmployeeId: ID },
+                type:'GET',
+                async:false,
+                success:function(result){
+                    if(result != null) {
+                        Role = result.results;
+                    }
+                }
+            });
+        }
+        else {
+            ID = 0;
+        }
+        $('#addIRFinanceApproverDetails #IRFinanceApproverEmployeeId').val(ID);
+        $('#addIRFinanceApproverDetails #IRFinanceApproverRoleDescription').val(Role);
+        $('#jqAddProjectIRFinanceApproverTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'IRFinanceApproverEmployeeId', ID);
+        $('#jqAddProjectIRFinanceApproverTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'IRFinanceApproverRoleDescription', Role);
+    }
+
+    function isEmployeeSelectedIRFinanceApprover(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForEmployeeID").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function DeleteProjectIRFinanceApproverDetails(SelectedProjectIRFinanceApproverId) {
+        if(SelectedProjectIRFinanceApproverId.length == 0)
+        {
+            $("#IRFinanceApproverRecordSelected").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else {
+            $("#DeleteIRFinanceApproverDetailsConfirmation").dialog({
+                resizable: false,
+                autoOpen: true,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    OK: function () {
+                        $.ajax({
+                            url:'@Url.Action("DeleteProjectIRFinanceApproverDetails", "SEM")',
+                            data: JSON.stringify(SelectedProjectIRFinanceApproverId),
+                            contentType: "application/json",
+                            type: 'POST',
+                            success:function(results) {
+                                if(results.status == true) {
+                                    $('#DeleteIRFinanceApproverDetailsConfirmation').dialog('close');
+                                    $('#DeleteIRFinanceApproverDetailsConfirmation').dialog('destroy');
+                                    $("#DeleteIRFinanceApproverDetails").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                jQuery("#jqAddProjectIRFinanceApproverTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    Cancel:function() {
+                        $('#DeleteIRFinanceApproverDetailsConfirmation').dialog('close');
+                    }
+                }
+            });
+        }
+    }
+</script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addIRFinanceApproverDetails" }))
+{
+    @Html.HiddenFor(x => x.ProjectIRFinanceApproverId)
+    @Html.HiddenFor(x => x.IRFinanceApproverEmployeeId)
+    @Html.HiddenFor(x => x.IRFinanceApproverRoleDescription)
+    @Html.HiddenFor(x => x.IRFinanceApproverProjectID)
+
+}
+<div id="SaveIRFinanceApproverDetails" style="display: none;" title="Save Project IRFinanceApprover Details">
+    <p>
+        Record has been saved successfully.
+    </p>
+</div>
+<div id="DeleteIRFinanceApproverDetails" style="display: none;" title="Delete Project IRFinanceApprover Details">
+    <p>
+        Record has been Deleted successfully.
+    </p>
+</div>
+<div id="DeleteIRFinanceApproverDetailsConfirmation" style="display: none;" title="Delete Project Reviewer Details">
+    <p>
+        Are yor sure you want to delete the record ?
+    </p>
+</div>
+<div id="RequiredFeildForEmployeeID" style="display: none;" title="Required Feild">
+    <p>
+        Please select Employee Name.
+    </p>
+</div>
+<div id="IRFinanceApproverRecordSelected" title="Delete IRFinanceApprover details" style="display: none">
+    <p>
+        Please select atleast one record to delete.
+    </p>
+</div>

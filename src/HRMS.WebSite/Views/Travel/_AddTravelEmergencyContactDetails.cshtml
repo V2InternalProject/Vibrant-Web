@@ -1,0 +1,159 @@
+﻿@model HRMS.Models.ContactViewModel
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+}
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+        $('#btnSaveContact').off('click').on('click', function () {
+            if ($(this).valid()) {
+                DisplayLoadingDialog(); // Checked global.js
+                $.ajax({
+                    url: '@Url.Action("AddTravelEmergencyContactDetails", "Travel")',
+                    type: 'POST',
+                    data: $('#frmtravelemergencycontact').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results.status == true) {
+
+                            $('#dialogActionEmergencyContact').dialog('close');
+                            jQuery("#jqEmergencyContactTable").trigger("reloadGrid");
+                            $("#AddEmergencyContactSuccessMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: 'Emergency Contact Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+
+                        } // if close
+                        else if (results.status == "Error") {
+
+                            $('#dialogActionEmergencyContact').dialog('close');
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Contact Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        jQuery("#jqEmergencyContactTable").trigger("reloadGrid");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $('#dialogActionEmergencyContact').dialog('close');
+                            $("#AddEmergencyContactErrorMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: 'Contact Details',
+                                buttons: {
+                                    Ok: function () {
+
+                                        $(this).dialog("close");
+                                        jQuery("#jqEmergencyContactTable").trigger("reloadGrid");
+                                    }
+                                }
+                            }); //dialog close
+                        } //else close
+                    } //success close
+                }); //ajax close
+            } //if close
+            return false;
+        });  //AddEmergencyContactDetails submit event close
+    });
+</script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { id = "frmtravelemergencycontact" }))
+{
+    <div class="mrgnT25">
+        @Html.ValidationSummary(true)
+        @*@Html.HiddenFor(model =>model.TravelEmergencyContactModel.ContactNo  )*@
+        @Html.HiddenFor(x => x.TravelId)
+        @Html.HiddenFor(x => x.TravelEmergencyContactModel.TravelId) 
+        @Html.HiddenFor(x => x.TravelEmergencyContactModel.EmployeeEmergencyContactId, new { @id = "EmployeeEmergencyContactIdNew" })
+        @Html.HiddenFor(model => model.TravelEmergencyContactModel.EmployeeEmergencyContactId, new { @id = "EmployeeEmergencyContactId" })
+        @Html.HiddenFor(model => model.TravelEmergencyContactModel.TravelId, new { @id = "TravelId" })
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(model => model.TravelEmergencyContactModel.Name)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.TravelEmergencyContactModel.Name, new { @id = "EmergencyDetails_Name" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TravelEmergencyContactModel.Name)</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(model => model.TravelEmergencyContactModel.EmgAddress)
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextAreaFor(model => model.TravelEmergencyContactModel.EmgAddress, new { @id = "EmergencyDetails_Address" })
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.TravelEmergencyContactModel.EmgAddress)</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(model => model.TravelEmergencyContactModel.EmailId)
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.TravelEmergencyContactModel.EmailId, new { @id = "EmergencyDetails_EmailId" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TravelEmergencyContactModel.EmailId)
+                </p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(model => model.TravelEmergencyContactModel.ContactNo)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.TravelEmergencyContactModel.ContactNo, new { @id = "EmergencyDetails_ContactNo" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TravelEmergencyContactModel.ContactNo)
+                </p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Relation")<span class="mandatory">*</span><span class="ShowinPrint mrgnL10">:</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.TravelEmergencyContactModel.uniqueID, new SelectList(ViewBag.RelationTypeList, "uniqueID", "Relation", "Select"), "Select", new { @id = "EmergencyDetails_Relationship" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TravelEmergencyContactModel.uniqueID, "Please Select Relation")</p>
+            </div>
+        </div>
+        <div class="clear popup_button ">
+            <div class="floatR">
+                <input id="btnSaveContact" type="submit" value="Save" class="button mrgnR5" />
+                <input id="ResetEmgContact" type="button" value="Reset" onclick="resetcontact()"
+                    class="button " />
+            </div>
+        </div>
+    </div>
+}
+<div id="AddEmergencyContactSuccessMessege" style="display: none">
+    <p>
+        Emergency contact Details have been saved.</p>
+</div>
+<div id="AddEmergencyContactErrorMessege" style="display: none">
+    <p>
+        There are some errors</p>
+</div>

@@ -1,0 +1,166 @@
+﻿@model HRMS.Models.ExitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")" class="selected">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Stages Approvers</a>
+        </nav>
+    </div>
+
+<div class="MainBody sepconfig-reasonMainbody">
+       <div class="blueBorderNew">
+           <div class="clearfix">
+               <input type="button" class="BackLink" id="back" value="Back">
+           </div>
+            <div class="FormContainerBox clearfix ProjectIndexFliter">
+                <div class="leftcol">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmaddReason" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(s => s.TagID)
+                    @Html.HiddenFor(xx => xx.ReasonID)
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv"><label class="select-type">*@Html.Label("Reason:")</label></div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => Model.Reason, new { @for = Model.ReasonID })
+                            @Html.ValidationMessageFor(x => x.Reason)
+                        </div>
+                    </div>
+                }
+                </div>
+            </div>
+            <div class="ButtonContainer1 clearfix">
+                <input class="ButtonGray" type="button" id="SaveEditReason" value="Save" />
+                @*<input class="ButtonGray" type="button" id="back" value="Back" />*@
+            </div>
+            <div id="SaveReasonSuccess" style="display: none" title="Record Saved">
+                <center class="LoadingWrap">
+                    The record is successfully Saved.
+                </center>
+            </div>
+             <div id="ExistReasonSuccess" style="display: none" title="Record Saved">
+                <center class="LoadingWrap">
+                    The record already Exists.
+                </center>
+            </div>
+            <div id="ErrorSaveReason" style="display: none" title="Error">
+                <center class="LoadingWrap">
+                    There is some error.
+                </center>
+            </div>
+        </div>
+</div>
+</section>
+<script type="text/javascript">
+
+    $("#back").click(function () {
+        parent.history.back();
+        return false;
+    });
+    $("#SaveEditReason").click(function () {
+        $("#ReasonID").val('@Model.ReasonID');
+        if ($("#frmaddReason").valid()) {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $.ajax({
+                url: '@Url.Action("EditReason", "ExitConfiguration")',
+                type: 'POST',
+                data: $('#frmaddReason').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        if (results.resultReason == "Exists") {
+                            $("#ExistReasonSuccess").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.href = '@Url.Action("ConfigureSeperationReason", "ExitConfiguration")';
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            $("#SaveReasonSuccess").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.href = '@Url.Action("ConfigureSeperationReason", "ExitConfiguration")';
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        $("#ErrorSaveReason").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveReason").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

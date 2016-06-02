@@ -1,0 +1,63 @@
+﻿@model HRMS.Models.AppraisalYearModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/ConfigurationAppraisal/AddAppraisalYears.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Edit New Appraisal Year";
+}
+<div class="clearfix">
+
+    @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "AddEditAppYearFrm" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.SearchedUserDetails.EmployeeId)
+        @Html.HiddenFor(model => model.AppraisalYearID)
+        @*<div class="leftcol">*@
+            <div class="formcol clearfix">
+                <div class="labelwidth floatL">
+                   <span class="mandatory">*</span> @Html.Label("Appraisal Year:")
+                </div>
+                <div class="fieldwidth floatL">
+                    @Html.TextBoxFor(model => model.NewAppraisalYear)
+                    <span class="float-left">e.g.(2010-2011, 2013-2014)</span>
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.NewAppraisalYear)</p>
+                    @Html.HiddenFor(model => model.NewAppraisalYear, new { id = "newAppraisalYear" })
+                </div>
+            </div>
+      @*  </div>*@
+
+        <div class="clearL mrgnT15 popup_button">
+            <input type="button" value="Save" class="button" id="AddEditAppYearBtn" />
+        </div>
+    }
+</div>
+<div id="SavedNewAppYear" style="display: none">
+    <center>
+    <p>
+        The Appraisal Year was added Successfully.</p>
+        </center>
+</div>
+<div id="errorAddNewAppYear" style="display: none">
+    <center>
+    <p>
+        The Appraisal Year you added did not got Saved.</p>
+        </center>
+</div>
+<div id="appYearExist" style="display: none">
+    <center>
+    <p>
+        The Appraisal Year you trying to add already Exists.</p>
+        </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var postUrl = '@Url.Action("AddEditAppraisalYear", "ConfigurationAppraisal")';
+    $("#AddEditAppYearBtn").click(function () {
+        SaveAppraisalNewYear(postUrl);
+    });
+</script>

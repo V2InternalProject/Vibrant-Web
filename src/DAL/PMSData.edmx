@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Orbitphase2Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="Orbitphase2ModelStoreContainer">
+          <EntitySet Name="CalendarList" EntityType="Orbitphase2Model.Store.CalendarList" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ShiftMaster" EntityType="Orbitphase2Model.Store.ShiftMaster" store:Type="Tables" Schema="dbo" />
+        </EntityContainer>
+        <EntityType Name="CalendarList">
+          <Key>
+            <PropertyRef Name="CalendarId" />
+          </Key>
+          <Property Name="CalendarId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CalendarLocation" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="ShiftMaster">
+          <Key>
+            <PropertyRef Name="ShiftID" />
+          </Key>
+          <Property Name="ShiftID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ShiftName" Type="nchar" Nullable="false" MaxLength="100" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShiftInTime" Type="datetime" />
+          <Property Name="ShiftOutTime" Type="datetime" />
+          <Property Name="ISActive" Type="bit" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Orbitphase2Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="PMSDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CalendarLists" EntityType="Orbitphase2Model.CalendarList" />
+          <EntitySet Name="ShiftMasters" EntityType="Orbitphase2Model.ShiftMaster" />
+        </EntityContainer>
+        <EntityType Name="CalendarList">
+          <Key>
+            <PropertyRef Name="CalendarId" />
+          </Key>
+          <Property Name="CalendarId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CalendarLocation" Type="String" MaxLength="20" Unicode="true" FixedLength="true" />
+        </EntityType>
+        <EntityType Name="ShiftMaster">
+          <Key>
+            <PropertyRef Name="ShiftID" />
+          </Key>
+          <Property Name="ShiftID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShiftName" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="true" />
+          <Property Name="Description" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="ShiftInTime" Type="DateTime" />
+          <Property Name="ShiftOutTime" Type="DateTime" />
+          <Property Name="ISActive" Type="Boolean" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Orbitphase2ModelStoreContainer" CdmEntityContainer="PMSDbEntities">
+          <EntitySetMapping Name="CalendarLists"><EntityTypeMapping TypeName="Orbitphase2Model.CalendarList"><MappingFragment StoreEntitySet="CalendarList">
+            <ScalarProperty Name="CalendarId" ColumnName="CalendarId" />
+            <ScalarProperty Name="CalendarLocation" ColumnName="CalendarLocation" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ShiftMasters"><EntityTypeMapping TypeName="Orbitphase2Model.ShiftMaster"><MappingFragment StoreEntitySet="ShiftMaster">
+            <ScalarProperty Name="ShiftID" ColumnName="ShiftID" />
+            <ScalarProperty Name="ShiftName" ColumnName="ShiftName" />
+            <ScalarProperty Name="Description" ColumnName="Description" />
+            <ScalarProperty Name="ShiftInTime" ColumnName="ShiftInTime" />
+            <ScalarProperty Name="ShiftOutTime" ColumnName="ShiftOutTime" />
+            <ScalarProperty Name="ISActive" ColumnName="ISActive" />
+            <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="PMSData">
+        <EntityTypeShape EntityType="Orbitphase2Model.CalendarList" Width="1.5" PointX="0.75" PointY="0.75" Height="1.4033821614583331" IsExpanded="true" />
+        <EntityTypeShape EntityType="Orbitphase2Model.ShiftMaster" Width="1.5" PointX="2.75" PointY="0.75" Height="2.3648893229166665" IsExpanded="true" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,1477 @@
+﻿@model HRMS.Models.TimesheetModel
+@{
+    ViewBag.Title = "Menu";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<style type="text/css">
+    #errmsgHours, #errmsgUnits {
+        color: red;
+    }
+</style>
+<script type="text/javascript">
+    var proid = "";
+    var taskid = "";
+
+    var selectedProjectIDFilter = "";
+    var selectedTaskDDFilter = "";
+    var selectedStatusDDFilter = "";
+    var TimeSheetEntryStartDate = "";
+    var TimeSheetEntryEndDate = "";
+    $(document).ready(function () {
+        if ($('#txtProjectName').val() == "") {
+            $("#TaskNameChkLabel").hide();
+            $('#SpanNewTaskMessage').hide();
+            $('#Minutes').val('');
+        }
+        var currentDate = new Date();
+        $("#timesheetentryform #Units").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) {
+                $("#errmsgUnits").html("Digits 1 to 9 Only").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+            if (e.which == 46 && $("#Units").val() == '') {
+                $("#errmsgUnits").html("Dot character is not allowed at starting").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+           
+
+        });
+        $("#timesheetentryform #Hours").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) {
+                //$("#errmsgUnits").html("Digits 1 to 9 Only").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+            if (e.which == 46 && $.trim($("#Units").val()) == '') {
+                // $("#errmsgUnits").html("Dot character is not allowed at starting").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+        });
+        $("#timesheetentryform #Minutes").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) {
+                //$("#errmsgUnits").html("Digits 1 to 9 Only").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+            if (e.which == 46 && $.trim($("#Minutes").val()) == '') {
+                // $("#errmsgUnits").html("Dot character is not allowed at starting").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+
+
+        });
+
+        $("#timesheetentryform #Units").change(function()
+        {
+            var UnitValue = $("#Units").val();
+            if (UnitValue == 0) {
+                $("#errmsgUnits").html("More Than 0").show().delay(1000).fadeOut("slow");
+                return false;
+            }
+    });
+        
+        $("#txtProjectName").keyup(function () {
+
+            if (!this.value) {
+                $("#Employeename").html('');
+                $("#EmployeeId").html('');
+                $('#DetailInfo').hide();
+                $('#pager').hide();
+                $("#TimeSheetEntryTable").jqGrid('clearGridData');
+
+            }
+
+        });
+        var EmployeecodeGrid;
+        $("#txtProjectName").autocomplete({
+
+            source: function (request, response) {
+
+                $.getJSON('@Url.Action("ProjectNameAutoSuggestForTimesheet", "TaskTimesheet")', { term: request.term }, function (data) {
+
+                    response($.map(data, function (el) {
+
+                        var emplyeeInformation = el.EmployeeId + "{" + el.EmployeeName + "}";
+                        return {
+                            label: el.emplyeeInformation,
+                            value: el.EmployeeName,
+                            text: el.EmployeeCode,
+                            id: el.EmployeeId
+                        };
+                    }));
+                });
+            },
+
+            select: function (event, ui) {
+
+                selectedProjectID = ui.item.id;
+                //var selectedProjectID = $('#ProjectDD option:selected').val();
+                if (selectedProjectID == "") {
+                    selectedProjectID = 0;
+                    $("#TimeSheetEntryTablePager_left").css("visibility", "hidden");
+                }
+                else {
+                    $("#TimeSheetEntryTablePager_left").css("visibility", "visible");
+                }
+
+                $('#timesheetentryform #ProjectID').val(selectedProjectID);
+                proid = selectedProjectID;
+                $('#timesheetentryform #hdnProjectID').val(selectedProjectID);
+                $.ajax({
+                    url: "GetSelectedProjectTasks/TimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { ProjectID: selectedProjectID },
+                    success: function (results) {
+                        $('#TaskDD').empty();
+                        $('#TaskDD').selectBox("destroy");
+                        $('#TaskDD').append($("<option></option>")
+                                   .attr("value", '')
+                                   .text("Select"));
+                        $.each(results.ListData, function (index, value) {
+                            $('#TaskDD').append($("<option></option>")
+                                   .attr("value", value.ProjectTaskTypeId)
+                                   .text(value.TaskName));
+                            if (index == null) {
+                                $('#timesheetentryform #TaskDescription').text(value.Description);
+                                $("#timesheetentryform #AvgUnitTime").text(value.AvgUnitTime);
+                            }
+                        });
+                        $('#TaskDD').selectBox('create');
+
+                        $('#TaskDD').next().removeClass('selectBox-disabled');
+
+                        if (results.CanUserCreateTask == true) {
+                            $("#TaskNameChkLabel").show();
+                            $('#SpanNewTaskMessage').show();
+                        }
+                        else {
+                            $("#TaskNameChkLabel").hide();
+                            $('#SpanNewTaskMessage').hide();
+                        }
+                    }
+                });
+
+                $.ajax({
+                    url: "GetSelectedProjectTags/TimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { ProjectID: selectedProjectID },
+                    success: function (results) {
+                        $('#TagDD').empty();
+                        $('#TagDD').selectBox("destroy");
+                        $('#TagDD').append($("<option></option>")
+                                   .attr("value", '')
+                                   .text("Select"));
+                        $.each(results.ListData, function (index, value) {
+                            $('#TagDD').append($("<option></option>")
+                                   .attr("value", value.TagId)
+                                   .text(value.TagName));
+                        });
+                        $('#TagDD').selectBox('create');
+
+                        $('#TagDD').next().removeClass('selectBox-disabled');
+                    }
+                });
+            }
+
+        });
+
+        $("#timesheetentryform #Hours").change(function () {
+            var hoursValue = $("#Hours").val();
+
+            if ((isNaN(hoursValue) && hoursValue != "") || (hoursValue < 0 && hoursValue != "") || (hoursValue > 23 && hoursValue != "")) {
+                $("#InvalidHoursDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $("#Hours").val("");
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#timesheetentryform #Minutes").change(function () {
+            var minutesValue = $("#Minutes").val();
+
+            if ((isNaN(minutesValue) && minutesValue != "") || (minutesValue < 0 && minutesValue != "") || (minutesValue > 59 && minutesValue != "")) {
+                $("#InvalidMinutesDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $("#Minutes").val("");
+                        }
+                    }
+                });
+            }
+        });
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+        function TimeSheetEntryFormValidate() {
+            if (($("#timesheetentryform #TaskNameChk").is(":checked")) && $('#timesheetentryform #newtaskid').val() == '') {
+
+                $("#NewTaskMandatoryEntry").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventdefault();
+
+            }
+
+            if (($("#timesheetentryform #TaskNameChk").is(":checked")) && $('#timesheetentryform #TagDD').val() == '') {
+
+                $("#NewTagMandatoryEntry").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventdefault();
+
+            }
+
+            var task = $('#TaskDD option:selected').text();
+            if ((task == "Select" || task == "") && ($("#timesheetentryform #TaskNameChk").is(":unchecked"))) {
+                $("#TaskMandatoryEntry").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventdefault();
+            }
+
+            if ($("#timesheetentryform #Units").val() == '' && ($.trim($("#timesheetentryform #Hours").val()) == '' || $.trim($("#timesheetentryform #Minutes").val()) == '')) {
+
+                $("#UnitHoursMandatoryEntry").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventdefault();
+            }
+
+        }
+
+        $("#newtaskid").hide();
+
+        $('#date').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", maxDate: new Date(), showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#fromDateFilter').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+         .bind("change", function () {
+             var fromDate = $('#fromDateFilter').datepicker("getDate");
+             var toDate = $('#ToDateFilter').datepicker("getDate");
+             if (fromDate > toDate) {
+                 $("#FromDateGreaterDialog").dialog({
+                     resizable: false,
+                     autoOpen: true,
+                     height: 'auto',
+                     width: 300,
+                     modal: true,
+                     dialogClass: "noclose",
+                     buttons: {
+                         Ok: function () {
+                             $(this).dialog("close");
+                             $("#fromDateFilter").datepicker("setDate", currentDate);
+                         }
+                     }
+                 });
+                 $.preventDefault();
+             }
+         });
+        $('#ToDateFilter').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+         .bind("change", function () {
+             var fromDate = $('#fromDateFilter').datepicker("getDate");
+             var toDate = $('#ToDateFilter').datepicker("getDate");
+             if (toDate < fromDate) {
+                 $("#ToDateLesserDialog").dialog({
+                     resizable: false,
+                     autoOpen: true,
+                     height: 'auto',
+                     width: 300,
+                     modal: true,
+                     dialogClass: "noclose",
+                     buttons: {
+                         Ok: function () {
+                             $(this).dialog("close");
+                             $("#ToDateFilter").datepicker("setDate", currentDate);
+                         }
+                     }
+                 });
+                 $.preventDefault();
+             }
+         });
+
+        $("#date").datepicker("setDate", currentDate);
+        $("#fromDateFilter").datepicker("setDate", currentDate);
+        $('#timesheetentryform #selectedFromDateFilter').val($("#fromDateFilter").val());
+        $("#ToDateFilter").datepicker("setDate", currentDate);
+        $('#timesheetentryform #selectedToDateFilter').val($("#ToDateFilter").val());
+
+        $('#timesheetentryform #TaskDescription').text("");
+        $("#timesheetentryform #AvgUnitTime").text("");
+        $("#TaskNameChk").click(function () {
+
+            var Checkstatus = false;
+            if (($(this).is(":checked")))
+                Checkstatus = true;
+            else
+                Checkstatus = false;
+
+
+            if (Checkstatus == true) {
+                $("#taskDescriptionDiv").hide();
+                $(".HotTimeDiv").hide();
+                $("#newTaskDiv").show();
+                $("#newTaskDiv").attr("display", "block");
+                $("#newtaskid").show();
+                $("#newtaskid").css("width", "800px");
+
+                $('#TaskDD').next().addClass('selectBox-disabled');
+                $("#date").datepicker("option", "minDate", null);
+                $("#date").datepicker("option", "maxDate", "0");
+            }
+            else {
+                $("#taskDescriptionDiv").show();
+                $(".HotTimeDiv").show();
+                $("#newTaskDiv").hide();
+                $("#newtaskid").hide();
+                $('#TaskDD').next().removeClass('selectBox-disabled');
+                $("#TaskDD").change();
+            }
+        });
+
+        $("#SaveEntryBtn").click(function () {
+            if (new Date($('#date').val()) > new Date(TimeSheetEntryEndDate) && new Date($('#date').val()) < new Date(TimeSheetEntryStartDate)) {
+                return false;
+                $.prevenDefault();
+            }
+
+            if ($("#timesheetentryform").valid()) {
+                TimeSheetEntryFormValidate();
+                DisplayLoadingDialog();
+                $.ajax({
+                    url: '@Url.Action("SaveTimeSheetEntryDetails", "TaskTimesheet")',
+                    data: $('#timesheetentryform').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results.IsApproverExist == false) {
+                            $("#ApproverNotSetDialog").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                    }
+                                }
+                            });
+                        }
+                        else
+                            if (results.CanUserCreateTask == false) {
+                                $("#CanUserCreatetaskDialog").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                            window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                        }
+                                    }
+                                });
+                            }
+                            else
+                                if (results.status == true && results.IsEmailSent == true) {
+                                    $("#TimesheetEntrySaveAndEmailSuccess").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                            }
+                                        }
+                                    });
+
+                                }
+                                else if (results.status == true && results.IsEmailSent != true) {
+                                    $("#TimesheetEntrySaveSuccess").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                            }
+                                        }
+                                    });
+
+                                }
+                                else if (results.status == false) {
+                                    $("#TimesheetEntrySaveError").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                            }
+                                        }
+                                    });
+                                }
+                                else if (results.status == "Error") {
+                                    DisplayErrorDialog("Save Timesheet Entry Details");
+                                    window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                }
+                                else {
+                                    DisplayErrorDialog("Save Timesheet Entry Details");
+                                    window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                }
+
+                    }
+                });
+            }
+        });
+
+
+
+        $("#TimeSheetEntryTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TimesheetEntryLoadGrid", "TaskTimesheet")',
+            postData: { SelectedProjectID: function () { return $('#timesheetentryform #selectedProjectIDFilter').val() }, SelectedTaskID: function () { return $('#timesheetentryform #selectedTaskDDFilter').val() }, SelectedFromDate: function () { return $('#timesheetentryform #selectedFromDateFilter').val() }, SelectedToDate: function () { return $('#timesheetentryform #selectedToDateFilter').val() }, SelectedStatusID: function () { return $('#timesheetentryform #selectedStatusDDFilter').val() }, EmployeeId: function () { return $('#timesheetentryform #EmployeeId').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "", "Project", "Task", "Hours", "Unit", "Date", "Status", "Comments", "Approver Comments", ""],
+            // Configure the columns
+            colModel: [
+                 { name: "TimeSheetId", index: "TimeSheetId", hidden: true, width: 25, align: "left" },
+                 { name: "ProjectID", index: "ProjectID", hidden: true, width: 25, align: "left" },
+                 { name: "ProjectTaskTypeId", index: "ProjectTaskTypeId", hidden: true, width: 25, align: "left" },
+                 { name: "ProjectName", index: "ProjectName", width: 25, align: "left" },
+                 { name: "TaskName", index: "TaskName", width: 25, align: "left" },
+                 { name: "Hours", index: "Hours", align: "left", width: 25, editable: true, editrules: { required: true, custom: true, custom_func: Checkhoursvalidation }, formatter: hoursFormatter },
+                 { name: "Units", index: "Units", align: "left", width: 25, editable: true },
+                 {
+                     name: "Date", index: "Date", width: 25, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                         readonly: true,
+                         dataInit: function (element) {
+                             $(element).datepicker({
+                                 dateFormat: 'mm/dd/yy',
+                                 changeMonth: true,
+                                 changeYear: true,
+                                 yearRange: "-60:+10"
+                             });
+                         }
+                     }
+                 },
+
+                 { name: "Status", index: "Status", width: 25, align: "left" },
+             { name: "Comments", index: "Comments", width: 25, align: "left", editable: true, editoptions: { maxlength: 1000 } },
+             { name: "ApproverComments", index: "ApproverComments", width: 25, align: "left", sortable: true },
+             { name: "Delete", index: "Delete", width: 5, align: "center", formatter: DeleteTimesheetEntryCheckbox }
+            ],
+            width: 700,
+            shrinkToFit: true,
+            toppager: false,
+            loadonce: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#TimeSheetEntryTablePager"),
+            rowNum: 10,
+            rowList: [5, 10, 20],
+            viewrecords: true,
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("SaveTimeSheetEntryDetailsGridData", "TaskTimesheet")',
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+
+
+                var count = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'records');
+                if (count > 10) {
+                    $('#TimeSheetEntryTablePager_center').show();
+                }
+                else {
+                    $('#TimeSheetEntryTablePager_center').hide();
+                }
+                if ($("#TimeSheetEntryTable").jqGrid('getGridParam', 'records') == 0) {
+                    $('.TotalRecordsDiv').hide();
+                }
+                else {
+                    $('.TotalRecordsDiv').show();
+                    $('#showRecordCount').text("Total Records : " + count);
+                }
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                $("#timesheetentryform #TimeSheetId").val(rowData["TimeSheetId"]);
+            }
+        }).navGrid("#TimeSheetEntryTablePager",
+                 { search: false, refresh: false, add: false, edit: false, del: false }
+             );
+
+
+
+        $("#TimeSheetEntryTable").jqGrid('inlineNav', "#TimeSheetEntryTablePager",
+         {
+             edit: true,
+             editicon: "ui-icon-pencil",
+             edittext: "Edit",
+             add: false,
+             addicon: "ui-icon-plus",
+             addtext: "Add",
+             save: true,
+             saveicon: "ui-icon-disk",
+             savetext: "Save",
+             cancle: true,
+             cancelicon: "ui-icon-cancel",
+             canceltext: "Cancel",
+             addParams: {
+                 useFormatter: false,
+                 addRowParams: {
+                     oneditfunc: function (rowid) {
+
+                     }
+                 }
+             },
+             editParams: {
+                 keys: false,
+                 oneditfunc: function (rowId) {
+
+                     var rowData = $("#TimeSheetEntryTable").getRowData(rowId);
+                     var status = rowData["Status"];
+                     if (status == "Submit" || status == "Approved") {
+
+                         $("#" + rowId + "_ProjectName").attr("disabled", "disabled");
+                         $("#" + rowId + "_TaskName").attr("disabled", "disabled");
+                         $("#" + rowId + "_Hours").attr("disabled", "disabled");
+                         $("#" + rowId + "_Units").attr("disabled", "disabled");
+                         $("#" + rowId + "_Date").attr("disabled", "disabled");
+                         $("#" + rowId + "_Status").attr("disabled", "disabled");
+                         $("#" + rowId + "_Comments").attr("disabled", "disabled");
+                         $("#" + rowId + "_Delete").attr("disabled", "disabled");
+
+                         $("#" + rowId + "_ProjectName").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_TaskName").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Hours").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Units").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Date").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Status").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Comments").css("background-color", "#B4BCC3").css("border", "none");
+                         $("#" + rowId + "_Delete").css("background-color", "#B4BCC3").css("border", "none");
+
+                         $("#TimesheetEntryUnEditableDialog").dialog({
+                             resizable: false,
+                             autoOpen: true,
+                             height: 'auto',
+                             width: 300,
+                             modal: true,
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         });
+                     }
+                 },
+                 sucessfunc: function (data) {
+                 },
+                 url: null,
+                 extraparam: {
+                     LoggedUserName: function () {
+                         return $('#timesheetentryform #EmployeeId').val();
+                     },
+                     SelectedEntryId: function () {
+                         return $("#timesheetentryform #TimeSheetId").val();
+                     }
+
+                 },
+                 aftersavefunc: function (data, response) {
+
+
+                     var result = $.parseJSON(response.responseText);
+                     $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+
+                     if (result.status == true) {
+                         $("#TimesheetEntrySaveSuccess").dialog({
+                             resizable: false,
+                             autoOpen: true,
+                             height: 'auto',
+                             width: 300,
+                             modal: true,
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         });
+                     }
+                     else if (result.status == false) {
+                         $("#TimesheetEntrySaveError").dialog({
+                             resizable: false,
+                             autoOpen: true,
+                             height: 'auto',
+                             width: 300,
+                             modal: true,
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         });
+                     }
+                     else if (result.status == "Error") {
+                         DisplayErrorDialog("Save Timesheet Entry Details");
+                     }
+                     else {
+                         DisplayErrorDialog("Save Timesheet Entry Details");
+                     }
+
+                 },
+                 errorfunc: null,
+                 afterrestorefunc: function () {
+
+                 },
+                 restoreAfterError: true,
+                 mtype: "POST"
+             }
+         });
+
+        $("#txtProjectName1").keyup(function () {
+
+            if (!this.value) {
+                $("#Employeename").html('');
+                $("#EmployeeId").html('');
+                $('#DetailInfo').hide();
+                $('#pager').hide();
+                $("#TimeSheetEntryTable").jqGrid('clearGridData');
+
+            }
+
+        });
+
+        $("#txtProjectName1").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("ProjectNameAutoSuggestForTimesheet", "TaskTimesheet")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {                        
+                        var emplyeeInformation = el.EmployeeId + "{" + el.EmployeeName + "}";
+                        return {
+                            label: el.emplyeeInformation,
+                            value: el.EmployeeName,
+                            text: el.EmployeeCode,
+                            id: el.EmployeeId
+                        };
+                    }));
+                });
+            },
+
+            change: function (event, ui) {
+                //GetEmployeeCode(event, ui);
+                if (ui.item != null)
+                    selectedProjectID = ui.item.id;
+                else
+                    selectedProjectID = null;
+                $('#timesheetentryform #selectedProjectIDFilter').val(selectedProjectID);
+
+                $.ajax({
+                    url: "GetSelectedProjectTasks/TimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { ProjectID: selectedProjectID },
+                    success: function (results) {
+                        $('#TaskDDFilter').empty();
+                        $('#TaskDDFilter').selectBox("destroy");
+                        $('#TaskDDFilter').append($("<option></option>")
+                                   .attr("value", '')
+                                   .text("Select"));
+                        $.each(results.ListData, function (index, value) {
+                            $('#TaskDDFilter').append($("<option></option>")
+                                   .attr("value", value.ProjectTaskTypeId)
+                                   .text(value.TaskName));
+                        });
+                        $('#TaskDDFilter').selectBox('create');
+                        $('#TaskDDFilter').next().removeClass('selectBox-disabled');
+                        $("#TaskFilterDiv").show();
+                    }
+                });
+                // $(this).focusout();
+                $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+
+            }
+
+
+        });
+
+        function Checkhoursvalidation(value, colname) {
+            var timeValue = value.toString().split('.');
+
+            var hoursValue = timeValue[0];
+            var minutesValue = timeValue[1];
+            if ((isNaN(hoursValue) && hoursValue != "") || (hoursValue < 0 && hoursValue != "") || (hoursValue > 23 && hoursValue != "")) {
+                $("#InvalidHoursGridDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+
+            if ((isNaN(minutesValue) && minutesValue != "") || (minutesValue < 0 && minutesValue != "") || (minutesValue > 59 && minutesValue != "")) {
+                $("#InvalidMinutesGridDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+
+            return [true, ""];
+        }
+
+        function hoursFormatter(cellvalue, options, rowobject) {
+            var totalTime = rowobject['Hours'];
+            var totalTimeArray = 0;
+            if (totalTime != null)
+                totalTimeArray = totalTime.toString().split('.');
+            if (totalTimeArray[1] == null) {
+                totalTimeArray[1] = '00';
+            }
+            else if (totalTimeArray[1].length == 1) {
+                totalTimeArray[1] = totalTimeArray[1] + '0';
+            }
+            return totalTime = totalTimeArray[0] + '.' + totalTimeArray[1];
+        }
+
+        function dialogopenfunc() {
+
+            $("#HoursValidation").dialog({
+                resizable: false,
+                autoOpen: true,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+
+        $("#TaskDD").bind('change', function () {
+            if ($("#TaskDD option:selected").text() == 'Select' && !$('#TaskNameChk').is(":checked")) {
+                $('#timesheetentryform #TaskDescription').text("");
+                $("#timesheetentryform #AvgUnitTime").text("");
+                $("#taskDescriptionDiv").hide();
+                $(".HotTimeDiv").hide();
+                $("#date").datepicker("option", "minDate", null);
+                $("#date").datepicker("option", "maxDate", null);
+                $('#spnTaskMessage').html("");
+            }
+            else {
+                $('#timesheetentryform #ProjectTaskTypeId').val($('#TaskDD :selected').val());
+                $("#taskDescriptionDiv").show();
+                $(".HotTimeDiv").show();
+                $.ajax({
+                    url: "GetSelectedProjectTaskDescription/TimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { TaskId: $('#TaskDD :selected').val() },
+                    success: function (results) {
+                        $.each(results.TaskDescription, function (index, value) {
+                            $('#timesheetentryform #TaskDescription').text(value.Description);
+                            $("#timesheetentryform #AvgUnitTime").text(value.AvgUnitTime);
+                            TimeSheetEntryStartDate = eval(value.TaskStartDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                            TimeSheetEntryEndDate = eval(value.TaskEndDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                            var PlannedHrs = value.PlannedHours;
+                            var ActualHrs = value.ActualHours;
+                            if (value.HrUnit == "Hours") {
+                                $('#Units').attr("disabled", true);
+                                $('#Hours').attr("disabled", false);
+                                $('#Minutes').attr("disabled", false);
+                            }
+                            else if (value.HrUnit == "Units") {
+                                $('#Hours').attr("disabled", true);
+                                $('#Minutes').attr("disabled", true);
+                                $('#Units').attr("disabled", false);
+                            }
+                            else {
+                                $('#Units').attr("disabled", false);
+                                $('#Hours').attr("disabled", false);
+                                $('#Minutes').attr("disabled", false);
+                            }
+                            $("#date").datepicker("option", "minDate", TimeSheetEntryStartDate);
+                            //$("#date").datepicker("option", "maxDate", TimeSheetEntryEndDate);
+                            //added by Rahul Ramachandran to round off the planned hours and actual hrs to two decimals. issue id:3400
+                            $('#spnTaskMessage').html("<label for='StartDate'>Start date:</label>" + $.datepicker.formatDate('dd/mm/yy', TimeSheetEntryStartDate) + " <br><label for='EndDate'>End date:</label> " + $.datepicker.formatDate('dd/mm/yy', TimeSheetEntryEndDate) + " <br> <label for='PlannedHrs'>Planned Hrs:</label>" + (PlannedHrs / 60).toFixed(2) + " <br> <label for='ActualHrs'>Actual Hrs:</label>" + (ActualHrs / 60).toFixed(2));
+                        });
+                    }
+                });
+            }
+        }); //end of function
+        $("#TagDD").bind('change', function () {
+            $('#timesheetentryform #TagID').val($('#TagDD :selected').val());
+        });
+
+        $("#ResetEntryBtn").bind('click', function () {
+            window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+
+        });
+        function DeleteTimesheetEntryCheckbox(cellValue, options, rowdata, action) {
+
+            if (rowdata["Status"] == 'Rejected') {
+                $("#SelectAllEntryBtn").show();
+                $("#DeselectAllEntryBtn").show();
+                $("#DeleteEntryBtn").show();
+                var A = '<input type="checkbox" class="TimesheetEntryChk" id=Chk_' + rowdata["TimeSheetId"] + '>';
+                var B = '<label for=Chk_' + rowdata["TimeSheetId"] + ' class="LabelForCheckbox"></label>';
+                return A + B;
+            }
+            else { return ""; }
+
+        }
+        var SelectedEntryId = [];
+        function GetSelectedCheckbox() {
+            SelectedEntryId = [];
+            $("#TimeSheetEntryTable :checked").each(function (i, val) {
+                var checkvalue = $(this).prop("id").replace('Chk_', '');
+                SelectedEntryId.push(checkvalue);
+            });
+        }
+        $('#SelectAllEntryBtn').on('click', function () {
+            SelectedEntryId = [];
+            $(".TimesheetEntryChk").each(function (i, val) {
+                $(".TimesheetEntryChk").attr("checked", true);
+                var checkvalue = $(this).prop("id").replace('Chk_', '');
+                SelectedEntryId.push(checkvalue);
+            });
+        });
+        $('#DeselectAllEntryBtn').on('click', function () {
+            $(".TimesheetEntryChk").each(function (i, val) {
+                $(".TimesheetEntryChk").attr("checked", false);
+            });
+        });
+
+        $('#DeleteEntryBtn').on('click', function () {
+            GetSelectedCheckbox();
+            DeleteTimesheetEntryDetails(SelectedEntryId);
+        });
+
+        $("#TaskDDFilter").bind('change', function () {
+            selectedTaskDDFilter = $('#TaskDDFilter option:selected').val();
+            $('#timesheetentryform #selectedTaskDDFilter').val(selectedTaskDDFilter);
+            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#StatusDDFilter").bind('change', function () {
+            selectedStatusDDFilter = $('#StatusDDFilter option:selected').val();
+            $('#timesheetentryform #selectedStatusDDFilter').val(selectedStatusDDFilter);
+            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#fromDateFilter").change(function () {
+            $('#timesheetentryform #selectedFromDateFilter').val($("#fromDateFilter").val());
+            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#ToDateFilter").change(function () {
+            $('#timesheetentryform #selectedToDateFilter').val($("#ToDateFilter").val());
+            $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        //added by Rahul Ramachandran for implementing Export to excel functionality
+        $('#btnExportToExcel').click(function () {
+            var Currentcount = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'records');
+            if (Currentcount == 0) {
+                $("#TableGridError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            var ProjectID = $('#selectedProjectIDFilter').val();
+            var TaskID = $('#TaskDDFilter').val();
+            var StatusID = $('#StatusDDFilter').val();
+            var StartDate = $('#fromDateFilter').val();
+            var EndDate = $('#ToDateFilter').val();
+            var rows = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'records');
+            var page = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'page');
+            TimeSheetIDs = "";
+            $(".chkForApprover:checked").each(function (i, val) {
+                if (this.checked) {
+                    TimeSheetIDs = TimeSheetIDs + $(val).attr("name") + ",";
+                }
+            });
+            window.location.href = '@Url.Action("ExportToExcelTimeSheetData", "TaskTimesheet")?ProjectID=' + ProjectID + "&TaskID=" + TaskID + "&StatusID=" + StatusID + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&page=" + page + "&rows=" + rows;
+        });
+
+    });
+
+
+
+    function DeleteTimesheetEntryDetails(SelectedEntryId) {
+        if (SelectedEntryId.length == 0) {
+            $("#NoEntryRecordSelected").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $('#deleteEntryConfirmation').dialog({
+
+                autoOpen: false,
+                modal: true,
+                width: 300,
+                height: 'auto',
+                resizable: false,
+                dialogClass: "noclose",
+                title: "Delete Timesheet Entry Details",
+                buttons:
+                    {
+                        Ok: function () {
+                            $.ajax({
+                                url: '@Url.Action("DeleteTimesheetEntryDetails", "TaskTimesheet")',
+                                data: JSON.stringify(SelectedEntryId),
+                                contentType: "application/json",
+                                type: 'POST',
+                                success: function (data) {
+
+                                    $("#deleteEntryConfirmation").dialog("close");
+                                    $("#TimeSheetEntryTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                    if (data.status == true) {
+
+                                        $("#deleteEntrySuccess").dialog({
+                                            modal: true,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 300,
+                                            dialogClass: "noclose",
+                                            buttons:
+                                            {
+                                                "Ok": function () {
+
+                                                    $(this).dialog("close");
+                                                    window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else if (data.status == false) {
+                                        $("#deleteEntryError").dialog({
+                                            modal: true,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 300,
+                                            dialogClass: "noclose",
+                                            buttons:
+                                            {
+                                                "Ok": function () {
+                                                    $(this).dialog("close");
+                                                    window.location.href = '@Url.Action("TimeSheetEntry", "TaskTimesheet")';
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else if (data.status == "Error") {
+                                        DisplayErrorDialog("Delete Timesheet Entry details");
+                                    }
+                                    else {
+                                        DisplayErrorDialog("Delete Timesheet Entry details");
+                                    }
+                                }
+                            });
+                        },
+                        Cancel: function () {
+                            $(this).dialog('close');
+                        }
+                    }
+            });
+            $('#deleteEntryConfirmation').dialog('open');
+        }
+    }
+
+
+</script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                TimeSheet
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody timesheet">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "timesheetentryform" }))
+        {
+
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.ProjectTaskTypeId)
+            @Html.HiddenFor(model => model.EmployeeId)
+            @Html.HiddenFor(model => model.TimeSheetId)
+            @Html.HiddenFor(model => model.StatusFilter)
+            @Html.HiddenFor(model => model.FromDateFilter)
+            @Html.HiddenFor(model => model.selectedProjectIDFilter)
+            @Html.HiddenFor(model => model.selectedStatusDDFilter)
+            @Html.HiddenFor(model => model.selectedTaskDDFilter)
+            @Html.HiddenFor(model => model.selectedFromDateFilter)
+            @Html.HiddenFor(model => model.selectedToDateFilter)
+            @Html.HiddenFor(model => model.TagID)
+
+            <div class="FormContainerBox clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            @Html.Label("*Select Project:")
+                        </div>
+                        <div class="InputDiv">
+                            @*@Html.DropDownListFor(model => model.ProjectID, new SelectList(Model.ProjectListdata, "ProjectID", "ProjectName"), "Select", new { @id = "ProjectDD", @class = "ValidationDropDown" })*@
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ProjectID)</p>
+                            @Html.HiddenFor(model => model.ProjectID, new { id = "hdnProjectID" })
+                            <input type="text" name="searchValue" id="txtProjectName" class="srchinput" height="20px" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            @Html.Label("*Date:")
+                        </div>
+                        <div class="InputDiv thisdate">
+                            @Html.TextBoxFor(model => model.Date, String.Format("{0:MM/dd/yyyy}", Model.Date), new { id = "date" })
+                            @Html.LabelFor(model => model.Date, String.Format("{0:MM/dd/yyyy}", Model.Date))
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Date)</p>
+                            @Html.Hidden("Date", String.Format("{0:MM/dd/yyyy}", Model.Date), new { id = "date" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            @Html.Label("Unit:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.Units)<br />
+                            <span id="errmsgUnits"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol" style="width: 66%">
+                        <div class="LabelDiv changelbl" style="width: 12%;">
+                            @Html.Label("*Select Task:")
+                        </div>
+                        <div class="InputDiv longinput width76">
+                            <select id="TaskDD"></select>
+                            <span style="color: red; display: block;" id="SpanNewTaskMessage">
+                                (If you want to add new task then click on
+                                checkbox)
+                            </span>
+                        </div>
+                        <div class="InputDiv width3">
+                            @Html.CheckBoxFor(model => model.NewTaskCheckbox, new { @id = "TaskNameChk" })
+                            <label id="TaskNameChkLabel" for="TaskNameChk" class="LabelForCheckbox smallcheckbox">
+                            </label>
+                            <label id="TaskNameLabel" style="display: none">
+                            </label>
+                            @Html.ValidationMessageFor(model => model.NewTaskCheckbox)
+                        </div>
+                    </div>
+                    <div class="rightcol" style="width: 33%">
+                        <div style="float:left;width:50%">
+                            <div class="LabelDiv">
+                                @Html.Label("Hours:")
+                            </div>
+                            <div class="TimesheetInputDiv">
+                                @Html.TextBoxFor(model => model.Hours, new { maxlength = 2 })
+                            </div>
+                        </div>
+                        <div style="float:right;width:50%">
+                            <div class="LabelDiv">
+                                @Html.Label("Minutes:")
+                            </div>
+                            <div class="TimesheetInputDiv">
+                                @Html.TextBoxFor(model => model.Minutes, new { maxlength = 2 })<br />
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="rightcol" style="width: 33%">
+                            <div class="LabelDiv">
+                                @Html.Label("Minutes:")
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextBoxFor(model => model.Minutes, new { maxlength = 2 })<br />
+                            </div>
+                        </div>*@
+                </div>
+                <div class="formrow clearfix" id="taskDescriptionDiv" style="display: none;">
+                    <div class="leftcol" style="width: 66%">
+                        <div class="LabelDiv changelbl" style="width: 12%;">
+                            @Html.Label("Task Description:")
+                        </div>
+                        <div class="InputDiv longinput">
+                            @*@Html.TextAreaFor(model => model.Description, new { @id = "TaskDescription", @disabled = "disabled" })*@
+                            @Html.LabelFor(model => model.Description, Model.Description, new { @id = "TaskDescription", @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Description)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol" style="width: 33%;">
+                        <div class="LabelDiv HotTimeDiv" style="display: none;">
+                            @Html.Label("Hot Time:")
+                        </div>
+                        <div class="InputDiv HotTimeDiv" style="display: none;">
+                            @Html.LabelFor(model => model.AvgUnitTime, new { @id = "AvgUnitTime", @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AvgUnitTime)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix" id="newTaskDiv" style="display: none;">
+                    <div class="leftcol" style="width: 66%">
+                        <div class="LabelDiv changelbl" style="width: 12%">
+                            @Html.Label("*New Task:")
+                        </div>
+                        <div class="InputDiv longinput">
+                            @Html.TextBoxFor(model => model.NewTask, new { @id = "newtaskid" })
+                        </div>
+                    </div>
+                    <div class="rightcol" style="width: 33%">
+                        <div class="LabelDiv">
+                            @Html.Label("*Select Tag:")
+                        </div>
+                        <div class="InputDiv">
+                            <select id="TagDD"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol" style="width: 66%">
+                        <div class="LabelDiv changelbl" style="width: 12%">
+                            @Html.Label("Comments:")
+                        </div>
+                        <div class="InputDiv longinput">
+                            @Html.TextAreaFor(model => model.Comments, new { @id = "Comments" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Comments)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol" style="width: 33%;">
+                        <span id="spnTaskMessage"></span>
+                    </div>
+                </div>
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" id="SaveEntryBtn" value="Save" class="ButtonGray mrgnR8" />
+                    <input type="reset" id="ResetEntryBtn" value="Reset" class="ButtonGray mrgnR8" />
+                </div>
+            </div>
+        }
+        <div class="FormContainerBox clearfix select-col-group">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv spaceIndent">
+                        @Html.Label("Select Project:")
+                    </div>
+                    <div class="InputDiv">
+                        @*@Html.DropDownListFor(x => x.ProjectID, new SelectList(Model.TaskProjectList, "ProjectID", "ProjectName"), "Select", new { @id = "ProjectDDFilter" })*@
+                        @*@Html.DropDownListFor(model => model.ProjectID, new SelectList(Model.ProjectListdata, "ProjectID", "ProjectName"), "Select", new { @id = "ProjectDDFilter" })*@
+                        <input type="text" name="searchValue" id="txtProjectName1" class="srchinput" height="20px" />
+                    </div>
+                </div>
+            </div>
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv spaceIndent">
+                        @Html.Label("Select From Date:")
+                    </div>
+                    <div class="InputDiv thisD2">
+                        @Html.TextBoxFor(model => model.FromDateFilter, String.Format("{0:MM/dd/yyyy}", Model.FromDateFilter), new { id = "fromDateFilter" })
+                        @Html.LabelFor(model => model.FromDateFilter, String.Format("{0:MM/dd/yyyy}", Model.FromDateFilter))
+                        @Html.Hidden("Date", String.Format("{0:MM/dd/yyyy}", Model.FromDateFilter), new { id = "fromDateFilter" })
+                    </div>
+                </div>
+            </div>
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv spaceIndent">
+                        @Html.Label("Select To Date:")
+                    </div>
+                    <div class="InputDiv thisD2">
+                        @Html.TextBoxFor(model => model.ToDateFilter, String.Format("{0:MM/dd/yyyy}", Model.ToDateFilter), new { id = "ToDateFilter" })
+                        @Html.LabelFor(model => model.ToDateFilter, String.Format("{0:MM/dd/yyyy}", Model.ToDateFilter))
+                        @Html.Hidden("Date", String.Format("{0:MM/dd/yyyy}", Model.ToDateFilter), new { id = "toDateFilter" })
+                    </div>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="formrow clearfix" id="TaskFilterDiv" style="display:inline-flex;">
+                    <div class="LabelDiv spaceIndent">
+                        @Html.Label("Select Task:")
+                    </div>
+                    <div class="InputDiv">
+                        <select id="TaskDDFilter"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv spaceIndent">
+                        @Html.Label("Select Status:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.StatusFilter, new SelectList(Model.StatusListdata, "StatusID", "StatusName"), "Select", new { @id = "StatusDDFilter" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" id="SelectAllEntryBtn" value="Select All" class="ButtonGray mrgnR8"
+                   style="display: none" />
+            <input type="button" id="DeselectAllEntryBtn" value="Deselect All" class="ButtonGray mrgnR8"
+                   style="display: none" />
+            <input type="button" id="DeleteEntryBtn" value="Delete" class="ButtonGray mrgnR8"
+                   style="display: none" />
+            <input type="button" value="Export to Excel" class=" ButtonGray mrgnr8 clsbtn floatR"
+                   id="btnExportToExcel" />
+        </div>
+        <div class="mrgnT30">
+            <div class="tablestyle3">
+                <table id="TimeSheetEntryTable" class="scroll"></table>
+            </div>
+            <div id="TimeSheetEntryTablePager">
+            </div>
+            <div class="TotalRecordsDiv">
+                <div class="bluebgtable1" id="showRecordCount">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="TimesheetEntrySaveSuccess" title="Timesheet Entry details" style="display: none">
+    <p>
+        Record has been saved successfully.
+    </p>
+</div>
+<div id="TimesheetEntrySaveAndEmailSuccess" title="Timesheet Entry details" style="display: none">
+    <p>
+        Record has been saved successfully and email has been sent.
+    </p>
+</div>
+<div id="TimesheetEntrySaveError" title="Timesheet Entry details" style="display: none">
+    <p>
+        Timesheet Entry details could not be saved.
+    </p>
+</div>
+<div id="deleteEntryConfirmation" title="Delete Timesheet Entry details" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record?
+    </p>
+</div>
+<div id="deleteEntrySuccess" title="Delete Timesheet Entry details" style="display: none">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="deleteEntryError" title="Delete Timesheet Entry details" style="display: none">
+    <p>
+        Timesheet Entry details could not be deleted.
+    </p>
+</div>
+<div id="NoEntryRecordSelected" title="Delete Timesheet Entry details" style="display: none">
+    <p>
+        Please select atleast one record to delete.
+    </p>
+</div>
+<div id="NewTaskMandatoryEntry" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please fill the new task field.
+    </p>
+</div>
+<div id="NewTagMandatoryEntry" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please fill Tag field.
+    </p>
+</div>
+<div id="UnitHoursMandatoryEntry" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please fill the Unit field or Hours and Minutes field.
+    </p>
+</div>
+<div id="ApproverNotSetDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        Approver for the selected Project is not set. Kindly contact to HR.
+    </p>
+</div>
+<div id="TaskMandatoryEntry" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please select Task.
+    </p>
+</div>
+<div id="TimesheetEntryUnEditableDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        You can edit only Rejected Entries.
+    </p>
+</div>
+<div id="CanUserCreatetaskDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        You are not authorized to create new task.
+    </p>
+</div>
+<div id="NewTaskMandatoryTagDDEntry" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please Select Tag.
+    </p>
+</div>
+<div id="TimeSheetEntryInvalidDate" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please select date between task start date and end date.
+    </p>
+</div>
+
+<div id="HoursValidation" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please enter a valid time format like 23.59(HH.MM) or 23(HH).
+    </p>
+</div>
+<div id="FromDateGreaterDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        From date cannot be greater than To date.
+    </p>
+</div>
+<div id="ToDateLesserDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        To date cannot be lesser than From date.
+    </p>
+</div>
+<div id="InvalidHoursDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please enter Hours between 0 to 23.
+    </p>
+</div>
+<div id="InvalidMinutesDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please enter Minutes between 0 to 59.
+    </p>
+</div>
+<div id="InvalidHoursGridDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please enter Hours between 0 to 23 and
+        in valid time format like 23.59(HH.MM)
+    </p>
+</div>
+<div id="InvalidMinutesGridDialog" title="Timesheet Entry details" style="display: none">
+    <p>
+        Please enter Minutes between 0 to 59 and
+        in valid time format like 23.59(HH.MM)
+    </p>
+</div>

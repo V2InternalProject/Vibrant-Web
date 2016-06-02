@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="MyTest">
+<head>
+    <title></title>
+    <script src="Scripts/jquery-1.8.2.min.js"></script>
+    <script src="Scripts/angular.js"></script>
+    <script src="Scripts/ng-grid.min.js"></script>
+    <script src="Scripts/ui-bootstrap-tpls-0.12.0.min.js"></script>
+    <script src="Scripts/Service.js" type="text/javascript"></script>
+    <script src="Scripts/Employee.js"></script>
+    <link href="CSS/bootstrap.min.css" rel="stylesheet" />
+    <link href="CSS/ng-grid.css" rel="stylesheet" />
+    <link href="CSS/Employee.css" rel="stylesheet" />
+</head>
+<body ng-controller="Controllers">
+    <!--<div class="gridStyle" ng-grid="employeeGrid"></div>
+    <hr />-->
+    <div class="gridStyle" ng-grid="gridOptions"></div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button type="submit" ng-click="submit()" class="btn btn-success btn-primary submit"><b>Submit</b></button>
+        </div>
+    </div>
+    <hr />
+    <div>{{selectedData|json}}</div>
+    <div ng-controller="ModalInstanceCtrl">
+        <script type="text/ng-template" id="myModalContent.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Employee Detaile</h3>
+            </div>
+            <div class="modal-body">
+                {{items}}
+                <ul>
+                    <li ng-bind="i.empId"></li>
+                    <li ng-bind="i.EmpName"></li>
+                    <li ng-bind="i.empDetaile"></li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" dismiss="Employee.html" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+</body>
+</html>

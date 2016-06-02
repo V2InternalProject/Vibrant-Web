@@ -1,0 +1,197 @@
+﻿@model HRMS.Models.TravelViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/travel.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+
+<section class="TravelContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Travel</h2>
+            
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = true, encryptedTravelId = ViewBag.EncryptedTravelId, viewDetails = "NoExt" })" class="selected">New Request</a>
+            <a href="#">Extension Request</a>
+            <a href="#">Saved/Submitted Request</a>
+        </nav>
+    </div>
+    <div class="MainBody TravelMainbody">
+        <div class="FormContainerBox  Travel clearfix">
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>TRF NO:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Request Date:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>Requestor Name:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Requestor Employee Code:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>Organization Unit:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Client Name</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>tt</label>
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Delivery Team:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* COntact Number(Local):</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Personal Email Id:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Contact Number(Travelling Destination):</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Primary Approver:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>hh</label>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Travel End Date:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" placeholder="datepicker"/>
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Travel Start Date:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" placeholder="datepicker"/>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Expense Reimbursed By Client?:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>hh</label>
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Travel Type:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>hh</label>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Additional Information:</label>
+                    </div>
+                    <div class="InputDiv">
+                      <textarea></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fill-dtls clearfix">
+            <input type="button" value="Save" class="ButtonGray" />
+        </div>
+
+    </div>
+
+</section>

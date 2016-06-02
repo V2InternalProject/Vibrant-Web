@@ -1,0 +1,99 @@
+﻿@model HRMS.Models.CompleteTimesheetModel
+@{
+    ViewBag.Title = "Complete Timesheet";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew NoTitleGridsContainer clearfix">
+    <div class="clearfix">
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("From Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                    <img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif"
+                        alt="..." title="...">
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("To Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                    <img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif"
+                        alt="..." title="...">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tablestyle3">
+        <table id="jqCompleteTSTable">
+        </table>
+    </div>
+    <div id="jqCompleteTSTablePager">
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    $("#jqCompleteTSTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Project", "Task Name", "Mon [Mar 3]", "Tue [Mar 4]", "Wed [Mar 5]", "Thu [Mar 6]", "Fri [Mar 7]", "Sat [Mar 8]", "Sun [Mar 9]","Actual Hrs"],            
+            // Configure the columns
+            colModel: [
+                { name: "Project", index: "Project", align: "center", width: 140},
+                { name: "Taskname", index: "Taskname", align: "center", width: 240 },
+                { name: "Mon", index: "Mon", align: "center", width: 40 },
+                { name: "Tue", index: "Tue", align: "center", width: 40 },
+                { name: "Wed", index: "Wed", align: "center", width: 40 },
+                { name: "Thu", index: "Thu", align: "center", width: 40 },
+                { name: "Fri", index: "Fri", align: "center", width: 40},
+                { name: "Sat", index: "Sat", align: "center", width: 40},
+                { name: "Sun", index: "Sun", align: "center", width: 40},
+                { name: "ActualHrs", index: "ActualHrs", align: "center", width: 40},
+               
+               
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqCompleteTSTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Timesheet",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqCompleteTSTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+    });
+    
+</script>

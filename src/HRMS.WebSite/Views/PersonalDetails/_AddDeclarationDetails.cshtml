@@ -1,0 +1,88 @@
+﻿@model HRMS.Models.DeclarationDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/_DeclarationsDetails.js" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addDeclarationsDetails" }))
+{
+
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25 NoNegMrgnContainer">
+        @Html.HiddenFor(x => x.EmployeeID)
+        @Html.HiddenFor(x => x.DeclarationId)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Name:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.Name)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Name)
+                    @Html.HiddenFor(model => model.Name, new { id = "declarationName" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Relation:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.uniqueID, new SelectList(Model.RelationList, "uniqueID", "DependandsRelation", "Select"), "Select", new { @id = "DeclarationDetails_Relation" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.uniqueID, "Please select Relation")
+                    @Html.HiddenFor(model => model.uniqueID, new { id = "declarationRelation" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("V2 Employee Status:")
+            </div>
+           <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.V2EmployeeID, new SelectList(Model.EmployeeList, "V2EmployeeID", "V2EmployeeName", "Select"), "Select", new { @id = "DeclarationV2Employee_Name" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.uniqueID, "Please select Emplyoee")
+                    @Html.HiddenFor(model => model.V2EmployeeID, new { id = "declarationV2EmpName" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Employee Code:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.EmployeeCode)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmployeeCode)
+                    @Html.HiddenFor(model => model.EmployeeCode, new { id = "declarationEmployeeCode" })</p>
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="savedeclaration" type="button" value="Save" class="button" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialogdeclaration()" class="button " />
+        </div>
+    </div>
+}
+@*<div id="AddDeclarationSuccessMessege" title="Declaration details" style="display: none;">
+    <p>
+        Declaration details have been saved.
+    </p>
+</div>
+<div id="AddDeclarationErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        //save dependent details
+        $('#savedeclaration').click(function () {
+            SaveDeclarationDetails();
+
+        });
+    });
+</script>

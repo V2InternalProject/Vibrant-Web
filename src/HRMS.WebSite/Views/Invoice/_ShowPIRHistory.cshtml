@@ -1,0 +1,167 @@
+﻿@model HRMS.Models.AddInvoiceModel
+<div class="PIRHistoryContainer">
+    @if (Model.HistoryIDList.Count == 0)
+    {
+        <p id="NoRecordsError" class='ErrorInvoiceAddress'>
+            There are no records to show.</p>
+    }
+    else
+    {
+        foreach (var item in Model.HistoryIDList)
+        {
+
+        <div class="clearfix TextBlue">
+            <div class="floatL">
+                <label class="prefix"> @Html.Label("Updated On:")</label>
+                <label class="suffix"> @Model.PIRHistoryDetailsList.Where(x => x.HistoryID == item).Select(e => e.UpdatedDate).FirstOrDefault()</label>
+            </div>
+            <div class="floatL">
+                <label class="prefix">  @Html.Label("Updated By:")</label>
+                <label class="suffix"> @Model.PIRHistoryDetailsList.Where(x => x.HistoryID == item).Select(e => e.UpdatedByEmployeeName).FirstOrDefault()</label>
+            </div>
+            <div class="floatL">
+                <label class="prefix">  @Html.Label("Approved On:")</label>
+                <label class="suffix">@Model.PIRHistoryDetailsList.Where(x => x.HistoryID == item).Select(e => e.ApprovedDate).FirstOrDefault()</label>
+            </div>
+            <div class="floatL">
+                <label class="prefix">@Html.Label("Approved By:")</label>
+                <label class="suffix">@Model.PIRHistoryDetailsList.Where(x => x.HistoryID == item).Select(e => e.ApprovedByEmployeeName).FirstOrDefault()</label>
+            </div>
+     </div>
+        <table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable" class="TableJqgrid mrgnT22 mrgnB18">
+            <thead>
+                <tr>
+                    <td align="left" class="tableHeaders">
+                        Description
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Discount
+                    </td>
+                    @if (Model.InvoiceTypeHeadersList[0].RFITypeID == 5 || Model.InvoiceTypeHeadersList[0].RFITypeID == 6)
+                    {
+                        <td align="left" class="tableHeaders">
+                            Quantity
+                        </td>
+                    }
+                    else if (Model.InvoiceTypeHeadersList[0].RFITypeID == 4)
+                    {
+                        <td align="left" class="tableHeaders">
+                            Quantity - Resource
+                        </td>
+                    }
+                    else if (Model.InvoiceTypeHeadersList[0].RFITypeID == 1)
+                    {
+                        <td align="left" class="tableHeaders">
+                            Quantity - Hours
+                        </td>
+                    }
+                    <td align="left" class="tableHeaders">
+                        Rate(USD)
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Amount(USD)
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Billable Resources
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Billing Type Adv(1)-Post(2)
+                    </td>
+                    @if (Model.InvoiceTypeHeadersList[0].RFITypeID == 6)
+                    {
+                        <td align="left" class="tableHeaders">
+                            Type FB(1)-FF(2)-Trans(3)
+                        </td>
+                    }
+                    <td align="left" class="tableHeaders">
+                        Resource Pool Type
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Equiv. USD amount (Corporate Base)
+                    </td>
+                    <td align="left" class="tableHeaders">
+                        Equiv. USD amount (Company Base)
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var details in Model.PIRHistoryDetailsList.Where(x => x.HistoryID == item))
+                {
+                    <tr class="tableRows">
+                        <td align="center">
+                            @details.ItemDescription
+                        </td>
+                        @if (details.IsDiscountItem == "True")
+                        {
+                            <td align="center">
+                                Yes
+                            </td>
+                        }
+                        else if (details.IsDiscountItem == "False")
+                        {
+                            <td align="center">
+                                No
+                            </td>
+                        }
+                        <td align="center">
+                            @details.Quantity
+                        </td>
+                        <td align="center">
+                            @details.Rate
+                        </td>
+                        <td align="center">
+                            @details.Amount
+                        </td>
+                        <td align="center">
+                            @details.BillableResources
+                        </td>
+                        @if (details.Billing_Type_Adv_1_Post_2 == "1")
+                        {
+                            <td align="center">
+                                Adv
+                            </td>
+                        }
+                        else if (details.Billing_Type_Adv_1_Post_2 == "2")
+                        {
+                            <td align="center">
+                                Post
+                            </td>
+                        }
+                        @if (Model.InvoiceTypeHeadersList[0].RFITypeID == 6)
+                        {
+                            if (details.Type_FB_1_FF_2_Trans_3 == "1")
+                            {
+                            <td align="center">
+                                Fix Bid
+                            </td>
+                            }
+                            else if (details.Type_FB_1_FF_2_Trans_3 == "2")
+                            {
+                            <td align="center">
+                                Fix Fee
+                            </td>
+                            }
+                            else if (details.Type_FB_1_FF_2_Trans_3 == "3")
+                            {
+                            <td align="center">
+                                Trans
+                            </td>
+                            }
+                        }
+                        <td align="center">
+                            @details.ResourcePoolType
+                        </td>
+                        <td align="center">
+                            @details.Amount
+                        </td>
+                        <td align="center">
+                            @details.Amount
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        }
+    }
+</div>

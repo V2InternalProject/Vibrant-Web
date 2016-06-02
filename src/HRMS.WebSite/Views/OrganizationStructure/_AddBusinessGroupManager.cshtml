@@ -1,0 +1,142 @@
+﻿@model HRMS.Models.OrganizationStructure
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<h3 class="Configure-title">
+    Business Group Managers</h3>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "AddBusinessGroupManagerFromlist" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.BusinessGroupID)
+    @Html.HiddenFor(x => x.Old_Manager)
+    <div style="float: inherit">
+        <div class="conf-pop">
+            @Html.LabelFor(x => x.Manager)<span class="mandatory">*</span>
+            @Html.DropDownListFor(x => x.Manager, new SelectList(Model.BusinessGroupManagerList, "EmployeeID", "UserName"), "")
+            @Html.ValidationMessageFor(x => Model.Manager)
+        </div>
+        <br />
+        <div>
+            <span class="config-primary">@Html.LabelFor(x => x.IsPrimaryResponsible)</span>
+            @Html.CheckBoxFor(x => x.IsPrimaryResponsible)
+        </div>
+    </div>
+}
+<div id="ErrorSaveBusinessGroupManager" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          There is some error.
+    </center>
+</div>
+<div id="ErrorInSave" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          Please select manager to save.
+    </center>
+</div>
+<br />
+<input type="button" class="button" id="Savemanagerforbusinessgroup" value="Save" />
+<br />
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $.validator.unobtrusive.parse($("#AddBusinessGroupManagerFromlist"));
+    $("#Savemanagerforbusinessgroup").click(function () {
+        if ($("#AddBusinessGroupManagerFromlist").valid()) {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+            $("#BusinessGroupID").val('@Model.BusinessGroupID');
+            $("#Old_Manager").val('@Model.Old_Manager');
+            $("#Manager").val($("#Manager").val());
+            $.ajax({
+                url: '@Url.Action("AddBusinessGroupManager", "OrganizationStructure")',
+                data: $("#AddBusinessGroupManagerFromlist").serialize(),
+                type: 'POST',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.resultMesssage == "ErrorInSave") {
+                        $("#ErrorInSave").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        if (results.status == true) {
+                            $("#addbusinessManagerList").dialog("destroy").remove()
+                            $("#EditbusinessManagerList").dialog("destroy").remove()
+                            $("#ConfigureBusinessGroup").dialog("close");
+                            $("#ConfigureBusinessGroup").dialog("destroy");
+                            var BusinessGroupID = '@Model.BusinessGroupID';
+                            $("#ConfigureBusinessGroup").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 650,
+                                width: 1100,
+                                modal: true,
+                                title: "Configure Business Group",
+                                open: function (event, ui) {
+                                    $('#ConfigureBusinessGroup').load("/OrganizationStructure/ConfigureBusinessGroups", { BusinessGroupID: '@Model.BusinessGroupID' }).dialog('open');
+                                    //$('#ConfigureBusinessGroup').load('@Url.Action("ConfigureBusinessGroups", "OrganizationStructure")', { BusinessGroupID: BusinessGroupID }).dialog('open');
+                                }
+                            });
+                        }
+                        else {
+                            $("#ErrorSaveBusinessGroupManager").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveBusinessGroupManager").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

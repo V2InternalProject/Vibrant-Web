@@ -1,0 +1,47 @@
+﻿@model HRMS.Models.FinancePaymentTrackingModel
+
+<table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable"
+    class="mrgnT10 tablestyle2">
+    <thead>
+        <tr class="bluebgtable1">
+            <td align="center" width="16%">
+               Collection Date
+            </td>
+            <td align="center" width="16%">
+                Collected Amount
+            </td>
+            <td align="center" width="16%">
+                Pending Amount
+            </td>
+            <td align="center" width="16%">
+                Status
+            </td>
+            <td align="center" width="20%">
+               Updated By
+            </td>
+            <td align="center" width="16%">
+                Updated On
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="center">
+                @Model.CollectionDate
+            </td>
+            <td align="center">
+                @Model.CollectedAmount
+            </td>
+            <td align="center">
+                @Model.PendingAmount
+            </td>
+            <td align="center">
+                @Model.Status
+            </td>
+            <td align="center">
+            </td>
+            <td align="center">
+            </td>
+        </tr>
+    </tbody>
+</table>

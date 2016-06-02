@@ -1,0 +1,887 @@
+﻿@model HRMS.Models.TravelDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/TravelDetails.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+@*@{
+        ViewBag.Title = "Employee Details";
+        Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+    }*@
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $('select').selectBox({
+            hideOnWindowScroll: true,
+            keepInViewport: false
+        });
+        //        $(function () {
+        //            $('select').selectbox();
+        //            $('.sbOptions a').hover(function () {
+        //                $(this).parent().toggleClass("hoveroption");
+        //            });
+        //        });
+
+        $('#empPassport,#spouseVisa').attr('title', 'No file selected');
+
+        $('#frmAddSpouseTravelDetails #EmployeeId').val('@ViewBag.decryptedSpouseEmployeeId');
+        $("#frmAddSpouseVisaDetails #hdnEmployeeId").val('@ViewBag.decryptedSpouseEmployeeId');
+        $("#frmAddSpouseVisaDetails #EmployeeId").val('@ViewBag.decryptedSpouseEmployeeId');
+        $("#frmAddSpouseVisaDetails #hdnSpouseVisaDetailsPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Spouse');
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+
+        $("#spouseVisa").bind("change", function (event) {
+            $("#FileSpouseVisaField").val($(this).val());
+            $('#spouseVisa').attr('title', $(this).val());
+        });
+
+        $("#empPassport").bind("change", function (event) {
+            $("#FileSpousePassportField").val($(this).val());
+            $('#empPassport').attr('title', $(this).val());
+        });
+
+        $("#frmAddSpouseVisaDetails #hdnDependentId").val('@Model.VisaDetailsModel.DependantId');
+
+        //        SetPageTitle('Spouse Travel Details');
+        $('#txtDateOfSpousePassportIssue').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+        .bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("mm/dd/yy", minValue);
+            minValue.setDate(minValue.getDate() + 1);
+            $("#txtDateofSpousePassportExpiry").datepicker("option", "minDate", minValue);
+        });
+        $('#txtDateofSpousePassportExpiry').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-20:+30", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose:
+    onCloseForDatePicker
+        });
+        $('#txtSpouseVisaValidTill').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-10:+30", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true });
+
+        $("#SpousePassportTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("SpousePassportLoadGrid", "EmployeeDetails")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { EmployeeID: '@ViewBag.decryptedSpouseEmployeeId'  },
+            // Specify the column names
+            colNames: ["EmployeeId", "DocumentID", "Passport Copy", "Delete"],
+            // Configure the columns
+            colModel: [
+
+              { name: "EmployeeId", index: "TravelID", hidden: true, width: 25, align: "left" },
+              { name: "DocumentID", index: "DocumentID", hidden: true, width: 25, align: "left" },
+             { name: "PassportFileName", index: "PassportFileName", width: 50, align: "left", formatter: formatlink },
+	        { name: "Delete", index: "Delete", width: "10%", align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+            ],
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#SpousePassportTablePager"),
+            //caption: "Passport Details",
+
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#SpousePassportTable").jqGrid('getGridParam', 'records');
+                //                if (count == 0) {
+                //                    $('#gbox_SpousePassportTable').hide();
+                //                }
+                //                else {
+                //                    $('#gbox_SpousePassportTable').show();
+                //                    if (count > 20) {
+
+                //                        $('#SpousePassportTablePager').show();
+                //                    }
+                //                    else {
+                //                        $('#SpousePassportTablePager').hide();
+                //                    }
+                //                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var DocumentID = rowData['DocumentID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] == "Delete") {
+                    if ('@ViewBag.UserRole' == '@HRMS.Models.UserRoles.HRAdmin') {
+                        DeletePassportDocument(DocumentID, '@Model.PersonType');
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+        }).navGrid("#SpousePassportTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false });
+
+        function formatlink(cellvalue, options, rowobject) {
+            return "<a href=# id=" + rowobject['DocumentID'] + " class=EmpLink onClick = LinkPassportClick(this," + rowobject['EmployeeId'] + ',"' + '@Model.PersonType' + '"' + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+        }
+
+        function formatSpouseVisalink(cellvalue, options, rowobject) {
+            if (cellvalue != null && cellvalue != "")
+                return "<a href=# id=" + rowobject['DependantVisaDetailsId'] + " class=EmpLink onClick = LinkVisaClick(this," + rowobject['EmployeeId'] + ',"' + '@Model.PersonType' + '"' + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+            else
+                return "";
+        }
+
+        $("#btnAddSpouseVisaDetails").click(function () {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#chkSpouseIsValidVisa').removeAttr('checked');
+
+            $('#ddlSpouseCountryList').val('');
+            $('#txtSpouseVisaValidTill').val('');
+            $("#hdnAddSpouseIsVisaValid").val(false);
+            $("#hdnAddSpouseSelectedCountryId").val('');
+            $("#hdnAddSpouseVisaValidTill").val('');
+            $("#Visa_SpouseVisaTypeID").val('');
+            $("#addSpouseVisaDetailsDialog #hdnSpouseVisaDetailsPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Spouse');
+            $("#addSpouseVisaDetailsDialog #hdnDependentId").val('@Model.VisaDetailsModel.DependantId');
+            $("#addSpouseVisaDetailsDialog #hdnDependantSpouseVisaDetailsId").val('');
+            $("#addSpouseVisaDetailsDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 500,
+                height: 'auto',
+                title: "Add Spouse Visa Details"
+            }); // End of Add Visa Details Dialog
+            $("#addSpouseVisaDetailsDialog").dialog('open');
+        }); // End of Add Visa Details Click event
+        //Add Own Travel Details Start
+        $('#btnSaveSpouseTravelDetails').click(function () {
+            // if ($('#empPassport').val() != "") {
+            if ($('#frmAddSpouseTravelDetails').valid()) {
+                DisplayLoadingDialog();
+                $("#hdnSpousePassportNumber").val($("#txtSpousePassportNumber").val());
+                $("#hdnSpouseSonOfWifeOfDaughterOf").val($("#txtSpouseSonOfWifeOfDaughterOf").val());
+                $("#hdnDateOfSpousePassportIssue").val($("#txtDateOfSpousePassportIssue").val());
+                $("#hdnSpousePlaceOfIssue").val($("#txtSpousePlaceOfIssue").val());
+                $("#hdnDateOfSpousePassportExpiry").val($("#txtDateofSpousePassportExpiry").val());
+                $("#hdnSpouseNoOfPagesLeft").val($("#txtSpouseNoOfPagesLeft").val());
+                $("#hdnSpouseFullNameAsInPassport").val($("#txtSpouseFullNameAsInPassport").val());
+                $("#frmAddSpouseTravelDetails").ajaxForm({
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        var st = $.parseJSON(results);
+                        if (st.status == true) {
+                            $("#empPassport").replaceWith($("#empPassport").clone(true));
+                            $('#SpousePassportSuccess').dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    "OK": function () {
+                                        $(this).dialog("close");
+                                        jQuery("#SpousePassportTable").trigger("reloadGrid");
+                                        $('#FileSpousePassportField').val('');
+                                    }
+                                }
+                            });
+                        }
+                        else if (st.status == "Error") {
+                            DisplayErrorDialog("Add Passport Details");
+                        }
+                        else {
+                            $('#errorUploaSpousePassportDialog').dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                title: "Error",
+                                buttons: {
+                                    "OK": function () { $(this).dialog('close'); }
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $('#errorUploaSpousePassportDialog').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Error",
+                            dialogClass: "noclose",
+                            buttons: {
+                                "OK": function () { $(this).dialog('close'); }
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+            //    }
+            //    else {
+            //        $("#PassportUploadError").text(" Please select File to upload");
+            //        return;
+            //    }
+        });
+        //Start jQuery Grid View Binding for Visa Details
+        $("#spousejqTable").jqGrid({
+            // $("#jqTable").live('jqGrid', function(){
+            // Ajax related configurations
+            url: '@Url.Action("GetVisaDetailsLoadGrid", "EmployeeDetails")',
+            postData: { employeeId: '@ViewBag.EmployeeId', type: '@Model.PersonType' },
+            datatype: "json",
+            mtype: "POST",
+            ajaxGridOptions: { cache: false },
+            // Specify the column names
+            //colNames: ["DependantVisaDetailsId", "EmployeeId", "Country", "CountryId", "IsValidVisa", "ValidTill", ""],
+            colNames: ["DependantVisaDetailsId", "EmployeeId", "Country", "CountryId", "IsValidVisa", "Visa TypeName", "IsVisaExpired", "ValidTill", "Visa Copy", "VisaTypeID", ""],
+            // Configure the columns
+            colModel: [
+                { name: "DependantVisaDetailsId", index: "DependantVisaDetailsId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "Country", index: "Country", width: 100, align: "left" },
+                { name: "SelectedCountryId", index: "SelectedCountryId", hidden: true, width: 100, align: "left" },
+                { name: "IsValidVisa", index: "IsValidVisa", hidden: true, width: 100, align: "left" },
+                 { name: "VisaTypeName", index: "VisaTypeName", width: 100, align: "left" },
+                { name: "IsVisaExpired", index: "IsVisaExpired", hidden: true, width: 100, align: "left" },
+                { name: "ValidTill", index: "ValidTill", width: 100, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                 { name: "VisaFileName", index: "VisaFileName", width: 100, align: "left", formatter: formatSpouseVisalink },
+                { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 100, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 10,
+                    align: "center",
+                    formatter: function () {
+                        if ($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' && $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' && ('@Model.EmpStatusMasterID' != 2)) {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+
+            ],
+
+            width: 500,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#spousejqTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+
+            //caption: "Employee - Visa Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#spousejqTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_spousejqTable').hide();
+                }
+                else {
+                    $('#gbox_spousejqTable').show();
+                    if (count > 20) {
+
+                        $('#spousejqTablePager').show();
+                    }
+                    else {
+                        $('#spousejqTablePager').hide();
+                    }
+                }
+                if ('@Model.EmpStatusMasterID' == 2) {
+                    $('#btnSaveSpouseTravelDetails').hide();
+                    $('#btnCancelSpouseTravelDetails').hide();
+                    $('#frmAddSpouseTravelDetails').find('input').attr("disabled", "disabled");
+                    $('#btnAddSpouseVisaDetails').hide();
+                    $("#gbox_spousejqTable").find('input,select').attr("disabled", "disabled");
+
+                }
+                var rowIds = $('#spousejqTable').jqGrid('getDataIDs');
+                var counter = 0;
+                for (i = 1; i <= rowIds.length; i++) {//iterate over each row
+                    rowData = $('#spousejqTable').jqGrid('getRowData', i);
+                    //set background style if ColumnValue == true
+                    if (rowData['IsVisaExpired'] == 'true') {
+                        $('#spousejqTable').setCell(i, 'ValidTill', rowData.ValidTill, { color: 'red' });
+                        counter = counter + 1;
+                    } //if
+                } //for
+                if (counter > 0) {
+                    $("#NoteforVisaExpiredspouse").show();
+                }
+                else {
+                    $("#NoteforVisaExpiredspouse").hide();
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var dependantsVisaDetailsId = rowData['DependantVisaDetailsId'];
+                if (iCol == 10 && ('@Model.EmpStatusMasterID' != 2)) {
+                    DeleteEmployeeVisaDetailDialog(dependantsVisaDetailsId);
+                } else {
+                    if ('@Model.EmpStatusMasterID' != 2) {
+                        EditEmployeeVisaDetails(rowData);
+                    }
+                }
+            }
+        }).navGrid("#spousejqTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        //End jQuery Grid View Binding for Visa Details
+
+        $("#btnCancelSpouseTravelDetails").click(function () {
+            RestoreOwnPassportDetailsValues();
+        });
+
+        $("#addSpouseVisaDetailsDialog #hdnSpouseVisaDetailsPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Spouse');
+        $("#addSpouseVisaDetailsDialog #hdnDependentId").val('@Model.VisaDetailsModel.DependantId');
+        $("#addSpouseVisaDetailsDialog #hdnDependantSpouseVisaDetailsId").val('');
+    });                  // End of jQuery document.ready()
+
+    function DeleteEmployeeVisaDetailDialog(dependantsVisaDetailsId) {
+        $('#spouseTravelDetailsDialog').dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            height: 140,
+            width: 300,
+            dialogClass: "noclose",
+            title: "Delete Travel Details",
+            buttons: {
+                "Ok": function () { DeleteVisaDetailsCall(dependantsVisaDetailsId); },
+                "Cancel": function () { $(this).dialog('close'); }
+            }
+        });
+        $("#spouseTravelDetailsDialog").html("Are you sure you want to delete the record?").dialog('open');
+    }
+
+    function DeleteVisaDetailsCall(dependantsVisaDetailsId) {
+        $("#deleteSpouseVisaSuccess").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            height: 140,
+            width: 300,
+            title: "Deleted",
+            dialogClass: "noclose",
+            buttons: {
+                "Ok": function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("DeleteSpouseVisaDetails", "EmployeeDetails")',
+            data: { dependantsVisaDetailsId: dependantsVisaDetailsId },
+            success: function (data) {
+                jQuery("#spousejqTable").trigger("reloadGrid");
+                $("#spouseTravelDetailsDialog").dialog('close');
+                $("#deleteSpouseVisaSuccess").dialog('open');
+            },
+            Error: function () { errorOccured(); }
+        });
+
+    }
+
+    function TaskCompletionShowDialog(dialogMessage) {
+        $("#spouseTravelDetailsDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            height: 140,
+            width: 300,
+            title: "Travel Details",
+            dialogClass: "noclose",
+            buttons: {
+                "Ok": function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+        $("#spouseTravelDetailsDialog").html(dialogMessage).dialog('open');
+    }
+
+    function EditEmployeeVisaDetails(rowDataObject) {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        if (rowDataObject['IsValidVisa'] == 'true') {
+            $('#addSpouseVisaDetailsDialog #chkSpouseIsValidVisa').attr('checked', 'checked');
+        }
+        else {
+            $('#addSpouseVisaDetailsDialog #chkSpouseIsValidVisa').removeAttr('checked');
+        }
+        $('#addSpouseVisaDetailsDialog #hdnEmployeeVisaId').val('0');
+        $('#addSpouseVisaDetailsDialog #hdnEmployeeId').val('@ViewBag.decryptedSpouseEmployeeId');
+        $('#addSpouseVisaDetailsDialog #ddlSpouseCountryList').val(rowDataObject['SelectedCountryId']);
+        $('#addSpouseVisaDetailsDialog #txtSpouseVisaValidTill').val(rowDataObject['ValidTill']);
+        $("#addSpouseVisaDetailsDialog #hdnSpouseVisaDetailsPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Spouse')
+        $("#addSpouseVisaDetailsDialog #hdnDependentId").val('@Model.VisaDetailsModel.DependantId')
+        $("#addSpouseVisaDetailsDialog #hdnDependantSpouseVisaDetailsId").val(rowDataObject['DependantVisaDetailsId'])
+
+        $("#addSpouseVisaDetailsDialog #hdnAddSpouseIsVisaValid").val(rowDataObject['IsValidVisa']);
+        $("#addSpouseVisaDetailsDialog #hdnAddSpouseSelectedCountryId").val(rowDataObject['SelectedCountryId']);
+        $("#addSpouseVisaDetailsDialog #hdnAddSpouseVisaValidTill").val(rowDataObject['ValidTill']);
+
+        $("#addSpouseVisaDetailsDialog #Visa_SpouseVisaTypeID").val(rowDataObject['VisaTypeID']);
+        $("#addSpouseVisaDetailsDialog #Visa_SpouseVisaTypeID option[value = " + rowDataObject['VisaTypeID'] + "] ").attr('selected', 'selected');
+        $("#addSpouseVisaDetailsDialog #SpouseVisaTypeName").val(rowDataObject['VisaTypeID']);
+
+        $("#addSpouseVisaDetailsDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            width: 500,
+            title: "Edit Visa Details"
+
+        }); // End of Add Visa Details Dialog
+        $("#addSpouseVisaDetailsDialog").dialog('open');
+    }
+
+    function RestoreOwnPassportDetailsValues() {
+        if ($("#hdnSpouseIsValidPassport").val() == 'true' || $("#hdnSpouseIsValidPassport").val() == 'True') {
+            $('#chkSpouseIsValidPassport').attr('checked', 'checked');
+        }
+        else {
+            $('#chkSpouseIsValidPassport').removeAttr('checked');
+        }
+        $("#txtSpousePassportNumber").val($("#hdnSpousePassportNumber").val());
+        $("#txtSpouseSonOfWifeOfDaughterOf").val($("#hdnSpouseSonOfWifeOfDaughterOf").val());
+        $("#txtDateOfSpousePassportIssue").val($("#hdnDateOfSpousePassportIssue").val());
+        $("#txtSpousePlaceOfIssue").val($("#hdnSpousePlaceOfIssue").val());
+        $("#txtDateofSpousePassportExpiry").val($("#hdnDateOfSpousePassportExpiry").val());
+        $("#txtSpouseNoOfPagesLeft").val($("#hdnSpouseNoOfPagesLeft").val());
+        $("#txtSpouseFullNameAsInPassport").val($("#hdnSpouseFullNameAsInPassport").val());
+    }
+
+    function RestoreSpouseVisaDetailsValues() {
+        if ($("#hdnAddSpouseIsVisaValid").val() == 'true' || $("#hdnAddSpouseIsVisaValid").val() == 'True') {
+            $('#chkSpouseIsValidVisa').attr('checked', 'checked');
+        }
+        else {
+            $('#chkSpouseIsValidVisa').removeAttr('checked');
+        }
+        $("#ddlSpouseCountryList").val($("#hdnAddSpouseSelectedCountryId").val());
+        $("#txtSpouseVisaValidTill").val($("#hdnAddSpouseVisaValidTill").val());
+        $("#Visa_SpouseVisaTypeID").val($("#SpouseVisaTypeName").val());
+    }
+
+    $('#btnSaveSpouseVisaTravelDetails').click(function () {
+        if ($('#spouseVisa').val() != "") {
+            DisplayLoadingDialog();
+            $("#hdnAddSpouseSelectedCountryId").val($("#ddlSpouseCountryList").val());
+            $("#SpouseVisaTypeName").val($("#Visa_SpouseVisaTypeID").val());
+            $("#hdnAddSpouseVisaValidTill").val($("#txtSpouseVisaValidTill").val());
+            var SpouseVisaGridData = jQuery("#spousejqTable").getRowData();
+
+            for (var i = 0; i < SpouseVisaGridData.length; i++) {
+                if (SpouseVisaGridData[i].SelectedCountryId == $('#ddlSpouseCountryList').val()) {
+                    $("#SpouseSingleVisaForCountry").dialog({
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        title: "Visa",
+                        dialogClass: 'noclose',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+            }
+
+            $("#frmAddSpouseVisaDetails").ajaxForm({
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    var st = $.parseJSON(results);
+                    if (st.status == true) {
+                        $("#addSpouseVisaDetailsDialog").dialog('close');
+                        $("#spouseVisa").replaceWith($("#spouseVisa").clone(true));
+
+                        $('#SpouseVisaSuccess').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            dialogClass: "noclose",
+                            buttons: {
+                                "OK": function () {
+                                    $(this).dialog("close");
+                                    jQuery("#spousejqTable").trigger("reloadGrid");
+                                    $('#FileSpouseVisaField').val('');
+                                }
+                            }
+                        });
+                    }
+                    else if (st.status == "Error") {
+                        DisplayErrorDialog("Add Visa Details");
+                    }
+                    else {
+                        $('#errorUploadSpouseVisaDialog').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Error",
+                            buttons: {
+                                "OK": function () { $(this).dialog('close'); }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $('#errorUploadSpouseVisaDialog').dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Error",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "OK": function () { $(this).dialog('close'); }
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            $("#VisaUploadErrorSpouse").text(" Please select File to upload");
+            return;
+        }
+    });
+</script>
+<section class="search-detailsdata out-of-ofc passVisa">
+    <h4>Add Passport Details</h4>
+    @using (@Html.BeginForm("TravelDetails", "EmployeeDetails", FormMethod.Post, new { id = "frmAddSpouseTravelDetails" }))
+    {
+        @Html.HiddenFor(m => m.UserRole)
+        @Html.HiddenFor(m => m.EmployeeId)
+        @Html.HiddenFor(m => m.PersonType)
+        @Html.HiddenFor(m => m.VisaDetailsModel.DependantId)
+        @Html.ValidationSummary(true)
+
+        <div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    @*     <label>* Passport Number:</label>*@
+                    * @Html.LabelFor(m => m.PassportNumber):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" />*@
+                    @Html.TextBoxFor(m => m.PassportNumber, new { @id = "txtSpousePassportNumber" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.PassportNumber)</p>
+                    @Html.HiddenFor(m => m.PassportNumber, new { @id = "hdnSpousePassportNumber" })
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    @* <label>* Son of/Wife of/Daughter of:</label>*@
+                    * @Html.LabelFor(m => m.SonOfWifeOfDaugherOf):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" />*@
+                    @Html.TextBoxFor(m => m.SonOfWifeOfDaugherOf, new { @id = "txtSpouseSonOfWifeOfDaughterOf" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.SonOfWifeOfDaugherOf)</p>
+                    @Html.HiddenFor(m => m.SonOfWifeOfDaugherOf, new { @id = "hdnSpouseSonOfWifeOfDaughterOf" })
+                </div>
+            </div>
+        </div>
+
+        <div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    @* <label>* Date of Issue:</label>*@
+                    * @Html.LabelFor(m => m.DateOfIssue):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" placeholder="datepicker" />*@
+                    @Html.TextBoxFor(m => m.DateOfIssue, string.Format("{0:MM/dd/yyyy}", Model.DateOfIssue), new { @id = "txtDateOfSpousePassportIssue", @readonly = "readonly" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.DateOfIssue)</p>
+                    @Html.Hidden("hdnSpousePassportDateOfIssue", String.Format("{0:MM/dd/yyyy}", Model.DateOfIssue), new { @id = "hdnDateOfSpousePassportIssue" })
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    @*<label>* Place of Issue:</label>*@
+                    * @Html.LabelFor(m => m.PlaceOfIssue):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" />*@
+                    @Html.TextBoxFor(m => m.PlaceOfIssue, new { @id = "txtSpousePlaceOfIssue" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.PlaceOfIssue)</p>
+                    @Html.HiddenFor(m => m.PlaceOfIssue, new { @id = "hdnSpousePlaceOfIssue" })
+                </div>
+            </div>
+        </div>
+
+        <div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    @* <label>* Date of Expiry: </label>*@
+                    * @Html.LabelFor(m => m.DateOfExpiry):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" placeholder="datepicker" />*@
+                    @Html.TextBoxFor(m => m.DateOfExpiry, string.Format("{0:MM/dd/yyyy}", Model.DateOfExpiry), new { @id = "txtDateofSpousePassportExpiry", @readonly = "readonly" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.DateOfExpiry)</p>
+                    @Html.Hidden("hdnSpousePassportDateOfExpiry", String.Format("{0:MM/dd/yyyy}", Model.DateOfExpiry), new { @id = "hdnDateOfSpousePassportExpiry" })
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    @*<label>* No of Pages Left:</label>*@
+                    * @Html.LabelFor(m => m.NoOfPagesLeft):
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(m => m.NoOfPagesLeft, new { @id = "txtSpouseNoOfPagesLeft" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.NoOfPagesLeft)</p>
+                    @Html.HiddenFor(m => m.NoOfPagesLeft, new { @id = "hdnSpouseNoOfPagesLeft" })
+                </div>
+            </div>
+        </div>
+
+        <div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    @* <label>* Full Name As in Passport: </label>*@
+                    * @Html.LabelFor(m => m.FullNameAsInPassport):
+                </div>
+                <div class="InputDiv">
+                    @* <input type="text" />*@
+                    @Html.TextBoxFor(m => m.FullNameAsInPassport, new { @id = "txtSpouseFullNameAsInPassport" })<br />
+                    <p class="qualif-detail">@Html.ValidationMessageFor(m => m.FullNameAsInPassport)</p>
+                    @Html.HiddenFor(m => m.FullNameAsInPassport, new { @id = "hdnSpouseFullNameAsInPassport" })
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    @*<label>* Upload Passport Copy</label>*@
+                    @Html.Label("Upload Passport Copy"):
+                </div>
+                @*For Customized upload button*@
+
+                @*<div class="InputDiv FileUpload">
+                    <input type="file" name="doc" id="empPassport" size="24" />
+                        <p class="qualif-detail">
+                            <span id="PassportUploadError" class="field-validation-error"></span>
+                        </p>
+                    </div>*@
+
+                <div class="BrowseSpacingFix InputDiv positionR">
+                    @*<input type="file" name="doc" id="empPassport" size="24" class="FileUploadBtn" onchange="readImage(this)" />*@
+                    <input type="file" name="doc" id="empPassport" size="24" class="FileUploadBtn" />
+                    <div class="BrowserVisible"><input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileSpousePassportField" class="FileField" value="No files selected" /></div>
+                    <p class="qualif-detail">
+                        <span id="PassportUploadError" class="field-validation-error"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tablestyle3" style="width: 100%;">
+            <table id="SpousePassportTable"></table>
+        </div>
+        <div id="SpousePassportTablePager">
+        </div>
+        <div class="ButtonContainer1">
+            @*<input type="button" value="Save" class="ButtonGray" />*@
+            <input type="submit" value="Save" id="btnSaveSpouseTravelDetails" class="ButtonGray" />
+            @*  <input type="button" value="Reset" id="btnCancelSpouseTravelDetails" class="button" />*@
+        </div>
+    }
+    <div class="commondivider"></div>
+    @using (Html.BeginForm("AddUpdateVisaDetails", "EmployeeDetails", FormMethod.Post, new { id = "frmAddSpouseVisaDetails" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.VisaDetailsModel.UserRole)
+        @Html.HiddenFor(m => m.VisaDetailsModel.EmployeeVisaId, new { @id = "hdnEmployeeVisaId" })
+        @Html.HiddenFor(m => m.VisaDetailsModel.EmployeeId, new { @id = "hdnEmployeeId" })
+        @Html.HiddenFor(m => m.VisaDetailsModel.PersonType, new { @id = "hdnSpouseVisaDetailsPersonType" })
+        @Html.HiddenFor(m => m.VisaDetailsModel.DependantId, new { @id = "hdnDependentId" })
+        @Html.HiddenFor(m => m.VisaDetailsModel.DependantVisaDetailsId, new { @id = "hdnDependantSpouseVisaDetailsId" })
+
+        <div class="fill-dtls clearfix VisaDetails">
+            <h4>Add Visa Details</h4>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        @* <label>* Country:</label>*@
+                        * @Html.LabelFor(model => model.VisaDetailsModel.SelectedCountryId):
+                    </div>
+                    <div class="InputDiv">
+                        @*  <select>
+                                <option>abc</option>
+                                <option>abc</option>
+                                <option>abc</option>
+                            </select>*@
+
+                        @Html.DropDownListFor(model => model.VisaDetailsModel.SelectedCountryId, new SelectList(Model.VisaDetailsModel.CountryList, "key", "value"), "Select", new { id = "ddlSpouseCountryList", @class = "ValidationDropDown" })
+                        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.VisaDetailsModel.SelectedCountryId)</p>
+                        @Html.HiddenFor(m => m.VisaDetailsModel.SelectedCountryId, new { @id = "hdnAddSpouseSelectedCountryId" })
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        @* <label>* Valid till:</label>*@
+                        * @Html.LabelFor(model => model.VisaDetailsModel.ValidTill)
+                    </div>
+                    <div class="InputDiv">
+                        @*<input type="text" placeholder="datepicker" />*@
+                        @Html.TextBoxFor(model => model.VisaDetailsModel.ValidTill, string.Format("{0:MM/dd/yyyy}", Model.VisaDetailsModel.ValidTill), new { @id = "txtSpouseVisaValidTill", @readonly = "readonly" })<br />
+                        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.VisaDetailsModel.ValidTill)</p>
+                        @Html.Hidden("hdnVisaValidTill", String.Format("{0:MM/dd/yyyy}", Model.VisaDetailsModel.ValidTill), new { @id = "hdnAddSpouseVisaValidTill", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        @* <label>* Visa Type:</label>*@
+                        * @Html.Label("Visa Type"):
+                    </div>
+                    <div class="InputDiv">
+                        @*<select>
+                                <option>abc</option>
+                                <option>abc</option>
+                                <option>abc</option>
+                            </select>*@
+                        @Html.DropDownListFor(model => model.VisaDetailsModel.VisaTypeID, new SelectList(Model.VisaDetailsModel.visatypeList, "VisaTypeID", "VisaTypeName", "Select"), "Select", new { @id = "Visa_SpouseVisaTypeID", @class = "ValidationDropDown" })
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(model => model.VisaDetailsModel.VisaTypeID)
+                        @Html.HiddenFor(model => model.VisaDetailsModel.VisaTypeID, new { id = "SpouseVisaTypeName" })
+                    </p>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="LabelDiv">
+                    @* <label>* Upload Visa Copy</label>*@
+                    <span class="mandatory">*</span> @Html.Label("Upload Visa Copy"):
+                </div>
+                @*For Customized upload button*@
+                @*<div class="InputDiv FileUpload">
+                        <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" />
+                            <p class="qualif-detail">
+                                <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
+                            </p>
+                    </div>*@
+
+                <div class="BrowseSpacingFix InputDiv positionR">
+                    @*<input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" onchange="readImage(this)" />*@
+                    <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" />
+                    <div class="BrowserVisible"><input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileSpouseVisaField" class="FileField" value="No files selected" /></div>
+                    <p class="qualif-detail">
+                        <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="ButtonContainer1">
+            <input type="submit" value="Save" id="btnSaveSpouseVisaTravelDetails" class="ButtonGray" />
+        </div>
+        <div class="tablestyle3" style="width: 100%;">
+            <div id="spouseAddedVisaDetails">
+                <table id="spousejqTable" class="scroll"></table>
+                <div id="spousejqTablePager" />
+            </div>
+        </div>
+    }
+    <div id="ShowEmployeePassportDetails">
+    </div>
+    <div id="ShowEmployeeVisaDetails">
+    </div>
+    <div id="SpousePassportSuccess" title="Save Passport Details" style="display: none">
+        <center>
+            Passport Details saved successfully.
+        </center>
+    </div>
+    <div id="errorUploaSpousePassportDialog" style="display: none">
+        <center>
+            Some error occurred while uploading document.Please try again.
+        </center>
+    </div>
+
+    <div id="ConfirmEmployeePassportDelete" title="Delete" style="display: none">
+        <p>
+            <center>
+                Are you sure you want to delete this record?
+            </center>
+        </p>
+    </div>
+
+    <div id="DeleteEmployeePassportSuccess" title="Delete Successful" style="display: none">
+        <p>
+            <center>
+                The record is deleted Successfully.
+            </center>
+        </p>
+    </div>
+
+    <div id="errorUploadSpouseVisaDialog" style="display: none">
+        <center>
+            Some error occurred while uploading document.Please try again.
+        </center>
+    </div>
+    <div id="SpouseVisaSuccess" title="Save Passport Details" style="display: none">
+        <center>
+            Visa Saved Successfully.
+        </center>
+    </div>
+
+    <div id="spouseDeleteDialogAction" style="display: none">
+        <p>
+            Are you sure you want to delete the records?
+        </p>
+    </div>
+    <div id="deleteSpouseVisaSuccess" style="display: none">
+        Record has been deleted.
+    </div>
+    <div id="SpouseSingleVisaForCountry" style="display: none">
+        <center>
+            Only one visa allowed per country, to change an existing record, kindly edit or delete it & add a new one.
+        </center>
+    </div>
+    <div id="spouseTravelDetailsDialog" title="Travel Details" style="display: none">
+    </div>
+
+    <p style="display: none;" id="NoteforVisaExpiredspouse" class="visarednote">
+        Your visa has expired. Please enter the renewed date to continue with the travel
+        process.
+    </p>
+</section>

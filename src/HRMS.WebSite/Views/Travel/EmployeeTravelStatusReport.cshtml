@@ -1,0 +1,550 @@
+﻿@model HRMS.Models.TravelReport
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    @using (Html.BeginForm("", "", new { FormMethod.Post, @id = "Travelsumbmitform" }))
+    {
+        @Html.AntiForgeryToken()
+        int Trfno = @Model.TravelReportList.Select(s => s.travelid).FirstOrDefault();
+        
+        <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel1" width='auto'
+            class="TablesBlueHeaders">
+            <thead>
+                <tr class="bluebgtable1">
+                    <th width="1%">
+                        TRF No.
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Employee ID
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Employee Name
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Group
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Reporting Manager
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Departure from base location
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Arrival at destination
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Departure from destination
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Arrival at base location
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Mobile Travelling Destination
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Hotel Address
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Hotel Room No.
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Client Name
+                    </th>
+                    <th class="bluebgtable1" width="5%">
+                        Client Address
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Client Contact Person
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Client Contact
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Visa Validity / Expiry Date
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Insurance Policy Details
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Status
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Comments
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Ticket Name
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Insurance
+                    </th>
+                    <th class="bluebgtable1" width="4%">
+                        Travel from Airport to Hotel
+                    </th>
+                    <th class="bluebgtable1" width="10%">
+                        India Emergency Contact
+                    </th>
+                </tr>
+            </thead>
+            @for (var i = 0; i < Model.GetTravelIDList.Count; i++)
+            {
+               
+                <tr>
+                    <td valign="top">
+                        @Html.DisplayFor(x => Model.TravelReportList[i].TRFNO)
+                        @Html.TextBoxFor(x => Model.TravelReportList[i].TRFNO, new { style = "display: none;" })
+                    </td>
+                    <td valign="top">
+                        @Html.DisplayFor(x => Model.TravelReportList[i].EmployeeCode)
+                        @Html.TextBoxFor(x => Model.TravelReportList[i].EmployeeCode, new { style = "display: none;" })
+                    </td>
+                    <td valign="top">
+                        @Html.DisplayFor(x => Model.TravelReportList[i].EmployeeName)
+                        @Html.TextBoxFor(x => Model.TravelReportList[i].EmployeeName, new { style = "display: none;" })
+                    </td>
+                    <td valign="top">
+                        @Html.DisplayFor(x => Model.TravelReportList[i].Group)
+                        @Html.TextBoxFor(x => Model.TravelReportList[i].Group, new { style = "display: none;" })
+                    </td>
+                    <td valign="top">
+                        @Html.DisplayFor(x => Model.TravelReportList[i].ReportingManager)
+                        @Html.TextBoxFor(x => Model.TravelReportList[i].ReportingManager, new { style = "display: none;" })
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].DepartFromBaseLocation != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].DepartFromBaseLocation)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].DepartFromBaseLocation, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].ArrivalDestination != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].ArrivalDestination)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].ArrivalDestination, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].DepartFromDestination != null)
+                                        {   
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].DepartFromDestination)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].DepartFromDestination, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].ArrivalBaseDestination != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].ArrivalBaseDestination)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].ArrivalBaseDestination, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].TavelContactNo != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].TavelContactNo)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].TavelContactNo, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetAccomodationDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetAccomodationDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetAccomodationDetailsList[j].HotelAddress != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetAccomodationDetailsList[j].HotelAddress)
+                                            @Html.TextBoxFor(x => Model.GetAccomodationDetailsList[j].HotelAddress, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetAccomodationDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetAccomodationDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetAccomodationDetailsList[j].HotelContactNumber != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetAccomodationDetailsList[j].HotelContactNumber)
+                                            @Html.TextBoxFor(x => Model.GetAccomodationDetailsList[j].HotelContactNumber, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetClientDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetClientDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetClientDetailsList[j].ClientName != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetClientDetailsList[j].ClientName)
+                                            @Html.TextBoxFor(x => Model.GetClientDetailsList[j].ClientName, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetClientDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetClientDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetClientDetailsList[j].ClientAddress != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetClientDetailsList[j].ClientAddress)
+                                            @Html.TextBoxFor(x => Model.GetClientDetailsList[j].ClientAddress, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetClientDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetClientDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetClientDetailsList[j].ClientContact != null)
+                                        {
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetClientDetailsList[j].ClientContact)
+                                            @Html.TextBoxFor(x => Model.GetClientDetailsList[j].ClientContact, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetClientDetailsList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetClientDetailsList[j].TravelId == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetClientDetailsList[j].ClientContactNumber != null)
+                                        {
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetClientDetailsList[j].ClientContactNumber)
+                                            @Html.TextBoxFor(x => Model.GetClientDetailsList[j].ClientContactNumber, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td style="word-break: break-all;" valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].VisaValiditydate != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].VisaValiditydate)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].VisaValiditydate, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].InsurenceDetails != null)
+                                        {  
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].InsurenceDetails)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].InsurenceDetails, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].TravelStatus != null)
+                                        {
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].TravelStatus)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].TravelStatus, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].Comments != null)
+                                        {
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].Comments)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].Comments, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.GetJourneyDetailsList123.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.GetJourneyDetailsList123[j].TravelID == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.GetJourneyDetailsList123[j].TicketName != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.GetJourneyDetailsList123[j].TicketName)
+                                            @Html.TextBoxFor(x => Model.GetJourneyDetailsList123[j].TicketName, new { style = "display: none;" })
+                                            @Html.HiddenFor(x => Model.GetJourneyDetailsList123[j].TicketName)
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="inner-table">
+                            @for (var j = 0; j < Model.TravelReportList.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelReportList[j].travelid == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        if (Model.TravelReportList[j].InsurenceAttachment != null)
+                                        { 
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelReportList[j].InsurenceAttachment)
+                                            @Html.TextBoxFor(x => Model.TravelReportList[j].InsurenceAttachment, new { style = "display: none;" })
+                                        </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td style="display: none" valign="top">
+                        @Html.HiddenFor(x => Model.TravelReportList[i].travelid, new { id = "hdnTravel" })
+                        @Html.HiddenFor(x => Model.TravelReportList[i].TicketName)
+                    </td>
+                    <td valign="top">
+                        <table id="inner-table1" border="0" class="inner-table">
+                            @for (var j = 0; j < Model.TravelAirportToHotel.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.TravelAirportToHotel[j].TravelID == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        <td>
+                                            @Html.DisplayFor(x => Model.TravelAirportToHotel[j].ConvayName)<br />
+                                            @Html.HiddenFor(x => Model.TravelAirportToHotel[j].ConvayName)<br />
+                                            @Html.DisplayFor(x => Model.TravelAirportToHotel[j].TravelDetails)<br />
+                                            @Html.HiddenFor(x => Model.TravelAirportToHotel[j].TravelDetails)
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table border="0" id="inner-table2" class="inner-table">
+                            @for (var j = 0; j < Model.IndEmergencyContactDetails.Count; j++)
+                            {
+                                <tr>
+                                    @if (Model.IndEmergencyContactDetails[j].TravelID == Model.GetTravelIDList[i].TravelId)
+                                    {
+                                        <td>
+                                            Name: @Html.DisplayFor(x => Model.IndEmergencyContactDetails[j].Name)<br />
+                                            @Html.HiddenFor(x => Model.IndEmergencyContactDetails[j].Name)<br />
+                                            Relation: @Html.DisplayFor(x => Model.IndEmergencyContactDetails[j].Relation)<br />
+                                            @Html.HiddenFor(x => Model.IndEmergencyContactDetails[j].Relation)<br />
+                                            Location: @Html.DisplayFor(x => Model.IndEmergencyContactDetails[j].EmgAddress)<br />
+                                            @Html.HiddenFor(x => Model.IndEmergencyContactDetails[j].EmgAddress)<br />
+                                            Mobile: @Html.DisplayFor(x => Model.IndEmergencyContactDetails[j].ContactNo)<br />
+                                            @Html.HiddenFor(x => Model.IndEmergencyContactDetails[j].ContactNo)
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+               
+            }
+            <tr>
+                <td colspan="11">
+                    <ul>
+                        <li>Total Records: @Model.GetTravelIDList.Count()
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+      
+    }
+    <div>
+    </div>
+    
+    @using (Html.BeginForm("ExportToExcelTravel", "Travel", new { FormMethod.Post, @id = "Travelsumbmitformreport2" }))
+    {
+   
+        for (var i = 0; i < Model.TravelReportList.Count; i++)
+        {
+        @Html.EditorFor(m => m.TravelReportList[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.GetTravelIDList.Count; i++)
+        {
+        @Html.EditorFor(m => m.GetTravelIDList[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.GetAccomodationDetailsList.Count; i++)
+        {
+        @Html.EditorFor(m => m.GetAccomodationDetailsList[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.GetClientDetailsList.Count; i++)
+        {
+        @Html.EditorFor(m => m.GetClientDetailsList[i], new { style = "display: none;" })
+        }
+
+
+        for (var i = 0; i < Model.GetJourneyDetailsList123.Count; i++)
+        {
+        @Html.EditorFor(m => m.GetJourneyDetailsList123[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.TravelAirportToHotel.Count; i++)
+        {
+        @Html.EditorFor(m => m.TravelAirportToHotel[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.IndEmergencyContactDetails.Count; i++)
+        {
+        @Html.EditorFor(m => m.IndEmergencyContactDetails[i], new { style = "display: none;" })
+        }
+        for (var i = 0; i < Model.GetOtherRequirementDetailsList.Count; i++)
+        {
+        @Html.EditorFor(m => m.GetOtherRequirementDetailsList[i], new { style = "display: none;" })
+        }
+        @* for (var i = 0; i < Model.JourneyDetailsId.Count; i++)
+        {
+        @Html.EditorFor(m => m.JourneyDetailsId[i], new { style = "display: none;" })
+        }*@
+        <input type="submit" value="Export To Excel" id="Travelsumbmitreport2" />
+    }
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.editor-label').hide();
+        $('.editor-field').hide();
+    });
+</script>

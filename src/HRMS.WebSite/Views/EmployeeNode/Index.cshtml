@@ -1,0 +1,284 @@
+﻿@model HRMS.Models.EmployeeNodeViewModel
+@{
+    ViewBag.Title = "Employee Node Mapping";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Access Rights Mapping</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")" class="selected">Configure Separation Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Separation Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Separation Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Separation Stages Approvers</a>*@
+        </nav>
+    </div>
+    <div class="MainBody EmpNodeMainbody">
+        <input type="button" id="SubmitValues" value="Submit" />
+    @if (Model.EmployeeNodeMappingList != null)
+    {
+          <div class="TableHorizontalScrollContainer">
+            <table cellpadding="0" cellspacing="0" border="0" id="nodeMapping" class="mrgnT10"
+                @*width="2650px"*@>
+                <tr>
+                    <td>
+                        <table cellspacing="0" cellpadding="0" border="0" class="TableJqgrid TableRoleMapping tablescrollhead"
+                            @*width="2630px"*@ id="nodeMappingHead">
+                            <tr>
+                                <th class="tableHeaders" width="125px">
+                                    Employee Code
+                                </th>
+                                <th class="tableHeaders" width="500px">
+                                    Employee
+                                </th>
+                                @foreach (var item in Model.NodesList)
+                                {
+                                    <th colspan="4" class="tableHeaders" width="200px">
+                                        @Html.DisplayFor(modelItem => item.NodeName)
+                                    </th>
+                                }
+                            </tr>
+                            <tr>
+                                <th width="125px" class="tableHeadersSecondary">
+                                    Employee Code
+                                </th>
+                                <th width="500px" class="tableHeadersSecondary">
+                                    Employee Name
+                                </th>
+                                @foreach (var item in Model.NodesList)
+                                {
+                                    <th width="50px" class="tableHeadersSecondary">
+                                        A
+                                    </th>
+                                    <th width="50px" class="tableHeadersSecondary">
+                                        E
+                                    </th>
+                                    <th width="50px" class="tableHeadersSecondary">
+                                        D
+                                    </th>
+                                    <th width="50px" class="tableHeadersSecondary">
+                                        V
+                                    </th>
+                                }
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="width: 100%; max-height: 500px; overflow: auto;">
+                            <table cellspacing="0" cellpadding="0" border="0" class=""
+                               @* width="2630px"*@ id="nodeMappingBody">
+                                @foreach (var item in Model.EmployeeList)
+                                {
+                                    <tr class="tableRows">
+                                        <td align="center" width="130px">
+                                            @Html.DisplayFor(modelItem => item.EmployeeCode)
+                                        </td>
+                                        <td align="center" width="500px">
+                                            @Html.DisplayFor(modelItem => item.EmployeeName)
+                                        </td>
+                                        @foreach (var i in Model.NodesList)
+                                        {
+                                            var val = Model.EmployeeNodeMappingList.Where(x => (x.EmployeeCode == item.EmployeeCode) && x.NodeID == i.NodeID).FirstOrDefault();
+                                            <td align="center" width="50px">
+                                                <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_1" checked="@val.CanAdd" class="chkgetvalues" />
+                                            </td>
+                                            <td align="center" width="50px">
+                                                <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_2" checked="@val.CanEdit"class="chkgetvalues" />
+                                            </td>
+                                            <td align="center" width="50px">
+                                                <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_3" checked="@val.CanDelete"class="chkgetvalues" />
+                                            </td>
+                                            <td align="center" width="50px">
+                                                <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_4" checked="@val.CanView"class="chkgetvalues" />
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    </div>
+</section>
+
+@*<table border="0" cellpadding="0" class="TablesBlueHeaders" width="100%" id="nodeMapping">
+            <tr>
+                <th class="bluebgtable1 whiteB">
+                    EmployeeCode
+                </th>
+                <th class="bluebgtable1 whiteB">
+                    Employee
+                </th>
+                @foreach (var item in Model.NodesList)
+                {
+                    <th colspan="4" class="bluebgtable1 whiteB">
+                        @Html.DisplayFor(modelItem => item.NodeName)
+                    </th>
+                }
+            </tr>
+            <tr>
+                <th>
+                    Employee Code
+                </th>
+                <th>
+                    Employee Name
+                </th>
+                @foreach (var item in Model.NodesList)
+                {
+                    <th>
+                        A
+                    </th>
+                    <th>
+                        E
+                    </th>
+                    <th>
+                        D
+                    </th>
+                    <th>
+                        V
+                    </th>
+                }
+            </tr>
+            @foreach (var item in Model.EmployeeList)
+            {
+                <tr>
+                    <td align="center">
+                        @Html.DisplayFor(modelItem => item.EmployeeCode)
+                    </td>
+                    <td align="center">
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    @foreach (var i in Model.NodesList)
+                    {
+                        var val = Model.EmployeeNodeMappingList.Where(x => (x.EmployeeCode == item.EmployeeCode) && x.NodeID == i.NodeID).FirstOrDefault();
+                        <td align="center">
+                            <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_1" checked="@val.CanAdd" class="chkgetvalues" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_2" checked="@val.CanEdit"class="chkgetvalues" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_3" checked="@val.CanDelete"class="chkgetvalues" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.EmployeeCode)_@(i.NodeID)_4" checked="@val.CanView"class="chkgetvalues" />
+                        </td>
+                    }
+                </tr>
+            }
+        </table>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        WidthHeadBody = (200 * '@Model.NodesList.Count') + 625;
+        WidthTotal = WidthHeadBody + 20;
+
+        $('#nodeMappingHead').css('width', WidthHeadBody);
+        $('#nodeMappingBody').css('width', WidthHeadBody);
+        $('#nodeMapping').css('width', WidthTotal);
+
+    });
+    var arrayFinalValues = [];
+    $('.chkgetvalues').change(function (i, val) {
+        var first = $(this).prop("id").indexOf('_');
+        var last = $(this).prop("id").lastIndexOf('_');
+        var totlength = $(this).prop("id").length;
+        var empId = $(this).prop("id").slice(0, first);
+        arrayFinalValues.push(empId);
+        var nodeId = $(this).prop("id").slice(first + 1, last);
+        arrayFinalValues.push(nodeId);
+        var accessID = $(this).prop("id").slice(last + 1, totlength);
+        arrayFinalValues.push(accessID);
+        arrayFinalValues.push(this.checked);
+    });
+
+    $('#SubmitValues').click(function () {
+
+        if (arrayFinalValues.length <= 0) {
+            $("#NoChangeMadeError").dialog({
+                resizable: false,
+                autoOpen: true,
+                height: 140,
+                width: 300,
+                modal: true,
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+        } //end if
+        else {
+            $.ajax({
+                url: '@Url.Action("UpdateEmployeeNodeMapping", "EmployeeNode")',
+                data: JSON.stringify(arrayFinalValues),
+                contentType: "application/json",
+                type: 'POST',
+                success: function (results) {
+                    if (results.status == true) {
+                        $("#SuccessNodeMapping").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function (results) {
+                    if (results.status == false) {
+                        $("#ErrorNodeMapping").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } //end else
+    });  //end of click function
+</script>
+<div id="SuccessNodeMapping" title="Contact Details" style="display: none;">
+    <p>
+        Node Mapping Saved Sucessfully.
+    </p>
+</div>
+<div id="ErrorNodeMapping" title="Contact Details" style="display: none;">
+    <p>
+        There are some errors.
+    </p>
+</div>
+<div id="NoChangeMadeError" title="Contact Details" style="display: none;">
+    <p>
+        Please make changes first.
+    </p>
+</div>

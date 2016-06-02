@@ -1,0 +1,565 @@
+﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
+@{
+    ViewBag.Title = "Medical Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="../../Scripts/PersonalDetails/_MedicalHistory.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var SelectdRowID;
+    $(document).ready(function () {
+        $(".ClassDisplayLabel").hide();
+        var deletionIdSelected = 0;
+        EmployeeID='@Model.EmployeeId';
+
+        stringYearList = @(Html.Raw(Json.Encode(Model.YearList)));
+        var year = [];
+        year.push("Select");
+        $.each(stringYearList, function (index,value) {
+            year.push(value.Year);
+        });
+
+        // Set up the jquery grid
+        $("#jqMedicalTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("MedicalHistoryLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.MedicalEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["MedicalDesc Id", "EmployeeId", "Medical Description", "Year", ""],
+
+            // Configure the columns
+            colModel: [
+                { name: "MedicalDescId", index: "MedicalDescId", hidden: true, align: "left", visible: "false" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, align: "left" },
+                { name: "MedicalDescription", index: "MedicalDescription",  editable: true,  editrules: { required: true },align: "left", width:400 },
+                //{ name: "Year", index: "Year", align: "left" },
+                { name: "Year", index: "Year", editable: true, width: 40, required:true, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 30,
+                    align: "center",
+                    formatter: function () {
+                        if ('@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					 ) {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            ],
+            // Grid total width and height
+            width: 750,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqMedicalTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("AddEmployeeMedicalHistory", "PersonalDetails")',
+            // Default sorting
+            sortname: "MedicalDesc_Id",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Employee - Medical History",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqMedicalTable").jqGrid('getGridParam', 'records');
+                //if (count == 0) {
+                //    $('#gbox_jqMedicalTable').hide();
+                //}
+                //else {
+                //    $('#gbox_jqMedicalTable').show();
+                //    if (count > 20) {
+
+                //        $('#jqMedicalTablePager').show();
+                //    }
+                //    else {
+                //        $('#jqMedicalTablePager').hide();
+                //    }
+                //}
+                if ('@Model.EmpStatusMasterID' == 2) {
+                    $(".leftcol").find('select').attr("disabled", true);
+                    $(".leftcol").find('input').hide();
+                    jQuery('#btnAddMedicalDesc').hide();
+                    $("#gbox_jqMedicalTable").find('input,select').attr("disabled", true);
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectdRowID = rowid;
+                var rowData = $(this).getRowData(rowid);
+                var deleteId = rowData['MedicalDescId'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] == "Delete" && '@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') && rowid != "new_row"
+					 ) {
+                    DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                } else {
+                    if ('@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
+					 ) {
+                        EditMedicalDetails(rowData);
+                    }
+                }
+            }
+        }).navGrid("#jqMedicalTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqMedicalTable").jqGrid('inlineNav', "#jqMedicalTablePager",
+         {
+             edit: true,
+             editicon: "ui-icon-pencil",
+             edittext:"Edit",
+             add: true,
+             addicon: "ui-icon-plus",
+             addtext:"Add",
+             save: true,
+             saveicon: "ui-icon-disk",
+             savetext:"Save",
+             cancle: true,
+             cancelicon: "ui-icon-cancel",
+             canceltext:"Cancel",
+             addParams: {
+                 useFormatter: false,
+                 addRowParams: {
+                     oneditfunc: function (rowid) {
+                         SelectdRowID='new_row';
+                         var rowData = $(this).getRowData(rowid);
+                         $('#MedicalDetailsForm #Year').val(rowData["Year"]);
+                         $('#MedicalDetailsForm #MedicalDescId').val(rowData["MedicalDescId"]);
+                         $('#MedicalDetailsForm #EmployeeId').val(rowData["EmployeeId"]);
+                         $('#MedicalDetailsForm #MedicalDescription').val(rowData["MedicalDescription"]);
+                     }
+                 }
+             },
+             editParams: {
+                 keys: false,
+                 oneditfunc: function (rowid) {
+
+                     var rowData = $(this).getRowData(rowid);
+                     $('#MedicalDetailsForm #Year').val(rowData["Year"]);
+                     $('#MedicalDetailsForm #MedicalDescId').val(rowData["MedicalDescId"]);
+                     $('#MedicalDetailsForm #EmployeeId').val(rowData["EmployeeId"]);
+                     $('#MedicalDetailsForm #MedicalDescription').val(rowData["MedicalDescription"]);
+
+                 },
+                 sucessfunc: function (data) {
+                 },
+                 url: null,
+                 extraparam: {
+                     YearID: function ()
+                     {
+
+                         var Year = parseInt( $('#'+SelectdRowID+'_Year option:selected').text());
+                         return Year;
+                     },
+                     EmployeeID :function()
+                     {
+                         return EmployeeID;
+                     },
+                     MedicalDescId: function(){
+                         return $('#MedicalDetailsForm #MedicalDescId').val();
+                     }
+                     //ProjectID: function () {
+                     //    return $('#addProjectModule #ProjectID').val();
+                     //},
+                     //SelectedModuleName: function () {
+                     //    return $("#addProjectModule #SelectedModuleName").val();
+                     //}
+                 },
+                 aftersavefunc: function (data, response) {
+
+                     var results = $.parseJSON(response.responseText);
+                     $("#jqMedicalTable").trigger("reloadGrid");
+                     if (results.status == true) {
+                         $("#AddMedicalSuccessMessage").dialog({
+                             resizable: false,
+                             height: 'auto',
+                             width: 300,
+                             modal: true,
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         });
+                     }
+                     else if (results.status == "Error") {
+                         $("#errorDialog").dialog({
+                             resizable: false,
+                             height: 'auto',
+                             width: 'auto',
+                             modal: true,
+                             title: 'Medical Details',
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         }); //end dialog
+                     }
+                     else {
+                         $("#AddMedicalErrorMessage").dialog({
+                             resizable: false,
+                             height: 'auto',
+                             width: 300,
+                             modal: true,
+                             dialogClass: "noclose",
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                         });
+                     }
+
+                 },
+                 errorfunc: null,
+                 afterrestorefunc: null,
+                 restoreAfterError: true,
+                 mtype: "POST"
+             }
+         });
+
+        $("#ddlBloodGroup").next().next().text($("#ddlBloodGroup :selected").text());
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeId') {
+            $('#btnSave').hide();
+            $("#jqMedicalTablePager_left").css("visibility","hidden");
+            $("#ddlBloodGroup").next().hide().next().show();
+        }
+    });// end document ready
+
+    function isYearSelected(value,colname)
+    {
+
+        if(value == "0")
+        {
+            $("#YearRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }//end function
+
+    function ChangeYear(e) {
+
+        var yearName = e.target[e.target.selectedIndex].text;
+        var ID=0;
+        $.each(stringYearList,function(index, value) {
+            if(value.Year == yearName)
+            {
+                ID=value.Year;
+            }
+        });
+        $('#MedicalDetailsForm #Year').val(ID);
+         $('#' + SelectdRowID + '_Year').attr('title', yearName);
+    }//end function
+
+    function filldropdownlist() {
+        var currentDate = new Date();
+        var date = currentDate.getFullYear();
+        $("#MedicalHistory_Year").append($('<option />', { value: "", text: "Select" }));
+        for (var i = '@Model.birthDate'; i <= date; i++) {
+            $("#MedicalHistory_Year").append(
+                                $('<option />', {
+                                    value: i,
+                                    text: i
+                                })
+                            );  //End of append
+        } // End of For
+    }
+    function SaveRecord() {
+        if ($('#ddlBloodGroup option:selected').text() == "Select") {
+            $("#BloodGrpNoselectedMessege").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 250,
+                modal: true,
+                title: 'Blood Group Details',
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        DisplayLoadingDialog(); // Checked global.js
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("SaveBloodGroup", "PersonalDetails")',
+            data: { employeeId: '@ViewBag.MedicalEmployeeId', bgId: $('#ddlBloodGroup option:selected').text() },
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#hndSelectedBg").val($("#ddlBloodGroup").val());
+                if (results.status == true) {
+                    $("#BloodGrpSuccessMessege").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Blood Group Details",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                $(this).dialog('close');
+                            }
+                        }
+                    });
+                }
+                else if (results.status == "Error") {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Blood Group Details',
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                }
+                else {
+                    $("#BloodGrpErrorMessege").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Blood Group Details",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                $(this).dialog('close');
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function restoreBloodGroup() {
+        $("#ddlBloodGroup").val($("#hndSelectedBg").val());
+    }
+</script>
+@*<div id="medicalHistroryTabData">
+       <h3 class="mrgnT15">
+            Medical History</h3>
+        <div class="clearfix NoTitleGridsContainer">
+            @Html.HiddenFor(m => m.UserRole)
+            <fieldset class="blueBorderNew NoNegMrgnContainer">
+                <div class="blueBorder clear">
+                    <div class="formcol clearfix" style="float: none">
+                        <div class="editor-label labelwidth floatL" id="Blood-Group">
+                            @Html.LabelFor(x => x.SelectedBloodGroup):
+                        </div>
+                        <div class="editor-field fieldwidth floatL" id="Blood-Group-input">
+                            @Html.DropDownListFor(x => x.SelectedBloodGroup, new SelectList(Model.BloodGroupList, "BloodGroupId", "BloodGroupName"), "Select", new { @id = "ddlBloodGroup" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.SelectedBloodGroup)
+                                @Html.HiddenFor(x => x.SelectedBloodGroup, new { @id = "hndSelectedBg" })</p>
+                        </div>
+                        <div id="Blood-Group-button">
+                            <input type="button" id="btnSave" value="Save Blood Group" onclick="SaveRecord();"
+                                class="button" />
+                            <input type="button" id="btnCancel" value="Reset" onclick="restoreBloodGroup();"
+                                class="button" />
+                        </div>
+                    </div>
+                </div>
+                </fieldset>
+                <div id="dialogAction" style="display: none">
+                    @Html.Partial("_AddMedicalHistoryDetails", Model)
+                </div>
+                <div id="deleteMedicalDialogConfirmation" style="display: none">
+                    <p>
+                        Are you sure you want to delete the records?</p>
+                </div>
+                <div id="deleteMedical" style="display: none">
+                    Record has been deleted
+                </div>
+                <div class="clear button-top">
+                    <input type="button" id="btnAddMedicalDesc" value="Add Medical History" class="button" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqMedicalTable">
+                    </table>
+                </div>
+                <div id="jqMedicalTablePager">
+                </div>
+
+            <div id="BloodGrpSuccessMessege" style="display: none">
+                <p>
+                    Blood Group have been saved.</p>
+            </div>
+            <div id="BloodGrpErrorMessege" style="display: none">
+                <p>
+                    There are some errors.</p>
+            </div>
+            <div id="BloodGrpNoselectedMessege" style="display: none" title="Blood Group">
+                <center class="LoadingWrap">
+                    Please select Blood Group.
+                </center>
+            </div>
+        </div>
+    </div>*@
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && Model.EmployeeId != ViewBag.LoggedInEmployeeId)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })">Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.MedicalEmployeeId })" class="selected"> Medical History</a>
+            }
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody MedicalMainbody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "MedicalDetailsForm" }))
+        {
+
+            @Html.HiddenFor(x => x.EmployeeId)
+            @Html.HiddenFor(model => model.MedicalHistory.EmployeeId)
+            @Html.HiddenFor(model => model.MedicalHistory.MedicalDescId)
+            @Html.HiddenFor(model => model.MedicalHistory.MedicalDescription)
+            @Html.HiddenFor(model => model.MedicalHistory.Year)
+
+            @Html.HiddenFor(model => model.EmployeeId)
+            @Html.HiddenFor(model => model.MedicalDescId)
+            @Html.HiddenFor(model => model.MedicalDescription)
+            @Html.HiddenFor(model => model.Year)
+            @Html.HiddenFor(model => model.UserRole)
+
+        }
+        <div class="FormContainerBox  Medical secone clearfix">
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Blood Group:</label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.SelectedBloodGroup, new SelectList(Model.BloodGroupList, "BloodGroupId", "BloodGroupName"), "Select", new { @id = "ddlBloodGroup" })
+                        @Html.LabelFor(model => model.SelectedBloodGroup, new { @class = "ClassDisplayLabel" })
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(model => model.SelectedBloodGroup)
+                            @Html.HiddenFor(x => x.SelectedBloodGroup, new { @id = "hndSelectedBg" })
+                        </p>
+                    </div>
+                </div>
+                <div class="rightcol clearfix">
+                    <input type="button" id="btnSave" value="Save Blood Group" class="ButtonGray mrgnR11" onclick="SaveRecord();" />
+                    @*<input type="button" id="btnCancel" value="Reset" class="ButtonGray" onclick="restoreBloodGroup();" />*@
+                </div>
+            </div>
+        </div>
+        <div class="mrgnT33">
+
+            <div class="tablestyle3">
+                <table id="jqMedicalTable"></table>
+            </div>
+            <div id="jqMedicalTablePager">
+            </div>
+        </div>
+        <div id="AddMedicalSuccessMessage" style="display: none">
+            <p>
+                Medical Details have been saved.
+            </p>
+        </div>
+        <div id="AddMedicalErrorMessage" style="display: none">
+            <p>
+                Unable to add record.
+            </p>
+        </div>
+        <div id="deleteMedicalDialogConfirmation" style="display: none">
+            <p>
+                Are you sure you want to delete the record?
+            </p>
+        </div>
+        <div id="YearRequiredDialog" title="Medical details" style="display: none">
+            <p>
+                Please select value of Year.
+            </p>
+        </div>
+        <div id="BloodGrpSuccessMessege" style="display: none">
+            <p>
+                Blood Group have been saved.
+            </p>
+        </div>
+        <div id="BloodGrpErrorMessege" style="display: none">
+            <p>
+                There are some errors.
+            </p>
+        </div>
+        <div id="BloodGrpNoselectedMessege" style="display: none" title="Blood Group">
+            <center class="LoadingWrap">
+                Please select Blood Group.
+            </center>
+        </div>
+        @*<div id="deleteMedical" style="display: none">
+                Record has been deleted
+            </div>*@
+    </div>
+</section>

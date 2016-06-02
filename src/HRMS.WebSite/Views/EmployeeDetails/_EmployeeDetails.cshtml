@@ -1,0 +1,854 @@
+﻿@model HRMS.Models.EmployeeDetailsViewModel
+@{
+    ViewBag.Title = "Employee Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.themeroller.css")" rel="stylesheet" />
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.standalone.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("../../Scripts/ui.dropdownchecklist-1.4-min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/EmployeeDetails.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    var UserRole = '@Model.UserRole';
+    var ConfirmationDate = '@String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate)';
+    var EmpStatusMasterID = '@Model.EmpStatusMasterID';
+    var HRAdmin = '@HRMS.Models.UserRoles.HRAdmin';
+    var RMGRole = '@HRMS.Models.UserRoles.RMG';
+    var postUrl = '@Url.Action("EmployeeDetails", "EmployeeDetails")';
+    var autosugest = '@Url.Action("SearchEmployeeForRecruiter", "EmployeeDetails")';
+    var GetEmployeeurl = '@Url.Action("GetemployeeStatusController", "EmployeeDetails")';
+
+    $(function () {
+        $("#EmployeeId").val('@Model.EmployeeId');
+        stringList = @(Html.Raw(Json.Encode(Model.HdLoginRolesList)));
+        RoleSelected = [];
+        //RoleSelected.push("Select");
+        $.each(stringList, function (index,value) {
+            RoleSelected.push(value.RoleId);
+        });
+//            if('@Model.BillableStatus' == 'True')
+//   $("#BillableStatus").attr('checked', true);
+        EmployeeDetailfunction();
+        $('#employeestatus').val($('#EmployeeStatus option:selected').val());
+    });
+
+    $(document).ready(function () {
+        //debugger;
+
+        if ($("#employeestatus").val()=="5" && '@ViewBag.ConfirmProcess'=='False')
+        {
+            $("#InitiateConfirmation").show();
+            $("#Confirmlabel").hide();
+        }
+        else if ($("#employeestatus").val() != "5")
+        {
+            $("#InitiateConfirmation").hide();
+            $("#Confirmlabel").hide();
+        }
+
+        else if( $("#employeestatus").val()=="5" && '@ViewBag.ConfirmProcess'=='True')
+         {
+            $("#InitiateConfirmation").hide();
+            $("#Confirmlabel").show();
+        }
+
+       $('#LoginRole').selectBox('destroy').hide();
+        $(".ClassDisplayLabel, .ClassTextareaDiv").hide();
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden'});
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility':'visible', 'top': '-20px'});
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+
+        //assign Selected Dropdown Value to its respective Label.
+        $("#Shift").next().next().text($("#Shift :selected").text());
+        $("#CalenderName").next().next().text($("#CalenderName :selected").text());
+        $("#OfficeLocation").next().next().text($("#OfficeLocation :selected").text());
+        $("#ExitConfirmationManagerId_Emp").next().next().text($("#ExitConfirmationManagerId_Emp :selected").text());
+        $("#ReportingToId_Emp").next().next().text($("#ReportingToId_Emp :selected").text());
+        $("#CompetencyManagerId_Emp").next().next().text($("#CompetencyManagerId_Emp :selected").text());
+        $("#EmployeeStatusMaster").next().next().text($("#EmployeeStatusMaster :selected").text());
+        $("#EmployeeStatus").next().next().text($("#EmployeeStatus :selected").text());
+        $("#Group").next().next().text($("#Group :selected").text());
+        $("#OrganizationUnit").next().next().text($("#OrganizationUnit :selected").text());
+        $("#ParentDU").next().next().text($("#ParentDU :selected").text());
+        $("#CurrentDU").next().next().text($("#CurrentDU :selected").text());
+        $("#DT").next().next().text($("#DT :selected").text());
+        $("#ResourcePoolName").next().next().text($("#ResourcePoolName :selected").text());
+        $("#OrgRoleID").next().next().text($("#OrgRoleID :selected").text());
+        //$("#LoginRole").next().next().text($("#LoginRole :selected").text());
+
+        DisplayLabel();
+    });
+
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                if (val.id == "Shift" || val.id == "CalenderName" || val.id == "OfficeLocation" || val.id == "ExitConfirmationManagerId_Emp"
+                 || val.id == "CompetencyManagerId_Emp" || val.id == "ReportingToId_Emp" || val.id == "EmployeeStatusMaster" || val.id == "EmployeeStatus" || val.id == "Group" || val.id == "RecruiterName"
+                 || val.id == "OrganizationUnit" || val.id == "ParentDU" || val.id == "CurrentDU" || val.id == "DT" || val.id == "ResourcePoolName" || val.id == "OrgRoleID" || val.id == "LoginRole") {
+                    if(val.id == "OrgRoleID" || val.id == "OfficeLocation" || val.id == "CalenderName" || val.id == "RecruiterName")
+                        $(this).css({'display':'none'});
+                    $(this).next().hide().next().show().append("</br>");
+                }
+                else if (val.id == "JoiningDate" || val.id == "ProbationReviewDate" || val.id == "ConfirmationDate" || val.id == "ExitDate") {
+                    $(this).hide().next().hide().next().show();
+                }
+                else if (val.id == "CommitmentsMade") {
+                  //  $(this).hide().next().show().children().show();
+                }
+                else
+                    $(this).hide().next().show();
+            }
+        });
+    }
+
+    function InitiateConfirmationFunction() {
+        //debugger;
+        $.ajax({
+            url: '@Url.Action("InitiateConfimation", "EmployeeDetails")',
+            data: { EmployeeID : '@Model.EmployeeId'},
+            type: 'get',
+            success: function (results) {
+                if (results.status == true) {
+                    $('#ConfirmationInitiateDialouge').dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "File Not Found",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                //debugger;
+                                $(this).dialog('close');
+                                window.location.reload();
+                                //$("#jqManageDocumentTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            });
+    }
+</script>
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Employee Details
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Employee</a>
+                <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bonds</a>*@
+            @if (ViewBag.EmployeeId != null)
+            {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Upload Documents
+                    </a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Experience
+                    </a>
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Upload Documents
+                    </a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Bond Details
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">
+                        Bond Details
+                    </a>
+                }
+            }
+        </nav>
+    </div>
+    <div class="MainBody">
+        <div class="FormContainerBox EmpDetails clearfix">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "EmployeeForm" }))
+            {
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(m => m.UserRole)
+                @Html.HiddenFor(m => m.EmployeeId)
+
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @*<label>Employee Code:</label>*@
+                            @Html.LabelFor(model => model.EmployeeCode):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(model => model.EmployeeCode, new { disabled = "disabled", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.EmployeeCode, Model.EmployeeCode, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmployeeCode)</p>
+                            @Html.HiddenFor(model => model.EmployeeCode, new { id = "employeecode" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @*<label>Rejoined Within One Year:</label>*@
+                            @Html.LabelFor(model => model.RejoinedWithingOneYear):
+                        </div>
+                        @*<div class="InputDiv">*@ @*<input type="checkbox" id="c" />
+                            <label class="LabelForCheckbox" for="c"></label>*@ @*@Html.CheckBoxFor(model => model.RejoinedWithingOneYear, new { @class = "LabelForCheckbox", id = "RejoinedCheck" })
+                                 <label class="LabelForCheckbox" for="RejoinedCheck"></label>
+                                @Html.HiddenFor(model => model.RejoinedWithingOneYear, new { id = "rejoinedwithingoneyear", @class = "LabelForCheckbox" })
+                            </div>*@
+                            <div class="InputDiv">
+                                @Html.CheckBoxFor(model => model.RejoinedWithingOneYear, new { @class = "LabelForCheckbox", @id = "RejoinedWithingOneYear" })
+                                <label id="ContractEmployeeChkLabel" for="RejoinedWithingOneYear" class="LabelForCheckbox">
+                                </label>
+                                <label id="ContractEmployeeLabel" style="display: none">
+                                </label>
+                                @Html.ValidationMessageFor(model => model.RejoinedWithingOneYear)
+                                @Html.HiddenFor(model => model.RejoinedWithingOneYear, new { id = "rejoinedwithingoneyear" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                @*<label>* Joining Date: </label>*@
+                                @Html.Label("* Joining Date:")
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" placeholder="datepicker" />*@ @*@Html.TextBoxFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @readonly = "readonly" , @class ="ClassDisabledFields"})
+                                    @Html.LabelFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}",  Model.JoiningDate), new { @class = "ClassDisplayLabel" })*@
+                                @*@Html.TextBoxFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @readonly = "readonly", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @class = "ClassDisplayLabel" })*@
+                                @Html.TextBoxFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @id = "JoiningDate", @readonly = "readonly", @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.JoiningDate), new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.JoiningDate)
+                                    @{
+                var joiningDate = Model.JoiningDate.HasValue ? Model.JoiningDate.Value.ToString("MM/dd/yyyy") : "";
+                                    }
+                                </p>
+                                <input type="hidden" id="joiningdate" value="@joiningDate" />
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Probation Duration(Months): </label>*@
+                                @Html.LabelFor(model => model.Months):
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" />*@
+                                @Html.TextBoxFor(model => model.Months, new { @id = "txtMonths", @class = "ClassDisabledFields" })
+                                @*@Html.LabelFor(model => model.Months, Model.Months, new { @class = "ClassDisplayLabel" })*@
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.Months)
+                                </p>
+                                @Html.HiddenFor(model => model.Months, new { id = "months" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Probation Review Date:</label>*@
+                                @Html.Label("Probation Review Date"):
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" placeholder="datepicker" />*@ @*@Html.TextBoxFor(model => model.ProbationReviewDate, String.Format("{0:MM/dd/yyyy}", Model.ProbationReviewDate), new { @class ="ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ProbationReviewDate, String.Format("{0:MM/dd/yyyy}", Model.ProbationReviewDate), new { @class = "ClassDisplayLabel" })*@
+                                @Html.TextBoxFor(model => model.ProbationReviewDate, String.Format("{0:MM/dd/yyyy}", Model.ProbationReviewDate), new { @id = "ProbationReviewDate", @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.ProbationReviewDate, String.Format("{0:MM/dd/yyyy}", Model.ProbationReviewDate), new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.ProbationReviewDate)
+                                    @{
+                var probationDate = Model.ProbationReviewDate.HasValue ? Model.ProbationReviewDate.Value.ToString("MM/dd/yyyy") : "";
+                                    }
+                                </p>
+                                <input type="hidden" id="probationreviewdate" value="@probationDate" />
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Confirmation Date: </label>*@
+                                @Html.Label("Confirmation Date:")
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" placeholder="datepicker" />*@ @*@Html.TextBoxFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @class = "ClassDisplayLabel" })*@
+                                @Html.TextBoxFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @id = "ConfirmationDate", @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.ConfirmationDate)
+                                    @{
+                var confirmationDate = Model.ConfirmationDate.HasValue ? Model.ConfirmationDate.Value.ToString("MM/dd/yyyy") : "";
+                                    }
+                                </p>
+                                <input type="hidden" id="confirmationdate" value="@confirmationDate" />
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Exit Date:</label>*@
+                                @Html.LabelFor(model => model.ExitDate):
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" placeholder="datepicker" />*@ @*@Html.TextBoxFor(model => model.ExitDate, String.Format("{0:MM/dd/yyyy}", Model.ExitDate), new { @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ExitDate, String.Format("{0:MM/dd/yyyy}", Model.ExitDate), new { @class = "ClassDisplayLabel" })*@
+                                @Html.TextBoxFor(model => model.ExitDate, String.Format("{0:MM/dd/yyyy}", Model.ExitDate), new { @id = "ExitDate", @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.ExitDate, String.Format("{0:MM/dd/yyyy}", Model.ExitDate), new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.ExitDate)
+                                    @{
+                var existDate = Model.ExitDate.HasValue ? Model.ExitDate.Value.ToString("MM/dd/yyyy") : "";
+                                    }
+                                </p>
+                                <input type="hidden" id="exitdate" value="@existDate" />
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                @*<label>* Employment Status:</label>*@ * @Html.LabelFor(model => model.EmployeeStatusMaster):
+                            </div>
+                            <div class="InputDiv">
+                                @Html.DropDownListFor(x => x.EmployeeStatusMaster, new SelectList(Model.EmployeeStatusMasterList, "EmployeeStatusMasterId", "EmployeeStatusMaster", "Select"), "Select", new { @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.EmployeeStatusMaster, Model.EmployeeStatusMaster, new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.EmployeeStatusMaster)
+                                </p>
+                                @Html.HiddenFor(model => model.EmployeeStatusMaster, new { id = "employeestatusMaster", @class = "ValidationDropDown" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                @*<label>* Employee Status:</label>*@ * @Html.LabelFor(model => model.EmployeeStatus):
+                            </div>
+                            <div class="InputDiv">
+                                @* @Html.DropDownListFor(x => x.EmployeeStatus, new SelectList(Model.EmployeeStatusList, "EmployeeStatusId", "EmployeeStatus", "Select"), "Select")*@
+                                @Html.DropDownListFor(x => x.EmployeeStatus, new SelectList(Model.EmployeeStatusList, "EmployeeStatusId", "EmployeeStatus", "Select"), new { @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.EmployeeStatus, Model.EmployeeStatus, new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.EmployeeStatus)
+                                </p>
+                                @Html.HiddenFor(model => model.EmployeeStatus, new { id = "employeestatus" })
+                            </div>
+                            @if (Model.UserRole == "HR Admin")
+                            {
+                                <input type="button" class="ButtonGray mrgnR11" value="Initiate Confirmation" id="InitiateConfirmation" onclick="InitiateConfirmationFunction()" />
+                                <div class="LabelDiv" id="Confirmlabel">
+                                    <span class="hiddenstar">*</span> @*<label>Designation:</label>*@
+                                    @Html.Label("Confirmation Initiated")
+                                </div>
+                            }
+                        </div>
+                        @if (Model.UserRole == "RMG" || Model.UserRole == "HR Admin")
+                        {
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    @*<label>* Login Role:</label>*@ * @Html.LabelFor(model => model.LoginRole):
+                                </div>
+                                @*<div class="InputDiv">
+                                        @Html.DropDownListFor(x => x.LoginRole, new SelectList(Model.LoginRolesList, "RoleId", "RoleDescription", "Select"), new { multiple = "multiple" , @class = "ClassDisabledFields" })
+                                        @Html.LabelFor(model => model.LoginRole, Model.LoginRole, new { @class = "ClassDisplayLabel" })
+                                         <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LoginRole)</p>
+                                        @Html.HiddenFor(model => model.LoginRole, new { id = "loginRole" })
+                                        <input type="hidden" name="SelectedRolesList" id="hdnSelectedRoleList" value="" />
+                                    </div>*@
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(x => x.LoginRole, new SelectList(Model.LoginRolesList, "RoleId", "RoleDescription", "Select"), new { multiple = "multiple", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.LoginRole, Model.LoginRole, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LoginRole)</p>
+                                    @Html.HiddenFor(model => model.LoginRole, new { id = "loginRole" })
+                                    <input type="hidden" name="SelectedRolesList" id="hdnSelectedRoleList" value="" />
+                                </div>
+                            </div>
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    @*<label>* Organization Role:</label>*@ * @Html.Label("Organization Role"):
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(model => model.OrgRoleID, (SelectList)ViewBag.Role, "Select", new { @class = "ValidationDropDown ClassDisplayLabelDD ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.OrgRoleID, Model.OrgRoleID.ToString(), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">
+                                        @Html.ValidationMessageFor(model => model.OrgRoleID)
+                                    </p>
+                                    @Html.HiddenFor(model => model.OrgRoleID, new { id = "RoleID" })
+                                </div>
+                            </div>
+                        }
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Designation:</label>*@
+                                @Html.Label("Designation:")
+                            </div>
+                            <div class="InputDiv">
+                                @*<input type="text" placeholder="datepicker" />*@
+                                @Html.TextBoxFor(model => model.Designation, new { disabled = "disabled", @readonly = "readonly", @class = "ValidationDropDown ClassDisabledFields" })
+                                @Html.LabelFor(model => model.Designation, Model.Designation, new { @class = "ClassDisplayLabel" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Business Group:</label>*@
+                                @Html.Label("Business Group:")
+                            </div>
+                            <div class="InputDiv">
+                                @Html.DropDownListFor(model => model.Group, (SelectList)ViewBag.BusinessGroups, "Select", new { @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.Group, Model.Group, new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Group)</p>
+                                @Html.HiddenFor(model => model.Group, new { id = "group" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span>
+                                <label>
+                                    Organization Unit:
+                                </label>
+                            </div>
+                            <div class="InputDiv">
+                                @Html.DropDownListFor(model => model.OrganizationUnit, (SelectList)ViewBag.Location, "Select", new { @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.OrganizationUnit, Model.OrganizationUnit, new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.OrganizationUnit)
+                                </p>
+                                @Html.HiddenFor(model => model.OrganizationUnit, new { id = "organizationUnit" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Parent DU:</label>*@
+                                @Html.LabelFor(model => model.ParentDU):
+                            </div>
+                            <div class="InputDiv">
+                                @*@Html.DropDownListFor(model => model.ParentDU, (SelectList)ViewBag.DU, "Select")*@
+                                @Html.DropDownListFor(model => model.ParentDU, (SelectList)ViewBag.DU, "Select", new { @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.ParentDU, Model.ParentDU, new { @class = "ClassDisplayLabel" })
+                                <p class="qualif-detail">
+                                    @Html.ValidationMessageFor(model => model.ParentDU)
+                                </p>
+                                @Html.HiddenFor(model => model.ParentDU, new { id = "parentDU" })
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="hiddenstar">*</span> @*<label>Current DU:</label>*@
+                                @Html.LabelFor(model => model.CurrentDU):
+                            </div>
+                            <div class="InputDiv">
+                                @*<select>
+                                        <option>abc</option>
+                                        <option>abc</option>
+                                        <option>abc</option>
+                                    </select>*@ @*@Html.DropDownListFor(model => model.CurrentDU, (SelectList)ViewBag.DU, "Select")*@
+                                    @Html.DropDownListFor(model => model.CurrentDU, (SelectList)ViewBag.DU, "Select", new { @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.CurrentDU, Model.CurrentDU.ToString(), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">
+                                        @Html.ValidationMessageFor(model => model.CurrentDU)
+                                    </p>
+                                    @Html.HiddenFor(model => model.CurrentDU, new { id = "currentDU" })
+                                </div>
+                            </div>
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span> @*<label>Delivery Team:</label>*@
+                                    @Html.Label("Delivery Team:")
+                                </div>
+                                <div class="InputDiv">
+                                    @*<select>
+                                            <option>abc</option>
+                                            <option>abc</option>
+                                            <option>abc</option>
+                                        </select>*@ @*@Html.DropDownListFor(model => model.DT, (SelectList)ViewBag.GroupName, "Select")*@
+                                        @Html.DropDownListFor(model => model.DT, (SelectList)ViewBag.GroupName, "Select", new { @class = "ClassDisabledFields" })
+                                        @Html.LabelFor(model => model.DT, Model.DT, new { @class = "ClassDisplayLabel" })
+                                        <p class="qualif-detail">
+                                            @Html.ValidationMessageFor(model => model.DT)
+                                        </p>
+                                        @Html.HiddenFor(model => model.DT, new { id = "dt" })
+                                    </div>
+                                </div>
+                                <div class="formrow clearfix">
+                                    <div class="LabelDiv">
+                                        <span class="hiddenstar">*</span> @*<label>Resource Pool Name:</label>*@
+                                        @Html.LabelFor(model => model.ResourcePoolName):
+                                    </div>
+                                    <div class="InputDiv">
+                                        @*<select>
+                                                <option>abc</option>
+                                                <option>abc</option>
+                                                <option>abc</option>
+                                            </select>*@ @*@Html.DropDownListFor(model => model.ResourcePoolName, (SelectList)ViewBag.Resource, "Select")*@
+                                            @Html.DropDownListFor(model => model.ResourcePoolName, (SelectList)ViewBag.Resource, "Select", new { @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.ResourcePoolName, Model.ResourcePoolName, new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">
+                                                @Html.ValidationMessageFor(model => model.ResourcePoolName)
+                                            </p>
+                                            @Html.HiddenFor(model => model.ResourcePoolName, new { id = "resourcePoolName" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rightcol">
+                                    <div class="formrow clearfix">
+                                        <div class="LabelDiv">
+                                            <span class="hiddenstar">*</span> @*<label>Reporting To:</label>*@
+                                            @Html.Label("Reporting To:")
+                                        </div>
+                                        <div class="InputDiv">
+                                            @*<select>
+                                                    <option>abc</option>
+                                                    <option>abc</option>
+                                                    <option>abc</option>
+                                                </select>*@ @*@Html.DropDownListFor(model => model.ReportingToId_Emp, (SelectList)ViewBag.ReportingTo, "Select")*@
+                                                @Html.DropDownListFor(model => model.ReportingToId_Emp, (SelectList)ViewBag.ReportingTo, "Select", new { @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(model => model.ReportingToId_Emp, Model.ReportingToId_Emp.ToString(), new { @class = "ClassDisplayLabel" })
+                                                <p class="qualif-detail">
+                                                    @Html.ValidationMessageFor(model => model.ReportingToId_Emp)
+                                                </p>
+                                                @Html.HiddenFor(model => model.ReportingToId_Emp, new { id = "ReportingToId" })
+                                            </div>
+                                        </div>
+                                        <div class="formrow clearfix">
+                                            <div class="LabelDiv">
+                                                <span class="hiddenstar">*</span> @*<label>Competency Manager:</label>*@
+                                                @Html.Label("Competency Manager:")
+                                            </div>
+                                            <div class="InputDiv">
+                                                @*<select>
+                                                        <option>abc</option>
+                                                        <option>abc</option>
+                                                        <option>abc</option>
+                                                    </select>*@ @*@Html.DropDownListFor(model => model.CompetencyManagerId_Emp, (SelectList)ViewBag.CompetencyManager, "Select")*@
+                                                    @Html.DropDownListFor(model => model.CompetencyManagerId_Emp, (SelectList)ViewBag.CompetencyManager, "Select", new { @class = "ClassDisabledFields" })
+                                                    @Html.LabelFor(model => model.CompetencyManagerId_Emp, Model.CompetencyManagerId_Emp.ToString(), new { @class = "ClassDisplayLabel" })
+                                                    <p class="qualif-detail">
+                                                        @Html.ValidationMessageFor(model => model.CompetencyManagerId_Emp)
+                                                    </p>
+                                                    @Html.HiddenFor(model => model.CompetencyManagerId_Emp, new { id = "CompetencyManagerId" })
+                                                </div>
+                                            </div>
+                                            <div class="formrow clearfix">
+                                                <div class="LabelDiv">
+                                                    <span class="hiddenstar">*</span> @*<label>Confirmation / Exit Process Manager:</label>*@
+                                                    @Html.Label("Confirmation / Exit Process Manager"):
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @*<select>
+                                                            <option>abc</option>
+                                                            <option>abc</option>
+                                                            <option>abc</option>
+                                                        </select>*@ @*@Html.DropDownListFor(model => model.ExitConfirmationManagerId_Emp, (SelectList)ViewBag.ExitConfirmationManager, "Select"  ,new { @id = "ExitConfirmationManagerId_Emp", @class = "ValidationDropDown" })
+                                                        @Html.LabelFor(model => model.ExitConfirmationManagerId_Emp, new { @class = "ClassDisplayLabel" })*@
+                                                        @Html.DropDownListFor(model => model.ExitConfirmationManagerId_Emp, (SelectList)ViewBag.ExitConfirmationManager, "Select", new { @class = "ClassDisabledFields" })
+                                                        @Html.LabelFor(model => model.ExitConfirmationManagerId_Emp, Model.ExitConfirmationManagerId_Emp.ToString(), new { @class = "ClassDisplayLabel" })
+                                                        <p class="qualif-detail">
+                                                            @Html.ValidationMessageFor(model => model.ExitConfirmationManagerId_Emp)
+                                                        </p>
+                                                        @Html.HiddenFor(model => model.ExitConfirmationManagerId_Emp, new { id = "ExitConfirmationManagerId" })
+                                                    </div>
+                                                </div>
+                                                <div class="formrow clearfix">
+                                                    <div class="LabelDiv">
+                                                        * @Html.LabelFor(model => model.RecruiterName):
+                                                    </div>
+                                                    <div class="InputDiv">
+                                                        @Html.DropDownListFor(model => model.RecruiterName, (SelectList)ViewBag.Recruiter, "Select", new { @class = "ClassDisabledFields ValidationDropDown ClassDisplayLabelDD" })
+                                                        @*  @Html.TextBoxFor(model => model.RecruiterName, new { @class = "ClassDisabledFields" })*@
+                                                        @Html.LabelFor(model => model.RecruiterName, Model.RecruiterName, new { @class = "ClassDisplayLabel" })
+                                                        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.RecruiterName)</p>
+                                                        @Html.HiddenFor(model => model.RecruiterName, new { id = "recruiterName" })
+                                                    </div>
+                                                </div>
+                                                <div class="formrow clearfix">
+                                                    <div class="LabelDiv">
+                                                        <span class="hiddenstar">*</span> @*<label>Billable:</label>*@
+                                                        @Html.LabelFor(model => model.BillableStatus):
+                                                    </div>
+                                                    @*<div class="InputDiv">*@ @*<input type="checkbox" id="b" />
+                                                        <label class="LabelForCheckbox" for="b"></label>*@ @*@Html.CheckBoxFor(model => model.BillableStatus, new { id = "BillableCheck" })
+                                                            <label class="LabelForCheckbox" for="BillableCheck"></label>
+                                                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.BillableStatus)</p>
+                                                            @Html.HiddenFor(model => model.BillableStatus, new { id = "status", @class = "LabelForCheckbox" })
+                                                        </div>*@
+                                                        <div class="InputDiv">
+                                                            @Html.CheckBoxFor(model => model.BillableStatus, new { @class = "LabelForCheckbox", @id = "BillableStatus" })
+                                                            <label id="BillableStatusChkLabel" for="BillableStatus" class="LabelForCheckbox">
+                                                            </label>
+                                                            <label id="BillableStatusLabel" style="display: none">
+                                                            </label>
+                                                            @Html.ValidationMessageFor(model => model.BillableStatus)
+                                                            @Html.HiddenFor(model => model.BillableStatus, new { id = "status" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="formrow clearfix">
+                                                        <div class="LabelDiv">
+                                                            * @Html.LabelFor(model => model.OfficeLocation):
+                                                        </div>
+                                                        <div class="InputDiv">
+                                                            @*@Html.DropDownListFor(model => model.OfficeLocation, (SelectList)ViewBag.OfficeLocationName, "Select", new { @id = "OfficeLocation", @class = "ValidationDropDown" })
+                                                                @Html.LabelFor(model => model.OfficeLocation, new { @class = "ClassDisplayLabel" })*@
+                                                            @Html.DropDownListFor(model => model.OfficeLocation, (SelectList)ViewBag.OfficeLocationName, "Select", new { @class = "ClassDisabledFields ValidationDropDown ClassDisplayLabelDD" })
+                                                            @Html.LabelFor(model => model.OfficeLocation, Model.OfficeLocation, new { @class = "ClassDisplayLabel" })
+                                                            <p class="qualif-detail">
+                                                                @Html.ValidationMessageFor(model => model.OfficeLocation)
+                                                            </p>
+                                                            @Html.HiddenFor(model => model.OfficeLocation, new { id = "officeLocation" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="formrow clearfix">
+                                                        <div class="LabelDiv">
+                                                            <span class="hiddenstar">*</span>
+                                                            <label>
+                                                                Additional Location Details:
+                                                            </label>
+                                                        </div>
+                                                        <div class="InputDiv">
+                                                            @*<input type="text" />*@
+                                                            @Html.TextBoxFor(model => model.Region, new { @class = "ClassDisabledFields" })
+                                                            @Html.LabelFor(model => model.Region, Model.Region, new { @class = "ClassDisplayLabel" })
+                                                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Region)</p>
+                                                            @Html.HiddenFor(model => model.Region, new { id = "region" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="formrow clearfix">
+                                                        <div class="LabelDiv">
+                                                            @*<label>* Holiday Calendar:</label>*@ * @Html.LabelFor(model => model.CalenderName):
+                                                        </div>
+                                                        <div class="InputDiv">
+                                                            @*<select>
+                                                                    <option>abc</option>
+                                                                    <option>abc</option>
+                                                                    <option>abc</option>
+                                                                </select>*@ @*@Html.DropDownListFor(model => model.CalenderName, (SelectList)ViewBag.Calender, "Select", new { @id = "CalenderName", @class = "ValidationDropDown" })
+                                                                @Html.LabelFor(model => model.CalenderName, new { @class = "ClassDisplayLabel" })*@
+                                                                @Html.DropDownListFor(model => model.CalenderName, (SelectList)ViewBag.Calender, "Select", new { @class = "ClassDisabledFields ValidationDropDown ClassDisplayLabelDD" })
+                                                                @Html.LabelFor(model => model.CalenderName, Model.CalenderName.ToString(), new { @class = "ClassDisplayLabel" })
+                                                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CalenderName)</p>
+                                                                @Html.HiddenFor(model => model.CalenderName, new { id = "calenderName" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="formrow clearfix">
+                                                            <div class="LabelDiv">
+                                                                <span class="hiddenstar">*</span> @*<label>Shift:</label>*@
+                                                                @Html.LabelFor(model => model.Shift):
+                                                            </div>
+                                                            <div class="InputDiv">
+                                                                @*<select>
+                                                                        <option>abc</option>
+                                                                        <option>abc</option>
+                                                                        <option>abc</option>
+                                                                    </select>*@ @*@Html.DropDownListFor(model => model.Shift, (SelectList)ViewBag.ShiftName, "Select")*@
+                                                                    @Html.DropDownListFor(model => model.Shift, (SelectList)ViewBag.ShiftName, "Select", new { @id = "Shift", @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.Shift, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Shift)</p>
+                                                                    @Html.HiddenFor(model => model.Shift, new { id = "shift" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    <span class="hiddenstar">*</span> @*<label>ESIC No.:</label>*@
+                                                                    @Html.LabelFor(model => model.ESICNo):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@
+                                                                    @Html.TextBoxFor(model => model.ESICNo, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.ESICNo, Model.ESICNo, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ESICNo)</p>
+                                                                    @Html.HiddenFor(model => model.ESICNo, new { id = "esicNo" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    <span class="hiddenstar">*</span> @*<label>PF No.:</label>*@
+                                                                    @Html.LabelFor(model => model.PFNo):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@
+                                                                    @Html.TextBoxFor(model => model.PFNo, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.PFNo, Model.PFNo, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">
+                                                                        @Html.ValidationMessageFor(model => model.PFNo)
+                                                                    </p>
+                                                                    @Html.HiddenFor(model => model.PFNo, new { id = "pfNo" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    @*<label>* Commitments Made:</label>*@ * @Html.LabelFor(model => model.CommitmentsMade):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<textarea></textarea>*@
+                                                                    @Html.TextAreaFor(model => model.CommitmentsMade, new { @cols = "40", @rows = "6", @class = "ClassDisabledFields" })
+                                                                    <div class="ClassTextareaDiv">
+                                                                        <div>
+                                                                            @Html.LabelFor(model => model.CommitmentsMade, Model.CommitmentsMade, new { @class = "ClassDisplayLabel" })
+                                                                        </div>
+                                                                    </div>
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CommitmentsMade)</p>
+                                                                    @Html.HiddenFor(model => model.CommitmentsMade, new { id = "commitmentsMade" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    <span class="hiddenstar">*</span> @*<label>Last year’s Appraisal Score:</label>*@
+                                                                    @Html.LabelFor(model => model.LastYearAppraisal):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@
+                                                                    @Html.TextBoxFor(model => model.LastYearAppraisal, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.LastYearAppraisal, Model.LastYearAppraisal, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">
+                                                                        @Html.ValidationMessageFor(model => model.LastYearAppraisal)
+                                                                    </p>
+                                                                    @Html.HiddenFor(model => model.LastYearAppraisal, new { id = "appraisal" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    <span class="hiddenstar">*</span> @*<label>Last year’s promotion status:</label>*@
+                                                                    @Html.LabelFor(model => model.LastYearPromotion):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@
+                                                                    @Html.TextBoxFor(model => model.LastYearPromotion, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.LastYearPromotion, Model.LastYearPromotion, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LastYearPromotion)</p>
+                                                                    @Html.HiddenFor(model => model.LastYearPromotion, new { id = "promotion" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    <span class="hiddenstar">*</span>
+                                                                    @Html.LabelFor(model => model.LastYearIncrement):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@
+                                                                    @Html.TextBoxFor(model => model.LastYearIncrement, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.LastYearIncrement, Model.LastYearIncrement, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LastYearIncrement)</p>
+                                                                    @Html.HiddenFor(model => model.LastYearIncrement, new { id = "increment" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="formrow clearfix">
+                                                                <div class="LabelDiv">
+                                                                    * @Html.LabelFor(model => model.IncomeTaxNo):
+                                                                </div>
+                                                                <div class="InputDiv">
+                                                                    @*<input type="text" />*@ @*@Html.TextBoxFor(model => model.IncomeTaxNo, new { @class = "ClassDisabledFields" })
+                                                                        @Html.LabelFor(model => model.IncomeTaxNo, Model.IncomeTaxNo, new { @class = "ClassDisplayLabel" })*@
+                                                                    @Html.TextBoxFor(model => model.IncomeTaxNo, new { @class = "ClassDisabledFields" })
+                                                                    @Html.LabelFor(model => model.IncomeTaxNo, Model.IncomeTaxNo, new { @class = "ClassDisplayLabel" })
+                                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.IncomeTaxNo)</p>
+                                                                    @Html.HiddenFor(model => model.IncomeTaxNo, new { id = "incometaxno" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+            }
+        </div>
+        <div class="ButtonContainer1">
+            <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" />
+            <input type="button" class="ButtonGray" value="Reset" id="btnReset" onclick="RestoreValues();" />
+        </div>
+    </div>
+</section>
+<div id="EmployeesuccessDialog" title="Employee Details" style="display: none">
+    <p>
+        Employee Details have been saved.
+    </p>
+</div>
+<div id="LoginRoleddlError" title="Error" style="display: none">
+    <p>
+        Please Select Login Role
+    </p>
+</div>
+<div id="ConfirmationInitiateDialouge" style="display: none">
+    <p>
+        Confirmation Initaited
+    </p>
+</div>

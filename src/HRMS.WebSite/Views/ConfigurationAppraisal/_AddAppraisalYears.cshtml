@@ -1,0 +1,94 @@
+﻿@model HRMS.Models.AppraisalYearModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/ConfigurationAppraisal/AddAppraisalYears.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Add New Appraisal Year";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix">
+    <h2 class="title-bgcolor">
+        Configure Appraisal Year<a style="float: right; margin-right: 30px; margin-top: 3px; margin-bottom: 3px;
+    color: brown; font-weight:normal;color:#a52a2a; font-size:12px; line-height:22px;" href="/ConfigurationAppraisal/ConfigureAppraisalDetails">Back</a></h2>
+    <div class="mrgnT10">
+        <input type="button" class="button" id="AddAppraisalYearBtn" value="Add New Appraisal Year" />
+    </div>
+    <table cellpadding="0" cellspacing="0" width="100%" border="0" id="tbl_DocumentCategories" class="mrgnT15">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Appraisal Year
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete Appraisal Year
+                </td>
+            </tr>
+        </thead>
+        <div id="DocumentCategories" class="docListDiv">
+            @foreach (var item in Model.AppraisalYearList)
+            {
+                <tr>
+                    <td align="center">
+                        <a href="#" id="@item.AppraisalYearID" class="@item.AppraisalYearName" onclick="EditAppraisalYear(this)">@item.AppraisalYearName</a><br />
+                    </td>
+                    <td align="center">
+                        <a href="#" id="@item.AppraisalYearID" class="@item.AppraisalYearName" onclick="DeleteAppraisalYear(this)">
+                            Delete</a><br />
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebutton1">
+            <tr>
+                <td class="bluebgtable1">
+                    @Html.LabelFor(x => x.TotalAppraisalYear)
+                    @Html.DisplayFor(x => x.TotalAppraisalYear)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="DeleteAppYearConfirm" style="display: none">
+    <center class="LoadingWrap">
+        Are you sure, you want to delete <b> </b> Appraisal Year ?
+        </center>
+</div>
+<div id="DeleteAppYearSuccess" style="display: none">
+    <center class="LoadingWrap">
+        The selected year is successfully deleted.
+        </center>
+</div>
+<div id="DeleteAppYearExist" style="display: none">
+    <center class="LoadingWrap">
+       Appraisal year cannot be deleted as the appraisal process was initiated.
+        </center>
+</div>
+<div id="DeleteAppYearError" style="display: none">
+    <center class="LoadingWrap">
+       Appraisal year you trying to delete could not be deleted.
+        </center>
+</div>
+<div id="AddEditAppYearDialog" style="display: none">
+    @{Html.RenderPartial("_EditAppraisalYear", Model);}
+</div>
+<script type="text/javascript">
+    $(".Title").hide();
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var addEditYearUrl = '@Url.Action("AddEditNewAppraisalYear", "ConfigurationAppraisal")';
+    var loggedinEmployeeID = '@Model.SearchedUserDetails.EmployeeId';
+    var deleteYearUrl = '@Url.Action("DeleteAppraisalYear", "ConfigurationAppraisal")';
+    $("#AddAppraisalYearBtn").click(function () {
+        AddAppraisalYear();
+    });
+</script>

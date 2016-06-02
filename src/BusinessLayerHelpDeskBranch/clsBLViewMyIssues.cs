@@ -1,0 +1,352 @@
+using System;
+using V2.Helpdesk.Model;
+using V2.Helpdesk.DataLayer;
+using System.Data;
+using V2.CommonServices.Exceptions;
+using V2.CommonServices.FileLogger;
+
+
+namespace V2.Helpdesk.BusinessLayer
+{
+	/// <summary>
+	/// Summary description for clsBLViewMyIssues.
+	/// </summary>
+	public class clsBLViewMyIssues
+	{
+		DataLayer.clsDLViewMyIssues objDLViewMyIssues = new clsDLViewMyIssues();
+
+		public clsBLViewMyIssues()
+		{
+			try
+			{
+			objDLViewMyIssues = new clsDLViewMyIssues();
+		}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "clsBLViewMyIssues", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+        public DataSet GetStatus()
+        {
+            try
+            {
+                return objDLViewMyIssues.GetStatus();
+            }
+            catch (V2Exceptions ex)
+            {
+                throw;
+            }
+
+            catch (System.Exception ex)
+            {
+
+                FileLog objFileLog = FileLog.GetLogger();
+                objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetStatus", ex.StackTrace);
+                throw new V2Exceptions(ex.ToString(),ex);
+            }
+ 
+        }
+
+
+
+       
+
+		public DataSet GetMyIssueList(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetMyIssueList(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetMyIssueList", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet GetSelectedIssue(Model.clsViewMyIssues objViewIssue,int userid)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSelectedIssue(objViewIssue,userid);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSelectedIssue", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+        public DataSet GetStatusAccToRole(int EmployeeID, int Status)
+        {
+            try
+            {
+                return objDLViewMyIssues.GetStatusAccToRole(EmployeeID, Status);
+            }
+            catch (V2Exceptions ex)
+            {
+                throw;
+            }
+
+            catch (System.Exception ex)
+            {
+
+                FileLog objFileLog = FileLog.GetLogger();
+                objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetStatusAccToRole", ex.StackTrace);
+                throw new V2Exceptions(ex.ToString(),ex);
+            }
+        }
+
+		public DataSet GetReportIssueHistory(Model.clsViewMyIssues objViewIssue)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetReportIssueHistory(objViewIssue);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetReportIssueHistory", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+		public DataSet GetSuperAdminIssueList(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSuperAdminIssueList(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSuperAdminIssueList", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+       
+
+		public DataSet GetSuperAdminIssue(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSuperAdminIssue(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSuperAdminIssue", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+		public DataSet MoveIssue(clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.MoveIssue(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "MoveIssue", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+		public DataSet GetSuperAdminEmployees(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSuperAdminEmployees(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSuperAdminEmployees", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet BindCategory(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.BindCategory(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "BindCategory", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet bindCategories(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.bindCategories(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "bindCategories", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet LoadDepartment(Model.clsViewMyIssues objViewMyIssues)
+		{
+			try
+			{
+				return objDLViewMyIssues.LoadDepartment(objViewMyIssues);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "LoadDepartment", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet GetSelectedIssueforSuperAdmin(Model.clsViewMyIssues objViewIssue,int userid)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSelectedIssueforSuperAdmin(objViewIssue,userid);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSelectedIssueforSuperAdmin", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+		public DataSet bindCategory(Model.clsViewMyIssues objViewIssue)
+		{
+			try
+			{
+				return objDLViewMyIssues.bindCategory(objViewIssue);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "bindCategory", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+		public DataSet GetSuperAdminReportIssueHistory(Model.clsViewMyIssues objViewIssue)
+		{
+			try
+			{
+				return objDLViewMyIssues.GetSuperAdminReportIssueHistory(objViewIssue);
+			}
+			catch(V2Exceptions ex)
+			{
+				throw ;
+			}
+
+			catch(System.Exception ex)
+			{
+                
+				FileLog objFileLog = FileLog.GetLogger();
+				objFileLog.WriteLine(LogType.Error, ex.Message, "clsBLViewMyIssues.cs", "GetSuperAdminReportIssueHistory", ex.StackTrace);
+				throw new V2Exceptions(ex.ToString(),ex);
+			}
+		}
+
+
+        public DataSet SearchIssueIDData(Model.clsViewMyIssues objViewMyIssues)
+        {
+            try
+            {
+                return objDLViewMyIssues.SearchIssueIDData(objViewMyIssues);
+            }
+            catch (V2Exceptions ex)
+            {
+                throw new V2Exceptions(ex.ToString(),ex);
+            }
+
+        }
+    }
+}

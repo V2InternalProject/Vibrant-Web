@@ -1,0 +1,304 @@
+﻿@model HRMS.Models.AddInvoiceModel
+@{
+    ViewBag.Title = "Check List";
+}
+<div class="clearR">
+    @using (Html.BeginForm("", "", new { @id = "frmCheckList" }))
+    {
+        @Html.HiddenFor(x => x.ProjectID)
+        @Html.HiddenFor(x => x.RFIID)
+        @Html.HiddenFor(x => x.IsProforma, new { @id = "performa" })
+        @Html.HiddenFor(x => x.TypeID)
+        <div id="dvCheckList">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" id="CheckListTable"
+                   class="TableJqgrid">
+                <thead>
+                    <tr>
+                        <td align="left" class="tableHeaders" width="5%">
+                            Sr. No.
+                        </td>
+                        <td align="left" class="tableHeaders" width="45%">
+                            Checklist Item
+                        </td>
+                        <td align="left" class="tableHeaders" width="5%">
+                            Yes
+                        </td>
+                        <td align="left" class="tableHeaders" width="45%">
+                            Comments
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.LstCheckList.Count > 0)
+                    {
+                        foreach (var item in Model.LstCheckList)
+                        {
+                            <tr class="tableRows">
+                                <td align="left" width="5%">
+                                    @Html.DisplayFor(modelItem => item.RFIChecklistItemID, new { @readonly = "readonly" })
+                                </td>
+                                <td align="left" width="45%">
+                                    @Html.DisplayFor(modelItem => item.RFIChecklistItem, new { @readonly = "readonly" })
+                                </td>
+                                <td align="left" width="5%">
+                                    @* @Html.CheckBoxFor(x => item.isCheckListChecked, new { @id = item.RFIChecklistItemID })*@
+                                    @*<input type="checkbox" id="'RFI'+'@item.RFIChecklistItemID'">*@
+                                    <input type="checkbox" id="RFI_@item.RFIChecklistItemID">
+                                    <label for="RFI_@item.RFIChecklistItemID" class="LabelForCheckbox">
+                                    </label>
+                                </td>
+                                <td align="left" width="45%">
+                                    @Html.TextAreaFor(modelItem => item.Comments, new { @id = "Comments_" + item.RFIChecklistItemID, @class = "clsforComments", @onchange = "removeErrorMessage(this.id)" })
+                                    <br /><span id="spn_Comments_@item.RFIChecklistItemID" class="classFieldLimit" style="display: none"></span>
+                                </td>
+                            </tr>
+
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ButtonContainer1 clearfix">
+            <input id="SaveCheckList" type="button" value="Save" class="ButtonGray mrgnR8" />
+        </div>
+    }
+</div>
+<div id="SuccessSubmit" style="display: none" title="Invoice Submitted">
+    <p>
+        Invoice successfully submitted.
+    </p>
+</div>
+<div id="SubmitError" style="display: none" title="Invoice not Submitted">
+    <p>
+        Invoice not submitted.
+    </p>
+</div>
+<script type="text/javascript">
+    function removeErrorMessage(cmntid) {
+        if ($("#" + cmntid).val().length>0)
+            $("#" + cmntid).next().next().html("").hide();
+    }
+    $(document).ready(function () {
+
+        $('#SaveCheckList').click(function () {
+             $('.clsforComments').each(function () {
+                var cmntID = this.id;
+                if ($("#" + cmntID).val().length < 1) {
+                    $("#" + cmntID).next().next().html("").append("Please enter comments").addClass("field-validation-error").show();
+                    $.preventDefault();
+                    return false;
+
+                }
+                else {
+                    $("#" + cmntID).next().html("").hide();
+                }
+            });
+            OpenLoadingPopup();
+            ArrayOne = [];
+            var rows;
+            rows = $("#CheckListTable tr:gt(0)");
+            var Performa;
+            if ($('#performa').val() == "False") {
+                Performa = false;
+            }
+            else {
+                Performa = true;
+            }
+
+            rows.each(function () {
+
+                var $tds = $(this).find('td');
+                var Id = $tds.eq(0).html().trim();
+                var ProjectID = $("#ProjectID").val();
+                var RFIID = $('#RFIID').val();
+                var IsSelected = $tds.find('#RFI_' + Id).is(':checked');
+                var commentsID = "Comments_" + Id;
+                var Comment = $("#" + commentsID).val();
+                var IsProforma = Performa;
+                var TypeID = $('#TypeID').val();
+                var InvoiceCheckList = {
+                    ProjectID: ProjectID,
+                    RFIID: RFIID,
+                    RFIChecklistItemID: Id,
+                    isCheckListChecked: IsSelected,
+                    Comments: Comment,
+                    IsProforma: IsProforma,
+                    TypeID: TypeID
+                };
+                ArrayOne.push(InvoiceCheckList);
+            });
+
+            $.ajax({
+                url: '@Url.Action("SaveCheckList", "Invoice")',
+                type: 'POST',
+                async: false,
+                data: JSON.stringify(ArrayOne),
+                contentType: "application/json; charset=utf-8",
+                success: function (results) {
+                    CloseLoadingPopup();
+                    if (results.status == true) {
+                        $("#SuccessSubmit").dialog({
+                            title: 'Invoice Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            open: function () {
+                                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                $(this).parent().css('z-index', '27');
+                            },
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    OpenLoadingPopup();
+                                    $(this).dialog("close");
+                                    $('#AddCheckList').dialog('destroy');
+                                    var IsPIRRequest;
+                                    if ($('#performa').val() == "False") {
+                                        IsPIRRequest = "False";
+                                    }
+                                    else {
+                                        IsPIRRequest = "True";
+                                    }
+                                    var empId = '@ViewBag.loginUserId';
+                                    var RFIID = $('#RFIID').val();
+                                    var ProjectID = $("#ProjectID").val();
+                                    var BtnClick = "Submit";
+                                    $.ajax({
+                                        url: '@Url.Action("SendMailInvoiceModule", "Invoice")',
+                                        type: 'POST',
+                                        data: { successEmpIDs: empId, RFIID: RFIID, BtnClick: BtnClick, IsPIRRequest: IsPIRRequest, TextLink: "", projectId: ProjectID },
+                                        datatype: "json",
+                                        success: function (data) {
+                                            // CloseLoadingPopup();
+                                            if (data) {
+                                                CloseLoadingPopup();
+                                                $("#InvoiceMailDialog").html(data);
+                                                $("#InvoiceMailDialog").dialog({
+                                                    resizable: false,
+                                                    height: 520,
+                                                    width: 800,
+                                                    modal: true,
+                                                    title: "Send Mail",
+                                                    close: function () {
+                                                        window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?textLink=' + '@ViewBag.TextLink';
+                                                        $(this).dialog('close');
+                                                    }
+                                                });
+
+                                                $.validator.unobtrusive.parse($("#MailDetails"));
+                                                $('#sendInvoiceMail').click(function () {
+
+                                                    $("#CCErrorMessage").hide();
+                                                    $("#ToErrorMessage").hide();
+                                                    if ($('#InvoiceMailDetails').valid()) {
+                                                        OpenLoadingPopup();
+                                                        var sendMailUrl = '@Url.Action("SendEmail", "Invoice")';
+                                                        $.ajax({
+                                                            url: sendMailUrl,
+                                                            type: 'POST',
+                                                            data: $('#InvoiceMailDetails').serialize(),
+                                                            success: function (serverData) {
+
+                                                                CloseLoadingPopup();
+                                                                if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                                    if (serverData.status == true) {
+                                                                        $("#InvoiceMailDialog").dialog('destroy');
+                                                                        window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink=' + '@ViewBag.TextLink';
+                                                                    }
+                                                                }
+                                                                else if (serverData.status == "Error") {
+                                                                    $("#errorDialog").dialog({
+                                                                        resizable: false,
+                                                                        height: 'auto',
+                                                                        width: 'auto',
+                                                                        modal: true,
+                                                                        title: 'Mail Error',
+                                                                        buttons: {
+                                                                            OK: function () {
+                                                                                $(this).dialog("close");
+                                                                            }
+                                                                        }
+                                                                    }); //end dialog
+                                                                }
+                                                                else {
+                                                                    if (serverData.validCcId == false)
+                                                                        $("#CCErrorMessage").show();
+                                                                    if (serverData.validtoId == false)
+                                                                        $("#ToErrorMessage").show();
+                                                                    return false;
+                                                                }
+                                                            },
+                                                            error: function () {
+
+                                                                CloseLoadingPopup();
+
+                                                                $("#errorDialog").dialog({
+                                                                    title: 'Mail Error',
+                                                                    resizable: false,
+                                                                    height: 'auto',
+                                                                    width: 'auto',
+                                                                    modal: true,
+                                                                    buttons:
+                                                                 {
+                                                                     OK: function () {
+                                                                         $(this).dialog("close");
+                                                                     }
+                                                                 }
+                                                                }); //end dialog
+                                                            }
+                                                        }); //end ajax
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#SubmitError").dialog({
+                            title: 'Invoice Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            open: function () {
+                                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                $(this).parent().css('z-index', '27');
+                            },
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    // $('#AddCheckList').dialog('destroy');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+    function OpenLoadingPopup() {
+        $("#loading").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose",
+            open: function () {
+                $('#loading').parent().css('background-color', 'transparent');
+                $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                $(this).parent().css('z-index', '33');
+            }
+        });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        //        $("#loading").dialog("destroy");
+    }
+</script>

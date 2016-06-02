@@ -1,0 +1,602 @@
+﻿@model HRMS.Models.SeparationShowDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Exit/SeparationShowDetails.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var x = "";
+    $(document).ready(function () {
+        //added by nikhil for new UI
+        $('select').selectBox({
+            hideOnWindowScroll: true,
+            keepInViewport: false
+        });
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-42px' });
+            //$('.ValidationDropDown').next(".sbHolder").next(".qualif-detail").css({ 'margin-top': '-24px' });
+        });
+
+        $('#TentativeReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#AgreedReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#SeparationFormDetails_ResignedDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $("#lblWaiveOff").hide();
+        $("#lblManagerComment").hide();
+        $("#lblAgreedReleaseDate").hide();
+        $("#lblRMGComment").hide();
+        $("#lblReasonForSeparartion").hide();
+        $("#lblHRComment").hide();
+        $("#lblInitiatorComment").hide();
+        $("#lblTentativeReleaseDate").hide();
+        if ('@Model.SeparationFormDetails.StageId' == "1") {
+            $('#TentativeReleaseDate').removeAttr('disabled');
+            $('#TentativeReleaseDate').removeAttr('readonly');
+            $('#TentativeReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        }
+
+        if ('@Model.SearchedUserDetails.UserRole' == "RMG" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+            $('#AgreedReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        }  //Follwing is to hide $ show buttons on the basis of curent stage to perform,
+        // & the person to whom particular button is to show
+
+        x = '@Model.SearchedUserDetails.UserRole';
+
+        if ('@ViewBag.IsManagerOrEMployee' == 'Employee') {
+
+            $("#btnShowDetailsSubmit").hide();
+            $("#btnShowDetailsSave").hide();
+            $("#btnShowDetailsApprove").hide();
+            $("#btnShowDetailsReject").hide();
+
+        }
+
+        if (('@ViewBag.IsManagerOrEMployee' == 'Employee') && ($("#hdStageId").val() == 1) && ('@ViewBag.LoggedInEmpId' == $("#EmpIdToPassOnLinkClick").val())) {
+            $("#btnShowDetailsSubmit").show();
+            $("#btnShowDetailsSave").hide();
+            $("#btnShowDetailsApprove").hide();
+            $("#btnShowDetailsReject").hide();
+        }
+
+        if ('@ViewBag.IsManagerOrEMployee' == 'Manager') {
+
+            if ($("#InboxOrWatchListCall").val() == 'jqInboxTable') {
+
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").show();
+                $("#btnShowDetailsApprove").show();
+                $("#btnShowDetailsReject").show();
+                $("#ReasonForSeparartion").attr('disabled', 'disabled');
+                $("#HRComment").attr('disabled', 'disabled');
+                $("#RMGComment").attr('disabled', 'disabled');
+                $("#RMGCommentArea").hide();
+                $("#HRCommentArea").hide();
+                $("#AgreedReleaseDate").attr('disabled', 'disabled');
+
+            }
+            else {
+
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+
+            }
+
+        }
+
+        if ('@Model.SearchedUserDetails.UserRole' == "RMG" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+            $("#AgreedReleaseDate").removeAttr('disabled');
+            $("#AgreedReleaseDate").removeAttr('readonly');
+        }
+
+        if ('@Model.SearchedUserDetails.UserRole' == "HR Admin") {
+            $("#AgreedReleaseDate").attr('disabled', 'disabled');
+            $(".ui-datepicker-trigger").hide();
+        }
+
+        if ('@ViewBag.IsManagerOrEMployee' == 'Manager' && '@ViewBag.IsResignationExists' == "True" && $("#hdStageId").val() == 1) {
+
+            if ($("#InboxOrWatchListCall").val() == 'jqInboxTable' && ('@ViewBag.LoggedInEmpId' == $("#EmpIdToPassOnLinkClick").val())) {
+                $("#btnShowDetailsSubmit").show();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+            }
+            else {
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+
+            }
+        }
+
+        if (('@ViewBag.DoActionAsRMGOrHRAdmin' == '8' || '@ViewBag.DoActionAsRMGOrHRAdmin' == '3')) {
+            if ($("#InboxOrWatchListCall").val() == 'jqInboxTable') {
+
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").show();
+                $("#btnShowDetailsApprove").show();
+                $("#btnShowDetailsReject").show();
+            }
+            else {
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+            }
+        }
+
+        if (('@ViewBag.DoActionAsRMGOrHRAdmin' == '8' || '@ViewBag.DoActionAsRMGOrHRAdmin' == '3') && '@ViewBag.IsResignationExists' == "True" && $("#hdStageId").val() == 1) {
+
+            if ($("#InboxOrWatchListCall").val() == 'jqInboxTable' && ('@ViewBag.LoggedInEmpId' == $("#EmpIdToPassOnLinkClick").val())) {
+
+                $("#btnShowDetailsSubmit").show();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+            }
+            else {
+                $("#btnShowDetailsSubmit").hide();
+                $("#btnShowDetailsSave").hide();
+                $("#btnShowDetailsApprove").hide();
+                $("#btnShowDetailsReject").hide();
+            }
+        }
+
+        //Follwing is to hide $ show text areas on the basis of curent stage to perform,
+        // & the person to whom particular button is to show
+        $("#RMGComment").attr('disabled', 'disabled');
+        $("#HRComment").attr('disabled', 'disabled');
+        $("#InitiatorComment").attr('disabled', 'disabled');
+        $("#ManagerComment").attr('disabled', 'disabled');
+
+        if ($("#ManagerComment").val() != "" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+            $("#ManagerCommentArea").show();
+
+            if ('@ViewBag.IsManagerOrEMployee' == 'Manager' || '@ViewBag.DoActionAsRMGOrHRAdmin' == '3') {
+                if ('@Model.SeparationFormDetails.StageId' == 2)
+                    $("#ManagerComment").removeAttr('disabled');
+                else
+                    $("#HRComment").removeAttr('disabled');
+
+            }
+
+        }
+        else {
+            $("#ManagerCommentArea").hide();
+        }
+
+        if ($("#RMGComment").val() != "" || '@ViewBag.DoActionAsRMGOrHRAdmin' == '8') {
+            $("#RMGCommentArea").show();
+
+            if ('@ViewBag.DoActionAsRMGOrHRAdmin' == '8' || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+                if ('@Model.SeparationFormDetails.StageId' == 8) {
+                    $("#RMGComment").removeAttr('disabled');
+                    $("#HRCommentArea").hide();
+                    $("#HRComment").attr('disabled', 'disabled');
+                }
+
+                else
+                    if ('@Model.SeparationFormDetails.StageId' == 2)
+                        $("#ManagerComment").removeAttr('disabled');
+
+            }
+        }
+        else {
+            $("#RMGCommentArea").hide();
+
+        }
+
+        if ($("#HRComment").val() != "" || '@ViewBag.DoActionAsRMGOrHRAdmin' == '3') {
+            $("#HRCommentArea").show();
+
+            if ('@ViewBag.DoActionAsRMGOrHRAdmin' == '3') {
+                if ('@Model.SeparationFormDetails.StageId' == 3) {
+                    $("#HRComment").removeAttr('disabled');
+                }
+            }
+        }
+        else {
+            $("#HRCommentArea").hide();
+        }
+
+        if ('@Model.SeparationFormDetails.StageId' == 1) {
+            $("#InitiatorComment").removeAttr('disabled');
+            $("#ReasonForSeparartion").removeAttr('disabled');
+            $("#SeparationFormDetails_ResignedDate").removeAttr('disabled');
+            $('#SeparationFormDetails_ResignedDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        }
+
+        $("#ReasonForSeparartion option").each(function () {
+            if ($(this).text() == '@Model.SeparationFormDetails.ReasonForSeparartion') {
+                $(this).attr('selected', 'selected');
+            }
+        });
+
+        $("#WaiveOff option").each(function () {
+            if ($(this).text() == '@Model.SeparationFormDetails.WaiveOff') {
+                $("#WaiveOff").next().find('.selectBox-label').text($(this).text());
+            }
+        });
+
+        if ($("#InboxOrWatchListCall").val() != 'jqInboxTable') {
+            $("#HRComment").attr('disabled', 'disabled');
+            $("#WaiveOff").attr('disabled', 'disabled');
+            $("#AgreedReleaseDate").attr('disabled', 'disabled');
+            $("#SeparationFormDetails_ResignedDate").attr('disabled', 'disabled');
+            $("#TentativeReleaseDate").attr('disabled', 'disabled');
+            $("#InitiatorComment").attr('disabled', 'disabled');
+            $(".ui-datepicker-trigger").hide();
+            $(".ui-datepicker-trigger").attr('disabled', 'disabled');
+            $("#ReasonForSeparartion").attr('disabled', 'disabled');
+        }
+
+        $("#SeparationFormDetails_ResignedDate").attr('disabled', 'disabled');
+        $("#IDResignedDateimagedisable .ui-datepicker-trigger").hide();
+        $("#ReasonForSeparartion").next().next().text($("#ReasonForSeparartion :selected").text());
+        $("#WaiveOff").next().next().text($("#WaiveOff").next().find('.selectBox-label').text());
+
+        DisplayLabel();
+        function DisplayLabel() {
+            $.each($(".ClassDisabledFields"), function (l, val) {
+                if ($(val).is(':disabled')) {
+                    if (val.id == "ReasonForSeparartion" || val.id == "WaiveOff") {
+                        $(this).next().hide().next().show();
+                        if (val.id == "ReasonForSeparartion" || val.id == "WaiveOff")
+                            $(this).css({ 'display': 'none' });
+                        //$(this).hide().next().show().append("</br>").next().hide();
+                    }
+                    else if (val.id == "InitiatorComment" || val.id == "ManagerComment" || val.id == "RMGComment" || val.id == "HRComment") {
+                        $(this).hide().next().show().children().show();
+                        if ($("#InitiatorComment").val() == "") {
+                            $("#lblInitiatorComment").hide();
+                        }
+                        if ($("#ManagerComment").val() == "") {
+                            $("#lblManagerComment").hide();
+                        }
+                        if ($("#RMGComment").val() == "") {
+                            $("#lblRMGComment").hide();
+                        }
+                        if ($("#HRComment").val() == "") {
+                            $("#lblHRComment").hide();
+                        }
+                    }
+                    else if (val.id == "SeparationFormDetails_ResignedDate" || val.id == "SystemReleavingDate" || val.id == "TentativeReleaseDate" || val.id == "AgreedReleaseDate") {
+                        //$(this).hide().next().next().show();
+                        $(this).hide().next().hide().next().show();
+                    }
+                    else
+                        $(this).hide().next().show();
+                }
+            });
+        }
+
+    });
+
+    $("#btnShowDetailsSubmit").click(showDetailsSubmit);
+
+    $("#btnShowDetailsSave").click(function () {
+        ShowDetailsSave(x);
+    });
+
+    $("#btnShowDetailsApprove").click(function () {
+        ShowdetailsApprove(x)
+    });
+
+    $("#btnShowDetailsReject").click(ShowDetailsReject);
+</script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ShowDetails" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.EmployeeId)
+    @Html.HiddenFor(m => m.SeparationFormDetails.SeparationId, new { @id = "hdExitInstanceId" })
+    @Html.HiddenFor(m => m.SeparationFormDetails.StageId, new { @id = "hdStageId" })
+    @Html.HiddenFor(m => m.GridClick)
+
+    <div class="popup-wrap SepContainer">
+        <div class="emp-details borderFieldsBottom">
+            <form class="hr-form clearfix">
+            <label class="prefix" for="Employee Name">
+                @Html.Label("Employee:")
+            </label>
+            <label class="suffix" for="Namrata Chandrakant Shetkar">
+                @Html.DisplayFor(x => x.EmployeeDetails.EmployeeName)
+            </label>
+            <label class="prefix" for="Employee Code">
+                @Html.Label("Tentative Release Date:")
+            </label>
+            <label class="suffix" for="3449">
+                @Html.DisplayFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate))
+            </label>
+            <label class="prefix" for="Reimbursment Form Code">
+                @Html.Label("Location:")
+            </label>
+            <label class="suffix" for="104">
+                @Html.DisplayFor(x => x.EmployeeDetails.OfficeLocation)
+            </label>
+            <label class="" for="Date Of Submissiion">
+                @Html.Label("EmployeeCode:")
+            </label>
+            <label class="suffix" for="28/4/2014">
+                @Html.DisplayFor(x => x.EmployeeDetails.EmployeeCode)
+            </label>
+            </form>
+        </div>
+        <h3 class="HRHeadingGreen">
+            Employee Separation Details
+        </h3>
+        <div class="hrpop clearfix">
+            <div class="fill-dtls separate clearfix">
+                <div class="leftcol">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Stage:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.SeparationFormDetails.stageName)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Role:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmployeeDetails.OrgRoleDescription)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Business Group:")
+                            </label>
+                        </div>
+                        <div class="InputDiv biglbl">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmployeeDetails.Group)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Joining Date:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate))
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Initiator Comment:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.SeparationFormDetails.InitiatorComment, new { @id = "InitiatorComment", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.InitiatorComment, Model.SeparationFormDetails.InitiatorComment, new { @id = "lblInitiatorComment", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.InitiatorComment)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("*Resigned Date:")
+                            </label>
+                        </div>
+                        <div class="InputDiv lastcol" id="IDResignedDateimagedisable">
+                            @Html.TextBoxFor(x => x.SeparationFormDetails.ResignedDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.ResignedDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.ResignedDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.ResignedDate), new { @id = "lblResignedDate", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.ResignedDate)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Notice Period:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.SeparationFormDetails.NoticePeriod)
+                                @Html.Label("Day(s)")
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Manager Comment:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.SeparationFormDetails.ManagerComment, new { @id = "ManagerComment", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.ManagerComment, Model.SeparationFormDetails.ManagerComment, new { @id = "lblManagerComment", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.ManagerComment)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("RMG Comment:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.SeparationFormDetails.RMGComment, new { @id = "RMGComment", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.RMGComment, Model.SeparationFormDetails.RMGComment, new { @id = "lblRMGComment", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.RMGComment)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("HR Comment:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.SeparationFormDetails.HRComment, new { @id = "HRComment", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.HRComment, Model.SeparationFormDetails.HRComment, new { @id = "lblHRComment", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.HRComment)
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol clearfix">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Mode Of Separation:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.SeparationFormDetails.ModeOfSeparation)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Designation:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmpdesignationDetails.Designation)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Organization Unit:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmployeeDetails.OrganizationUnit)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Grade:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label class="select-type">
+                                @Html.DisplayFor(x => x.EmpdesignationDetails.Grade)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("*Reason For Exit:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.SeparationFormDetails.ReasonForSeparartion, new SelectList(Model.SeparationFormDetails.SeparationReasonList, "ReasonId", "Reason", "Select  Reason"), "Select  Reason", new { @id = "ReasonForSeparartion", @class = "ValidationDropDown ClassDisabledFields" })
+                            @Html.LabelFor(x => x.SeparationFormDetails.ReasonForSeparartion, Model.SeparationFormDetails.ReasonForSeparartion, new { @id = "lblReasonForSeparartion", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.ReasonForSeparartion)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("Waive Of:")
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.SeparationFormDetails.WaiveOff, new SelectList(Model.WaiveOffList, "WaiveId", "Description"), "", new { @id = "WaiveOff", @class = "WaiveOffClass ValidationDropDown ClassDisabledFields" })
+                            @Html.LabelFor(x => x.SeparationFormDetails.WaiveOff, Model.SeparationFormDetails.WaiveOff, new { @id = "lblWaiveOff", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.WaiveOff)
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("System Generated Relieving Date:")
+                            </label>
+                        </div>
+                        <div class="InputDiv lastcol clearfix">
+                            @Html.TextBoxFor(x => x.SeparationFormDetails.SystemReleavingDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.SystemReleavingDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.SystemReleavingDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.SystemReleavingDate), new { @id = "lblSystemReleavingDate", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.SystemReleavingDate)
+                            @{
+    DateTime systemReleavingDate = Model.SeparationFormDetails.SystemReleavingDate.HasValue ? Model.SeparationFormDetails.SystemReleavingDate.Value : DateTime.MinValue;
+                            }
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("*Tentative Release Date:")
+                            </label>
+                        </div>
+                        <div class="InputDiv clearfix">
+                            @Html.TextBoxFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TentativeReleaseDate", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate), new { @id = "lblTentativeReleaseDate", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.TentativeReleaseDate)
+                            @{
+    DateTime tentativeReleaseDate = Model.SeparationFormDetails.TentativeReleaseDate.HasValue ? Model.SeparationFormDetails.TentativeReleaseDate.Value : DateTime.MinValue;
+                            }
+                        </div>
+                    </div>
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            <label class="select-type">
+                                @Html.Label("*Agreed Release Date:")
+                            </label>
+                        </div>
+                        <div class="InputDiv clearfix">
+                            @Html.TextBoxFor(x => x.SeparationFormDetails.AgreedReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.AgreedReleaseDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "AgreedReleaseDate", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeparationFormDetails.AgreedReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.AgreedReleaseDate), new { @id = "lblAgreedReleaseDate", @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.AgreedReleaseDate)
+                            @{
+    DateTime agreedReleaseDate = Model.SeparationFormDetails.AgreedReleaseDate.HasValue ? Model.SeparationFormDetails.AgreedReleaseDate.Value : DateTime.MinValue;
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mrgnB18 mrgnT15 mrgnL46">
+        <input id="btnShowDetailsSubmit" type="submit" value="Submit" class="ButtonGray mrgnR11" />
+        <input id="btnShowDetailsSave" type="submit" value="Save" class="ButtonGray mrgnR11" />
+        <input id="btnShowDetailsApprove" type="submit" value="Approve" class="ButtonGray mrgnR11" />
+        <input id="btnShowDetailsReject" type="submit" value="Reject" class="ButtonGray mrgnR11" />
+    </div>
+}
+<div id="ShowDetailsSaveSuccess" style="display: none">
+    Details saved successfully.
+</div>
+<div id="ShowDetailsSubmitSuccess" style="display: none">
+    Details submited successfully.
+</div>
+<div id="ShowDetailsApproveSuccess" style="display: none">
+    Exit process has been moved to next stage.
+</div>
+<div id="ShowDetailsRejectSuccess" style="display: none">
+    Exit process has been moved to previous stage.
+</div>

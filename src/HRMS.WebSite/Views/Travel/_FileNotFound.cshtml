@@ -1,0 +1,33 @@
+﻿@model HRMS.Models.ConfigurationViewModel
+@{
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+
+<div id="testDiv" style="display: none">
+    <p>
+        <center style="text-align: center; padding-top: 30px">
+    File not found.
+</center>
+    </p>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#testDiv').dialog({
+            autoOpen: true,
+            modal: true,
+            width: 350,
+            resizable: false,
+            title: "File not found",
+            dialogClass:'noclose',
+            buttons: {
+                Ok: function () {
+                    $(this).dialog("destroy");
+                    window.history.back()
+                }
+            },
+            close: function () {
+                window.history.back()
+            }
+        });
+    });
+</script>

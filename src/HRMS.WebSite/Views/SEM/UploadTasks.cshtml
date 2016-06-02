@@ -1,0 +1,134 @@
+﻿@model HRMS.Models.UploadTasksModel
+@{
+    ViewBag.Title = "Upload Tasks";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew NoTitleGridsContainer clearfix">
+    <h2 class="title-bgcolor">
+        General Tasks</h2>
+    <div class="clearfix blueBorderTop">
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Select Project:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        @*<div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Templates to be used:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                        <option>abcd</option>
+                    </select>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <input type="button" class="button" value="Download Template" />
+    <div class="clearfix">
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                   <span class="mandatory">*</span> @Html.Label("Request Name:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                   <span class="mandatory">*</span> @Html.Label("File Name:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="file" />
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                   <span class="mandatory">*</span> @Html.Label("Description:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="button" class="button" value="Upload" />
+    <div class="tablestyle3">
+        <table id="jqExcelUploadTable">
+        </table>
+    </div>
+    <div id="jqExcelUploadTablePager">
+    </div>
+   @*  <input type="button" class="button" value="Add" onclick="window.open('/SEM/UploadData')" />
+    <input type="button" class="button" value="Delete" />
+    <input type="button" class="button" value="Select All" />*@
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+        $("#jqExcelUploadTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Request Name", "File Name", "Description"],            
+            // Configure the columns
+            colModel: [
+                
+                { name: "RequestName", index: "RequestName", align: "center", width: 150 },
+                { name: "FileName", index: "FileName", align: "center", width: 150 },
+                { name: "Description", index: "Description", align: "center", width: 400 },
+               
+               
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqExcelUploadTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Excel Upload",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqExcelUploadTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+     
+     
+     });
+</script>

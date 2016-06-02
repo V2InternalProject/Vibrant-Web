@@ -1,0 +1,87 @@
+﻿@model HRMS.Models.FinanceClearance
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Exit/ADMINPendingItemEmailForm.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+$.ajaxSetup({
+		// Disable caching of AJAX responses
+		cache: false
+	});
+
+	var EmpIdToPassAdmin = '@ViewBag.EmployeeIdAdmin';
+    $(document).ready(function () {
+
+    	$("#btnSendMail").click(AdminSendMail);
+
+     $('#selectall_ADMIN').click(function () {
+        $('input:checkbox.case').attr('checked', 'checked');
+       });
+
+    });
+</script>
+
+<div id="SeparationFormSuccessMessage" style="display: none">
+	<p>
+		Separation Form submited successfully.
+	</p>
+</div>
+
+<div id="ChkBoxWarningAdmin" style="display: none">
+  Please select atleast 1 item.
+</div>
+<div id="adminSeparationMailDialog" style="display: none">
+	@*@{Html.RenderPartial("_MailTemplateSeparation", Model.Mail);}*@
+</div>
+
+<section class="SepTableNoBorderB">
+    <h3 class="HRHeadingGreen">Pending Items</h3>
+    <table class="TableJqgrid mrgnB18" border="0" width="100%">
+
+        <thead>
+            <tr>
+                <td width="20%" align="left" class="tableHeaders">
+                    Section
+                </td>
+                <td class="tableHeaders">
+                    Item
+                </td>
+                <td width="20%" align="left" class="tableHeaders">
+                    Select
+                </td>
+            </tr>
+        </thead>
+
+        <tr class="TopRow">
+            <td colspan="3">
+                ADMIN Clearance
+            </td>
+        </tr>
+
+        @foreach (var item in Model.QuestionnaireQuestions)
+{
+    <tr class="tableRows">
+        <td></td>
+        <td>
+            @Html.DisplayFor(s => item.QuestionDescription)
+        </td>
+        <td align="center">
+            @*<input type="checkbox" name="prfofinvestcheck" value="ProofOfInvestment" class="case" id="prfofinvestcheckpendingid">*@
+            <input type="checkbox" id="ADMIN_+@item.QuestionnaireQuestionID" class="case" value="@item.QuestionnaireQuestionID" data-name="@item.QuestionDescription" />
+            <label for="ADMIN_+@item.QuestionnaireQuestionID" class="LabelForCheckbox"></label>
+        </td>
+    </tr>
+}
+        <tr>
+
+            <td colspan="3" class="bottomcount">Total Records :@Model.QuestionnaireQuestions.Count()</td>
+        </tr>
+    </table>
+</section>
+
+<div class="mrgnB18 mrgnT15 mrgnL46">
+    <input type="button" value="Select All" id="selectall_ADMIN" class="ButtonGray mrgnR11" />
+    <input type="button" value="Send Mail" id="btnSendMail" class="ButtonGray mrgnR11" />
+</div>

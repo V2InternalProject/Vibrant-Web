@@ -1,0 +1,968 @@
+﻿@model HRMS.Models.OrganizationStructure
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<h2 class="title-bgcolor">
+    Configure Delivery Unit</h2>
+<div class="stackhold-right">
+    <input class="button" type="button" id="SaveEditDeliveryUnit" value="Save" />
+    <input class="button" type="button" id="btnAddExistingDT" value="Add Existing DT" />
+</div>
+<h3 class="Configure-title">
+    Master</h3>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "ConfigDeliveryunit" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.ResourcePoolID)
+    <div style="float: inherit" class="mrgnT10">
+        <div class="conf-pop clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => Model.ResourcePoolCode)
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(x => Model.ResourcePoolCode, new { @disabled = "Disabled" })
+            </div>
+        </div>
+        <div class="conf-pop clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => Model.ResourcePoolName)<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.ValidationMessageFor(x => Model.ResourcePoolName)
+                @Html.TextBoxFor(x => Model.ResourcePoolName)
+            </div>
+        </div>
+        <div class="conf-pop clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => Model.Active)
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.CheckBoxFor(x => Model.Active)
+            </div>
+        </div>
+        <div class="conf-pop clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => Model.TimesheetRequired)
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.CheckBoxFor(x => Model.TimesheetRequired)
+            </div>
+        </div>
+    </div>
+}
+<h3 class="Configure-title">
+    Details</h3>
+<table align="right">
+    <tr>
+        <td>
+            <a href="#" onclick="DeliveryTeamsForDeliveryUnits()">Delivery Teams</a><span class="conf-div">|</span>
+        </td>
+        <td>
+            <a href="#" onclick="DeliveryUnitManagers()">Delivery Unit Managers</a><span class="conf-div">|</span>
+        </td>
+        <td>
+            <a href="#" onclick="MiddleLevelResourcesForDeliveryUnits()">Middle Level Resources
+            </a>
+        </td>
+    </tr>
+</table>
+<br />
+<div id="DeliveryTeamsdiv">
+    <br />
+    <div style="float: right">
+        <input class="button" type="button" id="AddDeliveryTeams" value="Add" />
+        <input class="button" type="button" id="DeleteDeliveryTeams" value="Delete" />
+        <input class="button" type="button" id="SelectAllDeliveryTeams" value="Select All"
+            onclick="SelectDeliveryTeams()" />
+        <input class="button" type="button" id="DeselectAllDeliveryTeams" value="Deselect All"
+            onclick="DeselectDeliveryTeams()" />
+    </div>
+    <h3 class="Configure-title">
+        Delivery Teams</h3>
+    <div class="tbl_DeliveryTeams">
+        <table cellpadding="0" cellspacing="0" border="0" id="tbl_DeliveryTeams">
+            <thead>
+                <tr class="bluebgtable1">
+                    <td width="10%">
+                        Delivery Team Code
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Delivery Team Name
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Delivery Team Head
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Delete
+                    </td>
+                </tr>
+            </thead>
+            <div id="DeliveryTeam">
+                @foreach (var item in Model.DeliveryTeams)
+                {
+                    <tr>
+                        <td id="Location">
+                            @Html.DisplayFor(modelItem => item.GroupCode, new { @readonly = "readonly" })
+                        </td>
+                        <td id="LocationCode">
+                            @Html.DisplayFor(modelItem => item.GroupName, new { @readonly = "readonly" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                        </td>
+                        <td align="center">
+                            @Html.CheckBoxFor(x => item.Checked, new { @id = item.GroupID, @class = "DelUnits" })
+                        </td>
+                    </tr>
+                }
+            </div>
+        </table>
+    </div>
+    <br />
+    <table align="right">
+        <thead class="bluebutton1">
+            <tr>
+                <td class="bluebgtable1">
+                    @Html.LabelFor(x => x.TotalDeliveryTeams)
+                    @Html.DisplayFor(x => x.TotalDeliveryTeams)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<div id="DeliveryUnitManagerdiv">
+    <div style="float: right">
+        <input class="button" type="button" id="AddDeliveryUnitManagers" value="Add" />
+        <input class="button" type="button" id="DeleteDeliveryUnitManagers" value="Delete" />
+        <input class="button" type="button" id="SelectAllDeliveryUnitManagers" value="Select All"
+            onclick="SelectAllDeliveryUnitManager()" />
+        <input class="button" type="button" id="DeselectAllDeliveryUnitManagers" value="Deselect All"
+            onclick="DeselectAllDeliveryUnitManager()" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Delivery Unit Managers
+    </h3>
+    <table cellpadding="0" width="100%" cellspacing="0" border="0" id="tbl_DeliveryUnitManagers">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Manager
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Is Primary Responsible
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete
+                </td>
+            </tr>
+        </thead>
+        <div id="DeliveryUnitManagersList">
+            @foreach (var item in Model.DeleveryUnitManagerList)
+            {
+                <tr>
+                    <td>
+                        <a href="#" id="@item.EmployeeID" class="userNameManager" onclick="EditDeleveryUnitManagerfromexisting(this.id)">
+                            <u>@item.UserName</u></a>
+                    </td>
+                    <td id="IsPrimaryresponsible">
+                        @Html.Label(item.IsPrimaryResponsible ? "Yes" : "No")
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "selectAllDeleveryUnitManagers", @data = item.ResourcePoolID, @for = item.EmployeeID })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebgtable1">
+            <tr>
+                <td>
+                    @Html.LabelFor(x => x.TotalDeliveryUnitsManagers)
+                    @Html.DisplayFor(x => x.TotalDeliveryUnitsManagers)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="MiddleLevelResourcesForDeliveryUnitsdiv">
+    <div style="float: right">
+        <input class="button" type="button" id="DeleteMiddleLevelResourcesForDeliveryUnits"
+            value="Delete" />
+        <input class="button" type="button" id="SelectResourcesMiddleLevelResourcesForDeliveryUnits"
+            value="Select Resources" onclick="selectResourcesResourcesForDeliveryUnits()" />
+        <input class="button" type="button" id="SelectAllMiddleLevelResourcesForDeliveryUnits"
+            value="Select All" />
+        <input class="button" type="button" id="DeselectAllMiddleLevelResourcesForDeliveryUnits"
+            value="Deselect All" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Middle Level Resources
+    </h3>
+    <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Employee Name
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Role
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Email ID
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete
+                </td>
+            </tr>
+        </thead>
+        <div id="MiddleLevelResourcesList">
+            @foreach (var item in Model.MiddleLevelResourcesList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailID, new { @readonly = "readonly" })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "selectMiddleLevelResourcesForDeliveryUnit", @data = item.EmpoloyeeID, @for = Model.ResourcePoolID })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebgtable1">
+            <tr>
+                <td>
+                    @Html.LabelFor(x => x.TotalMiddleLevelResources)
+                    @Html.DisplayFor(x => x.TotalMiddleLevelResources)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<div id="adddeliveryTeamnew" style="display: none">
+    @Html.Partial("_AddDeliveryTeam", Model)
+</div>
+<div id="NoItemSelectedDeliveryTeam" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+        Please select atleast one record to delete.
+    </center>
+</div>
+<div id="DeleteDeliveryTeamConfirm" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+        Are you sure, you want to delete selected record ?
+    </center>
+</div>
+<div id="DeleteDeliveryTeamSuccess" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+        The selected record is successfully deleted.
+    </center>
+</div>
+<div id="ErrorDeliveryTeam" style="display: none" title="Error">
+    <center class="LoadingWrap">
+        There is some error.
+    </center>
+</div>
+<div id="addExistingDTDialog" style="display: none">
+</div>
+<div id="addDeliveryUnitManagerList">
+</div>
+<div id="EditDeliveryUnitManagerList" style="display: none">
+</div>
+<div id="SelectResourceListdeliveryUnit">
+</div>
+<div id="ErrorSaveDeliveryUnit" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+        This Delivery Unit can't be inactive as having child underneath of it.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $("#DeliveryUnitManagerdiv").hide();
+        $("#MiddleLevelResourcesForDeliveryUnitsdiv").hide();
+    });
+
+    function DeliveryTeamsForDeliveryUnits() {
+        $("#DeliveryUnitManagerdiv").hide();
+        $("#MiddleLevelResourcesForDeliveryUnitsdiv").hide();
+        $("#DeliveryTeamsdiv").show();
+    }
+
+    function DeliveryUnitManagers() {
+        $("#DeliveryTeamsdiv").hide();
+        $("#MiddleLevelResourcesForDeliveryUnitsdiv").hide();
+        $("#DeliveryUnitManagerdiv").show();
+    }
+
+    function MiddleLevelResourcesForDeliveryUnits() {
+        $("#DeliveryUnitManagerdiv").hide();
+        $("#DeliveryTeamsdiv").hide();
+        $("#MiddleLevelResourcesForDeliveryUnitsdiv").show();
+    }
+
+    function SelectDeliveryTeams() {
+        $('.DelUnits').attr("checked", true);
+    }
+
+    function DeselectDeliveryTeams() {
+        $('.DelUnits').attr("checked", false);
+    }
+
+    function SelectAllDeliveryUnitManager() {
+        $('.selectAllDeleveryUnitManagers').attr("checked", true);
+    }
+
+    function DeselectAllDeliveryUnitManager() {
+        $('.selectAllDeleveryUnitManagers').attr("checked", false);
+    }
+
+    $("#SelectAllMiddleLevelResourcesForDeliveryUnits").click(function () {
+        $('.selectMiddleLevelResourcesForDeliveryUnit').attr("checked", true);
+    });
+
+    $("#DeselectAllMiddleLevelResourcesForDeliveryUnits").click(function () {
+        $('.selectMiddleLevelResourcesForDeliveryUnit').attr("checked", false);
+    });
+
+    $("#AddDeliveryTeams").click(function () {
+        $("#adddeliveryTeamnew #GroupCode").val('');
+        $("#adddeliveryTeamnew #GroupName").val('');
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#BusinessGroupID").val('@Model.BusinessGroupID');
+        $("#ResourcePoolID").val('@Model.ResourcePoolID');
+        $('#adddeliveryTeamnew').dialog({
+            autoOpen: false,
+            modal: true,
+            width: 500,
+            resizable: false,
+            title: "Delivery Team",
+            close: function () {
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+            }
+        });
+        $('#adddeliveryTeamnew').dialog('open');
+    });
+
+    $("#DeleteDeliveryTeams").click(function () {
+        var GroupID = "";
+        $.each($('input[class=DelUnits]:checked'), function (i, val) {
+            GroupID = GroupID + $(val).attr("id") + (',');
+        });
+        var ResourcePoolID = '@Model.ResourcePoolID';
+        if (GroupID == "") {
+            $("#NoItemSelectedDeliveryTeam").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteDeliveryTeamConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteDeliveryTeam", "OrganizationStructure")',
+                            data: JSON.stringify({ GroupID: GroupID,
+                                ResourcePoolID: ResourcePoolID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#DeleteDeliveryTeamSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".OrgUnits").prop("checked", false);
+                                                $("#configureDeleveryUnit").dialog("close");
+                                                $("#configureDeleveryUnit").dialog("destroy");
+                                                $("#configureDeleveryUnit").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Delivery Unit",
+                                                    open: function (event, ui) {
+                                                        $('#configureDeleveryUnit').load("/OrganizationStructure/ConfigureDeleveryUnits", { BusinessGroupID: '@Model.BusinessGroupID', ResourcePoolID: '@Model.ResourcePoolID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#ErrorDeliveryTeam").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+
+    //    $("#AddDeliveryUnitManagers").click(function () {
+    $('#AddDeliveryUnitManagers').off('click').on('click', function () {
+        $("#loading").dialog(
+         {
+             closeOnEscape: false,
+             resizable: false,
+             height: 140,
+             width: 300,
+             modal: true,
+             dialogClass: "noclose"
+         });
+        var EmployeeID = "";
+        $.each($(".userNameManager"), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("id") + (',');
+        });
+        $.ajax({
+            url: '@Url.Action("AddDeliveryUnitManager", "OrganizationStructure")',
+            type: 'GET',
+            data: { EmployeeID: EmployeeID,
+                ResourcePoolID: '@Model.ResourcePoolID',
+                empID: 0,
+                BusinessGroupID: '@Model.BusinessGroupID'
+            },
+            async: true,
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#addDeliveryUnitManagerList").empty().append(results);
+                $("#addDeliveryUnitManagerList").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 425,
+                    title: "Delivery Unit Managers",
+                    close: function (event, ui) {
+                        $("#addDeliveryUnitManagerList").empty();
+                        $("#addDeliveryUnitManagerList").dialog("destroy");
+                        $(".field-validation-error").empty();
+                        $('input').removeClass("input-validation-error");
+                    }
+                });
+            }
+        });
+
+    });
+
+    function EditDeleveryUnitManagerfromexisting(id) {
+        $("#loading").dialog(
+         {
+             closeOnEscape: false,
+             resizable: false,
+             height: 140,
+             width: 300,
+             modal: true,
+             dialogClass: "noclose"
+         });
+        var EmployeeID = "";
+        $.each($(".userNameManager"), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("id") + (',');
+        });
+
+        $.ajax({
+            url: '@Url.Action("AddDeliveryUnitManager", "OrganizationStructure")',
+            type: 'GET',
+            data: { EmployeeID: EmployeeID,
+                ResourcePoolID: '@Model.ResourcePoolID',
+                empID: id,
+                BusinessGroupID: '@Model.BusinessGroupID'
+            },
+            async: true,
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#EditDeliveryUnitManagerList").empty().append(results);
+                $("#EditDeliveryUnitManagerList").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 425,
+                    title: "Delivery Unit Managers",
+                    close: function (event, ui) {
+                        $("#EditDeliveryUnitManagerList").empty();
+                        $("#EditDeliveryUnitManagerList").dialog("destroy");
+                        $(".field-validation-error").empty();
+                        $('input').removeClass("input-validation-error");
+                    }
+                });
+            }
+        });
+    }
+
+    $("#DeleteMiddleLevelResourcesForDeliveryUnits").click(function () {
+        var collection = [];
+        $.each($('input[class=selectMiddleLevelResourcesForDeliveryUnit]:checked'), function (i, val) {
+            if ($(val).attr("data") != undefined) {
+                collection.push($(val).attr("data"));
+            }
+        });
+        var ResourcePoolID = $(".selectMiddleLevelResourcesForDeliveryUnit").attr("for");
+        if (collection.length == 0) {
+            $("#NoItemSelectedDeliveryTeam").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteDeliveryTeamConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteMiddleLevelResourcesDeliveryUnit", "OrganizationStructure")',
+                            data: JSON.stringify({ collection: collection,
+                                ResourcePoolID: ResourcePoolID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#DeleteDeliveryTeamSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".selectMiddleLevelResourcesForDeliveryUnit").prop("checked", false);
+                                                $("#configureDeleveryUnit").dialog("close");
+                                                $("#configureDeleveryUnit").dialog("destroy");
+                                                $("#configureDeleveryUnit").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Delivery Unit",
+                                                    open: function (event, ui) {
+                                                        $('#configureDeleveryUnit').load("/OrganizationStructure/ConfigureDeleveryUnits", { BusinessGroupID: '@Model.BusinessGroupID', ResourcePoolID: '@Model.ResourcePoolID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#ErrorDeliveryTeam").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+
+    function selectResourcesResourcesForDeliveryUnits() {
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        var EmpID = "";
+        $.each($(".selectMiddleLevelResourcesForDeliveryUnit"), function (i, val) {
+            EmpID = EmpID + $(val).attr("data") + (',');
+        });
+
+        $.ajax({
+            url: '@Url.Action("SelectResourcesForDeliveryUnits", "OrganizationStructure")',
+            type: 'GET',
+            data: { _EmployeeID: EmpID,
+                BusinessGroupID: '@Model.BusinessGroupID',
+                ResourcePoolID: '@Model.ResourcePoolID'
+            },
+            async: true,
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#SelectResourceListdeliveryUnit").empty().append(results);
+                $("#SelectResourceListdeliveryUnit").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: '550',
+                    width: 1100,
+                    title: "Select Resources For Delivery Unit",
+                    close: function (event, ui) {
+                        $("#SelectResourceListdeliveryUnit").dialog("destroy");
+                    }
+                });
+            }
+        });
+    }
+
+    $.validator.unobtrusive.parse($("#ConfigDeliveryunit"));
+    $("#SaveEditDeliveryUnit").click(function () {
+        if ($("#ConfigDeliveryunit").valid()) {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+            $("#ResourcePoolID").val('@Model.ResourcePoolID');
+            $("#configureDeleveryUnit #ResourcePoolCode").removeAttr("disabled");
+            $.ajax({
+                url: '@Url.Action("SaveDeliveryUnit", "OrganizationStructure")',
+                data: $("#ConfigDeliveryunit").serialize(),
+                type: 'POST',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#configureDeleveryUnit #ResourcePoolCode").attr("disabled", "disabled");
+                    if (results.status == true) {
+                        $("#configureDeleveryUnit").dialog("close");
+                        location.reload();
+                    }
+                    else {
+                        $("#ErrorSaveDeliveryUnit").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $("#Active").attr("checked", true);
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#configureDeleveryUnit #ResourcePoolCode").attr("disabled", "disabled");
+                    $("#ErrorDeliveryTeam").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    $("#DeleteDeliveryUnitManagers").click(function () {
+        var collection = [];
+        $.each($('input[class=selectAllDeleveryUnitManagers]:checked'), function (i, val) {
+            if ($(val).attr("for") != undefined) {
+                collection.push($(val).attr("for"));
+            }
+        });
+        var ResourcePoolID = $(".selectAllDeleveryUnitManagers").attr("data");
+        if (collection.length == 0) {
+            $("#NoItemSelectedDeliveryTeam").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteDeliveryTeamConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteManagerDeliveryUnit", "OrganizationStructure")',
+                            data: JSON.stringify({ collection: collection,
+                                ResourcePoolID: ResourcePoolID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#DeleteDeliveryTeamConfirm").dialog("destroy").remove()
+                                    $("#DeleteDeliveryTeamSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".selectAllDeleveryUnitManagers").prop("checked", false);
+                                                $("#configureDeleveryUnit").dialog("close");
+                                                $("#configureDeleveryUnit").dialog("destroy");
+                                                $("#configureDeleveryUnit").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Delivery Unit",
+                                                    open: function (event, ui) {
+                                                        $('#configureDeleveryUnit').load("/OrganizationStructure/ConfigureDeleveryUnits", { BusinessGroupID: '@Model.BusinessGroupID', ResourcePoolID: '@Model.ResourcePoolID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteDeliveryTeamConfirm").dialog("close");
+                                    $("#ErrorDeliveryTeam").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+
+    $("#btnAddExistingDT").click(function () {
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $.ajax({
+            url: '@Url.Action("LoadExistingDT", "OrganizationStructure")',
+            data: { BusinessGroupID: '@Model.BusinessGroupID', ResourcePoolID: '@Model.ResourcePoolID' },
+            type: 'GET',
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (results != null) {
+                    $('#addExistingDTDialog').html(results);
+                    $("#addExistingDTDialog").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 450,
+                        title: "Add Existing DT",
+                        close: function (event, ui) {
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+                else {
+                    $("#ErrorManager").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog('close');
+                                $(this).dialog('destroy');
+                            }
+                        }
+                    });
+                }
+            },
+            Error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#ErrorManager").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog('close');
+                            $(this).dialog('destroy');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>

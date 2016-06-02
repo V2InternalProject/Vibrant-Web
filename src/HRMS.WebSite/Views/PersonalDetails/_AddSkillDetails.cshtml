@@ -1,0 +1,181 @@
+﻿@model HRMS.Models.SkillDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddSkillDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT30 NoNegMrgnContainer">
+        @Html.HiddenFor(x => x.NewSkillDetail.EmployeeSkillID)
+        @Html.HiddenFor(x => x.NewSkillDetail.EmployeeID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewSkillDetail.Skill):
+            </div>
+            <div class="editor-field fieldwidth floatL widthsmall">
+                @Html.DropDownListFor(x => x.NewSkillDetail.Skill, new SelectList(Model.NewSkillDetail.SkillsDDL, "Value", "Text", "Select"), "Select")
+                @Html.HiddenFor(x => x.NewSkillDetail.Skill, new { @id = "skill" })
+                <span id="skillError" style="color: Red; display: none"></span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                Skill Level:@*@Html.LabelFor(x => x.SkillLevel)*@
+            </div>
+            <div class="editor-field fieldwidth floatL widthsmall">
+                @Html.DropDownListFor(x => x.NewSkillDetail.SkillLevel, new SelectList(Model.NewSkillDetail.SkillsLevelDDL, "Value", "Text"), "Select", new { @id = "skillLevel" })
+                @Html.HiddenFor(x => x.NewSkillDetail.SkillLevel, new { @id = "level" })
+                @*<input type="hidden" id="level" />*@ <span id="levelError" style="color: Red; display: none">
+                </span>
+            </div>
+        </div>
+        <div class="clear popup_button">
+            <div class="floatR">
+                <input type="submit" value="Save" id="btnSaveSkillDetails" class="button mrgnR5" />
+                <input type="button" value="Reset" onclick="resetDialog()" class="button" />
+            </div>
+        </div>
+    </div>
+}
+<div id="skillSuccessDialog" title="Skill details" style="display: none">
+    <p>
+        Skill Details have been saved.</p>
+</div>
+<div id="skillErrorDialog" title="Error" style="display: none">
+    <p>
+        Skill set already exist.</p>
+</div>
+<div id="mailError" title="Mail Error" style="display: none">
+    <p>
+        Mail Sending Failed.</p>
+</div>
+<div id="failedRecipient" title="Sending Failed" style="display: none">
+    <center><span>Could not send mail to </span><span id="span_failedRecipient"></span></center>
+</div>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+        var postUrl = '@Url.Action("SaveEmployeeskillDetails", "PersonalDetails")'
+        $("#btnSaveSkillDetails").click(function () {
+            if ($("#skillLevel").val() == "") {
+                $("#skillLevel").val('');
+            }
+            DisplayLoadingDialog(); // Checked global.js
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                cache: false,
+                data: $('#frmAddSkillDetails').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status == true) {
+                        $($('#btnSkillSendEmail')).removeAttr('disabled');
+                        $('#skillDetailsDialog').dialog("close");
+                        $('#skillDetailsDialog').dialog("destroy");
+                        DisplayLoadingDialog(); // Checked global.js
+                        $.ajax({
+                            cache: false,
+                            url: '@Url.Action("LoadSkillDetailRecords", "PersonalDetails")',
+                            data: { employeeId: '@ViewBag.skillEmployeeId' },
+                            success: function (result) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $('#skillDetailRecords').empty();
+                                $("#skillDetailRecords").html(result);
+                            }
+                        });
+
+                        $("#skillSuccessDialog").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    if ('@Model.UserRole' != 'RMG') {
+                                        DisplayLoadingDialog(); // Checked global.js
+                                        // SendMailForSkill('@ViewBag.skillEmployeeId');
+                                    }
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    $('#skillSuccessDialog').dialog("close");
+                                }
+                            }
+                        });
+                    } //if close
+                    else if (results.status == "Error") {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $('#skillDetailsDialog').dialog("close");
+                        $('#skillDetailsDialog').dialog("destroy");
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Skill Details',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results.skill) {
+                            $('#skillError').css('display', 'block');
+                            $('#skillError').text("Please select at least one skill.");
+                        }
+
+                        if (results.skillLevel) {
+                            $('#levelError').css('display', 'block');
+                            $('#levelError').text("Please select skill level.");
+                        }
+                        if (!results.skill) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+
+                            $("#skillErrorDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    } //else close
+                } //success close
+            }); //ajax close
+            return false;
+        }); //btnSaveSkillDetails close
+
+    });                     //document.ready close
+
+    function resetDialog() {
+        var sName = $("#skill").val();
+        var sKName = $("#level").val();
+
+        $("#skillDetailsDialog #Skill option[value = " + sName + "] ").attr('selected', 'selected');
+        $("#skillDetailsDialog #skillLevel option[value = " + sKName + "] ").attr('selected', 'selected');
+
+        $('#skillError').css('display', 'none');
+        $('#skillError').text("");
+
+        $('#levelError').css('display', 'none');
+        $('#levelError').text("");
+
+    }
+</script>

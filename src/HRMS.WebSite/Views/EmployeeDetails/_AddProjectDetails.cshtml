@@ -1,0 +1,313 @@
+﻿@model HRMS.Models.ProjectDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#FromDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "2000:2050", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true })
+    .bind("change", function () {
+        var minValue = $(this).val();
+        minValue = $.datepicker.parseDate("mm/dd/yy", minValue);
+        minValue.setDate(minValue.getDate() + 1);
+        $("#ToDate").datepicker("option", "minDate", minValue);
+    })
+    $('select option[text="it\'s me"]').attr("selected", true);
+       $('#ToDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "2000:2050", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+    if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+        $("#frmAddProjectDetails :input").attr("disabled", true);
+        $(".ui-datepicker-trigger").hide();
+    }
+ });
+</script>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddProjectDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div>
+      @Html.HiddenFor(model => model.UserRole)
+                @Html.HiddenFor(model => model.EmployeeId)
+                 @Html.HiddenFor(model => model.ProjectDetailID)
+                 </div>
+    <div class="clearfix">
+    <div class="leftcol">
+				
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.CurrentRole)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						  @Html.DropDownListFor(model => model.CurrentRole, (SelectList)ViewBag.RoleList, "Select")
+                        @Html.ValidationMessageFor(model => model.CurrentRole)
+                          @Html.HiddenFor(model => model.CurrentRole, new { @id = "currentRole" })
+					</div>
+				</div>
+                <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						 @Html.Label("Project Start Date")<span class="mandatory">*</span>
+					</div>
+
+					<div class="editor-field fieldwidth floatL">
+						  @Html.TextBoxFor(model => model.FromDate, String.Format("{0:MM/dd/yyyy}", Model.FromDate), new { @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.FromDate)
+                        @Html.HiddenFor(model => model.FromDate, new { @id = "fromDate" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                     @Html.LabelFor(model => model.CurrentReportingManager)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						  @Html.DropDownListFor(model => model.CurrentReportingManager, (SelectList)ViewBag.EmployeeList, "Select")
+                        @Html.ValidationMessageFor(model => model.CurrentReportingManager)
+                          @Html.HiddenFor(model => model.CurrentReportingManager, new { @id = "currentReportingManager" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.Appraiser)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						   @Html.DropDownListFor(model => model.Appraiser, (SelectList)ViewBag.EmployeeList, "Select")
+                        @Html.ValidationMessageFor(model => model.Appraiser)
+                          @Html.HiddenFor(model => model.Appraiser, new { @id = "appraiser" })
+					</div>
+				</div> 
+                <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.ClientName)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						  @Html.DropDownListFor(model => model.ClientName, (SelectList)ViewBag.ClientList, "Select")
+                        @Html.ValidationMessageFor(model => model.ClientName)
+                          @Html.HiddenFor(model => model.ClientName, new { @id = "clientName" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.ResourcePoolName)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						   @Html.DropDownListFor(model => model.ResourcePoolName, (SelectList)ViewBag.ResourceList, "Select")
+						   @Html.ValidationMessageFor(model => model.ResourcePoolName)
+                           <input type="hidden" id = "hdnresourcePoolName" />
+					</div>
+				</div>
+            
+                </div>
+     <div class="rightcol">
+				
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.CurrentProject)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						   @Html.DropDownListFor(model => model.CurrentProject, (SelectList)ViewBag.ProjectList, "Select")
+                        @Html.ValidationMessageFor(model => model.CurrentProject)
+                          @Html.HiddenFor(model => model.CurrentProject, new { @id = "currentProject" })
+					</div>
+				</div>
+                <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						  @Html.Label("Project End Date")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						 @Html.TextBoxFor(model => model.ToDate, String.Format("{0:MM/dd/yyyy}", Model.ToDate), new { @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.ToDate)
+                         @Html.HiddenFor(model => model.ToDate, new { @id = "toDate" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                     @Html.LabelFor(model => model.CurrentDeliveryHead)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						     @Html.DropDownListFor(model => model.CurrentDeliveryHead, (SelectList)ViewBag.DeliveryHead, "Select")
+                        @Html.ValidationMessageFor(model => model.CurrentDeliveryHead)
+                          @Html.HiddenFor(model => model.CurrentDeliveryHead, new { @id = "currentDeliveryHead" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                     @Html.LabelFor(model => model.Reviewer)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						    @Html.DropDownListFor(model => model.Reviewer, (SelectList)ViewBag.EmployeeList, "Select")
+                        @Html.ValidationMessageFor(model => model.Reviewer)
+                          @Html.HiddenFor(model => model.Reviewer, new { @id = "reviewer" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                      @Html.LabelFor(model => model.DeliveryUnit)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						   @Html.DropDownListFor(model => model.DeliveryUnit, (SelectList)ViewBag.DelieveryUnitList, "Select")
+                        @Html.ValidationMessageFor(model => model.DeliveryUnit)
+                          @Html.HiddenFor(model => model.DeliveryUnit, new { @id = "deliveryUnit" })
+					</div>
+				</div>
+                 <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+                     @Html.LabelFor(model => model.ResourcePoolManager)<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						   @Html.DropDownListFor(model => model.ResourcePoolManager, (SelectList)ViewBag.ResourceManager, "Select")
+                      @* <select id="ResourcePoolManager"  name="ResourcePoolManager"></select>*@
+                    
+                        @Html.ValidationMessageFor(model => model.ResourcePoolManager)
+                          @Html.HiddenFor(model => model.ResourcePoolManager, new { @id = "resourcePoolManager" })
+					</div>
+				</div>
+             
+			</div>
+    </div>
+    <div class="clear popup_button ">
+	     <div class="floatR">
+		     <input id="saveProjectDetails" type="button" value="Save" class="button mrgnR5"/>
+			 <input id="cancel" type="button" value="Reset" onclick="emptyDialog()" class="button "/>
+	     </div>
+    </div>
+    
+    
+    
+    
+    
+      
+   
+}
+<div id="ProjectsuccessDialog" title="Project Details" style="display: none">
+	<p>
+		Project Details have been saved.</p>
+</div>
+<div id="errorDialog" title="Error" style="display: none">
+	<p>
+		There are some errors.</p>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var postUrl = '@Url.Action("AddProjectDetails", "EmployeeDetails")';
+        $('#saveProjectDetails').click(function () {
+            if ($('#frmAddProjectDetails').valid()) {
+                $("#loading").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose"
+                });
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#frmAddProjectDetails').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+
+                        if (results.status) {
+                            $('#newprojectdialog').dialog("close");
+                            jQuery("#jqProjectDetailsTable").trigger("reloadGrid");
+
+                            $("#ProjectsuccessDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        emptyDialog();
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            };
+        });
+    });
+
+
+	$(document).ready(function ()
+	{
+
+		$("#ResourcePoolName").change(function ()
+		{
+			var urlAction = '@Url.Action("BindResourcePoolDropdown", "EmployeeDetails")';
+			var poolid = $('#ResourcePoolName').val();
+
+			$.getJSON(urlAction, { ResourcePoolId: poolid }, function (data)
+			{
+				$("#ResourcePoolManager").empty();
+				for(var i = 0; i < data.poolResult.length; i++)
+				{
+					$("#ResourcePoolManager").append('<option value=' + data.poolResult[i].EmployeeId + '>' + data.poolResult[i].EmployeeName + '</option>');
+				}
+			});
+
+		});
+	});
+
+	var emptyDialog = function ()
+	{
+		$(".field-validation-error").empty();
+		$('input').removeClass("input-validation-error");
+
+		$('#FromDate').val($('#fromDate').val());
+		$('#ToDate').val($('#toDate').val());
+		$('#DeliveryUnit').val($('#deliveryUnit').val());
+
+
+
+		$('#CurrentProject option:contains(' + $('#currentProject').val() + ')').attr("selected", "selected");
+
+		$("#CurrentRole option").each(function ()
+		{
+			if($(this).text() == $('#currentRole').val())
+			{
+				$(this).attr('selected', 'selected');
+			}
+		});
+
+		$('#CurrentReportingManager option:contains(' + $('#currentReportingManager').val() + ')').attr("selected", "selected");
+		$('#CurrentDeliveryHead option:contains(' + $('#currentDeliveryHead').val() + ')').attr("selected", "selected");
+		$('#Appraiser option:contains(' + $('#appraiser').val() + ')').attr("selected", "selected");
+		$('#Reviewer option:contains(' + $('#reviewer').val() + ')').attr("selected", "selected");
+
+		$("#ClientName option").each(function ()
+		{
+			if($(this).text() == $('#clientName').val())
+			{
+				$(this).attr('selected', 'selected');
+			}
+		});
+
+		$("#ResourcePoolName option").each(function ()
+		{
+			if($(this).text() == $('#hdnresourcePoolName').val())
+			{
+				$(this).attr('selected', 'selected');
+			}
+		});
+
+		$('#DeliveryUnit option:contains(' + $('#deliveryUnit').val() + ')').attr("selected", "selected");
+		
+		$('#ResourcePoolManager option:contains(' + $('#resourcePoolManager').val() + ')').attr("selected", "selected");
+
+		// $('#newprojectdialog').dialog('close');
+	}
+</script>

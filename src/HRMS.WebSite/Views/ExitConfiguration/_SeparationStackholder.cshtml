@@ -1,0 +1,367 @@
+﻿@model HRMS.Models.StackHolderVM
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $("#btnSelectAll").click(function () {
+        $(".casestackeholder").attr("checked", "checked");
+    });
+    $("#btnDeselectAll").click(function () {
+        $(".casestackeholder").removeAttr("checked");
+    });
+    $('#bt_back_stackholder').click(function () {
+        parent.history.back();
+        return false;
+    });
+    function SelectStakeholder() {
+        var collection = "";
+        $.each($(".casestackeholder"), function (i, val) {
+            collection = collection + $(val).attr("data") + (',');
+        });
+        $("#SelectStakeHolderDialog").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 650,
+            width: 1230,
+            modal: true,
+            title: "Resource Selection",
+            open: function (event, ui) {
+                $('#SelectStakeHolderDialog').load("/ExitConfiguration/SelectStakeholder?collection=" + collection + "&searchstring=" + "").dialog('open');
+            }
+        });
+    }
+
+    function Delete() {
+        var collection = "";
+        $.each($(".casestackeholder:checked"), function (i, val) {
+            collection = collection + $(val).attr('data') + (',');
+        });
+        if (collection == "") {
+            $("#NoitemSelectedFordeleteStakeholder").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteConfirmStakeholder").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteStackholder", "ExitConfiguration")',
+                            data: { collection: collection },
+                            type: 'post',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status) {
+                                    $("#DeleteConfirmStakeholder").dialog("close");
+                                    $("#DeleteSuccessstakeholder").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                location.reload();
+                                                $(".casestackeholder").prop("checked", false);
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteConfirmStakeholder").dialog("close");
+                                    $("#ErrordeleteForStakeholder").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            Error: function () {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $("#DeleteConfirmStakeholder").dialog("close");
+                                $("#ErrordeleteForStakeholder").dialog({
+                                    closeOnEscape: false,
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: 'noclose',
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $("#DeleteConfirmStakeholder").dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    }
+   </script>
+
+ <section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")" class="selected">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Stages Approvers</a>
+        </nav>
+    </div>
+    <div class="MainBody sepconfig-reasonMainbody">
+        <div class="clearfix">
+            <h3 class="clearfix">Configure process Stakeholders</h3>
+        </div>
+        <div class="stakepopup">
+            <input class="ButtonGray mrgnL46" type="button" id="btnSelect" value="Select Stakeholder" onclick="SelectStakeholder()" />
+            @*<button type="button" class="ButtonGray mrgnL46">Select Stakeholder</button>*@
+        </div>
+
+        <div class="reason-part2">
+            <button type="button" class="ButtonGray">Delete</button>
+            <button type="button" class="ButtonGray">Select All</button>
+            <button type="button" class="ButtonGray">Deselect All</button>
+
+            @*<table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="6%">Delete</th>
+                        <th class="tableHeaders" width="">Employee</th>
+                        <th class="tableHeaders" width="">Role</th>
+                        <th class="tableHeaders" width="">Business Group</th>
+                        <th class="tableHeaders" width="">Organization Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tableRows">
+                        <td>
+
+                            <input type="checkbox" id="c" />
+                            <label class="LabelForCheckbox" for="c"></label>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="tableRows configbottomcount">
+                        <td colspan="5">
+                            <span>Total Records = 22</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>*@
+
+            <table  cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="6%">
+                            Delete
+                        </th>
+                        <th class="tableHeaders" width="30%">
+                            Employee
+                        </th>
+                        <th class="tableHeaders"  width="20%">
+                            Role
+                        </th>
+                        <th class="tableHeaders"  width="30%">
+                            Business Group
+                        </th>
+                        <th class="tableHeaders" width="10%">
+                            Organization Unit
+                        </th>
+                   </tr>
+                </thead>
+                <div id="seperationReasonContainer">
+
+                    @foreach (var item in Model.stackHolder)
+            {
+                         <tr class="tableRows">
+                             <td id=" delete" align="center">
+                                    @Html.CheckBoxFor(x => item.isChecked, new { @class = "casestackeholder", @data = item.EmployeeID })
+                                    <input type="checkbox" id="c" />
+                                    <label class="LabelForCheckbox" for="c"></label>
+                             </td>
+                                <td>
+                                    @Html.DisplayFor(x => item.Employee)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(x => item.Role)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(x => item.BusinessGroup)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(x => item.OrganizationUnit)
+                                </td>
+                          </tr>
+
+        }
+                </div>
+                <tr class="tableRows configbottomcount">
+                    <td colspan="5">
+                        <span>
+                            Total Records = @Html.DisplayFor(x => x.CountRecord)
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <br />
+            <div id="SelectStakeHolderDialog" style="display: none">
+            </div>
+            <div id="NoitemSelectedFordeleteStakeholder" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                  Please select atleast one record to Delete.
+            </center>
+            </div>
+            <div id="DeleteConfirmStakeholder" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                    Are you sure, you want to delete selected record ?
+                </center>
+            </div>
+            <div id="DeleteSuccessstakeholder" style="display: none" title="Record Deleted">
+                <center class="LoadingWrap">
+                    The selected record is successfully deleted.
+                </center>
+            </div>
+            <div id="ErrordeleteForStakeholder" style="display: none" title="Delete SuccessFully">
+                <center class="LoadingWrap">
+                 There is some Error.
+            </center>
+            </div>
+        </div>
+    </div>
+     <div id="SelectStakeHolderDialog" style="display: none">
+     </div>
+</section>
+
+    //        $.ajax({
+    //            url: '@Url.Action("DeleteStackholder", "ExitConfiguration")',
+    //            data: JSON.stringify(collection),
+    //            type: 'post',
+    //            datatype: "json",
+    //            contentType: 'application/json; charset=utf-8',
+    //            success: function (results) {
+    //                if (results.status) {
+    //                    $("#DeleteSuccess").dialog({
+    //                        closeOnEscape: false,
+    //                        resizable: false,
+    //                        height: 'auto',
+    //                        width: 300,
+    //                        modal: true,
+    //                        dialogClass: 'noclose',
+    //                        buttons: {
+    //                            Ok: function () {
+    //                                $(this).dialog("close");
+    //                                location.reload();
+    //                            }
+    //                        }
+    //                    });
+    //                }
+    //                else {
+    //                    $("#Error").dialog({
+    //                        closeOnEscape: false,
+    //                        resizable: false,
+    //                        height: 'auto',
+    //                        width: 300,
+    //                        modal: true,
+    //                        dialogClass: 'noclose',
+    //                        buttons: {
+    //                            Ok: function () {
+    //                                $(this).dialog("close");
+    //                            }
+    //                        }
+    //                    });
+    //                }
+    //            }
+    //        });
+    //    }
+</script>

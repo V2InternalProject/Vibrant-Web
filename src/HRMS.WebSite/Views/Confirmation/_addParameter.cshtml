@@ -1,0 +1,318 @@
+﻿@model HRMS.Models.addParameter
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")" class="selected">Configure
+                Parameter</a> <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">
+                    Configure Parameter Categories</a> <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">
+                        Configure Rating Scale</a> <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })">
+                            Configure Parameters for Roles</a>
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody SmartT">
+        <div class="clearfix">
+            <input type="button" class="BackLink" id="back" value="Back" />
+        </div>
+        <h4 class="subHead">
+            Configure Parameter</h4>
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmaddParameter" }))
+        {
+            @Html.ValidationSummary(true)
+            <div class="clearfix">
+                @Html.HiddenFor(x => x.IsAddnew, new { id = "isAdded" })
+                @Html.HiddenFor(x => x.CompetencyID)
+                <div class="FormContainerBox clearfix ProjectIndexFliter">
+                    <div class="leftcol">
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="mandatory">*</span>@Html.LabelFor(x => x.Parameter)
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextBoxFor(x => x.Parameter)
+                                @Html.ValidationMessageFor(x => x.Parameter)
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="mandatory">*</span>@Html.LabelFor(x => x.OrderNo)
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextBoxFor(x => x.OrderNo)
+                                @Html.ValidationMessageFor(x => x.OrderNo)
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                <span class="mandatory">*</span>@Html.LabelFor(x => x.category)
+                            </div>
+                            <div class="InputDiv">
+                                @Html.DropDownListFor(x => x.category, new SelectList(Model.CategoryList, "CategoryID", "CategoryType"), "Select")
+                                @Html.ValidationMessageFor(x => x.category)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                @Html.LabelFor(x => x.BehavioralIndicators)
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextAreaFor(x => x.BehavioralIndicators)
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="LabelDiv">
+                                @Html.LabelFor(x => x.Description)
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextAreaFor(x => x.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="ButtonContainer1 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" id="SaveParameter" value="Save" />
+            <input type="button" class="ButtonGray mrgnR8" id="SaveParameteraddnew" value="Save and Add" />
+        </div>
+        <div id="applicableRoles">
+            @Html.Action("ApplicableRoles", "Confirmation", new { competencyID = Model.CompetencyID })
+        </div>
+        <div id="Error" style="display: none" title="Error">
+            <center class="LoadingWrap">
+                There is some error.
+            </center>
+        </div>
+        <div id="ErrorAddParameter" style="display: none" title="Error">
+            <center class="LoadingWrap">
+                The Order Number is already Exist.
+            </center>
+        </div>
+        <div id="ErrorBehavioral" style="display: none" title="Error">
+            <center class="LoadingWrap">
+                Please enter maximum 1000 characters for Behavioral Indicators
+            </center>
+        </div>
+        <div id="ErrorDescription" style="display: none" title="Error">
+            <center class="LoadingWrap">
+                Please enter maximum 1000 characters for Parameter Description
+            </center>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).ready(function () {
+        if ('@Model.OrderNo' == "") {
+            $("#applicableRoles").hide();
+        }
+        else {
+            $("#applicableRoles").show();
+        }
+    });
+    $("#back").click(function () {
+        window.location.href = '@Url.Action("ConfigureParameter", "Confirmation")';
+    });
+
+    $("#SaveParameter").click(function () {
+        if ($('#BehavioralIndicators').val().length > 1000) {
+            $("#ErrorBehavioral").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        if ($('#Description').val().length > 1000) {
+            $("#ErrorDescription").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        var postUrl = '@Url.Action("AddParameter", "Confirmation")';
+        if ($("#frmaddParameter").valid()) {
+            $("#loading").dialog(
+                {
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose"
+                });
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmaddParameter').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status == true) {
+                        window.location.href = '@Url.Action("AddParameter", "Confirmation")?orderID=' + results.orderNumber;
+                    }
+                    else {
+                        $("#ErrorAddParameter").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Error").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+    $("#SaveParameteraddnew").click(function () {
+        if ($('#BehavioralIndicators').val().length > 1000) {
+            $("#ErrorBehavioral").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        if ($('#Description').val().length > 1000) {
+            $("#ErrorDescription").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        var postUrl = '@Url.Action("AddParameter", "Confirmation")';
+        if ($("#frmaddParameter").valid()) {
+            $("#loading").dialog(
+                {
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose"
+                });
+            $("#isAdded").val(true);
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmaddParameter').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.resultMesssage == "addnew") {
+                        window.location.href = '@Url.Action("AddParameter", "Confirmation")?orderID=' + null;
+                    }
+                    else {
+                        $("#ErrorAddParameter").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Error").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

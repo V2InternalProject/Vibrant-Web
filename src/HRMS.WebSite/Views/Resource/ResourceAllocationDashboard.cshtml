@@ -1,0 +1,89 @@
+﻿@model HRMS.Models.ResourceAllocationDashboardModel
+@{
+    ViewBag.Title = "Resource Allocation Dashboard";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew NoTitleGridsContainer clearfix SemContainer">
+    <h2 class="title-bgcolor">
+        Resource Allocation View <a class="LinkBlue floatR" href="#">Export to Excel</a>
+        <a class="LinkBlue floatR" href="#">Refresh</a>
+    </h2>
+
+    <div class="blueBorderTop clearfix">
+    <h4 class="floatR">
+        Employee Name : Nitin Pandurang Sakpal</h4>
+        @*<div class="colOneThird clearfix mrgnT10">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("View:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>Year</option>
+                        <option>Quarter</option>
+                    </select>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <div class="tablestyle3">
+        <table id="jqResourceAlloDashTable">
+        </table>
+    </div>
+    <div id="jqResourceAlloDashTablePager">
+    </div>
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+            $("#jqResourceAlloDashTable").jqGrid({
+            // Ajax related configurations
+
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Project Name", "Start Date","End Date","Jan", "Feb", "March", "Average"],
+            // Configure the columns
+            colModel: [
+                { name: "ProjectName", index: "ProjectName", align: "left"},
+                { name: "StartDate", index: "StartDate", align: "left"},
+                { name: "EndDate", index: "EndDate", align: "left"},
+                { name: "Jan", index: "Jan", align: "left"},
+                { name: "Feb", index: "Feb", align: "left"},
+                { name: "March", index: "March", align: "left" },
+                { name: "Avg", index: "Avg", align: "left" },
+
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqResourceAlloDashTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Resource Allocation",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqResourceAlloDashTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+     });
+</script>

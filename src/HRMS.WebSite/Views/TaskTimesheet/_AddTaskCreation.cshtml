@@ -1,0 +1,529 @@
+﻿@model HRMS.Models.TaskCreationModel
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.themeroller.css")" rel="stylesheet" />
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.standalone.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("../../Scripts/ui.dropdownchecklist-1.4-min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@*<div id="accordion1">
+    <h3 class="">
+        Add Task
+    </h3>
+    <div>*@
+<style type="text/css">
+    .ui-dialog-titlebar-close
+    {
+        display: none;
+    }
+</style>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "AddProjectTaskForm", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.ProjectTaskTypeID, new { @id = "hdnProjectTaskTypeID" })
+    @Html.HiddenFor(m => m.ProjectID, new { @id = "hdnProjectID" })
+    @Html.HiddenFor(m => m.LoggedInEmployeeId)
+    @Html.HiddenFor(m => m.MileStoneId, new { @id = "hdnMileStoneId" })
+@* @Html.HiddenFor(m => m.SelectedTaskName)*@
+    <div class="FormContainerBox clearfix AddProjectForm">
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv spaceIndent">
+                    @Html.Label("* Select Project:")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(x => x.ProjectID, new SelectList(Model.TaskProjectList, "ProjectID", "ProjectName"), "Select", new { @id = "TaskProjectDD" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv spaceIndent">
+                    @Html.Label("Select Milestone:")
+                </div>
+                <div class="InputDiv">
+                    <select id="MileStoneDD">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Task Name:")
+                </div>
+                <div class="InputDiv tasklabel">
+                    @Html.TextBoxFor(x => x.TaskName, new { @id = "TxtTaskName" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TaskName)</p>
+                    @Html.HiddenFor(model => model.TaskName, new { id = "hdnTaskName" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Status:")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(x => x.StatusID, new SelectList(Model.TaskStatusList, "LookUpTypeId", "Value"), "Select", new { @id = "ProjectStatusDD", @class = "ValidationDropDown" })
+                    @* @Html.LabelFor(model => model.StatusID, new { @id="ProjectStatusLbl" })*@
+                    @Html.HiddenFor(model => model.StatusID, new { id = "hdnStatusId" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Start Date:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.StartDate, String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @id = "AddStartDate", @readonly = "readonly" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.StartDate)</p>
+                    @Html.Hidden("StartDate", String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @id = "hdnStartDate" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* End Date:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.EndDate, String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @id = "AddEndDate", @readonly = "readonly" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EndDate)</p>
+                    @Html.HiddenFor(model => model.EndDate, new { id = "hdnEndDate" })
+                    @Html.Hidden("EndDate", String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @id = "hdnEndDate" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol" id="PlannedHoursDiv">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span id="PlannedHoursAsterik" style="display: none">* </span>@Html.Label("Planned Hours:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.PlannedHours, new { @id = "TxtPlannedHours" })
+                    @* <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PlannedHours)</p>*@
+                    <span id="PlannedHoursValidationMessage" class="field-validation-error"></span><span
+                        id="PlannedHoursZeroValidation" class="field-validation-error" style="display: none">
+                    </span>
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PlannedHours)</p>
+                    @Html.HiddenFor(model => model.PlannedHours, new { id = "hdnPlannedHours" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol" id="PlannedUnitsDiv">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Planned Units:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.PlannedUnits, new { @id = "TxtPlannedUnits" })
+                    @* <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PlannedHours)</p>*@
+                    <span id="PlannedUnitsValidationMessage" class="field-validation-error"></span>
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PlannedUnits)</p>
+                    @Html.HiddenFor(model => model.PlannedUnits, new { id = "hdnPlannedUnits" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Task Type:")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(x => x.TaskTypeID, new SelectList(Model.TaskTypeList, "LookUpTypeId", "Value"), "Select", new { @id = "TaskTypeDD", @class = "ValidationDropDown" })
+                    <p class="qualif-detail" id="">@Html.ValidationMessageFor(model => model.TaskTypeID)</p>
+                    @Html.HiddenFor(model => model.TaskTypeID, new { id = "hdnTaskTypeID" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("Hot Time:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.AvgUnitTime, new { @id = "TxtAvgUnitTime" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AvgUnitTime)</p>
+                    @Html.HiddenFor(model => model.AvgUnitTime, new { id = "hdnAvgUnitTime" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Assigned To:")
+                </div>
+                <div class="InputDiv">
+                    @*@Html.DropDownListFor(x => x.AssignedEmployeeName, new SelectList(Model.AssignedToList, "EmployeeId", "EmployeeName", "Select"), new { multiple = "multiple" })*@
+                    <select id="AssignedEmployeeName" multiple="multiple">
+                    </select>
+                    <input type="hidden" name="SelectedEmployeeList" id="hdnSelectedEmployeeList" value="" />
+                    <span id="AssignedToValidationMessage" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Tag:")
+                </div>
+                <div class="InputDiv">
+                    @*@Html.DropDownListFor(x => x.AddedTagName, new SelectList(Model.TagList, "TagId", "TagName", "Select"), new { multiple = "multiple" })*@
+                    <select id="AddedTagName" multiple="multiple"></select>
+                    <input type="hidden" name="SelectedTagList" id="hdnSelectedTagList" value="" />
+                    <span id="TagValidationMessage" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("* Description:")
+                </div>
+                <div class="InputDiv FileUpload">
+                    @Html.TextAreaFor(model => model.Description, new { @id = "TaskDescription" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Description)</p>
+                    @Html.HiddenFor(model => model.Description, new { id = "hdnDescription" })
+                </div>
+            </div>
+        </div>
+        @*<div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("Generic Task:")
+                </div>
+                <div class="InputDiv">
+                    @Html.CheckBoxFor(model => model.ProjectTaskType)
+                    <label for="ProjectTaskType" class="LabelForCheckbox">
+                    </label>
+                    @Html.HiddenFor(model => model.ProjectTaskType, new { id = "hdnProjectTaskType" })
+                </div>
+            </div>
+        </div>*@
+        @**@
+        <div class="ButtonContainer1 clear-fix">
+            <input id="saveTaskBtn" type="button" value="Save" class="ButtonGray" />
+            <input id="resetTaskBtn" type="button" value="Reset" class="ButtonGray" />
+        </div>
+    </div>
+    
+}
+<div id="StartDateGreaterDialog" style="display: none">
+    <p>
+        Start Date cannot be greater than End Date.
+    </p>
+</div>
+<div id="EndDateLesserDialog" style="display: none">
+    <p>
+        End Date cannot be lesser than Start Date.
+    </p>
+</div>
+@*</div>
+</div>*@
+<div class="FormContainerBox clearfix AddProjectForm">
+    <div class="leftcol">
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <label>
+                    Select File:
+                </label>
+            </div>
+            <div class="InputDiv FileUpload">
+                @using (Html.BeginForm("UploadandSaveFile", "TaskTimesheet", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmUploadDocument" }))
+                {
+                    <input type="file" class="FileUploadBtn" name="fileIdUpload" id="fileUploadId" size="24" style="width:100px"/>
+                    <div class="BrowserVisible">
+                        <input type="button" class="BtnForCustomUpload" value="Browse.." />
+                        <input type="text" id="fileUploadIdField" class="FileField" value="No files selected" />
+                    </div>
+                    <br />
+                    <input type="submit" name="UploadBtn" id="UploadBtn" class="ButtonGray" value="Upload">
+                }
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="leftcol LabelDiv">
+                <label>
+                    Default Template :
+                </label>
+            </div>
+            <div class="rightcol">
+                <a href="#" id="downLoadTemplate">Download Template</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="FormContainerBox clearfix AddProjectForm">
+    <div class="leftcol width35 creation-select-margin">
+        <div class="formrow clearfix">
+            <div class="LabelDiv spaceIndent">
+                @Html.Label("Select Status:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(x => x.StatusIDFilter, new SelectList(Model.TaskStatusList, "LookUpTypeId", "Value"), "Select", new { @id = "ProjectStatusDDFilter" })
+            </div>
+        </div>
+    </div>
+    <div class="rightcol width35">
+        <div class="formrow clearfix">
+            <div class="LabelDiv spaceIndent">
+                @Html.Label("Select Assigned To:")
+            </div>
+            <div class="InputDiv">
+                <select id="AssignedEmployeeNameFilter">
+                </select>
+            </div>
+            @*<div>
+            <input type="button" value="Export to Excel" class=" ButtonGray mrgnr8 clsbtn floatR"
+                   id="btnExportToExcel" />
+        </div>*@
+        </div>
+    </div>
+</div>
+@*Popup Divs*@
+<div id="UploadSuccessMessage" style="display: none">
+    <p>
+        Data have Been saved.
+    </p>
+</div>
+<div id="UploadUnknowError" style="display: none">
+    <p>
+        Unknown Error Occured.
+    </p>
+</div>
+<div id="UploadFileBlank" style="display: none">
+    <p>
+        No record Present.
+    </p>
+</div>
+<div id="UploadTemplateInvalid" style="display: none">
+    <p>
+        Template Invalid
+    </p>
+</div>
+<div id="UploadNotValidFile" style="display: none">
+    <p>
+        File Is not valid
+    </p>
+</div>
+<div id="UploadFileNotSelected" style="display: none">
+    <p>
+        File Not Selected.
+    </p>
+</div>
+<div id="UploadNotifyError" style="display: none">
+    <p>
+    </p>
+</div>
+<div id="TableGridError" style="display: none">
+    <p>
+        There is no entry in the Grid.
+    </p>
+</div>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+    function DisplayDailog(Dialogname) {
+        $('#' + Dialogname).dialog({
+            modal: true,
+            resizable: false,
+            width: 250,
+            height: 'auto',
+            title: "Upload Feature",
+            buttons: {
+                "OK": function () {
+                    $("#fileUploadId").val("");
+                    $(this).dialog('close');
+                }
+            }
+        });
+        $('#' + Dialogname).dialog('open');
+    };
+
+
+    $('#UploadBtn').click(function () {
+        $("#loading").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose",
+            open: function () {
+                $('#loading').parent().css('background-color', 'transparent');
+                $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                $(this).parent().css('z-index', '33');
+            }
+        });
+        $('#frmUploadDocument').ajaxForm({
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                var st = $.parseJSON(results);
+                if (st.status == "Done") {
+                    DisplayDailog("UploadSuccessMessage");
+                }
+                else if (st.status == "Unknown Error Occured") {
+                    DisplayDailog("UploadUnknowError");
+                }
+                else if (st.status == "File Is Blank") {
+                    DisplayDailog("UploadFileBlank");
+                }
+                else if (st.status == "Template Invalid") {
+                    DisplayDailog("UploadTemplateInvalid");
+                }
+                else if (st.status == "NOt_Valid_File") {
+                    DisplayDailog("UploadNotValidFile");
+                } //
+                else if (st.status == "File Not Selected") {
+                    DisplayDailog("UploadFileNotSelected");
+                }
+                else if (st.status == "Error") {
+                    DisplayDailog("UploadUnknowError");
+                }
+                else {
+                    $('#UploadNotifyError').html(st.status);
+                    DisplayDailog("UploadNotifyError");
+                }
+            }
+        });
+    });
+
+
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).ready(function () {
+    $("#PlannedHoursDiv").show();
+                $("#PlannedUnitsDiv").hide();
+        $("#fileUploadId").attr('title', "No files selected");
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+
+        //        $("#fileUploadId").bind("change", function (event) {
+        //            $("#fileUploadIdField").val($(this).val());
+        //        });
+        $("#fileUploadId").change(function () {
+            if ($('#fileUploadId').val() != "") {           
+                var path = $(this).val().replace("C:\\fakepath\\", "");
+                $("#fileUploadIdUploadError").hide();
+                $("#fileUploadIdField").val(path);
+                $("#fileUploadId").attr('title', $(this).val());
+            }
+        });
+
+        $("#TaskTypeDD").bind('change', function () {
+            var selectedTaskType = $('#TaskTypeDD :selected').text();
+            if ((selectedTaskType == "Hours" || selectedTaskType == "Hour" || selectedTaskType == "Hour Unit" || selectedTaskType == "Hours Unit")) {
+                $("#PlannedHoursAsterik").show();
+                $("#PlannedHoursDiv").show();
+                $("#PlannedUnitsDiv").hide();
+                $("#TxtPlannedUnits").val("");
+                $("#hdnPlannedUnits").val("");
+            }
+            else if(selectedTaskType == "Units" || selectedTaskType == "Unit") {
+                $("#PlannedHoursAsterik").hide();
+                $("#PlannedHoursDiv").hide();
+                $("#PlannedUnitsDiv").show();
+                $("#TxtPlannedHours").val("");
+                $("#hdnPlannedHours").val("");
+            }
+        });
+
+
+        $('#AddStartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+          .bind("change", function () {
+              if (($('#AddStartDate').val() > $('#AddEndDate').val()) && $('#AddEndDate').val() != "") {
+                  $("#StartDateGreaterDialog").dialog({
+                      resizable: false,
+                      autoOpen: true,
+                      height: 'auto',
+                      width: 300,
+                      modal: true,
+                      dialogClass: "noclose",
+                      buttons: {
+                          Ok: function () {
+                              $(this).dialog("close");
+                              $('#AddStartDate').val($("#hdnStartDate").val());
+                          }
+                      }
+                  });
+              }
+          });
+        $('#AddEndDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+          .bind("change", function () {
+              var startDate = new Date($('#AddStartDate').val());
+              var endDate = new Date($('#AddEndDate').val());
+              if ((endDate < startDate) && startDate != "") {
+                  $("#EndDateLesserDialog").dialog({
+                      resizable: false,
+                      autoOpen: true,
+                      height: 'auto',
+                      width: 300,
+                      modal: true,
+                      dialogClass: "noclose",
+                      buttons: {
+                          Ok: function () {
+                              $(this).dialog("close");
+                              $('#AddEndDate').val($("#hdnEndDate").val());
+                          }
+                      }
+                  });
+              }
+          });
+        $("#AssignedEmployeeName").dropdownchecklist({ maxDropHeight: 220, width: 200, icon: {}, emptytext: "Select" });
+        $("#AddedTagName").dropdownchecklist({ maxDropHeight: 220, width: 200, icon: {}, emptytext: "Select/Tag" });
+
+        $('#downLoadTemplate').click(function () {       
+            window.location.href = '@Url.Action("DownLoadTemplateForTaskCreation", "TaskTimesheet")';
+        });
+
+
+        @*$('#btnExportToExcel').click(function () {
+            var Currentcount = jQuery("#jqTaskCreationTable").jqGrid('getGridParam', 'records');
+            if (Currentcount == 0) {
+                $("#TableGridError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                });
+                return false;
+            }
+            var ProjectID = $('#projectTaskForm #SelectedProjectId').val();
+            var MilestoneID = $('#projectTaskForm #SelectedMileStoneId').val();
+            var StatusID = $('#projectTaskForm #SelectedStatusId').val();
+            var AssignedTo = $('#projectTaskForm #SelectedAssignedEmployeeId').val();
+            var rows = jQuery("#jqTaskCreationTable").jqGrid('getGridParam', 'records');
+            var page = jQuery("#jqTaskCreationTable").jqGrid('getGridParam', 'page');
+            window.location.href = '@Url.Action("ExportToExcelTaskCreationData", "TaskTimesheet")?ProjectID=' + ProjectID + "&MileStoneId=" + MilestoneID + "&SelectedStatusID=" + StatusID + "&SelectedAssignedEmployeeId=" + AssignedTo + "&page=" + page + "&rows=" + rows;
+            //window.location.href = "/TaskTimesheet/ExportToExcelTaskCreationData?ProjectID='"+ProjectID+"' &MileStoneId= + "'MilestoneID'" + "&SelectedStatusID=" + StatusID + "&SelectedAssignedEmployeeId=" + AssignedTo + "&page=" + page + "&rows=" + rows";
+            window.location.href = "/TaskTimesheet/ExportToExcelTaskCreationData?ProjectID='" + ProjectID + "'  &MileStoneId='" + MilestoneID + "' &SelectedStatusID='" + StatusID + "'&SelectedAssignedEmployeeId='" + AssignedTo + "'&page='" + page + "' &rows='" + rows + "";
+        });*@
+
+
+    });//end of ready function
+
+    
+</script>
+@*@using (Html.BeginForm("UploadandSaveFile", "TaskTimesheet", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmUploadDocument" }))
+    {
+
+        <input type="file" name="fileIdUpload" />
+        <input type="submit" value="Upload & Save">
+    }*@ 

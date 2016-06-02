@@ -1,0 +1,710 @@
+﻿@model HRMS.Models.AddEdirResourseModel
+@{
+    ViewBag.Title = "ReallocationAndBulkReallocation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Resource Allocation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ResourceIndex", "Resource")?EmpCode=" + loginempcode + "&PageID=" + val.nodeid +">My Allocation</a>
+            <a href="@Url.Action("RMGViewPost", "Resource")?EmpCode=" + loginempcode + "&PageID=" + val.nodeid +">Manage Resource</a>
+        </nav>
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "formBulkReallocation" }))
+        {
+            @Html.HiddenFor(x => x.ProjectID)
+            @Html.HiddenFor(x => x.ProjectName)
+            @Html.HiddenFor(x => x.HelpdeskTicketID)
+            @Html.HiddenFor(x => x.ProjectEndDate)
+            @Html.HiddenFor(x => x.RequesterId)
+
+            <div class="FormContainerBox clearfix" id="HideInitiallyForBulhReallocation">
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            @Html.Label("Reallocation Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.BulkReallocationDate, String.Format("{0:MM/dd/yyyy}", Model.BulkReallocationDate))
+                            @Html.Hidden("BulkReallocationDate", String.Format("{0:MM/dd/yyyy}", Model.BulkReallocationDate), new { @id = "bulkreallocationdate" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer2 clearfix">
+                <input type="button" id="btnExportToExcel" value="Export to Excel" class="ButtonGray mrgnR8" />
+                <input type="button" id="btnDeselectAll" value="Deselect All" class="ButtonGray mrgnR8" />
+                <input type="button" id="btnSelectAll" value="Select All" class="ButtonGray mrgnR8" />
+                <input type="button" id="btnBulkreallocation" value="Bulk Reallocation" class="ButtonGray mrgnR8" />
+            </div>
+            <div id="ColorGreen" style="display: none" align="center">
+                <p style="color: Green">
+                    Green highlighted Resources are Successfully Reallocated
+                </p>
+            </div>
+            <div id="ColorRed" style="display: none" align="center">
+                <p style="color: Red">
+                    Red highlighted Resources are not Reallocated
+                </p>
+            </div>
+
+        }
+
+        <div class="BorderTransparent NoTitleGridsContainer clearB" id="HideBeforeSelect">
+            <div class="tablestyle3">
+                <table id="jqCurrentResourceReallocationTable"></table>
+            </div>
+            <div id="jqCurrentResourceTableReallocationPager">
+            </div>
+        </div>
+    </div>
+
+    <div id="SelectEmployees" style="display: none;">
+        <center>
+            <p>Please select multiple employees to Reallocate</p>
+        </center>
+    </div>
+    <div id="SuccessReallocation" style="display: none;">
+        <center>
+            <p>Resource has been successfully Reallocated</p>
+        </center>
+    </div>
+    <div id="ErrorReallocation" style="display: none;">
+        <center>
+            <p>Resource is not Reallocated.</p>
+        </center>
+    </div>
+    <div id="SelectEndDate" style="display: none;">
+        <center>
+            <p>Please select Allocation Date.</p>
+        </center>
+    </div>
+    <div id="AllocationEndDateError" style="display: none;">
+        <center>
+            <p>Please Enter Allocation date Less than End Date.</p>
+        </center>
+    </div>
+    <div id="SendMailPopUpForResourceAllocation" style="display: none;">
+    </div>
+</section>
+
+<script type="text/javascript">
+
+    var ChangedDate;
+    $(document).ready(function () {
+        var oldDate;
+        var ArrayOne = [];
+        var AloEndDate = null;
+        var Currentdate = null;
+        $('#BulkReallocationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, minDate: 0, maxDate: $('#ProjectEndDate').val(), changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#HideInitiallyForBulhReallocation').hide();
+
+        $("#jqCurrentResourceReallocationTable").jqGrid({
+            //Grid for Current Resource Details
+            // Ajax related configurations
+            url: '@Url.Action("LoadReallocationGrid", "Resource")',
+            postData: { ProjectID: $('#ProjectID').val() }, //hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "", "Project Code", "Project Name", "", "EmployeeID", "EmployeeName", "Skills", "Designation Name", "Resource Type", "Employment Status", "Start Date", "", "End Date", "", "Allocated (%)", "Comments", "Select All", "Action", ""],
+            // Configure the columns
+            colModel: [
+            { name: "HelpdeskTicketID", index: "HelpdeskTicketID", align: "left", width: 10, hidden: true, editable: true },
+                { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 10, hidden: true, editable: true },
+                { name: "ProjectID", index: "ProjectID", align: "left", width: 10, hidden: true, editable: true },
+                { name: "ProjectCode", index: "ProjectCode", align: "left", width: 60 },
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 70 },
+                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 10, hidden: true, editable: true },
+                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 50 },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 100 },
+                { name: "Skills", index: "Skills", align: "left", width: 70 },
+                { name: "DesignationName", index: "DesignationName", align: "left", width: 70 },
+                { name: "ResourceType", index: "ResourceType", align: "left", width: 60 },
+                { name: "EmployementStatus", index: "EmployementStatus", align: "left", width: 60 },
+                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 60, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 60, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editable: true, hidden: true },
+                {
+                    name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 60, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editable: true, editoptions: {
+                        readonly: true,
+                        dataInit: function (element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true,
+                                minDate: 0,
+                                maxDate: $('#ProjectEndDate').val(),
+                                onSelect: function (e) {
+                                    ChangedDate = $(this).val();
+                                }
+                            });
+                        }
+                    }
+                },
+                { name: "AllocationOldEndDate", index: "AllocationOldEndDate", align: "left", width: 10, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, hidden: true, editable: true },
+                { name: "AllocatedPercentage", index: "AllocatedPercentage", align: "left", width: 50 },
+                { name: "Comments", index: "Comments", align: "left", width: 100 },
+                { name: "SelectAll", index: "SelectAll", align: "left", width: 40, formatter: AddReallocationCheckBox },
+                { name: "Action", index: "Action", align: "left", width: 70 },
+                { name: "ProjectEndDate", index: "ProjectEndDate", align: "left", width: 70, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editable: true, hidden: true },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqCurrentResourceTableReallocationPager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            editurl: '@Url.Action("SaveReallocationForResource", "Resource")',
+            // Grid caption
+            //caption: "Current Resource Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqCurrentResourceReallocationTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqCurrentResourceReallocationTable').hide();
+                }
+                else {
+                    $('#gbox_jqCurrentResourceReallocationTable').show();
+                    if (count > 20) {
+
+                        $('#jqCurrentResourceTableReallocationPager').show();
+                    }
+                    else {
+                        $('#jqCurrentResourceTableReallocationPager').hide();
+                    }
+
+                    var ids = $("#jqCurrentResourceReallocationTable").jqGrid('getDataIDs');
+                    for (var i = 0; i < ids.length; i++) {
+                        var itemId = ids[i];
+                        var rowData = $("#jqCurrentResourceReallocationTable").getRowData(itemId);
+                        var fs = new Date(Date.parse(rowData['AllocationEndDate'], "yyyy/MM/dd"));
+                        var d = new Date(fs);
+                        var today = new Date();
+                        var todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate()); //This will write a Date with time set to 00:00:00 so you kind of have date only
+                        var dDateOnly = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+                        var CDate = new Date($.now());
+                        if (dDateOnly >= todayDateOnly) {
+                            var endDate = rowData['AllocationEndDate'];
+                            //var changeddate = $("#" + itemId + "_" + "AllocationEndDate").val()
+                            be = "<input style='height:25px;width:80px;' class='buttonAsLink' type='button' id='EditAllocation" + itemId + "' value='Reallocate' onclick=\"SaveData('" + itemId + "');\"  />";
+                            //be = "<input style='height:25px;width:50px;' type='button' value='Edit' onclick=\passitemID('"+itemId+"');\"  />";
+                            se = "<input style='height:25px;width:50px;display:none;' class='buttonAsLink' type='button' id='UpdateAllocation" + itemId + "' value='Update' onclick=\"UpdateEmpoyeeAllocationEndDate('" + itemId + "'" + ",'" + endDate + "');\"  />";
+                            //ce = "<input style='height:25px;width:50px;display:none;' type='button' id='CancelAllocation" +itemId+ "' value='Cancel' onclick=\"$('#jqCurrentResourceReallocationTable').restoreRow('" + itemId + "');\"  />";
+                            ce = "<input style='height:25px;width:50px;display:none;' class='buttonAsLink' type='button' id='CancelAllocation" + itemId + "' value='Cancel' onclick=\"CancelData('" + itemId + "');\"  />";
+                            $("#jqCurrentResourceReallocationTable").jqGrid('setRowData', ids[i], { Action: be + se + ce });
+                            //$('#UpdateAllocation'+itemId).hide();
+                            //$('#CancelAllocation'+itemId).hide();
+                        }
+                        else {
+                        }
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            }
+        }).navGrid("#jqCurrentResourceTableReallocationPager",
+                { search: false, refresh: false, add: false, edit: false, del: false },
+                {}, // settings for edit
+                {},
+                {}
+            );
+
+        var SelectedResourcesEmployeeID = [];
+        function GetSelectedCheckboxForReallocation() {
+
+            SelectedResourcesEmployeeID = [];
+            $("#jqCurrentResourceReallocationTable :checked").each(function (i, val) {
+                SelectedResourcesEmployeeID.push($(this).prop("id"));
+            });
+        }
+        $('#btnDeselectAll').on('click', function () {
+            SelectedResourcesEmployeeID = [];
+            $(".ModuleChkForReallocation").each(function (i, val) {
+
+                if ($(this).is(':disabled')) {
+                    //  $(".ModuleChkForReallocation:visible").attr("checked",false);
+                    $(".ModuleChkForReallocation").attr("checked", false);
+                    SelectedResourcesEmployeeID.push($(this).prop("id"));
+                    $('#HideInitiallyForBulhReallocation').hide();
+                }
+            });
+        });
+        $('#btnSelectAll').on('click', function () {
+            SelectedResourcesEmployeeID = [];
+            $(".ModuleChkForReallocation").each(function (i, val) {
+                $(".ModuleChkForReallocation").attr("checked", true);
+                $('#HideInitiallyForBulhReallocation').show();
+                $('#BulkReallocationDate').val('');
+            });
+        });
+
+        $('#btnExportToExcel').click(function () {
+            window.location.href = '@Url.Action("ExportToExcelOfBulkAllocation", "Resource")?ProjectID=' + $('#ProjectID').val();
+        });
+
+        var AddEditResourseModel;
+        $('#btnBulkreallocation').on('click', function () {
+            GetSelectedCheckboxForReallocation();
+            if (SelectedResourcesEmployeeID.length > 0) {
+                if ($('#BulkReallocationDate').val() != "") {
+                    ArrayOne = [];
+                    $("#jqCurrentResourceReallocationTable :checked").each(function (i, val) {
+                        var RowID;
+                        var EmployeeID;
+                        var allocationEndDate;
+                        var SelectedEndDate;
+                        var AllocatedPercentage;
+                        var ProjectEmployeeRoleID;
+                        var ProjectID;
+                        var AllocationStartDate;
+                        RowID = $(this).parent().parent().attr('id');
+                        var rowData = $("#jqCurrentResourceReallocationTable").getRowData(RowID);
+                        EmployeeID = $(this).prop("id");
+                        allocationEndDate = rowData['AllocationEndDate'];
+                        AllocatedPercentage = rowData['AllocatedPercentage'];
+                        BulkReallocationDate = $('#BulkReallocationDate').val();
+                        ProjectEmployeeRoleID = rowData['ProjectEmployeeRoleID'];
+                        ProjectID = rowData['ProjectID'];
+                        AllocationStartDate = rowData['AllocationStartDate'];
+                        AddEditResourseModel = {
+                            ProjectId: ProjectID,
+                            ProjectEmployeeRoleID: ProjectEmployeeRoleID,
+                            EmployeeId: EmployeeID,
+                            allocationEndDate: allocationEndDate,
+                            BulkReallocationDate: BulkReallocationDate,
+                            AllocatedPercentage: AllocatedPercentage,
+                            AllocationStartDate: AllocationStartDate,
+                            HelpdeskTicketID: $('#HelpdeskTicketID').val()
+                        };
+                        ArrayOne.push(AddEditResourseModel);
+                    });
+                    BulkAllocationForSelectedResource(ArrayOne);
+                }
+                else {
+                    $("#SelectEndDate").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 280,
+                        modal: true,
+                        title: "Please select Reallocation Date",
+                        dialogClass: "noclose",
+                        buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                $("#SelectEmployees").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 280,
+                    modal: true,
+                    title: "Please select Employees",
+                    dialogClass: "noclose",
+                    buttons:
+                    {
+                        "Ok": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+    function BulkAllocationForSelectedResource(ArrayOne) {
+        OpenLoadingPopup();
+        $.ajax({
+            url: '@Url.Action("SaveBulkReallocation", "Resource")',
+            type: 'POST',
+            async: false,
+            data: JSON.stringify(ArrayOne),
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            success: function (results) {
+                jQuery("#jqCurrentResourceReallocationTable").trigger("reloadGrid");
+                debugger;
+               //CloseLoadingPopup();
+                $('#ColorGreen').show();
+                $('#ColorRed').show();
+                var arrayTwo = [];
+                var arrayThree = [];
+                if (results.resultsRed != "") {
+                    var redMessage = results.resultsRed;
+                    arrayTwo = redMessage.split(',');
+                }
+                if (results.resultsGreen != "") {
+                    var GreenMessage = results.resultsGreen;
+                    arrayThree = GreenMessage.split(',');
+                }
+                var collection = "";
+                $.each(arrayTwo, function (key, value) {
+                    var rowID = $("#" + value).parent().parent().attr('id');
+                    setTimeout(function () { $("#" + value).attr('checked', 'checked') }, 1000);
+                    setTimeout(function () { $("#" + rowID, "#jqCurrentResourceReallocationTable").addClass("reallocation-font-style").css('cssText', 'background: #dd4242 !important;') }, 2000);
+                    //setTimeout(function () { $("#" + rowID, "#jqCurrentResourceReallocationTable").find('td').css('cssText', 'color: #fff;') }, 2000);
+                });
+                $.each(arrayThree, function (key, value) {
+                    var rowID = $("#" + value).parent().parent().attr('id');
+                    collection = collection + value + (',');
+                    setTimeout(function () { $("#" + value).attr('checked', 'checked') }, 1000);
+                    setTimeout(function () { $("#" + rowID, "#jqCurrentResourceReallocationTable").addClass("reallocation-font-style").css('cssText', 'background: #89C35C !important;') }, 2000);
+                    //setTimeout(function () { $("#" + rowID, "#jqCurrentResourceReallocationTable").find('td').css('cssText', 'color: #fff;') }, 2000);
+
+                });
+                //OpenLoadingPopup();
+                if (collection != "") {
+                    var buttonClick = 'BulkReallocation';
+                    $.ajax({
+                        url: '@Url.Action("ResourceSendMail", "Resource")',
+                        data: { btnClick: buttonClick, RequesterId: '@Model.RequesterId', EmployeeName: $('#EmployeeName').val(), ReportingTo: $('#ReportingTo').val(), FromDate: $('#AllocationStartDate').val(), projectRole: $('#ProjectRole').val(), ResorceType: $('#ResourceType').val(), AllocatedPercentage: $('#AllocatedPercentage').val(), Comments: $('#Comments').val(), projectId: '@Model.ProjectID', loggedinEmpID: '@ViewBag.loginUserId', EmployeeIDs: collection, Todate: $('#BulkReallocationDate').val() },
+                        type: 'POST',
+                        success: function (result) {
+                            //$('#AddEditResourseDialog').empty();
+                            //CloseLoadingPopup();
+                            $("#SendMailPopUpForResourceAllocation").empty().append(result);
+                            $("#SendMailPopUpForResourceAllocation").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 'auto',
+                                width: 800,
+                                modal: true,
+                                title: "Send Mail",
+                                close: function () {
+                                    $(this).dialog('destroy');
+                                }
+                            });
+                            $.validator.unobtrusive.parse($("#MailDetails"));
+                            $('#sendCustomerMail').click(function () {
+                                $("#CCErrorMessage").hide();
+                                $("#ToErrorMessage").hide();
+                                if ($('#CustMailDetails').valid()) {
+                                    OpenLoadingPopup();
+                                    var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                                    $.ajax({
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#CustMailDetails').serialize(),
+                                        async: false,
+                                        success: function (serverData) {
+                                            CloseLoadingPopup();
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    //$(this).dialog('close');
+                                                    $("#SendMailPopUpForResourceAllocation").empty().dialog('destroy');
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+                                                $("#errorDialogForMail").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    dialogClass: "noclose",
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                            //return false;
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+                                            CloseLoadingPopup();
+                                            $("#errorDialogForMail").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                dialogClass: "noclose",
+                                                buttons:
+                            {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    //return false;
+                                }
+                            }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                                }
+                            });
+                        }
+                    });
+                }
+                CloseLoadingPopup();
+            }
+        });
+    }
+    function AddReallocationCheckBox(cellValue, options, rowdata, action) {
+        //Modified By Mahesh
+        var today = new Date();
+        var todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        //Older Code
+        //if (eval((rowdata['AllocationEndDate']).replace(/\/Date\((\d+)\)\//gi, "new Date($1)")) >= new Date($.now())) {
+        if (eval((rowdata['AllocationEndDate']).replace(/\/Date\((\d+)\)\//gi, "new Date($1)")) >= todayDateOnly) {
+            //return '<input type="checkbox" class="ModuleChkForReallocation" onchange="OnchangeEventOfCheckBox(' + rowdata['EmployeeId'] + ')" id=' + rowdata['EmployeeId'] + '>';
+            var A = '<input type="checkbox" class="ModuleChkForReallocation" onchange="OnchangeEventOfCheckBox(' + rowdata['EmployeeId'] + ')" id=' + rowdata['EmployeeId'] + '>';
+            var B = '<label for=' + rowdata['EmployeeId'] + ' class="LabelForCheckbox"></label>';
+            return A + B;
+        }
+        else {
+            //return '<input type="checkbox" disabled="disabled" class="ModuleChkForReallocation" onchange="OnchangeEventOfCheckBox(' + rowdata['EmployeeId'] + options.rowId + ')" id=' + rowdata['EmployeeId'] + options.rowId + '>';
+            //var A = '<input type="checkbox" class="ModuleChkForReallocation" onchange="OnchangeEventOfCheckBox(' + rowdata['EmployeeId'] + ')" id=' + rowdata['EmployeeId'] + '>';
+            //var B = '<label for=' + rowdata['EmployeeId'] + ' class="LabelForCheckbox"></label>';
+            //return A + B;
+            var A = '<input type="checkbox" disabled="disabled" class="ModuleChkForReallocation" onchange="OnchangeEventOfCheckBox(' + rowdata['EmployeeId'] + options.rowId + ')" id=' + rowdata['EmployeeId'] + options.rowId + '>';
+            var B = '<label for=' + rowdata['EmployeeId'] + ' class="LabelForCheckbox"></label>';
+            return A + B;
+        }
+    }
+    function OnchangeEventOfCheckBox(rowObject) {
+
+        if ($("#" + rowObject).is(':checked')) {
+            $('#HideInitiallyForBulhReallocation').show();
+        }
+        else {
+            var isChecked = false;
+            $(".ModuleChkForReallocation").each(function (i, val) {
+
+                if ($(this).is(':checked')) {
+                    //do nothing
+                    isChecked = true;
+                }
+            });
+            if (isChecked == false) {
+                $('#HideInitiallyForBulhReallocation').hide();
+                $('#BulkReallocationDate').val('');
+            }
+        }
+    };
+
+    function SaveData(itemID) {
+
+        var rowData = $('#jqCurrentResourceReallocationTable').getRowData(itemID);
+        oldDate = rowData['AllocationEndDate'];
+        //new Date(Date.parse(rowData['AllocationEndDate'], "yyyy/MM/dd HH:mm z"));
+        $(".ModuleChkForReallocation:checked").attr("checked", false);
+        $("#jqCurrentResourceReallocationTable").hideCol("SelectAll");
+        $('#jqCurrentResourceReallocationTable').editRow(itemID);
+        $('#UpdateAllocation' + itemID).show();
+        $('#CancelAllocation' + itemID).show();
+        $('#EditAllocation' + itemID).hide();
+
+        //AllocationOldEndDate
+        $('#jqCurrentResourceReallocationTable').jqGrid('setCell', itemID, 'AllocationOldEndDate', oldDate);
+    }
+    function CancelData(itemID) {
+        $("#jqCurrentResourceReallocationTable").showCol("SelectAll");
+        $('#jqCurrentResourceReallocationTable').restoreRow(itemID);
+        $('#EditAllocation' + itemID).show();
+        $('#UpdateAllocation' + itemID).hide();
+        $('#CancelAllocation' + itemID).hide();
+    }
+    function UpdateEmpoyeeAllocationEndDate(itemID, endDate) {
+        ChangedDate = endDate;
+        // var changeddate = $("#" + itemID + "_" + "AllocationEndDate").val();
+        OpenLoadingPopup();
+        jQuery("#jqCurrentResourceReallocationTable").jqGrid('saveRow', itemID,
+        {
+            aftersavefunc: function (id, response, options) {
+                // var ChangedDate = $("#" + itemID + "_" + "AllocationEndDate").val();
+                $('#EditAllocation' + itemID).show();
+                $('#UpdateAllocation' + itemID).hide();
+                $('#CancelAllocation' + itemID).hide();
+                CloseLoadingPopup();
+                if (JSON.parse(response.responseText).status == true) {
+                    $("#SuccessReallocation").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 280,
+                        modal: true,
+                        title: "Resource Successfully Reallocated",
+                        dialogClass: "noclose",
+                        buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                                $("#jqCurrentResourceReallocationTable").showCol("SelectAll");
+                                jQuery("#jqCurrentResourceReallocationTable").trigger("reloadGrid");
+
+                                var buttonClick = 'BulkReallocation';
+                                $.ajax({
+                                    url: '@Url.Action("ResourceSendMail", "Resource")',
+                                    data: { btnClick: buttonClick, RequesterId: '@Model.RequesterId', EmployeeName: $('#EmployeeName').val(), ReportingTo: $('#ReportingTo').val(), FromDate: $('#AllocationStartDate').val(), projectRole: $('#ProjectRole').val(), ResorceType: $('#ResourceType').val(), AllocatedPercentage: $('#AllocatedPercentage').val(), Comments: $('#Comments').val(), projectId: '@Model.ProjectID', loggedinEmpID: '@ViewBag.loginUserId', EmployeeIDs: JSON.parse(response.responseText).EmployeeID, Todate: ChangedDate },
+                                    type: 'POST',
+                                    success: function (result) {
+                                        //$('#AddEditResourseDialog').empty();
+                                        //CloseLoadingPopup();
+                                        $("#SendMailPopUpForResourceAllocation").empty().append(result);
+                                        $("#SendMailPopUpForResourceAllocation").dialog({
+                                            closeOnEscape: false,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 800,
+                                            modal: true,
+                                            title: "Send Mail",
+                                            close: function () {
+                                                $(this).dialog('destroy');
+                                            }
+                                        });
+                                        $.validator.unobtrusive.parse($("#MailDetails"));
+                                        $('#sendCustomerMail').click(function () {
+                                            $("#CCErrorMessage").hide();
+                                            $("#ToErrorMessage").hide();
+                                            if ($('#CustMailDetails').valid()) {
+                                                OpenLoadingPopup();
+                                                var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                                                $.ajax({
+                                                    url: sendMailUrl,
+                                                    type: 'POST',
+                                                    data: $('#CustMailDetails').serialize(),
+                                                    async: false,
+                                                    success: function (serverData) {
+                                                        CloseLoadingPopup();
+                                                        if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                            if (serverData.status == true) {
+                                                                $("#SendMailPopUpForResourceAllocation").empty().dialog('destroy');
+                                                            }
+                                                        }
+                                                        else if (serverData.status == "Error") {
+                                                            $("#errorDialogForMail").dialog({
+                                                                resizable: false,
+                                                                height: 'auto',
+                                                                width: 'auto',
+                                                                modal: true,
+                                                                title: 'Mail Error',
+                                                                dialogClass: "noclose",
+                                                                buttons: {
+                                                                    Ok: function () {
+                                                                        $(this).dialog("close");
+                                                                        //return false;
+                                                                    }
+                                                                }
+                                                            }); //end dialog
+                                                        }
+                                                        else {
+                                                            if (serverData.validCcId == false)
+                                                                $("#CCErrorMessage").show();
+                                                            if (serverData.validtoId == false)
+                                                                $("#ToErrorMessage").show();
+                                                            return false;
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        CloseLoadingPopup();
+                                                        $("#errorDialogForMail").dialog({
+                                                            title: 'Mail Error',
+                                                            resizable: false,
+                                                            height: 'auto',
+                                                            width: 'auto',
+                                                            modal: true,
+                                                            dialogClass: "noclose",
+                                                            buttons:
+                                        {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                //return false;
+                                            }
+                                        }
+                                                        }); //end dialog
+                                                    }
+                                                }); //end ajax
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+                else {
+                    $("#ErrorReallocation").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 280,
+                        modal: true,
+                        title: "Error Message",
+                        dialogClass: "noclose",
+                        buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                                $("#jqCurrentResourceReallocationTable").showCol("SelectAll");
+                                jQuery("#jqCurrentResourceReallocationTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+            },
+            extraparam: {
+                OldDate: function () {
+                    return oldDate;
+                }
+            }
+        });
+    }
+
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>

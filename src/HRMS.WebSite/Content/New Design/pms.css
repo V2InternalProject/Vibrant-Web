@@ -1,0 +1,106 @@
+#page{background:url('../../Images/New Design/employee-bg.png') no-repeat;}
+body{font-family: arial, sans-serif;}
+
+.PMSContainer .MainHeading{border-color: #173f78;}
+.PMSContainer .sub-menu-colored{background-color: #173f78;}
+.PMSContainer .sub-menu-colored a.selected{background-color: #0a2352;}
+.selectBox {width: 252px !important;}
+
+/*add customer*/
+.AddCustForm .LabelDiv{width:42%;}
+.AddCustForm .InputDiv{width:58%;}
+.AddCustForm .leftcol,.AddCustForm .rightcol{width:40%;}
+
+/*add contract pop up*/
+#addContractFileDialog .LabelDiv,#frmCustomerContract .LabelDiv{width:41%;}
+#addContractFileDialog .InputDiv,#frmCustomerContract .InputDiv{width:59%;}
+#frmAddContractFileDetails .BrowseSpacingFix,#frmAddProjectDocumentFileDetails .BrowseSpacingFix{max-height:58px;}
+
+/*pop up customer*/
+#frmCustomerContract .leftcol,#frmCustomerContract .rightcol{width:50%;}
+#addContract #frmCustomerContract .ButtonContainer2{width:100%;margin:0 auto;}
+#addContract .ButtonContainer2{width:100%;margin:15px 0px 6px;}
+#addContract .tablestyle3{width:100%;}
+
+/*add project*/
+.AddProjectForm .leftcol,.AddProjectForm .rightcol{width:35%;}
+#AddProjectDetails .emp-details .floatL{min-width:200px;}
+.ProjectPartials .ButtonContainer2{margin-top:15px;}
+
+/*RevisionPopup*/
+.RevisionPopup .LabelDiv,.RevisionPopup .InputDiv{float:none;width:100%;}
+.RevisionPopup .InputDiv textarea,.RevisionPopup .InputDiv .ClassTextareaDiv{width:95%;}
+.RevisionPopup .samebgText textarea{background-color: #d8dee3;border: medium none; width: 95%;}
+
+#ReviewerDetailsRevisions .LabelDiv{width:60%;}
+#ReviewerDetailsRevisions .InputDiv{width:40%;}
+
+/*pop up documents*/
+#addDocumentFileDialog .LabelDiv{width:42%;}
+#addDocumentFileDialog .InputDiv{width:58%;}
+
+.FinanceSummaryFliter .colOneThird{height:40px;}
+
+.utiReport .LabelDiv{width: 22%;}
+/* generate invoice form */
+.genInvoice .CandidateLeftcol{float: left; width:50%;}
+.genInvoice .CandidateRightcol{float: right; width:50%;}
+.genInvoice .leftcol, .genInvoice  .rightcol{width:50%;}
+.genInvoice .spaceIndent{text-indent:54px;}
+
+/*project end appraisal form*/
+.ProjectEndAppraisalbody .FormContainerBox{margin:10px auto 0;}
+
+/*dialog on resource*/
+#yesnodiv .LabelDiv{width:25%;}
+#SkillMatrixDetails .tablestyle3{width:100%;}
+#SkillMatrixDetails .ButtonContainer2 {width:100%;}
+/*task*/
+.width35{width: 35% !important;}
+.tasklabel input[type="text"]{width: 305px;}
+
+@media only screen and (max-width: 1690px) {
+    .AddCustForm .leftcol,.AddCustForm .rightcol{width:50%;}
+
+    .ProjectIndexFliter .leftcol{width:40%;}
+    .ProjectIndexFliter .rightcol{width:48%;}
+
+    .AddProjectForm .leftcol,.AddProjectForm .rightcol{width:50%;}
+    .leftcol,.rightcol{width:50%;}
+    .timesheet .leftcol, .timesheet .rightcol{width:33%;}
+    .timesheet .longinput .selectBox-dropdown{width: 722px !important;}
+    .timesheet #newtaskid {width: 706px !important;}
+     .timesheet .longinput #Comments { width: 706px;}
+     .timesheet .thisdate input[type="text"].hasDatepicker{width: 181px;}
+}
+
+@media only screen and (max-width: 1690px)
+{
+.genInvoice .CandidateLeftcol{float: none; width:100%;}
+.genInvoice .CandidateRightcol{float: none; width:100%;}
+.genInvoice .leftcol, .genInvoice  .rightcol{width:50%;}
+}
+
+@media only screen and (max-width: 1610px) {
+     .timesheet #newtaskid {width: 683px !important;}
+     .timesheet .longinput .selectBox-dropdown{width: 699px !important;}
+     .timesheet .longinput #Comments { width: 683px;}
+}
+@media only screen and (max-width: 1366px) {
+    .timesheet .longinput .selectBox-dropdown{width: 598px !important;}
+    .timesheet #newtaskid {width: 581px !important;}
+      .timesheet .longinput #Comments {width: 581px;}
+      .timesheet .thisdate input[type="text"].hasDatepicker {width: 148px;}
+      .timesheet .LabelDiv { width: 26%;}
+    .timesheet .changelbl{width: 13% !important;}
+}
+
+@media only screen and (max-width: 1300px) {
+    .timesheet .thisdate input[type="text"].hasDatepicker{width: 135px;}
+    .timesheet .longinput .selectBox-dropdown{width: 557px !important;}
+    .timesheet #newtaskid {width: 540px !important;}
+      .timesheet .longinput #Comments {width: 540px;}
+    .timesheet .LabelDiv { width: 28%;}
+    .timesheet .changelbl{width: 14% !important;}
+     .timesheet .thisD2 input[type="text"].hasDatepicker {width: 204px;}
+}

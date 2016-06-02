@@ -1,0 +1,1027 @@
+﻿@model HRMS.Models.PersonalDetailsViewModel
+<script src="~/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.form.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    function NoChildrenchange() {
+        if ($("#NoOfchildren").val() == 0) {
+            $("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+            $("#children1Name").attr("disabled", "disabled");
+            $("#children1BirthDate").attr("disabled", "disabled");
+            $("#children2Name").attr("disabled", "disabled");
+            $("#children2BirthDate").attr("disabled", "disabled");
+
+            $("#children1Name").val('');
+            $("#children1BirthDate").val('');
+            $("#children2Name").val('');
+            $("#children2BirthDate").val('');
+        }
+        else if ($("#NoOfchildren").val() == 1) {
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children1Name").removeAttr('readonly');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2Name").val('');
+            $("#children2BirthDate").val('');
+            $("#children2Name").attr("disabled", "disabled");
+            $("#children2BirthDate").attr("disabled", "disabled");
+            $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+
+          
+        }
+        else {
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children2Name").removeAttr('disabled');
+            $("#children2BirthDate").removeAttr('disabled');
+            $("#children1Name").removeAttr('readonly');
+            $("#children2Name").removeAttr('readonly');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+        }
+    }
+
+	$("#maritalStatus").change(function () {
+		var selectedValue = $(this)[0].value;
+		if (selectedValue == "Single") {
+			$("#NoOfchildren").attr('readonly', true);
+			$("#weddingDate").attr("disabled", "disabled");
+
+			$("#weddingDateCollection .ui-datepicker-trigger").hide();
+			$("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+			$("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+			$("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+
+			$("#weddingDate").val('');
+			$("#NoOfchildren").val('0');
+
+			$("#spouseName").attr("disabled", "disabled");
+			$("#spouseBirthDate").attr("disabled", "disabled");
+			$("#children1Name").attr("disabled", "disabled");
+			$("#children1BirthDate").attr("disabled", "disabled");
+			$("#children2Name").attr("disabled", "disabled");
+			$("#children2BirthDate").attr("disabled", "disabled");
+
+			$("#spouseName").val('');
+			$("#spouseBirthDate").val('');
+			$("#children1Name").val('');
+			$("#children1BirthDate").val('');
+			$("#children2Name").val('');
+			$("#children2BirthDate").val('');
+		}
+		else {
+			$("#NoOfchildren").removeAttr('readonly');
+			$("#weddingDate").removeAttr('disabled');
+
+			$("#weddingDateCollection .ui-datepicker-trigger").show();
+			$("#spouseBirthDateCollection .ui-datepicker-trigger").show();
+//			$("#children1BirthDateCollection .ui-datepicker-trigger").show();
+//			$("#children2BirthDateCollection .ui-datepicker-trigger").show();
+
+
+			$("#weddingDate").val($("#WeddingDate").val());
+
+
+			$("#spouseName").removeAttr('disabled');
+			$("#spouseBirthDate").removeAttr('disabled');
+//			$("#children1Name").removeAttr('disabled');
+//			$("#children1BirthDate").removeAttr('disabled');
+//			$("#children2Name").removeAttr('disabled');
+//			$("#children2BirthDate").removeAttr('disabled');
+
+
+			$("#spouseName").removeAttr('readonly');
+//			$("#children1Name").removeAttr('readonly');
+//			$("#children2Name").removeAttr('readonly');
+
+			$("#spouseName").val($("#spousename").val());
+			$("#spouseBirthDate").val($("#spousebirthdate").val());
+//			$("#children1Name").val($("#children1name").val());
+//			$("#children1BirthDate").val($("#children1birthdate").val());
+//			$("#children2Name").val($("#children2name").val());
+//			$("#children2BirthDate").val($("#children2birthdate").val());
+		}
+	});
+
+
+
+	$('#btnAddNewEmployee').click(function () {
+	    var reportTo = $('#ReportingToId').val();
+	    if (reportTo.toString() == "Select") {
+	        $('#ReportingToId').rules("add", {
+	            messages:
+            {
+                required: "Please select Reporting to."
+            }
+	        })
+	    }
+	});
+
+
+
+
+$('#btnAddNewEmployee').click(function () {
+    var competencyMgr = $('#CompetencyMgrId').val();
+    if (competencyMgr.toString() == "Select") {
+        $('#CompetencyMgrId').rules("add", {
+            messages:
+            {
+                required: "Please select Competency Manager."
+            }
+        })
+    }
+});
+
+
+$('#btnSave').click(function () {
+    var reportTo = $('#ReportingToId').val();
+    if (reportTo.toString() == "Select") {
+        $('#ReportingToId').rules("add", {
+            messages:
+            {
+                required: "Please select Reporting to."
+            }
+        })
+    }
+});
+
+
+$('#btnSave').click(function () {
+    var competencyMgr = $('#CompetencyMgrId').val();
+    if (competencyMgr.toString() == "Select") {
+        $('#CompetencyMgrId').rules("add", {
+            messages:
+            {
+                required: "Please select Competency Manager."
+            }
+        })
+    }
+});
+
+$('#weddingDate').rules("add", {
+    required: function () {
+        return $("#maritalStatus option:selected").val() != "Single";
+    },
+    messages:
+			{
+			    required: "Wedding date is required."
+			}
+});
+
+
+	$('#UserName').focus(function ()
+	{
+		var st = $('#UserName').attr("disabled");
+
+		var fname = $('#FirstName').val();
+		var lname = $('#LastName').val();
+
+		if(fname.length != 0 && lname.length != 0)
+		{
+			//	        var firstname = fname.toLowerCase();
+			//	        var uname = firstname + "." + lname.toLowerCase();
+			$('#UserName').val(uname);
+		}
+	});
+	$('#LastName').blur(function ()
+	{
+		var st = $('#UserName').attr("disabled");
+
+		if(st != "disabled")
+		{
+			var fname = $('#FirstName').val();
+			var lname = $('#LastName').val();
+
+			if(fname.length != 0 && lname.length != 0)
+			{
+				var firstname = fname.toLowerCase();
+				var uname = firstname + "." + lname.toLowerCase();
+				$('#UserName').val(uname);
+			}
+		}
+	});
+
+	      $('#FirstName').blur(function ()
+	      {
+
+	      	var st = $('#UserName').attr("disabled");
+
+	      	if(st != "disabled")
+	      	{
+	      		var fname = $('#FirstName').val();
+	      		var lname = $('#LastName').val();
+
+	      		if(fname.length != 0 && lname.length != 0)
+	      		{
+	      			var firstname = fname.toLowerCase();
+	      			var uname = firstname + "." + lname.toLowerCase();
+	      			$('#UserName').val(uname);
+	      		}
+	      	}
+	      });
+
+	$("#birthDate").change(function () {
+	    var todate = new Date();            
+	    var fromDate = new Date($('#birthDate').val());
+	    var retToDate = todate.getFullYear() * 12 + todate.getMonth();
+	    var retFromDate = fromDate.getFullYear() * 12 + fromDate.getMonth();
+	    var monthDiff = (retToDate - retFromDate) / 12;
+	    var absMonth = Math.floor(monthDiff);
+	    var vYrs = absMonth + "yrs"
+	    $('#Age').val(vYrs);
+
+	});
+
+	$("#AgreementSigned").change(function () {
+		var agree = $('#AgreementSigned').val();
+		if (agree == "False") {
+			$("#AgreementDate").attr("disabled", "disabled");
+			$("#AgreementDate").val('');
+			$("#aggreementDateCollection .ui-datepicker-trigger").hide();
+		}
+		else {
+			$("#AgreementDate").removeAttr('disabled');
+			$('#AgreementDate').val($('#agreementdate').val());
+			$("#aggreementDateCollection .ui-datepicker-trigger").show();
+		}
+	});
+	$('input[type="text"]').keyup(function (evt) {
+	    var txt = $(this).val();
+	    var username = $('#UserName').val();
+	    // Regex taken from php.js (http://phpjs.org/functions/ucwords:569)
+	    $(this).val(txt.replace(/^(.)|\s(.)/g, function ($1) { return $1.toUpperCase(); }));
+	    $('#UserName').val(username.replace(/^(.)|\s(.)/g, function ($1) { return $1.toLowerCase(); })); // added becaues username should be lowerCase 21-01-2012
+	});
+	$(document).ready(function () {
+	    SetPageTitle('Personal Details');
+	    $('#birthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-80:c", maxDate: new Date, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+		$('#weddingDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:c", maxDate: new Date, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+		$('#AgreementDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: '2000:2050', maxDate:"0", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+		$('#spouseBirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-70:", maxDate: "0", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+		$('#children1BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+		$('#children2BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+		if ($('#EmployeeId').val() > 0) {
+			$('#EmployeeCode').attr("disabled", "disabled");
+			$('#UserName').attr("disabled", "disabled");
+		}
+
+
+		if ($('#maritalStatus').val() != "Single") {
+			$("#NoOfchildren").removeAttr('readonly');
+			$("#spouseName").removeAttr('readonly');
+			$("#children1Name").removeAttr('readonly');
+			$("#children2Name").removeAttr('readonly');
+			//$("#weddingDate").removeAttr('readonly');
+
+			$("#weddingDate").removeAttr('disabled');
+			$("#spouseBirthDate").removeAttr('disabled');
+			$("#children1BirthDate").removeAttr('disabled');
+			$("#children2BirthDate").removeAttr('disabled');
+			$("#children1Name").removeAttr('disabled');
+			$("#children2Name").removeAttr('disabled');
+
+		}
+		else {
+			$("#spouseName").attr("disabled", "disabled");
+			$('#children1Name').attr("disabled", "disabled");
+			$('#children2Name').attr("disabled", "disabled");
+			$("#spouseBirthDate").attr("disabled", "disabled");
+			$("#children1BirthDate").attr("disabled", "disabled");
+			$("#children2BirthDate").attr("disabled", "disabled");
+			$("#weddingDateCollection .ui-datepicker-trigger").hide();
+			$("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+			$("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+			$("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+
+		}
+		if ($('#AgreementSigned').val() == "False") {
+			$("#aggreementDateCollection .ui-datepicker-trigger").hide();
+		}
+		if ($('#AgreementSigned').val() == "True") {
+			$("#AgreementDate").removeAttr('disabled');
+			$("#aggreementDateCollection .ui-datepicker-trigger").show();
+		}
+		if ($("#NoOfchildren").val() == "") {
+			$("#NoOfchildren").val(0);
+		}
+
+if ($("#NoOfchildren").val() == 0) {
+    $("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+    $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+    $("#children1Name").attr("disabled", "disabled");
+    $("#children1BirthDate").attr("disabled", "disabled");
+    $("#children2Name").attr("disabled", "disabled");
+    $("#children2BirthDate").attr("disabled", "disabled");
+
+    $("#children1Name").val('');
+    $("#children1BirthDate").val('');
+    $("#children2Name").val('');
+    $("#children2BirthDate").val('');
+}
+else if ($("#NoOfchildren").val() == 1) {
+    $("#children1Name").removeAttr('disabled');
+    $("#children1BirthDate").removeAttr('disabled');
+    $("#children1Name").removeAttr('readonly');
+    $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+    $("#children2Name").val('');
+    $("#children2BirthDate").val('');
+    $("#children2Name").attr("disabled", "disabled");
+    $("#children2BirthDate").attr("disabled", "disabled");
+    $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+}
+else {
+    $("#children1Name").removeAttr('disabled');
+    $("#children1BirthDate").removeAttr('disabled');
+    $("#children2Name").removeAttr('disabled');
+    $("#children2BirthDate").removeAttr('disabled');
+    $("#children1Name").removeAttr('readonly');
+    $("#children2Name").removeAttr('readonly');
+    $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+    $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+}
+
+   if($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin')
+   {
+   	$("#PersonalDetailForm :input").attr("disabled", true);
+   	$(".ui-datepicker-trigger").hide();
+   }
+
+
+
+		$('#weddingDate').rules("add", {
+			required: function () {
+				return $("#maritalStatus option:selected").val() != "Single";
+			},
+			messages:
+			{
+				required: "Wedding date is required."
+			}
+		});
+
+		$('#AgreementDate').rules("add", {
+			required: function () {
+				return $("#AgreementSigned option:selected").val() == "True";
+			},
+			messages:
+			{
+				required: "Agreement date is required."
+			}
+		});
+
+
+//		$('#spouseName').rules("add", {
+//			required: function () {
+//				return $("#spouseBirthDate").val() != '';
+//			},
+//			messages:
+//			{
+//				required: "Spouse Name is required."
+//			}
+//		});
+
+//		$('#spouseBirthDate').rules("add", {
+//			required: function () {
+//				return $("#spouseName").val() != '';
+//			},
+//			messages:
+//			{
+//				required: "Spouse BirthDate is required."
+//			}
+//		});
+
+
+		$('#children1Name').rules("add", {
+			required: function () {
+			    return ($("#NoOfchildren").val() == '1' || $("#NoOfchildren").val() == '2');
+			},
+			messages:
+			{
+				required: "Child1 Name is required."
+			}
+		});
+
+
+		$('#children1BirthDate').rules("add", {
+			required: function () {
+			    return ($("#NoOfchildren").val() == '1' || $("#NoOfchildren").val() == '2');
+			},
+			messages:
+			{
+				required: "Child1 BirthDate is required."
+			}
+		});
+		
+
+		$('#children2Name').rules("add", {
+			required: function () {
+				return ($("#NoOfchildren").val() == '2');
+			},
+			messages:
+			{
+				required: "Child2 Name is required."
+			}
+		});
+
+		$('#children2BirthDate').rules("add", {
+			required: function () {
+				return ($("#NoOfchildren").val() == '2');
+			},
+			messages:
+			{
+				required: "Child2 BirthDate is required."
+			}
+		});
+
+
+		$('#spouseName').rules("add", {
+			required: function () {
+				return $('#maritalStatus').val() == "Married";
+			},
+			messages:
+			{
+				required: "Spouse Name is required."
+			}
+		});
+
+		$('#spouseBirthDate').rules("add", {
+			required: function () {
+			    return $('#maritalStatus').val() == "Married";
+
+			},
+			messages:
+			{
+				required: "Spouse BirthDate is required."
+			}
+		});
+
+
+
+
+
+		$('#PersonalDetailForm').ajaxForm({
+			success: function (results) {
+				var st = $.parseJSON(results);
+				if (st.status) {
+					$("#successDialog").dialog({
+						title: 'Personal Details',
+						resizable: false,
+						height: 'auto',
+						width: 300,
+						modal: true,
+						buttons: {
+							Ok: function () {
+								if (st.isNewEmployee == true || st.isNewEmployee == "True") {
+									window.location.href = '@Url.Action("Index", "PersonalDetails")?employeeId=' + st.employeeId;
+								}
+								$(this).dialog("close");
+							}
+						}
+					});
+				}
+				else {
+					$("#errorDialog").dialog({
+						title: 'Personal Details',
+						resizable: false,
+						height: 'auto',
+						width: 'auto',
+						modal: true,
+						buttons: {
+							Ok: function () {
+								$(this).dialog("close");
+							}
+						}
+					});
+				}
+			},
+			error: function () {
+				$("#errorDialog").dialog({
+					title: 'Personal Details',
+					resizable: false,
+					height: 'auto',
+					width: 'auto',
+					modal: true,
+					buttons: {
+						Ok: function () {
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		});
+
+	});
+
+	$("#ImagePreview").click(function (event) {
+		event.preventDefault();
+	});
+
+	$("#ImagePreview").css({ 'cursor': 'default' });
+
+
+
+</script>
+<div class="clearfix">
+	@using (Html.BeginForm("PersonalDetails", "PersonalDetails", FormMethod.Post, new { id = "PersonalDetailForm" }))
+ {
+		@Html.ValidationSummary(true)
+		<div id="ShowError" style="color: Red;">
+		</div>
+		<h3 class="mrgnT15">
+			Personal Details</h3>
+		<fieldset class="blueBorder">
+			@Html.HiddenFor(m => m.UserRole, new { @id = "UserRole" })
+			@Html.HiddenFor(m => m.EmployeeId)
+			<div class="leftcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Employee Code")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextBoxFor(model => model.EmployeeCode)
+						@Html.ValidationMessageFor(model => model.EmployeeCode)
+						@Html.HiddenFor(model => model.EmployeeCode, new { id = "employeecode" })
+					</div>
+				</div>
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Salutation")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL widthsmall">
+						@Html.DropDownListFor(model => model.Prefix, new SelectList(Model.GetSalutation(), "Value", "Text", "Select"))
+						@Html.ValidationMessageFor(model => model.Prefix)
+						@Html.HiddenFor(model => model.Prefix, new { id = "prefix" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						<input type="image" src="@Url.Action("GetFileFromPath", "PersonalDetails", new { filepath = Model.ProfileImagePath })" id="ImagePreview"  height="80" width="75"/>
+					</div>
+					<div class="editor-field fieldwidth floatL mrgnT30">
+						<input type="file" id="blogpic" name="blogpic" onchange="readImage(this)" size="24" />
+					</div>
+				</div>
+			</div>
+			<div class="leftcol mrgnT30">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("First Name")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.EditorFor(model => model.FirstName)
+						@Html.ValidationMessageFor(model => model.FirstName)
+						@Html.HiddenFor(model => model.FirstName, new { id = "firstname" })
+					</div>
+				</div>
+			</div>
+            <div class="rightcol mrgnT30">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("User Name")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextBoxFor(model => model.UserName)
+						@Html.ValidationMessageFor(model => model.UserName)
+						@Html.HiddenFor(model => model.UserName)
+					</div>
+				</div>
+			</div>
+			<div class="leftcol ">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Middle Name")
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.EditorFor(model => model.MiddleName)
+						@Html.ValidationMessageFor(model => model.MiddleName)
+						@Html.HiddenFor(model => model.MiddleName, new { id = "middlename" })
+					</div>
+				</div>
+			</div>
+            <div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Date Of Birth")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextBoxFor(model => model.BirthDate, String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { @id = "birthDate", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.BirthDate)
+						@Html.Hidden("BirthDate", String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { id = "birthdate" })
+					</div>
+				</div>
+			</div>
+			<div class="leftcol clear">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Last Name")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.EditorFor(model => model.LastName)
+						@Html.ValidationMessageFor(model => model.LastName)
+						@Html.HiddenFor(model => model.LastName, new { id = "lastname" })
+					</div>
+				</div>
+			</div>
+			
+			<div class="rightcol">
+            <div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Age")
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextBoxFor(model => model.Age, null, new { @readonly = "readonly" })
+						@Html.HiddenFor(model => model.Age, new { @id = "txtAge" })
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="leftcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Gender")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL widthsmall">
+						@Html.DropDownListFor(model => model.Gender, new SelectList(Model.GetGender(), "Value", "Text", "Select"))
+						@Html.ValidationMessageFor(model => model.Gender)
+						@Html.HiddenFor(model => model.Gender, new { id = "gender" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Marital Status")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL widthsmall">
+						@Html.DropDownListFor(model => model.MaritalStatus, new SelectList(Model.GetMarritalStatus(), "Value", "Text", "Select"), new { @id = "maritalStatus" })
+						@Html.ValidationMessageFor(model => model.MaritalStatus)
+						@Html.HiddenFor(model => model.MaritalStatus, new { id = "maritalstatus" })
+					</div>
+				</div>
+			</div>
+			<div class="leftcol clear">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Wedding Date")
+					</div>
+					<div class="editor-field fieldwidth floatL" id="weddingDateCollection">
+						@Html.TextBoxFor(model => model.WeddingDate, String.Format("{0:MM/dd/yyyy}", Model.WeddingDate), new { @id = "weddingDate", @disabled = "disabled", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.WeddingDate)
+						@Html.Hidden("WeddingDate", String.Format("{0:MM/dd/yyyy}", Model.WeddingDate), new { id = "WeddingDate" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("No Of Childrens")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL ">
+						@Html.TextBoxFor(model => model.NoOfchildren, null, new { @readonly = "readonly", @onblur = "NoChildrenchange()" })
+						@Html.ValidationMessageFor(model => model.NoOfchildren)
+						@Html.HiddenFor(model => model.NoOfchildren, new { id = "noofchildren" })
+					</div>
+				</div>
+			</div>
+			<div class="leftcol clear">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Spouse Name")
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextBoxFor(model => model.SpouseName, new { @id = "spouseName", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.SpouseName)
+						@Html.HiddenFor(model => model.SpouseName, new { id = "spousename" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Spouse BirthDate")
+					</div>
+					<div class="editor-field fieldwidth floatL " id="spouseBirthDateCollection">
+						@Html.TextBoxFor(model => model.SpouseBirthDate, String.Format("{0:MM/dd/yyyy}", Model.SpouseBirthDate), new { @id = "spouseBirthDate", @disabled = "disabled", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.SpouseBirthDate)
+                        @Html.Hidden("spousebirthdate", String.Format("{0:MM/dd/yyyy}", Model.SpouseBirthDate), new { id = "spousebirthdate" })					
+					</div>
+				</div>
+			</div>
+			<div class="leftcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Children 1 Name")
+					</div>
+					<div class="editor-field fieldwidth floatL ">
+						@Html.TextBoxFor(model => model.Child1Name, new { @id = "children1Name", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.Child1Name)
+						@Html.HiddenFor(model => model.Child1Name, new { id = "children1name" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Children 1 BirthDate")
+					</div>
+					<div class="editor-field fieldwidth floatL " id="children1BirthDateCollection">
+						@Html.TextBoxFor(model => model.Child1BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child1BirthDate), new { @id = "children1BirthDate", @disabled = "disabled", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.Child1BirthDate)
+                        @Html.Hidden("children1birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child1BirthDate), new { id = "children1birthdate" })		
+						
+					</div>
+				</div>
+			</div>
+			<div class="leftcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Children 2 Name")
+					</div>
+					<div class="editor-field fieldwidth floatL ">
+						@Html.TextBoxFor(model => model.Child2Name, new { @id = "children2Name", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.Child2Name)
+						@Html.HiddenFor(model => model.Child2Name, new { id = "children2name" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Children 2 BirthDate")
+					</div>
+					<div class="editor-field fieldwidth floatL " id="children2BirthDateCollection">
+						@Html.TextBoxFor(model => model.Child2BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child2BirthDate), new { @id = "children2BirthDate", @disabled = "disabled", @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.Child2BirthDate)
+						  @Html.Hidden("children2birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child2BirthDate), new { id = "children2birthdate" })
+					</div>
+				</div>
+			</div>
+			
+			<div class="leftcol mrgnT30">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Contract Agreement Signed")
+					</div>
+					<div class="editor-field fieldwidth floatL widthsmall">
+						@Html.DropDownListFor(model => model.AgreementSigned, new SelectList(Model.GetAgreementStatus(), "Value", "Text", "Select"))
+						@Html.ValidationMessageFor(model => model.AgreementSigned)
+						@Html.HiddenFor(model => model.AgreementSigned, new { id = "agreementsigned" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol mrgnT30">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Agreement Signed Date")
+					</div>
+					<div class="editor-field fieldwidth floatL" id="aggreementDateCollection">
+						@Html.TextBoxFor(model => model.AgreementDate, String.Format("{0:MM/dd/yyyy}", Model.AgreementDate), new { @readonly = "readonly", @disabled = "disabled" })
+						@Html.ValidationMessageFor(model => model.AgreementDate)
+						@Html.Hidden("AgreementDate", String.Format("{0:MM/dd/yyyy}", Model.AgreementDate), new { id = "agreementdate" })
+					</div>
+				</div>
+			</div>
+			<div class="leftcol clear">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Hobbies")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextAreaFor(model => model.Hobbies)
+						@Html.ValidationMessageFor(model => model.Hobbies)
+						@Html.HiddenFor(model => model.Hobbies, new { id = "hobbies" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Recognition")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextAreaFor(model => model.Recognition)
+						@Html.ValidationMessageFor(model => model.Recognition)
+						@Html.HiddenFor(model => model.Recognition, new { id = "recognition" })
+					</div>
+				</div>
+			</div>
+			<div class="leftcol clear">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Achievements")<span class="mandatory">*</span>
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextAreaFor(model => model.Achievement)
+						@Html.ValidationMessageFor(model => model.Achievement)
+						@Html.HiddenFor(model => model.Achievement, new { id = "achievement" })
+					</div>
+				</div>
+			</div>
+			<div class="rightcol">
+				<div class="formcol clearfix">
+					<div class="editor-label labelwidth floatL">
+						@Html.Label("Remarks")
+					</div>
+					<div class="editor-field fieldwidth floatL">
+						@Html.TextAreaFor(model => model.Remarks)
+						@Html.HiddenFor(model => model.Remarks, new { id = "remarks" })
+					</div>
+				</div>
+			</div>
+            <div class="leftcol clear">
+            <div class="formcol clearfix">
+                    <div class="editor-label labelwidth floatL">
+                       @* @Html.LabelFor(model => model.ReportingToName)<span class="mandatory">*</span>*@
+                       @Html.Label("Reporting To")<span class="mandatory">*</span>
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        @Html.DropDownListFor(model => model.ReportingToId,  (SelectList)ViewBag.ReportingTo, "Select")
+                        @Html.ValidationMessageFor(model => model.ReportingToId,"Please select Reporting To.")
+                        @Html.HiddenFor(model => model.ReportingToId, new { id = "ReportingToId" })
+                    </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                <div class="formcol clearfix">
+                    <div class="editor-label labelwidth floatL">
+                    @*    @Html.LabelFor(model => model.CompetencyMgrName)<span class="mandatory">*</span>*@
+                         @Html.Label("CompetencyManager")<span class="mandatory">*</span>
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        @Html.DropDownListFor(model => model.CompetencyMgrId, (SelectList)ViewBag.CompetencyManager, "Select")
+                        @Html.ValidationMessageFor(model => model.CompetencyMgrId,"Please Select competency Manager.")
+                        @Html.HiddenFor(model => model.CompetencyMgrId, new { id = "CompetencyMgrId" })
+                    </div>
+                    </div>
+                </div>
+                 @*<div class="formcol clearfix">
+                    <div class="editor-label labelwidth floatL">
+                        @Html.LabelFor(model => model.CurrentDU)<span class="mandatory">*</span>
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        @Html.DropDownListFor(model => model.CurrentDU, (SelectList)ViewBag.DU)
+                        @Html.ValidationMessageFor(model => model.CurrentDU)
+                        @Html.HiddenFor(model => model.CurrentDU, new { id = "currentDU" })
+                    </div>
+                </div>*@
+			@*<td>
+				<div class="editor-label">
+					<div class="editor-label">
+						@Html.Label("Employee Login Role *")</div>
+				</div>
+			</td>
+			<td colspan="3">
+				<div class="editor-field">
+					@Html.DropDownListFor(model => model.LoginRole, (SelectList)ViewBag.Roles) @Html.ValidationMessageFor(model
+					=> model.LoginRole) @Html.HiddenFor(model => model.LoginRole, new { id = "loginrole"
+					})
+				</div>
+			</td>*@ @*
+			<td colspan="2">
+				<div id="agreeDate">
+					<table width="100%">
+						<tr>*@ @*
+						</tr>
+					</table>
+				</div>
+			</td>*@
+		</fieldset>
+		<div class="clear">
+			<input type="submit" value="Save" class="button" id="btnSave" />
+			<input type="button" value="Reset" onclick="RestoreValues()" class="button" />
+			<input type="button" id="btnAddNewEmployee"  value="Add New Employee" class="button" onclick="javascript:window.location.href='@Url.Action("Index", "PersonalDetails", new { employeeId = 0 })'" />
+		</div>
+ }
+</div>
+<script type="text/javascript">
+
+
+	var RestoreValues = function () {
+		$(".field-validation-error").empty();
+		$('input').removeClass("input-validation-error");
+		$('#FirstName').val($('#firstname').val());
+		$('#LastName').val($('#lastname').val());
+		$('#MiddleName').val($('#middlename').val());
+		$('#Prefix').val($('#prefix').val());
+		$('#Hobbies').val($('#hobbies').val());
+		$('#Gender').val($('#gender').val());
+		$('#Recognition').val($('#recognition').val());
+		$('#Achievement').val($('#achievement').val());
+		$('#birthDate').val($('#birthdate').val());
+		$('#weddingDate').val($('#WeddingDate').val());
+		$('#NoOfchildren').val($('#noofchildren').val());
+		$('#ddlUsers').val($('#maritalstatus').val());
+		$('#Age').val($('#txtAge').val());
+		$('#AgreementDate').val($('#agreementdate').val());
+		$('#AgreementSigned').val($('#agreementsigned').val());
+		$('#EmployeeCode').val($('#employeecode').val());
+		$('#LoginRole').val($('#loginrole').val());
+		$('#Remarks').val($('#remarks').val());
+		$('#spouseName').val($('#spousename').val());
+		$('#spouseBirthDate').val($('#spousebirthdate').val());
+
+		if ($("#NoOfchildren").val() == 0) {
+			$('#children1Name').val('');
+			$('#children2Name').val('');
+			$('#children1BirthDate').val('');
+			$('#children2BirthDate').val('');
+		}
+		else if ($("#NoOfchildren").val() == 1) {
+			$('#children1Name').val($('#children1name').val());
+			$('#children2Name').val('');
+			$('#children1BirthDate').val($('#children1birthdate').val());
+			$('#children2BirthDate').val('');
+		}
+		else {
+
+			$('#children1Name').val($('#children1name').val());
+			$('#children2Name').val($('#children2name').val());
+			$('#children1BirthDate').val($('#children1birthdate').val());
+			$('#children2BirthDate').val($('#children2birthdate').val());
+		}
+		NoChildrenchange();
+		$('#ImagePreview').attr('src', '@Url.Action("GetFileFromPath", "PersonalDetails", new { filepath = Model.ProfileImagePath })');
+
+	}
+
+</script>
+<div id="successDialog" title="Personal Details" style="display: none">
+	<p>Personal Details have been saved.</p>
+</div>
+<div id="errorDialog" title="Error" style="display: none">
+	<p>
+		There are some errors.</p>
+</div>
+
+<div id="ImageUploadError" title="Error" style="display: none">
+	<p>
+		Please Select the Image to upload</p>
+</div>
+<script type="text/javascript">
+
+	function readImage(input) {
+		
+		var file = $('input[type="file"]').val();
+		var exts = ['gif', 'png', 'jpg', 'jpeg'];
+		// first check if file field has any value
+		if (file) {
+			// split file name at dot
+			var get_ext = file.split('.');
+			// reverse name to check extension
+			get_ext = get_ext.reverse();
+			// check file type is valid as given in 'exts' array
+			if ($.inArray(get_ext[0].toLowerCase(), exts) > -1) 
+			{
+			
+				if (!window.FileReader || $.browser.version == '8.0' || $.browser.version == '9.0') {
+					var postUrl = '@Url.Action("GetFileFromPath", "PersonalDetails")';
+
+					$.ajax({
+						url: postUrl,
+						data: { filePath: $('#blogpic').val() },
+						success: function (results) {
+							$('#ImagePreview').attr("src", "data:image/jpg;base64," + results);
+						}
+					});
+
+					return false;
+				}
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						$('#ImagePreview').attr('src', e.target.result);
+					}
+
+					reader.readAsDataURL(input.files[0]);
+				}
+
+			} 
+			else {
+
+				$("#ImageUploadError").dialog({
+					title: 'Error',
+					resizable: false,
+					height: 'auto',
+					width: 'auto',
+					modal: true,
+					buttons: {
+						Ok: function () {
+							$(this).dialog("close");
+							$('#blogpic').val('');
+
+						}
+					}
+				});
+			}
+		}
+				
+	}
+
+</script>

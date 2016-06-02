@@ -1,0 +1,471 @@
+﻿@model HRMS.Models.ReportModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script type="text/javascript">
+    var controls = [];
+    var newGuid = "";
+    $(document).ready(function () {
+        $('#reportView').hide();
+        if ($('#selectedReportID option:selected').text() != "Select")
+            $('#btnViewReport').show();
+        else
+            $('#btnViewReport').hide();
+        $("#selectedReportID").change(function () {
+
+            $("#renderParam").empty();
+            var data = [];
+            selectedReportDDL = $('#selectedReportID option:selected');
+            //selectedReportDDL.attr('title','selectedReport');
+            ////selectedReportDDL.text().
+            $('#selectedReportID').next().find('.selectBox-label').attr('title', $('#selectedReportID option:selected').text());
+            //$('#selectedReportID option:selected').next().find('.selectBox-label').attr('title', $('#selectedReportID option:selected').text());
+            if (selectedReportDDL.text() != "Select") {
+                controls = [];
+                $.ajax({
+                    url: "/Reports/GetSelectedReportData",
+                    type: 'GET',
+                    async: false,
+                    dataType: "JSON",
+                    data: { reportID: $('#selectedReportID option:selected').val() },
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#renderParam").append("<div id='row_" + i + "' class='row' />")
+                            if (data[i].ReportParamType != 'hidden') {
+                                $("#row_" + i).append($("<div class='cellHeader' />").append($("<label for='" + data[i].ReportParamName + "'>" + data[i].ReportParamDescription + "</label>")));
+                                $("#row_" + i).append($("<div class='cellData' />").V2Controls({ type: data[i].ReportParamType, value: data[i].DropDownList, id: data[i].ReportParamName, defaultVal: data[i].ReportParamDefaultValue, cascade: data[i].CascadeDD, reportid: data[i].ReportID }));
+                            }
+                            else
+                                $("#row_" + i).append($("<div class='cellHiddenData' style='display:none' />").V2Controls({ type: data[i].ReportParamType, value: data[i].DropDownList, id: data[i].ReportParamName, defaultVal: data[i].ReportParamDefaultValue }));
+                            controls.push({ id: data[i].ReportParamName, value: '', TypeId: $('#selectedReportID option:selected').val() });
+                            $('.rptDD').selectBox('create');
+                        }
+                    },
+                    error: function (a, b, c) {
+                        alert("error");
+                    }
+                });
+                $('#btnViewReport').show();
+            } //dropdown value selected
+            else
+                $('#btnViewReport').hide();
+            $('#reportView').hide();
+        }); // end of dropdown change
+
+        $('#btnViewReport').click(function () {
+            //for attendance
+            var monthid = $('#Month option:selected');
+            if (monthid.text() == "Select") {
+                $("#invalidMonth").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Month",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            var yearid = $('#Year option:selected');
+            if (yearid.text() == "Select") {
+                $("#invalidYear").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Year",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            //for travel report
+            var travelid = $('#travelId option:selected');
+            if (travelid.text() == "Select") {
+                $("#invalidTravel").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Travel",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            //for expence report
+            var empid = $('#EmplId option:selected');
+            var expid = $('#expenceid option:selected');
+            if (empid.text() == "Select") {
+                $("#invalidEmp").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Employee",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            if (expid.text() == "Select") {
+                $("#invalidExp").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Expence",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            var startDate = new Date($('#startdate,#StartDate,#LeaveDateFrom,#CompensationFrom,#FromDate').val());
+            var endDate = new Date($('#enddate,#Enddate,#LeaveDateTo,#CompensationTo,#Todate').val());
+            if (startDate > endDate) {
+                $("#invalidDate").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "invalid Date",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            $.each(controls, function (idex, values) {
+                var controlValue = $("#" + values.id);
+                if (controlValue.attr("type") == "checkbox") {
+                    this.value = $(controlValue).is(':checked');
+                }
+                else
+                    this.value = controlValue.val();
+            });
+
+            $.ajax({
+                url: "/Reports/SaveFormData",
+                type: 'POST',
+                async: false,
+                contentType: "application/json",
+                dataType: 'json',
+                data: JSON.stringify(controls),
+                success: function (data) {
+                    if (data.IsUpdated == true) {
+                        newGuid = data.newGuid;
+                        $('#SelectedGuid').val(newGuid);
+                    }
+
+                },
+                error: function () {
+                }
+            });
+
+            var url = "../ReportViewer.aspx?selectedGuid=" + $('#SelectedGuid').val() + "&reportID=" + $('#selectedReportID option:selected').val();
+            //document.getElementById("reportView").src = url;
+            //$('#reportView').show();
+            $("#iframesrc").dialog({
+                autoOpen: false,
+                modal: true,
+                height: 500,
+                width: 1140,
+                open: function (ev, ui) {
+                    $('#reportView').attr('src', url);
+                },
+                close: function (event, ui) {
+                    $('#reportView').attr('src', "about:blank");
+                }
+            });
+            $("#iframesrc").dialog("open");
+            $('#reportView').show();
+
+        }); //end of btnViewReport function
+
+    });   // end of ready function
+
+    (function ($) {
+        $.fn.V2Controls = function (options) {
+            var settings = $.extend({
+                type: "text",
+                value: "",
+                id: "",
+                defaultVal: null,
+                cascade: null,
+                reportid:null
+            }, options);
+            var factory = controlFactory.getFactory(settings.type);
+            $(this).append(factory.create(settings.value, settings.id, settings.defaultVal, settings.cascade,settings.reportid))
+            return this;
+        };
+
+        var controlFactory = {
+            getFactory: function (key) {
+                var factory = null;
+                switch (key) {
+                    case "dropdown":
+                        factory = DropDownFactory;
+                        break;
+                    case "date":
+                        factory = DateFactory;
+                        break;
+                    case "checkbox":
+                        factory = CheckBoxFactory;
+                        break;
+                    case "hidden":
+                        factory = HiddenFactory;
+                        break;
+                    default:
+                        factory = function (value, id) { return $("<div />").html("Element Not Found"); };
+                }
+                return factory;
+            }
+        }
+
+        var DropDownFactory = {
+            //{key:"",value:""}
+
+            create: function (value, id, defaultVal, cascade,reportid) {
+
+                var url = "/api/async/call/";
+
+                var ddl = "";
+                var select = "<select class='rptDD'>";
+                if (defaultVal != null) {
+                    if (defaultVal == 'All') {
+                        select += "<option value='-3'>" + defaultVal + "</option>";
+                    }
+                    else
+                        select += "<option value='0'>" + defaultVal + "</option>";
+                }
+                if (value != null) {
+                    for (var i = 0; i < value.length; i++)
+                        select += "<option value='" + value[i].Key + "'>" + value[i].Value + "</option>";
+                    select += "</select>";
+                    ddl = $(select);
+                }
+                if (cascade != null) {
+                    cascade = JSON.parse(cascade);
+                    ddl.on("change", function () {
+                        $('#' + id).next().find('.selectBox-label').attr('title', $('#' + id + ' option:selected').text());
+                        for (var i = 0; i < cascade.length; i++) {
+                            //alert(url + cascade[i].callBackAction + $(this).val() + "?control=" + cascade[i].control);
+
+                            var controltest = cascade[i].control;
+                            $.get(url + "?method=" + cascade[i].callBackAction + "&param=" + $(this).val() + "?control=" + cascade[i].control + "?reportid=" + reportid, function (data) {
+
+                                var controlname = controltest;
+
+                                // var targetControl = $("#" + $(this)[0].url.split("=")[3]);
+                                var targetControl = $("#" + controlname);
+                                targetControl.children('option:not(:first)').remove();
+                                targetControl.children('option:first').remove();
+                                targetControl.append(function () {
+                                    console.log(data);
+                                    data = JSON.parse(data);
+                                    var options = "";
+                                    if (value != null) {
+                                        for (var i = 0; i < data.length; i++)
+                                            options += "<option value='" + data[i].Key + "'>" + data[i].Value + "</option>";
+                                    }
+                                    return options;
+                                }).selectBox("refresh")
+                                if ($(targetControl).children().length == 1){
+                                    $('#ddError').remove();
+                                    $(targetControl).next('a').after("<span style='color:red' id='ddError'>There is no record present for selected value.</span>");
+                                    }
+                                else
+                                    $('#ddError').remove();
+                            })
+
+                        }
+
+                    });
+
+                }
+
+                ddl.attr("id", id).attr("name", id);
+
+                return ddl;
+            }
+        }
+
+        var DateFactory = {
+            create: function (value, id, defaultVal) {
+                var Datep = "<input type='text'>";
+                var dpicker = $(Datep).attr("id", id).attr("name", id).attr("readonly","readonly").datepicker({
+                    onSelect: function (dateStr) {
+                        var nyd = new Date(dateStr);
+                        nyd.setDate(nyd.getDate() + 30);
+                        if (id == 'StartDate') {
+                            $("#EndDate").datepicker("option", "minDate", dateStr);
+                            $("#EndDate").datepicker('option', 'maxDate', nyd);
+                        }
+
+                    }
+                });
+                if (defaultVal != null || defaultVal != "")
+                    dpicker.datepicker("setDate", defaultVal);
+                return dpicker;
+            }
+        }
+
+        var CheckBoxFactory = {
+            create: function (value, id, defaultVal) {
+                var CheckBox = "<input type='checkbox' class='rptChkBox' id='" + id + "' name='" + id + "'>";
+                var label = "<label for='" + id + "' class='LabelForCheckbox'></label>";
+                return CheckBox + label;
+                //return $(CheckBox).attr("id", id).attr("name", id);
+            }
+        }
+
+        var HiddenFactory = {
+            create: function (value, id, defaultVal) {
+                var HiddenElement = "<input type='hidden'>";
+                return $(HiddenElement).attr("id", id).attr("name", id).val(defaultVal);
+            }
+        }
+
+    }(jQuery));
+</script>
+
+<style>
+    #renderParam {
+        padding-left: 40px;
+    }
+
+    .row {
+        display: table-row;
+        width: 500px;
+    }
+
+    .cellHeader {
+        display: table-cell;
+        width: 200px;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .cellData {
+        display: table-cell;
+        width: 300px;
+        text-align: left;
+        padding-bottom: 20px;
+    }
+
+        .cellData select {
+            width: 300px;
+        }
+
+        .cellData input[type="text"] {
+            width: 280px;
+        }
+
+    .commands {
+        padding-left: 40px;
+    }
+
+    #iframesrc {
+        padding: 10px 15px 0px 20px;
+    }
+
+    .ui-icon-gripsmall-diagonal-se {
+        display: none;
+    }
+
+    #iframesrc iframe {
+        padding: 0;
+        margin: 0;
+        border: solid rgba(0,0,0,.1) 1px;
+        background: #fff;
+    }
+</style>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "reportListForm" }))
+{
+    @Html.HiddenFor(model => model.ReportID)
+    @Html.HiddenFor(model => model.SelectedGuid)
+
+    <section class="PMSContainer Container">
+        <div class="FixedHeader">
+            <div class="clearfix">
+                <h2 class="MainHeading">
+                    Reports
+                </h2>
+            </div>
+        </div>
+        <div class="MainBody timesheet">
+            <div class="FormContainerBox clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            @Html.Label("*Select Report :")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.ReportID, new SelectList(Model.reportList, "ReportID", "ReportName"), "Select", new { @id = "selectedReportID", @class = "ValidationDropDown" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ReportID)</p>
+                            @Html.HiddenFor(model => model.ReportID, new { id = "hdnReportID" })
+                        </div>
+                    </div>
+                </div>
+            </div><br /><br />
+            <div id="renderParam" class="clearfix">
+            </div>
+            <div class="commands">
+                <input type="button" value="View Report" class="ButtonGray mrgnR8" id="btnViewReport" />
+            </div>
+            <div class="reportClass" id="iframesrc">
+                <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
+            </div>
+        </div>
+        <div id="invalidDate" title="Error" style="display: none">
+            To Date cannot be less than From date.
+        </div>
+        <div id="invalidEmp" title="Error" style="display: none">
+            Please select Employee
+        </div>
+        <div id="invalidExp" title="Error" style="display: none">
+            Please select Expense
+        </div>
+        <div id="invalidTravel" title="Error" style="display: none">
+            Please select Travel Id
+        </div>
+        <div id="invalidMonth" title="Error" style="display: none">
+            Please select Month
+        </div>
+        <div id="invalidYear" title="Error" style="display: none">
+            Please select Year
+        </div>
+    </section>
+}

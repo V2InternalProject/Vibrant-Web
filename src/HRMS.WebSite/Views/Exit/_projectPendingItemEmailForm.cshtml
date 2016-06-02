@@ -1,0 +1,230 @@
+﻿@model HRMS.Models.FinanceClearance
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).ready(function () {
+
+        $("#btnSendMailProject").click(function () {
+
+            var counter = 0;
+
+            $('.case').each(function () {
+
+                if ($(this).is(':checked')) {
+                    counter = 1;
+                }
+            });
+
+            if (counter == 1) {
+                DisplayLoadingDialog();  //checked
+
+                var collection = "";
+                $.each($("input:checked"), function (i, val) {
+                    if ($(val).attr("data-name") != undefined)
+                        collection = collection + $(val).attr("data-name") + ";";
+
+                });
+                var MailUrl = '@Url.Action("PendingClearanceMailTemplate", "Exit")'
+                var Parameter = { employeeId: '@ViewBag.EmployeeIdProject' }
+                $.ajax({
+                    url: MailUrl,
+                    type: 'GET',
+                    cache: false,
+                    data: { "employeeId": '@ViewBag.EmployeeIdProject', "collection": collection },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+
+                        if (data) {
+                            $("#SeparationMailDialog").html(data);
+                            $("#SeparationMailDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 800,
+                                modal: true,
+                                title: "Send Mail",
+                                open: function () {
+                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '30');
+                                    $(this).parent().css('z-index', '31');
+                                },
+                                close: function () {
+                                    $(this).dialog('close');
+
+                                }
+                            });
+                            $.validator.unobtrusive.parse($("#MailDetails"));
+                            $('#sendSeparationMail').click(function () {
+
+                                $("#CCErrorMessage").hide();
+                                $("#ToErrorMessage").hide();
+                                if ($('#MailDetails').valid()) {
+
+                                    DisplayLoadingDialog();  //checked
+                                    var SendMailUrl = '@Url.Action("SendEmail", "Exit")'
+                                    $.ajax({
+                                        url: SendMailUrl,
+                                        type: 'POST',
+                                        cache: false,
+                                        data: $('#MailDetails').serialize(),
+                                        success: function (data) {
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+                                            //$("#SeparationMailDialog").dialog('destroy');
+                                            //$('#btnProjectSendPendingItem').dialog('destroy');
+                                            if (data.validCcId == true && data.validtoId == true) {
+                                                if (data.status == true) {
+
+                                                    $("#SeparationMailDialog").dialog('destroy');
+                                                    $('#btnProjectSendPendingItem').dialog('destroy');
+                                                }
+                                            }
+                                            else if (data.status == "Error") {
+                                                $("#errorDialog").dialog({
+                                                    title: 'Mail Error',
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+
+                                                if (data.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+
+                                                if (data.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+
+                                                return false;
+
+                                            }
+
+                                        },
+                                        error: function () {
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+                                            $("#errorDialog").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                buttons:
+                                                   {
+                                                       Ok: function () {
+                                                           $(this).dialog("close");
+                                                       }
+                                                   }
+                                            }); //end dialog
+                                            //window.location.href = '@@Url.Action("EmpSeparationApprovals", "Exit")';
+                                        }
+
+                                    }); //end ajax
+
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }
+            else {
+                $("#ChkBoxWarningProject").dialog({
+                    title: 'Pending Item',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '28');
+                        $(this).parent().css('z-index', '29');
+                    },
+                    buttons:
+                                                   {
+                                                       Ok: function () {
+                                                           $(this).dialog("close");
+                                                       }
+                                                   }
+                }); //end dialog
+
+            }
+        });
+
+        $('#selectall_Project').click(function () {
+            $('input:checkbox.case').attr('checked', 'checked');
+        });
+
+    });
+</script>
+<div id="SeparationFormSuccessMessage" style="display: none">
+    <p>
+        Separation Form submited successfully.
+    </p>
+</div>
+<div id="ChkBoxWarningProject" style="display: none">
+    Please select atleast 1 item.
+</div>
+<div id="projectSeparationMailDialog" style="display: none">
+    @*@{Html.RenderPartial("_MailTemplateSeparation", Model.Mail);}*@
+</div>
+<section class="SepTableNoBorderB">
+    <h3 class="HRHeadingGreen">Pending Items</h3>
+
+    <table class="TableJqgrid mrgnB18" border="0" width="100%">
+        <thead>
+            <tr class="bluebgtable1">
+                <th width="20%" align="left" class="tableHeaders">
+                    Section
+                </th>
+                <th class="tableHeaders">
+                    Item
+                </th>
+                <th class="tableHeaders" width="20%" align="left">
+                    Select
+                </th>
+            </tr>
+        </thead>
+
+        <tr class="TopRow">
+            <td colspan="3">
+                Project Clearance
+            </td>
+        </tr>
+
+        @foreach (var item in Model.QuestionnaireQuestions)
+        {
+    <tr class="tableRows">
+        <td></td>
+        <td>
+            @Html.DisplayFor(s => item.QuestionDescription)
+        </td>
+        <td align="center">
+            @*<input type="checkbox" name="prfofinvestcheck" value="ProofOfInvestment" class="case" id="prfofinvestcheckpendingid">*@
+            <input type="checkbox" id="Project_+@item.QuestionnaireQuestionID" class="case" value="@item.QuestionnaireQuestionID" data-name="@item.QuestionDescription" />
+            <label for="Project_+@item.QuestionnaireQuestionID" class="LabelForCheckbox"></label>
+        </td>
+    </tr>
+        }
+        <tr>
+
+            <td colspan="3" class="bottomcount">Total Records :@Model.QuestionnaireQuestions.Count()</td>
+        </tr>
+    </table>
+</section>
+<div class="mrgnB18 mrgnT15 mrgnL46">
+    <input type="button" value="Select All" id="selectall_Project" class="ButtonGray mrgnR11" />
+    <input type="button" value="Send Mail" id="btnSendMailProject" class="ButtonGray mrgnR11" />
+</div>

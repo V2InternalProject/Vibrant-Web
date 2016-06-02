@@ -1,0 +1,30 @@
+﻿@model HRMS.Models.ConfirmationProcess
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<div  class="blueBorder">
+<h2 class="mrgnT15 title-bgcolor">
+    Confirmation Process</h2>
+<div class="clearfix">
+    <fieldset class="blueBorder">
+        <ul>
+            <li><a href="@Url.Action("ConfirmatioProcess", "ConfirmationProcess")">
+                Confirmation Process</a> <span class="count-red">(@Html.DisplayFor(x => x.ApprovalsCount):
+                    Action Items)</span></li>
+                   @* @if (Model.LoggedInUserRole == "HR Admin")
+                    {
+            <li><a href="@Url.Action("InitiateConfirmationProcess", "ConfirmationProcess")">
+                Initiate Confirmation Process</a></li>
+                    }*@
+        </ul>
+    </fieldset>
+</div>
+</div>

@@ -1,0 +1,110 @@
+﻿@model HRMS.Models.OrganizationStructure
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<h3 class="Configure-title">
+    Add Existing Delivery Unit</h3>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "AddExistingDeliveryUnit" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.LocationID)
+    @Html.HiddenFor(x => x.ResourcePoolID)
+@*    @Html.HiddenFor(x => x.BusinessGroupID)*@
+    <div style="float: inherit">
+        <div class="conf-pop">
+            @Html.LabelFor(x => x.ExistingDU)<span class="mandatory">*</span>
+            @Html.DropDownListFor(x => x.ExistingDU, new SelectList(Model.ExistingDeliveryUnits, "ResourcePoolID", "ResourcePoolName"), " ")
+            @Html.ValidationMessageFor(x => Model.ExistingDU)
+        </div>
+        <br />
+    </div>
+}
+<input type="button" class="button" id="saveExistingDU" value="Save" />
+<div id="ErrorSaveExistingDU" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          There is some error.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $.validator.unobtrusive.parse($("#AddExistingDeliveryUnit"));
+    $("#saveExistingDU").click(function () {
+        if ($("#AddExistingDeliveryUnit").valid()) {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+              $("#ResourcePoolID").val('@Model.ResourcePoolID');
+              $("#LocationID").val('@Model.LocationID');
+            $.ajax({
+                url: '@Url.Action("AddExistingDU", "OrganizationStructure")',
+                data: $("#AddExistingDeliveryUnit").serialize(),
+                type: 'POST',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status == true) {
+                        $("#addexistingdeliveryUnit").dialog("destroy").remove()
+                        $("#ConfigureOrganizationUnitDialog").dialog("close");
+                        $("#ConfigureOrganizationUnitDialog").dialog("destroy");
+                        //var BusinessGroupID = '@Model.BusinessGroupID';
+                        $("#ConfigureOrganizationUnitDialog").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 650,
+                            width: 1100,
+                            modal: true,
+                            title: "Configure Business Group",
+                            open: function (event, ui) {
+                                $('#ConfigureOrganizationUnitDialog').load("/OrganizationStructure/ConfigureOrganizationUnit", { locationId: '@Model.LocationID' }).dialog('open');
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorSaveExistingDU").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveExistingDU").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

@@ -1,0 +1,480 @@
+﻿@model HRMS.Models.PmsConfiguration
+
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+@*<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Menu";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+
+<script type="text/javascript">
+
+    function IsTypeValueSelected() {
+
+    };
+    function IsLevelTypeSelected(e) {
+
+    };
+    function RefreshGrids() {
+        $("#PmsConfigurationTable").jqGrid('setGridParam', { datatype: 'json' })
+                                                     .trigger('reloadGrid', [{ page: 1 }]);
+    };
+
+    $(document).ready(function () {
+
+        var myGrid = $('#PmsConfigurationTable');
+        var MainType = "MainType";
+        var ProjectNames = "ProjectName";
+        var ColumnMainTypeHide = 1;
+        var SetLevelypeGlobal = "";
+        var Selectedvalue = "";
+        var DeleteUniqueId = "";
+        var SelectedUniqueId = "";
+        var ConfigurationDropDown;
+        var Filtervalue = "";
+        var DeleteColumnName = "Delete";
+        var LevelType = "";
+        var SelectedRowID;
+        var okPressed = "";
+        var ProjectListDrop = "";
+
+
+        $('#ProjectDDe').change(function () {
+            ResetGrid();
+            //$(this).text();
+            //ResetGrid();
+            //$('*[class*=sbSelector]').each(function () {
+            //    Selectedvalue = $(this).text();
+            //});
+        //    if(Selectedvalue!=""){
+            Selectedvalue = $('#ProjectDDe :selected').val();;
+            //}
+            RefreshGrids();
+           
+        });
+
+        ProjectListDrop = @(Html.Raw(Json.Encode(ViewBag.dropProjectName)))
+        GeneratingSequence();
+        function GeneratingSequence() {
+            if (ProjectListDrop != null) {
+                $.each(ProjectListDrop, function (index, value) {
+                    Filtervalue += value.ProjectId + ":" + value.ProjectName + ";";
+                });
+                Filtervalue = Filtervalue.substring(0, Filtervalue.length - 1);
+            }
+        };
+        @*function FillDropDown() {
+           
+            var $select = $('#DropDown');
+            $select.find('option').remove();
+
+            $.ajax({
+                url: '@Url.Action("PmsfilllMainDropDown", "TaskTimesheet")',
+                data: {},
+                success: function (results) {
+                   
+                    ConfigurationDropDown = results.DropList;
+                    var i = 0;
+                    $.each(ConfigurationDropDown, function (i, objects) {
+                       
+                        var option = $('<option>', {
+                            value: i
+                        }).html(objects).appendTo($select);
+                        i++;
+                    });
+                },
+                Error: function () {
+                    DisplayDailog("SomeOtherErrorMessage");
+                }
+            });
+
+        }*@
+        GeneratingSequence();
+        function DisplayDailog(Dialogname) {
+
+            $('#' + Dialogname).dialog({
+                modal: true,
+                resizable: false,
+                width: 250,
+                height: 'auto',
+                title: "Upload Feature",
+                buttons: {
+                    "OK": function () {
+                        if (Selectedvalue == "---Select---") {
+                            location.reload();
+                        } else {
+                            RefreshGrids(); $(this).dialog('close');
+                        }
+
+                    }
+                }
+            });
+            $('#' + Dialogname).dialog('open');
+        };
+
+        function getDropValue(e) {
+
+            LevelType = e.target[e.target.options.selectedIndex].text;
+            if (LevelType == "Project") {
+                myGrid.jqGrid('showCol', ProjectNames);
+            } else {
+                myGrid.jqGrid('hideCol', ProjectNames);
+            }
+        }
+
+        function ResetGrid() {
+            var i = 0, cmi, l = cm.length;
+            for (; i < l; i++) {
+                cmi = cm[i];
+                if (typeof cmi.hidden === 'undefined' || cmi.hidden === false) {
+                    myGrid.jqGrid('showCol', cmi.name);
+                } else {
+                    myGrid.jqGrid('hideCol', cmi.name);
+                }
+            }
+        };
+
+        function DeleteConfigAjax(LocalUniqueId) {
+
+            $('#DeleteConfirm').dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 300,
+                height: 'auto',
+                title: "Delete record",
+                buttons: {
+                    "Ok": function () {
+                        $("#DeleteConfirm").dialog('close');
+                        $.ajax({
+                            url: '@Url.Action("pmsDeleteFunction", "TaskTimesheet")',
+                            data: { UniqueId: LocalUniqueId },
+                            success: function (results) {
+                                var st = $.parseJSON(results);
+                                if (st.status == "Done") {
+                                    DisplayDailog("DeleteSuccess");
+                                }
+                                else {
+                                    DisplayDailog("DeleteErrorMessage");
+                                }
+                            },
+                            Error: function () {
+                                DisplayDailog("SomeOtherErrorMessage");
+                            }
+                        });
+                    },
+                    "Cancel": function () { $(this).dialog('close'); }
+                }
+            });
+            $("#DeleteConfirm").dialog('open');
+        };
+
+        function validate_subAddEdit(posdata, obj) {
+            if (posdata.PASSWORD == null || posdata.PASSWORD == "" || posdata.PASSWORD == undefined)
+                return [false, "Please enter the pasword"];
+
+
+            return [true, ""];
+        }
+
+        function validate_MainAdd(posdata, obj) {
+            //you can ignore this because you dont want to verify password
+        }
+
+        function SetLevelType(e) {
+            SetLevelypeGlobal = e.target.value;
+
+        };
+
+        cm = [
+            { name: "ID", index: "ID", hidden: false, width: 100, align: "left", hidden: true },
+            { name: 'MainType', index: 'MainType', width: 100, align: "left", sortable: true, hidden: true, editable: true, editrules: {  } },
+            { name: 'TypeValue', index: 'TypeValue', width: 100, align: "left", sortable: true, editable: true, editrules: { required: true } },
+            {
+                name: "LevelType", index: "LevelType", editable: true, align: "left", width: 100, editable: true,
+                edittype: "select", editoptions: { value: "Global:Global;Project:Project", dataEvents: [{ type: 'change', fn: function (e) { getDropValue(e); } }] }, editrules: { required: true }
+            },
+            {
+                name: "ProjectName", index: "ProjectName", editable: true, align: "left", width: 100, hidden: true,
+                edittype: "select", editoptions: { value: Filtervalue }, editrules: {  }
+            },
+            {
+                name: "RefId", index: "RefId", hidden: true, editable: false, width: 100, align: "left"
+            },
+            {
+                name: "CreatedBy", index: "CreatedBy", hidden: true, editable: false, width: 100, align: "left"
+            },
+            {
+                name: "CreatedDate", index: "CreatedDate", hidden: true, editable: false, width: 100, align: "left", formatter: 'date', datefmt: 'm/d/Y'
+            },
+            {
+                name: "ModifiedBy", index: "ModifiedBy", hidden: true, editable: false, width: 100, align: "left",
+            },
+            {
+                name: "ModifiedDate", index: "ModifiedDate", hidden: true, editable: false, width: 100, align: "left", formatter: 'date', datefmt: 'm/d/Y'
+            },
+            {
+                //name: "Delete", index: "Delete", width: 20, formatter: DynamicDeleteConfig
+                name: "Delete", index: "Delete", width: 20, formatter: function () { return '<u>Delete</u>'; }
+            },
+        ];
+
+
+        $("#PmsConfigurationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("PmsConfigurationLoadGrid", "TaskTimesheet")',
+            postData: { DropDownType: function () { return Selectedvalue; } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["ID", "Main Type", "Type Value", "Level Name", "Project Names", "Ref Id", "Created By", "Created Date", "Modified By", "Modified Date", ""],
+            // Configure the columns
+            colModel: cm,
+            width: 700,
+            loadonce: true,
+            shrinkToFit: true,
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#PmsConfigurationTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true,
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("PmsSaveFunction", "TaskTimesheet")',
+            gridComplete: function () {
+                if (myGrid.getGridParam("reccount") == 0 && Selectedvalue != '')
+                {
+                    location.reload();
+                }
+            },
+            onSelectRow: function (id) {
+
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectedRowID = rowid;
+                var rowData = $(this).getRowData(rowid);
+                DeleteUniqueId = SelectedUniqueId = rowData["ID"];
+                if (iCol == 10) {
+                    DeleteConfigAjax(DeleteUniqueId);
+                }
+            }
+        }).navGrid("#PmsConfigurationTablePager",
+                { search: false, refresh: false, add: false, edit: false, del: false }
+            );
+
+        $("#PmsConfigurationTable").jqGrid('inlineNav', "#PmsConfigurationTablePager",
+        {
+
+            edit: true,
+            editicon: "ui-icon-pencil",
+            edittext: "Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+            addtext: "Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+            savetext: "Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            canceltext: "Cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        //$('*[class*=sbSelector]').each(function () {
+                        //    Selectedvalue = $(this).text();
+                        Selectedvalue = $('#ProjectDDe :selected').val();;
+                        //});
+                        if ($('#new_row_TypeValue').length > 0 && Selectedvalue == "") {
+
+                            myGrid.jqGrid('showCol', MainType);
+                            myGrid.jqGrid('hideCol', DeleteColumnName);
+
+                        }
+                    }
+                }
+            },
+            onClose: function () {
+
+            },
+
+            editParams: {
+                keys: true,
+                oneditfunc: function (rowId) {
+
+                    myGrid.jqGrid('hideCol', ProjectNames);
+                    myGrid.jqGrid('hideCol', DeleteColumnName);
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    MainDropDown: function () {
+                        return Selectedvalue;
+                    },
+                    DbStatus: function () {
+                        if (($("#new_row_TypeValue").length > 0)) {
+                            return "Insert";
+                        } else {
+                            return "Update";
+                        }
+
+                    },
+                    SUniqueId: function () {
+                        return SelectedUniqueId;
+                    },
+
+                },
+                aftersavefunc: function (data, response) {
+
+                    var st = $.parseJSON(response.responseText);
+                    if (st.status == "DoneAdding") {
+                        DisplayDailog("RecordSavedSuccess");
+                    } else if (st.status == "FailedAdding") {
+                        DisplayDailog("RecordSavedFailed");
+                    }
+                    else if (st.status == "DoneUpdating") {
+                        DisplayDailog("RecordUpdateSuccess");
+                    }
+                    else if (st.status == "FailedUpdating") {
+                        DisplayDailog("RecordUpdateFailed");
+                    }
+                    else if (st.status == "AlreadyExist") {
+                        DisplayDailog("StatusExist");
+                    }
+                    else if (st.status == "NoChnages") {
+                        DisplayDailog("NoChnages");
+                    }
+                    else if (st.status == "Missing") {
+                        DisplayDailog("Missing");
+                    }
+                    ResetGrid();
+
+
+
+                },
+                errorfunc: null,
+                beforesavefunc: function () {
+                    return [false, "Kya bhai"];
+                },
+                afterrestorefunc: function () {
+
+                    ResetGrid();
+                },
+                afterSaveCell: function () {
+
+                    $(this).trigger('reloadGrid');
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+    });
+</script>
+
+<section class="PMSContainer  Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Tag Configuration
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a id="lnkSeparationForm" href="@Url.Action("TagConfiguration", "TaskTimesheet")" class="">
+                Configure Tag
+            </a>
+            <a id="lnkSeparationForm" href="@Url.Action("PmsConfiguration", "TaskTimesheet")" class="selected">
+                Configuration Status
+            </a>
+        </nav>
+
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmPmsConfiguration" }))
+        {
+
+            @Html.ValidationSummary(true)
+            <div>
+
+                <div class="mrgnT30">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("Select File Type:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(m => m.DropDown, new SelectList(ViewBag.dataForDropDown, "Type"), "---Select---", new { @id = "ProjectDDe" })
+                        </div>
+                    </div>
+                    <div class="tablestyle3">
+                        <table id="PmsConfigurationTable" class="scroll"></table>
+                    </div>
+                    <div id="PmsConfigurationTablePager">
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
+@*Dialog Divs*@
+<div id="DeleteConfirm" style="display: none">
+    <div>
+        Are you sure you want to delete this Record?
+    </div>
+</div>
+<div id="DeleteSuccess" style="display: none">
+    <p>
+        Record has been deleted
+    </p>
+</div>
+<div id="DeleteFailed" style="display: none">
+    <p>
+        Record has been deleted
+    </p>
+</div>
+<div id="SomeOtherErrorMessage" style="display: none">
+    <p>
+        Record has been deleted
+    </p>
+</div>
+<div id="RecordSavedSuccess" style="display: none">
+    <p>
+        Record has been Saved Successfully.
+    </p>
+</div>
+<div id="RecordSavedFailed" style="display: none">
+    <p>
+        Record has not beenn Saved Due to Some Error.
+    </p>
+</div>
+<div id="RecordUpdateSuccess" style="display: none">
+    <p>
+        Record has been updated Successfully.
+    </p>
+</div>
+<div id="RecordUpdateFailed" style="display: none">
+    <p>
+        Record updated Failed Due to Some Error.
+    </p>
+</div>
+<div id="StatusExist" style="display: none">
+    <p>
+        Record already Exist.
+    </p>
+</div>
+<div id="NoChages" style="display: none">
+    <p>
+        No Changes was made to record.
+    </p>
+</div>
+<div id="NoChages" style="display: none">
+    <p>
+        Some Fileds Are Missing.
+    </p>
+</div>

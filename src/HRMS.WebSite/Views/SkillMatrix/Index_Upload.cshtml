@@ -1,0 +1,46 @@
+﻿@model HRMS.Models.SkillMatrix.SkillMatrixSearchAll
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Skill Matrix
+    </h2>
+    <div class="clearfix blueBorder">
+
+        <div>
+            <h2>
+                Select:
+            </h2>
+            <br />
+            <input type="radio" name="radio" value="Yes" id="Skill" />Search By Skill
+            &nbsp;
+            <input type="radio" name="radio" value="Yes" id="EmployeeName" />Search By Employee
+            &nbsp;
+            <input type="radio" name="radio" value="Yes" id="UploadFeature" />Upload Feature
+        </div>
+
+        <div id="DivSearchByUpload" style="display:none">
+            @Html.Partial("_SkillMatrix_Upload", Model)
+        </div>
+
+
+    </div>
+
+    <br /><br />
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#UploadFeature').change(function () {
+            $('#DivSearchByUpload').show();
+        });
+    });
+</script>

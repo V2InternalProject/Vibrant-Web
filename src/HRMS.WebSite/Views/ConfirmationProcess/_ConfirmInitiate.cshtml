@@ -1,0 +1,123 @@
+﻿@model HRMS.Models.InitiatConfirmationProcess
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmInitiateConfirmation" }))
+{
+    @Html.HiddenFor(model => model.EmployeeId, new { @id = "hdnInitiateConfirmationEmployeeId" })
+    @Html.HiddenFor(model => model.EmployeeCode, new { @id = "hdnInitiateConfirmationEmployeeCode" })
+     @Html.HiddenFor(model => model.encryptedInitiatedEmployeeId)
+    <div class="mrgnT255">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Employee Name
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.TextBoxFor(model => model.EmployeeName, new { @disabled = "disabled" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Confirmation Coordinator <span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.DropDownListFor(model => model.ConfirmationCoordinator, (SelectList)ViewBag.admin, "Select")
+                @Html.ValidationMessageFor(model => model.ConfirmationCoordinator)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Reporting Manager <span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.DropDownListFor(model => model.ReportingManager, (SelectList)ViewBag.ReportingTo, "Select")
+                @Html.ValidationMessageFor(model => model.ReportingManager)
+                <span id="ReportngMgrErrorMessage" style="display: none; color: red">This Field cannot
+                    be same as Reviewer or Reporting Manager2. </span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Reporting Manager 2
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.DropDownListFor(model => model.ReportingManager2, (SelectList)ViewBag.ReportingTo, "Select")
+                @Html.ValidationMessageFor(model => model.ReportingManager2)
+                <span id="ReportngMgr2ErrorMessage" style="display: none; color: red">This Field cannot
+                    be same as Reporting Manager or Reviewer </span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Reviewer <span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.DropDownListFor(model => model.Reviewer, (SelectList)ViewBag.ReportingTo, "Select")
+                @Html.ValidationMessageFor(model => model.Reviewer)
+                <span id="ReviewerErrorMessage" style="display: none; color: red;">This Field cannot
+                    be same as Reporting Manager or Reporting Manager2 </span>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                HRReviewer <span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.DropDownListFor(model => model.HRReviewer, (SelectList)ViewBag.admin, "Select")
+                @Html.ValidationMessageFor(model => model.HRReviewer)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Confirmation Initiated On<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.TextBoxFor(model => model.InitiationDate,String.Format("{0:MM/dd/yyyy}",Model.InitiationDate), new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.InitiationDate)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-popup floatL">
+                Comments<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-popup floatL ">
+                @Html.TextAreaFor(model => model.Comments)
+                @Html.ValidationMessageFor(model => model.Comments)
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <input type="button" value="Initiate" id="btnInitiate" class="button mrgnR5" />
+    </div>
+}
+<div id="initiateSuccessDialog" title="Initiate Details" style="display: none">
+    <p>
+        Confirmation Intitated.</p>
+</div>
+<div id="initiateDetailsErrorDialog" title="Error" style="display: none">
+    <p>
+        There are some errors.</p>
+</div>
+<div id="mailSuccessMessage" title="Mail Details" style="display: none">
+    <p>
+        Confirmation process has been initiated.</p>
+</div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+           $("#encryptedInitiatedEmployeeId").val('@ViewBag.encryptedEmployeeId');
+            if ('@Model.ReportingManager' != null) {
+                $("#ReportingManager").val('@Model.ReportingManager');
+            }
+            else {
+                $("#ReportingManager").val('');
+            }
+            if ('@Model.Reviewer' != null) {
+                $("#Reviewer").val('@Model.Reviewer');
+            }
+            else {
+                $("#Reviewer").val('');
+            }
+        });
+</script>
+<script src="../../Scripts/Confirmation/ConfirmInitiate.js" type="text/javascript"></script>

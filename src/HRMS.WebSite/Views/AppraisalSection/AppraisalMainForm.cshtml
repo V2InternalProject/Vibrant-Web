@@ -1,0 +1,447 @@
+﻿<script>
+
+     noselect = true;
+</script>
+
+<script src="~/Scripts/AppraisalSection/angular.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/AppraisalSection/ui-bootstrap-tpls-0.12.0.min.js"></script>
+<script src="~/Scripts/AppraisalSection/Service.js"></script>
+<script src="~/Scripts/AppraisalSection/appraisalSection.js"></script>
+<script src="~/Scripts/AppraisalSection/underscore-min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Scripts/AppraisalSection/CSS.css" rel="stylesheet" />
+
+<div class="FixedHeader" style="margin: 38px 0px 0px 0px;">
+    <h2 class="MainHeading">
+        Appraisal Main Form
+    </h2>
+</div>
+<div class="clearfix"></div>
+<nav class="sub-menu-colored">
+    <a href="@Url.Action("AppraisalMainForm", "AppraisalSection")" class="selected">
+        Appraisal SetUp
+    </a>
+    <a href="@Url.Action("AppraisalInitiate", "AppraisalMaster")">
+        Appraisal Initiation
+    </a>
+    <a href="@Url.Action("ReviewInitiation", "AppraisalMaster")">
+        Ready To Initiate
+    </a>
+    <a href="@Url.Action("Initiated", "AppraisalMaster")">
+        Initiated
+    </a>
+    <a href="@Url.Action("FreezedList", "AppraisalMaster")">
+        Freezed List
+    </a>
+</nav>
+<div class="clearfix"></div>
+<div ng-app="Appraisal" class="main">
+    <div class="mainemployee">
+        <tabset section="true">
+            <tab heading="Section" ng-controller="sectionController" ng-click="tabClick()">
+                <div id="mydiv" ng-show="myDiv">
+                    <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+                </div>
+                <div class="mainContainer">
+                    <div class="row">
+                        <form name="sectionForm" ng-submit="submitUser()" class="form-horizontal" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="sectionName">Section Name :</label>
+                                <div class="col-sm-4">
+                                    <input name="sectionName" class="form-control" ng-model="sectionName" ng-class="{ errorinput: submitted && sectionForm.sectionName.$invalid }" type="text" id="sectionName" required placeholder="Section Name">
+                                    <span class="e" ng-show="submitted && sectionForm.sectionName.$invalid">Enter Section Name</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Section Type :</label>
+                                <div class="col-sm-4">
+                                    <select name="type" ng-init="selectedOption = types[0].ID" ng-model="selectedOption" class="form-control" ng-options="type.ID as type.Name for type in types"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2 control-label">
+                                    <button type="submit" ng-click="submit()" class="btn btn-success btn-primary submit"><b>Submit</b></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <br />
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Section Id</th>
+                                <th>Section Name</th>
+                                <th>Section Type</th>
+                                <th>
+                                    <span ng-hide="editMode">Edit</span><span ng-show="editMode">Update / Cancle</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in section">
+                                <td>
+                                    <span ng-bind="data.sectionId"></span>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.sectionName"></span>
+                                    <input type="text" class="form-control" ng-show="editMode" ng-model="data.sectionName" required>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithId(data.sectionType)"></span><span ng-hide="editMode" ng-bind="selected"></span>
+                                    <select name="data.sectionType" class="form-control" ng-model="data.sectionType" ng-show="editMode" ng-options="sectionType.ID as sectionType.Name for sectionType in types"></select>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-info" data-ng-hide="editMode" ng-click="edit($index); editMode = true">Edit</button>
+                                    @*<button type="submit" class="btn btn-danger" data-ng-hide="editMode" ng-click="delete(data.sectionId,data)">Delete</button>*@
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; update(data.sectionId,data,$index)" class="btn btn-success">Update</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; cancle(data.sectionId,$index)" class="btn btn-primary">Cancel</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+            <tab heading="Question" ng-controller="questionController" ng-click="tabClick()">
+                <div id="mydiv" ng-show="myDiv">
+                    <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+                </div>
+                <div class="mainContainer">
+                    <div class="row">
+                        <form name="questionForm" ng-submit="submitUser()" class="form-horizontal" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="questionName">Enter Question :</label>
+                                <div class="col-sm-4">
+                                    <textarea name="questionName" class="form-control" rows="3" ng-model="questionName" ng-class="{ errorinput: submitted && questionForm.questionName.$invalid }" id="questionName" required placeholder="Enter Question"></textarea>
+                                    <span class="e" ng-show="submitted && questionForm.questionName.$invalid">Enter Question</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Question Data Type :</label>
+                                <div class="col-sm-4">
+                                    <select ng-model="yourSelect" class="form-control" ng-options="option as option for option in questionDataTypes" ng-init="yourSelect='Text'"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="questionParam">Question Param :</label>
+                                <div class="col-sm-4">
+                                    <input name="questionParam" class="form-control" ng-model="questionParam" id="questionParam" placeholder="Enter Question Param">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="questionAbbr">Question Abbr :</label>
+                                <div class="col-sm-4">
+                                    <input name="questionAbbr" class="form-control" ng-model="questionAbbr" ng-class="{ errorinput: submitted && questionForm.questionAbbr.$invalid }" id="questionAbbr" required placeholder="Enter Question Abbr">
+                                    <span class="e" ng-show="submitted && questionForm.questionAbbr.$invalid">Enter Question Abbr</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Question Control Type :</label>
+                                <div class="col-sm-4">
+                                    <select name="type" ng-init="yourSelect1='input'" ng-model="yourSelect1" class="form-control" ng-options="option as option for option in questionControlTypes" ng-change="change()"></select>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="aaaa">
+                                <label class="col-sm-2 control-label" for="validation">Validation :</label>
+                                <div class="col-sm-4">
+                                    <input name="validation" class="form-control" ng-model="validation" id="validation" placeholder="Validation">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="editStageId">Enter Edit StageId :</label>
+                                <div class="col-sm-4">
+                                    <select name="editStageId" ng-model="editStageId" class="form-control" ng-options="stageList.id as stageList.Name for stageList in visibleToStageList" ng-class="{ errorinput: submitted && questionForm.editStageId.$invalid }" required>
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && questionForm.editStageId.$invalid">Select Edit StageId</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2 control-label">
+                                    <button type="submit" ng-click="submit()" class="btn btn-success btn-primary submit"><b>Submit</b></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <br />
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Question Id</th>
+                                <th>Question Name</th>
+                                <th>Question Data Type</th>
+                                <th>Question Param</th>
+                                <th>Question Abbr</th>
+                                <th>Question Control Type</th>
+                                @*<th>Validation</th>*@
+                                <th>Edit StageId</th>
+                                <th>
+                                    <span ng-hide="editMode">Edit</span><span ng-show="editMode">Update / Cancle</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in question">
+                                <td>
+                                    <span ng-bind="data.questionId"></span>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.questionText"></span>
+                                    <textarea class="form-control" rows="3" ng-model="data.questionText" ng-show="editMode" required></textarea>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.dataType"></span>
+                                    <select ng-show="editMode" ng-model="data.dataType" class="form-control" ng-options="option as option for option in questionDataTypes"></select>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.questionParam"></span>
+                                    <input class="form-control" ng-model="data.questionParam" ng-show="editMode" required>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.questionAbbr"></span>
+                                    <input class="form-control" ng-model="data.questionAbbr" ng-show="editMode" required>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="data.controlType"></span>
+                                    <select class="form-control" ng-model="data.controlType" ng-show="editMode" ng-options="option as option for option in questionControlTypes"></select>
+                                </td>
+                                @*<td>
+                                    <span ng-hide="editMode" ng-bind="data.validation"></span>
+                                    <input class="form-control" ng-model="data.validation" ng-show="editMode" required>
+                                </td>*@
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithId(visibleToStageList, data.editStageId)"></span><span ng-bind="selectedObject"></span>
+                                    <select ng-model="data.editStageId" class="form-control" ng-options="stageList.id as stageList.Name for stageList in visibleToStageList" ng-show="editMode">
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-info" data-ng-hide="editMode" ng-click="edit($index); editMode = true">Edit</button>
+                                    @*<button type="submit" class="btn btn-danger" data-ng-hide="editMode" ng-click="delete(data.questionId,data)">Delete</button>*@
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; update(data.questionId,data,$index)" class="btn btn-success">Update</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; cancle(data.questionId,$index)" class="btn btn-primary">Cancel</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+            <tab heading="Year-Section" ng-controller="yearController" ng-click="tabClick()">
+                <div id="mydiv" ng-show="myDiv">
+                    <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+                </div>
+                <div class="mainContainer">
+                    <div class="row">
+                        <form name="submityearSectionform" ng-submit="submitUser()" class="form-horizontal" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Year :</label>
+                                <div class="col-sm-4">
+                                    <select name="year" ng-model="selectedYear" class="form-control" ng-options="year.AppraisalYearID as year.AppraisalYear for year in years" ng-class="{ errorinput: submitted && submityearSectionform.year.$invalid }" ng-change="changeYear()" required>
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && submityearSectionform.year.$invalid">Select Year</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Select Section :</label>
+                                <div class="col-sm-4">
+                                    <select name="section" ng-model="selectedSection" class="form-control" ng-options="section.sectionId as section.sectionName for section in sectionList" ng-class="{ errorinput: submitted && submityearSectionform.section.$invalid }" ng-change="changeSetion()" required>
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && submityearSectionform.section.$invalid">Select Sections</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Is Required? :</label>
+                                <div class="col-sm-4">
+                                    <select ng-model="IsRequired" ng-init="IsRequired = RequiredList[0].ID" class="form-control" ng-options="section.ID as section.Name for section in RequiredList" required>
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="visibleToStage">Visible to Stages :</label>
+                                <div class="col-sm-4">
+                                    <dropdown-multiselect pre-selected="member.visibleToStageList" model="selected_items" options="visibleToStageList" ng-class="{ errorinput: submittedSelect }"></dropdown-multiselect>
+                                    <span class="e" ng-show="submittedSelect">select Visible Stage</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2 control-label">
+                                    <button type="submit" ng-click="submit()" class="btn btn-success btn-primary submit"><b>Submit</b></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Section Name</th>
+                                <th>Order of Section</th>
+                                <th>Is Required</th>
+                                <th>Visible to Stages</th>
+                                <th>Edit</th>
+                                <th ng-show="forOrder">
+                                    <div ng-show="forUpdate">
+                                        <button type="submit" class="btn btn-success" ng-click="update()">Update</button>
+                                        <button type="submit" class="btn btn-primary" ng-click="cancleOrder()">Cancel</button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in yearSectionList | orderBy:'Order'">
+                                <td>
+                                    <span ng-bind="data.YearName"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="data.SectionName"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="data.Order"></span>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithIds(data.isRequired)"></span><span ng-hide="editMode" ng-bind="selected"></span>
+                                    <select ng-show="editMode" ng-model="data.isRequired" class="form-control" ng-options="section.ID as section.Name for section in RequiredList" required></select>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithId(visibleToStageList, data.Stages)"></span><span ng-bind="selectedObject"></span>
+                                    <dropdown-multiselect ng-show="editMode" pre-selected="member.data.Stages" model="selected_items" options="visibleToStageList"></dropdown-multiselect>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-info" data-ng-hide="editMode" ng-click="edit($index); editMode = true">Edit</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; updateData(data,selected_items,$index)" class="btn btn-success">Update</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; cancle($index)" class="btn btn-primary">Cancel</button>
+                                    @*<button type="submit" class="btn btn-danger" data-ng-hide="editMode" ng-click="delete(data.Id,data)">Delete</button>*@
+                                </td>
+                                <td ng-show="forOrder">
+                                    <span ng-show="forOrder" class="spanImgD">
+                                        <button type="submit" class="btn btn-info glyphicon glyphicon-chevron-up" ng-hide="$index =$first" ng-click="upOrder(data)"></button>
+                                    </span>
+                                    <span ng-show="forOrder" class="spanImgD">
+                                        <button type="submit" class="btn btn-info glyphicon glyphicon-chevron-down" ng-hide="$index = $last" ng-click="DownOrder(data)"></button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+            <tab heading="Mapping" ng-controller="mapingController" ng-click="tabClick()">
+                <div id="mydiv" ng-show="myDiv">
+                    <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+                </div>
+                <div class="mainContainer">
+                    <div class="row">
+                        <form name="submitmappingform" ng-submit="submitUser()" class="form-horizontal" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Select Year :</label>
+                                <div class="col-sm-4">
+                                    <select name="year" ng-model="selectedYear" class="form-control" ng-options="year.AppraisalYearID as year.AppraisalYear for year in yearList" ng-class="{ errorinput: submitted && submitmappingform.year.$invalid }" required ng-change="changeYear()">
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && submitmappingform.year.$invalid">Select Year</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Select Section :</label>
+                                <div class="col-sm-4">
+                                    <select name="section" ng-model="selectedSection" class="form-control" ng-options="section.sectionId as section.sectionName for section in sectionList" ng-class="{ errorinput: submitted && submitmappingform.section.$invalid }" required ng-change="changeSetion()">
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && submitmappingform.section.$invalid">Select Section</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Select Question :</label>
+                                <div class="col-sm-4">
+                                    <select name="question" ng-model="selectedQuestion" class="form-control" ng-options="question.questionId as question.questionText for question in questionList" ng-class="{ errorinput: submitted && submitmappingform.question.$invalid }" required ng-change="changeQuestion()">
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                    <span class="e" ng-show="submitted && submitmappingform.question.$invalid">Select Question</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Is Required? :</label>
+                                <div class="col-sm-4">
+                                    <select ng-model="IsRequired" ng-init="IsRequired = RequiredList[0].ID" class="form-control" ng-options="section.ID as section.Name for section in RequiredList" required>
+                                        <option style="display:none" value="">-- Select --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="visibleToStage">Visible to Stages :</label>
+                                <div class="col-sm-4">
+                                    <dropdown-multiselect pre-selected="member.visibleToStageList" model="selected_items" options="visibleToStageList" ng-class="{ errorinput: submittedSelect }"></dropdown-multiselect>
+                                    <span class="e" ng-show="submittedSelect">select Visible Stage</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2 control-label">
+                                    <button type="submit" ng-click="submit()" class="btn btn-success btn-primary submit"><b>Submit</b></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Section</th>
+                                <th>Question</th>
+                                <th>Order</th>
+                                <th>Is Required</th>
+                                <th>Visible to Stages</th>
+                                <th>Edit</th>
+                                <th ng-show="forOrder">
+                                    <div ng-show="forUpdate">
+                                        <button type="submit" class="btn btn-success" ng-click="update()">Update</button>
+                                        <button type="submit" class="btn btn-primary" ng-click="cancleOrder()">Cancel</button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in AllList | orderBy:['SectionId','Order']">
+                                <td>
+                                    <span ng-bind="data.YearName"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="data.SectionName"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="data.QuestionName"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="data.Order"></span>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithIds(data.isRequired)"></span><span ng-hide="editMode" ng-bind="selected"></span>
+                                    <select ng-show="editMode" ng-model="data.isRequired" class="form-control" ng-options="section.ID as section.Name for section in RequiredList" required></select>
+                                </td>
+                                <td>
+                                    <span ng-hide="editMode" ng-bind="getObjectWithId(visibleToStageList, data.Stages)"></span><span ng-bind="selectedObject"></span>
+                                    <dropdown-multiselect ng-show="editMode" pre-selected="member.data.Stages" model="selected_items" options="visibleToStageList"></dropdown-multiselect>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-info" data-ng-hide="editMode" ng-click="edit($index); editMode = true">Edit</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; updateData(data,selected_items,$index)" class="btn btn-success">Update</button>
+                                    <button type="submit" data-ng-show="editMode" ng-click="editMode = false; cancle($index)" class="btn btn-primary">Cancel</button>
+                                    @*<button type="submit" class="btn btn-danger" data-ng-hide="editMode" ng-click="delete(data.Id,data)">Delete</button>*@
+                                </td>
+                                <td ng-show="forOrder">
+                                    <span ng-show="forOrder" class="spanImgD">
+                                        <button type="submit" class="btn btn-info glyphicon glyphicon-chevron-up" ng-hide="$index =$first" ng-click="upOrder(data)"></button>
+                                    </span>
+                                    <span ng-show="forOrder" class="spanImgD">
+                                        <button type="submit" class="btn btn-info glyphicon glyphicon-chevron-down" ng-hide="$index = $last" ng-click="DownOrder(data)"></button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+</div>
