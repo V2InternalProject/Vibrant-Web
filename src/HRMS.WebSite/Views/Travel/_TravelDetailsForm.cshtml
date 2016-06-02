@@ -23,7 +23,7 @@
     }
 
     $(document).ready(function () {
-    $('#reportView').hide();
+        $('#reportView').hide();
         if ('@ViewBag.Extension' == "Ext") {
             $('#newReqLink').removeClass('selected');
             $('#extensionReqLink').addClass('selected');
@@ -150,7 +150,7 @@
                 var ValidationEndDate = $('#TravelEndDate').datepicker('getDate');
                 var date2 = $('#TravelEndDate').datepicker('getDate');
                 date2.setDate(date2.getDate() + 1);
-               
+
                 $('#TravelExtexsionStartDate').datepicker("option", "minDate", date2);
                 $('#BookingFromDate').datepicker("option", "maxDate", ValidationEndDate);
                 $('#BookingToDate').datepicker("option", "maxDate", ValidationEndDate);
@@ -176,11 +176,11 @@
             dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true,
             beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker, onSelect: function (date) {
                 var ValidationExtensionEndDate = $('#TravelExtensionEndDate').datepicker('getDate');
-               
+
                 $('#BookingFromDate').datepicker("option", "maxDate", ValidationExtensionEndDate);
                 $('#BookingToDate').datepicker("option", "maxDate", ValidationExtensionEndDate);
                 $('#conveyancefromdate').datepicker("option", "maxDate", ValidationExtensionEndDate);
-               
+
             }
         });
 
@@ -207,7 +207,7 @@
         if ('@ViewBag.IsNewForm' == "False" && '@ViewBag.Viewstats' == "No") {
             $('#btnCancelTravelRequestForm').show();
             $('#btnSubmitTravelRequestForm').show();
-       
+
         }
 
         if ('@Model.GroupheadApprover' == '@ViewBag.loginUserId' || '@Model.AdminApprover' == '@ViewBag.loginUserId') {
@@ -230,7 +230,7 @@
 
             $('#AccomodationDiv').find('input, textarea, button, select').attr('disabled', 'disabled');
             $('.ui-datepicker-trigger').hide();
-            
+
             $('#btnAddJourneyDetail').hide();
             $('#addClientDetails').hide();
 
@@ -238,13 +238,13 @@
             $("#gbox_VisaTravelDetailsTable").find('input,select').attr("disabled", true);
             $("#gbox_JourneyTable").find('input,select').attr("disabled", true);
             $("#gbox_clientTable").find('input,select').attr("disabled", true);
-           
+
         }
-      
+
 
         if ('@ViewBag.IsNewForm' == "False" && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' == "Ext") {
 
-            
+
             $('#Extensiondiv').show();
             $('#BtnSaveTraveRequestForm').show();
             $('#btnCancelTravelRequestForm').show();
@@ -264,7 +264,7 @@
             $('#Extensiondiv').show();
             $('#BtnSaveTraveRequestForm').show();
             $('.ui-datepicker-trigger').show();
-           
+
         }
 
         if ('@Model.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin") {
@@ -304,7 +304,7 @@
             $('#validVisaDiv').show();
             $('#topMarginForExtraField').css('margin-top', '-30px');
             $('#travelToCountryDiv').css('margin-top', '18px');
-           
+
         }
 
         function hideTravelTypeFields() {
@@ -314,7 +314,7 @@
             $('#travelToCountryDiv').css('margin-top', '0px');
             $("#VisaTravelDetailsTable").jqGrid('setGridParam', { rowNum: 10 });
             $("#VisaTravelDetailsTable").jqGrid("clearGridData", true);
-           
+
         }
 
         hideTravelTypeFields();
@@ -324,7 +324,7 @@
             showTravelTypeFields();
         }
 
-     
+
 
         $('#TravelType').change(function () {
             if ($('#TravelType').val() == 2) {
@@ -357,7 +357,7 @@
         if ('@ViewBag.UserRole' == "GroupHead" && '@Model.StageID' == 0) {
             $('#BtnSaveTraveRequestForm').show();
         }
-       
+
         if ('@Model.StageID' == 0) {
             $('#BtnSaveTraveRequestForm').show();
         }
@@ -380,7 +380,7 @@
             $('#BtnSaveTraveRequestForm').show();
             $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
             $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
-           
+
             $('#Extensiondiv').show();
             $('#TravelStartDate').attr("disabled", true);
             $('#TravelEndDate').attr("disabled", true);
@@ -393,7 +393,7 @@
             $('#BtnSaveTraveRequestForm').show();
             $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
             $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
-            
+
             $('#Extensiondiv').show();
         }
         if ('@Model.StageID' == 0 && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' != "Ext") {
@@ -403,7 +403,7 @@
             $('#btnSubmitTravelRequestForm').show();
             $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
             $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
-          
+
             $('#Extensiondiv').show();
             $('#TravelStartDate').attr("disabled", true);
             $('#TravelEndDate').attr("disabled", true);
@@ -418,13 +418,13 @@
             $('#btnSubmitTravelRequestForm').hide();
             $('#BtnSaveTraveRequestForm').hide();
         }
-     
+
         if ('@ViewBag.UserRole' == "Travel_Admin" && '@Model.StageID' == 4) {
             $('#SendReminderMail').show();
         }
-    
+
         if ('@ViewBag.UserRole' == 'Management') {
-           
+
             $('#ProjectManagerApprover').attr("disabled", true);
         }
         if ('@ViewBag.UserRole' == 'Management' && '@Model.StageID' == 0) {
@@ -542,19 +542,26 @@
         <div class="FixedHeader">
             <div class="clearfix">
                 <h2 class="MainHeading">
-                    Travel</h2>
+                    Travel
+                </h2>
             </div>
             <nav class="sub-menu-colored">
                 <a id="newReqLink" href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = true, encryptedTravelId = "", viewDetails = "NoExt" })" class="selected">
-                    New Request</a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })">
-                        Extension Request</a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")">
-                            Saved/Submitted Request</a>
+                    New Request
+                </a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })">
+                    Extension Request
+                </a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")">
+                    Saved/Submitted Request
+                </a>
             </nav>
         </div>
         <div class="MainBody TravelMainbody">
-            <span id="guide"><a id="btnTravelBack" class="LinkBrown floatL Expensewrap mrgnL30"
-                href="#">Back</a> <a class="LinkBlue floatR expenseG" id="btnPrintTravelFrm" href="#" onclick="PrintTravelForm()" style="display:none">
-                    Print</a> </span>
+            <span id="guide">
+                <a id="btnTravelBack" class="LinkBrown floatL Expensewrap mrgnL30"
+                   href="#">Back</a> <a class="LinkBlue floatR expenseG" id="btnPrintTravelFrm" href="#" onclick="PrintTravelForm()" style="display:none">
+                    Print
+                </a>
+            </span>
             <div id="TravelTab" class="mrgnT58">
                 @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "TraveRequestForm" }))
                 {
@@ -639,9 +646,10 @@
                         </div>
                         <div class="formrow clearfix">
                             <div class="leftcol clearfix">
-                                <div class="LabelDiv"><span class="hiddenstar">*</span>
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
                                     <label>
-                                         Delivery Team:
+                                        Delivery Team:
                                     </label>
                                 </div>
                                 <div class="InputDiv">
@@ -663,9 +671,10 @@
                         </div>
                         <div class="formrow clearfix">
                             <div class="leftcol clearfix">
-                                <div class="LabelDiv"><span class="hiddenstar">*</span>
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
                                     <label>
-                                         Personal Email Id:
+                                        Personal Email Id:
                                     </label>
                                 </div>
                                 <div class="InputDiv">
@@ -700,11 +709,14 @@
                                     @Html.DropDownListFor(model => model.ProjectManagerApprover, (SelectList)ViewBag.ProjectManagerApprovers, "Select", new { @class = "DDtoReplace ClassDisabledFields" })
                                     @Html.LabelFor(model => model.ProjectManagerApprover, new { @id = "lblProjectManagerApprover", @class = "ClassDisplayLabel" })
                                     @*<span
-                                class="replaceDD" id="replaceDDProjectManagerApprover"> </span>*@
+                                        class="replaceDD" id="replaceDDProjectManagerApprover"> </span>*@
                                     <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ProjectManagerApprover)</p>
-                                    <span id="PrimaryApproverErrorMessage" style="display: none; color: red">This Field
-                                        cannot be same as Group Head approver. </span><span id="SelfApproverErrorMessage"
-                                            style="display: none; color: red">You cannot select yourself as an approver.
+                                    <span id="PrimaryApproverErrorMessage" style="display: none; color: red">
+                                        This Field
+                                        cannot be same as Group Head approver.
+                                    </span><span id="SelfApproverErrorMessage"
+                                                 style="display: none; color: red">
+                                        You cannot select yourself as an approver.
                                     </span>
                                 </div>
                             </div>
@@ -798,79 +810,79 @@
                         </div>
                     </div>
 
-                            if (Model.IsNewForm == false)
-                            {
-                    <div id="Extensiondiv">
-                        <h4 class="SmallHead">
-                            Travel Extension (To be filled if current travel duration needs to be extended)
-                        </h4>
-                        <div class="FormContainerBox  Travel clearfix">
-                            <div class="formrow clearfix">
-                                <div class="leftcol clearfix">
-                                    <div class="LabelDiv">
-                                        <label>
-                                            From Date:
-                                        </label>
+                    if (Model.IsNewForm == false)
+                    {
+                        <div id="Extensiondiv">
+                            <h4 class="SmallHead">
+                                Travel Extension (To be filled if current travel duration needs to be extended)
+                            </h4>
+                            <div class="FormContainerBox  Travel clearfix">
+                                <div class="formrow clearfix">
+                                    <div class="leftcol clearfix">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                From Date:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtexsionStartDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtexsionStartDate)</p>
+                                        </div>
                                     </div>
-                                    <div class="InputDiv">
-                                        @Html.TextBoxFor(x => x.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtexsionStartDate", @class = "ClassDisabledFields" })
-                                        @Html.LabelFor(model => model.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @class = "ClassDisplayLabel" })
-                                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtexsionStartDate)</p>
-                                    </div>
-                                </div>
-                                <div class="rightcol clearfix" id="TravelExtensionEndDateCollection">
-                                    <div class="LabelDiv">
-                                        <label>
-                                            Extend to:
-                                        </label>
-                                    </div>
-                                    <div class="InputDiv">
-                                        @Html.TextBoxFor(x => x.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtensionEndDate", @class = "ClassDisabledFields" })
-                                        @Html.LabelFor(model => model.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @class = "ClassDisplayLabel" })
-                                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtensionEndDate)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="formrow clearfix">
-                                <div class="leftcol" id="TravelImmigrationDateDateCollection">
-                                    <div class="LabelDiv">
-                                        <label>
-                                            Immigration Details:
-                                        </label>
-                                    </div>
-                                    <div class="InputDiv">
-                                        @Html.TextBoxFor(x => x.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelImmigrationDateDate", @class = "ClassDisabledFields" })
-                                        @Html.LabelFor(model => model.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @class = "ClassDisplayLabel" })
-                                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ImmigrationDate)</p>
+                                    <div class="rightcol clearfix" id="TravelExtensionEndDateCollection">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Extend to:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtensionEndDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtensionEndDate)</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="rightcol">
-                                    <div class="LabelDiv">
-                                        <label>
-                                            Travel Extension Details:
-                                        </label>
+                                <div class="formrow clearfix">
+                                    <div class="leftcol" id="TravelImmigrationDateDateCollection">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Immigration Details:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelImmigrationDateDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ImmigrationDate)</p>
+                                        </div>
                                     </div>
-                                    <div class="InputDiv">
-                                        @Html.TextAreaFor(model => model.TravelExtDetails, new { @class = "ClassDisabledFields" })
-                                        <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
-                                            @Html.LabelFor(model => model.TravelExtDetails, Model.TravelExtDetails, new { @class = "ClassDisplayLabel" })
+                                    <div class="rightcol">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Travel Extension Details:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextAreaFor(model => model.TravelExtDetails, new { @class = "ClassDisabledFields" })
+                                            <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
+                                                @Html.LabelFor(model => model.TravelExtDetails, Model.TravelExtDetails, new { @class = "ClassDisplayLabel" })
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="clearfix blueBorder">
-                            <div class="leftcol">
-                                <div class="formcol clearfix" style="display: none">
-                                </div>
-                                <div class="formcol clearfix">
-                                </div>
-                                <div class="formcol clearfix">
+                            <div class="clearfix blueBorder">
+                                <div class="leftcol">
+                                    <div class="formcol clearfix" style="display: none">
+                                    </div>
+                                    <div class="formcol clearfix">
+                                    </div>
+                                    <div class="formcol clearfix">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                            }
+                    }
                 }
             </div>
             @if (Model.TravelId != 0)
@@ -922,7 +934,7 @@
                 <input id="btnSubmitTravelRequestForm" type="button" value="Submit" class="ButtonGray mrgnR11" />
                 <input id="btnRejectTravelRequestForm" type="button" value="Reject" class="ButtonGray mrgnR11" />
                 <input id="btnCancelTravelRequestForm" type="button" value="Cancel" title="Cancel Travel Request"
-                    class="ButtonGray mrgnR11" />
+                       class="ButtonGray mrgnR11" />
                 <input type="button" class="ButtonGray mrgnR11" value="Approved" id="ApproveTravelByAdmin" />
                 <input type="button" class="ButtonGray mrgnR11" value="Reject" id="RejectByAdmin" />
             </div>
@@ -984,27 +996,29 @@
 </div>
 <div id="DeleteConfirmationDialog" style="display: none">
     <p>
-        Are you sure you want to delete the selected record ?</p>
+        Are you sure you want to delete the selected record ?
+    </p>
 </div>
 <div id="DeleteConfirmation" style="display: none;">
     <p>
         Record has been deleted successfully.
     </p>
 </div>
-  <div class="reportClass" id="iframesrc">
-        <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass">
-        </iframe>
-    </div>
+<div class="reportClass" id="iframesrc">
+    <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
+</div>
 <div id="SubmitConfirmationMessageTravel" style="display: none">
     @if (Model.StageID == 3)
     {
         <p>
-            Are you sure, you want to submit the form?</p>
+            Are you sure, you want to submit the form?
+        </p>
     }
     else
     {
         <p>
-            Are you sure, you want to move process to the next stage?</p>
+            Are you sure, you want to move process to the next stage?
+        </p>
     }
 </div>
 <div id="ApproveAdmindialog" style="display: none;">
@@ -1020,23 +1034,31 @@
 </div>
 <div id="RejectCommentDialogAdmin" style="display: none">
     <div class="floatL">
-        <span class="mandatory">*</span>Enter Comment:</div>
+        <span class="mandatory">*</span>Enter Comment:
+    </div>
     <div class="floatL">
-        <textarea rows="2" cols="20" id="txtCommentAdmin"></textarea></div>
+        <textarea rows="2" cols="20" id="txtCommentAdmin"></textarea>
+    </div>
     <div style="display: none; color: red" id="ErrorCommentAdmin" class="floatL">
-        Please Enter commment</div>
+        Please Enter commment
+    </div>
     <div style="display: none; color: red" id="ErrorLengthCommentAdmin" class="floatL">
-        Enter commments upto 400 characters</div>
+        Enter commments upto 400 characters
+    </div>
 </div>
 <div id="RejectCommentDialogApprover" style="display: none">
     <div class="floatL">
-        <span class="mandatory">*</span>Enter Comment:</div>
+        <span class="mandatory">*</span>Enter Comment:
+    </div>
     <div class="floatL">
-        <textarea rows="5" cols="20" id="txtCommentApprover"></textarea></div>
+        <textarea rows="5" cols="20" id="txtCommentApprover"></textarea>
+    </div>
     <div style="display: none; color: red" id="ErrorCommentApprover" class="floatL">
-        Please Enter commment</div>
+        Please Enter commment
+    </div>
     <div style="display: none; color: red" id="ErrorLengthCommentApprover" class="floatL">
-        Enter commments upto 400 characters</div>
+        Enter commments upto 400 characters
+    </div>
 </div>
 <div id="RejectSuccessMessage" style="display: none">
     Travel process has been moved back to the requestor.
@@ -1084,7 +1106,7 @@
     Local Conveyance date should be between travel start date and travel end date.
 </div>
 @*
-//end div*@
+    //end div*@
 <div id="PrintContentTravel" style="display: none">
 </div>
 <div id="TravelMailDialog" style="display: none;">
@@ -1096,7 +1118,7 @@
     var selectedReportID = 23;
     function PrintTravelForm() {
         controls.push({ id: 'travelId', value: '@ViewBag.Travelid', TypeId: selectedReportID });
-       
+
         $.ajax({
             url: "/Reports/SaveFormData",
             type: 'POST',
@@ -1663,29 +1685,65 @@
                 async: false,
                 data: { TravelID: TravelID },
                 success: function (data) {
-
-
-
-                    if (data.MisceG == true) {
-                        $("#MisceleGridError").dialog({
-                            resizable: false,
-                            height: 'auto',
-                            width: 300,
-                            modal: true,
-                            dialogClass: 'noclose',
-                            buttons: {
-                                Ok: function () {
-                                    var selected = $("#tabs").tabs("option", "selected");
-                                    $("#tabs").tabs("option", "selected", selected - 0);
-                                    $(this).dialog("close");
+                    switch (true) {
+                        case (data.AccmG == true):
+                            $("#AccomadationGriDError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
                                 }
-                            }
 
-                        });
-                        $.preventDefault();
+                            });
+                            $.preventDefault();
+                            break;
+                        case data.LocalConG == true:
+                            $("#LocalCoGridError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
+                                }
+
+                            });
+                            $.preventDefault();
+                            break;
+                        case data.MisceG == true:
+                            $("#MisceleGridError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
+                                }
+
+                            });
+                            $.preventDefault();
+                            break;
+                        default:
+                            break;
                     }
                 }
-
             });
 
             var TravelID = 0;
@@ -2738,7 +2796,7 @@
             }
         });                         //Main ajax end
         //}
-        // return false;       
+        // return false;
     }
     function sendcallmailforTravel() {
         var empId = '@ViewBag.loginUserId';
