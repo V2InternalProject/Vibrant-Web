@@ -645,3 +645,14 @@ function ShowDetailsReject() {
         });
     }
 }
+
+function checkValidationOnDateChangeEvent() {
+    $('#AgreedReleaseDate').on('change', function () {
+        if (!($('#AgreedReleaseDate').val())) {
+            $('#EmpSeparationShowDetails #ShowDetails .field-validation-error').show();
+        }
+        else {
+            $('#EmpSeparationShowDetails #ShowDetails .field-validation-error').hide();
+        }
+    });
+}
