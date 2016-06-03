@@ -96,10 +96,34 @@
     });
 </script>
 <script type="text/javascript">
-    $(document).click(function (e) {
-        if (!$(e.target).is('.EmpLink')) {
-            $("#LinkPopUpConfirmation").fadeOut();
-        }
+    $(document).ready(function () {
+
+        $(document).click(function (e) {
+            if (!$(e.target).is('.EmpLink')) {
+                $("#LinkPopUpConfirmation").fadeOut();
+            }
+            $("#ConfirmationTablePagerInboxList #next_ConfirmationTablePagerInboxList ").click(function (e) {
+                if (!$(e.target).is('.EmpLink')) {
+                    $("#LinkPopUpConfirmation").fadeOut();
+                }
+            });
+            $("#ConfirmationTablePagerInboxList #prev_ConfirmationTablePagerInboxList ").click(function (e) {
+                if (!$(e.target).is('.EmpLink')) {
+                    $("#LinkPopUpConfirmation").fadeOut();
+                }
+            });
+            $("#ConfirmationTablePagerInboxList #last_ConfirmationTablePagerInboxList").click(function (e) {
+                if (!$(e.target).is('.EmpLink')) {
+                    $("#LinkPopUpConfirmation").fadeOut();
+                }
+            });
+            $("#ConfirmationTablePagerInboxList #first_ConfirmationTablePagerInboxList").click(function (e) {
+                if (!$(e.target).is('.EmpLink')) {
+                    $("#LinkPopUpConfirmation").fadeOut();
+                }
+            });
+        });
+
         $.ajaxSetup({
             // Disable caching of AJAX responses
             cache: false
