@@ -27,7 +27,7 @@ namespace HRMS.Orbitweb
         private string strSignInSignOutID = "";
         private SignInSignOutModel objSignInSignOutModel = new SignInSignOutModel();
         private HRMSPageLevelAccess objpagelevel = new HRMSPageLevelAccess();
-        private Boolean hideManual;
+        private Boolean hideManual = false;
 
         public string UserName
         {
@@ -71,7 +71,6 @@ namespace HRMS.Orbitweb
 
             if (empDetails.OfficeLocation != 2 && empDetails.OfficeLocation != 3)
             {
-                hideManual = false;
                 string whiteListedEmpCode = System.Configuration.ConfigurationManager.AppSettings["WhiteListedEmpCode"];
                 string[] empCodes = whiteListedEmpCode.Split(',');
                 bool whiteListed = empCodes.Contains(User.Identity.Name);
@@ -132,7 +131,6 @@ namespace HRMS.Orbitweb
 
                         if (ipDetails.countryCode == UnitedStatesCountryCode)
                         {
-                            hideManual = false;
                             btnSignIn.Visible = true;
                             btnSignOut.Visible = true;
                             OpenSignInSignOutPage();
@@ -609,12 +607,42 @@ namespace HRMS.Orbitweb
                         LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
                         lnkOutTime1.Visible = false;
                     }
-                    else
+                    if (ddlType.SelectedValue == "2")
                     {
-                        if (ddlType.SelectedValue == "2")
+                        DateTime dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                        string strDate = dt.ToShortDateString();
+                        Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                        lblDate1.Text = strDate;
+                        lblDate1.Visible = true;
+                        LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
+                        lnkDate1.Visible = false;
+
+                        Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                        lblInTime1.Visible = true;
+                        LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                        lnkInTime1.Visible = false;
+
+                        Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                        lblOutTime1.Visible = true;
+                        LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                        lnkOutTime1.Visible = false;
+                    }
+                    if (ddlType.SelectedValue != "2")
+                    {
+                        if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["Mode"].ToString() == "Bulk")
                         {
-                            DateTime dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                            string strDate = dt.ToShortDateString();
+                            DateTime dt;
+                            string strDate;
+                            if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
+                            {
+                                dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                strDate = dt.ToShortDateString();
+                            }
+                            else
+                            {
+                                strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
+                            }
+
                             Label lblDate1 = (Label)e.Row.FindControl("lblDate");
                             lblDate1.Text = strDate;
                             lblDate1.Visible = true;
@@ -631,284 +659,233 @@ namespace HRMS.Orbitweb
                             LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
                             lnkOutTime1.Visible = false;
                         }
-                        if (ddlType.SelectedValue != "2")
+                        DateTime dtTable;
+                        if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
                         {
-                            //if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["SignOutTime"].ToString() == "")
-                            //{
-                            //    LinkButton lnkOutTime = (LinkButton)e.Row.FindControl("lnkOutTime");
-                            //    lnkOutTime.Text = "Enter Out Time";
-                            //}
+                            dtTable = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                        }
+                        else
+                        {
+                            dtTable = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                        }
 
-                            if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["Mode"].ToString() == "Bulk")
-                            {
-                                DateTime dt;
-                                string strDate;
-                                if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
-                                {
-                                    dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = dt.ToShortDateString();
-                                }
-                                else
-                                {
-                                    //dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
-                                }
+                        DateTime dtConfig = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[2].Rows[0]["ConfigItemValue"].ToString());
 
-                                Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                lblDate1.Text = strDate;
-                                lblDate1.Visible = true;
-                                LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
-                                lnkDate1.Visible = false;
-
-                                Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                lblInTime1.Visible = true;
-                                LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                lnkInTime1.Visible = false;
-
-                                Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                lblOutTime1.Visible = true;
-                                LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                lnkOutTime1.Visible = false;
-                            }
-                            DateTime dtTable;
+                        if (dtConfig >= dtTable)
+                        {
+                            DateTime dt;
+                            string strDate;
                             if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
                             {
-                                dtTable = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                strDate = dt.ToShortDateString();
                             }
                             else
                             {
-                                dtTable = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
                             }
 
-                            DateTime dtConfig = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[2].Rows[0]["ConfigItemValue"].ToString());
+                            Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                            lblDate1.Text = strDate;
+                            lblDate1.Visible = true;
+                            LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
+                            lnkDate1.Visible = false;
 
-                            if (dtConfig >= dtTable)
+                            Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                            lblInTime1.Visible = true;
+                            LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                            lnkInTime1.Visible = false;
+
+                            Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                            lblOutTime1.Visible = true;
+                            LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                            lnkOutTime1.Visible = false;
+                        }
+
+                        if (!location && dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["SignOutTime"].ToString() == "")
+                        {
+                            LinkButton lnkOutTime = (LinkButton)e.Row.FindControl("lnkOutTime");
+                            lnkOutTime.Text = "Enter Out Time";
+                            lnkOutTime.Visible = true;
+                        }
+                        if (dtTable.Date == DateTime.Now.Date && dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["SignOutTime"].ToString() == "")
+                        {
+                            DateTime dt;
+                            string strDate;
+                            if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
                             {
-                                DateTime dt;
-                                string strDate;
-                                if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
+                                dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                strDate = dt.ToShortDateString();
+                            }
+                            else
+                            {
+                                strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
+                            }
+                            Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                            lblDate1.Text = strDate;
+                            lblDate1.Visible = true;
+                            LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
+                            lnkDate1.Visible = false;
+
+                            Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                            lblOutTime1.Visible = false;
+                            LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                            lnkOutTime1.Visible = false;
+                        }
+
+                        if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"] != null)
+                        {
+                            DateTime date1 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                            string strDate;
+                            if (string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
+                            {
+                                strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
+                            }
+                            else
+                            {
+                                date1 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
+                                strDate = date1.ToShortDateString();
+                            }
+                            LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
+                            lnkDate1.Text = strDate;
+                            if (dsLoadSignInSigOutData.Tables[3].Rows[0]["ShiftName"].ToString() == "General")
+                            {
+                                if ((date1.DayOfWeek.ToString() == "Sunday") || (date1.DayOfWeek.ToString() == "Saturday"))
                                 {
-                                    dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = dt.ToShortDateString();
+                                    e.Row.Font.Bold = true;
+
+                                    Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                                    lblDate1.Text = strDate;
+                                    lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
+                                    lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
+
+                                    Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                                    lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
+                                    LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                                    lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
+
+                                    Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                                    lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
+                                    LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                                    lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
+                                    Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
+                                    lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
                                 }
                                 else
                                 {
-                                    //dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
-                                }
-                                //DateTime dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                //string strDate = dt.ToShortDateString();
-
-                                Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                lblDate1.Text = strDate;
-                                lblDate1.Visible = true;
-                                LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
-                                lnkDate1.Visible = false;
-
-                                Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                lblInTime1.Visible = true;
-                                LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                lnkInTime1.Visible = false;
-
-                                Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                lblOutTime1.Visible = true;
-                                LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                lnkOutTime1.Visible = false;
-                            }
-
-                            if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["SignOutTime"].ToString() == "")
-                            {
-                                LinkButton lnkOutTime = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                lnkOutTime.Text = "Enter Out Time";
-                                lnkOutTime.Visible = true;
-                            }
-                            if (dtTable.Date == DateTime.Now.Date && dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["SignOutTime"].ToString() == "")
-                            {
-                                DateTime dt;
-                                string strDate;
-                                if (!string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
-                                {
-                                    dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = dt.ToShortDateString();
-                                }
-                                else
-                                {
-                                    //dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
-                                }
-                                //DateTime dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                //string strDate = dt.ToShortDateString();
-                                Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                lblDate1.Text = strDate;
-                                lblDate1.Visible = true;
-                                LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
-                                lnkDate1.Visible = false;
-
-                                Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                lblOutTime1.Visible = false;
-                                LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                lnkOutTime1.Visible = false;
-                            }
-
-                            if (dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"] != null)
-                            {
-                                DateTime date1 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                DateTime dt;
-                                string strDate;
-                                if (string.IsNullOrEmpty(Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"])))
-                                {
-                                    strDate = Convert.ToString(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"]);
-                                    //date1 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    //strDate = date1.ToShortDateString();
-                                }
-                                else
-                                {
-                                    date1 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                    strDate = date1.ToShortDateString();
-                                    //dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                }
-                                //DateTime dt = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["date"].ToString());
-                                //string strDate = dt.ToShortDateString();
-                                LinkButton lnkDate1 = (LinkButton)e.Row.FindControl("lnkDate");
-                                lnkDate1.Text = strDate;
-                                if (dsLoadSignInSigOutData.Tables[3].Rows[0]["ShiftName"].ToString() == "General")
-                                {
-                                    if ((date1.DayOfWeek.ToString() == "Sunday") || (date1.DayOfWeek.ToString() == "Saturday"))
+                                    for (int i = 0; i < dsLoadSignInSigOutData.Tables[1].Rows.Count; i++)
                                     {
-                                        e.Row.Font.Bold = true;
-
-                                        Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                        lblDate1.Text = strDate;
-                                        lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
-                                        lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
-
-                                        Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                        lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
-                                        LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                        lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
-
-                                        Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                        lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
-                                        LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                        lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
-                                        Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
-                                        lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < dsLoadSignInSigOutData.Tables[1].Rows.Count; i++)
+                                        DateTime date2 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[1].Rows[i]["HolidayDate"].ToString());
+                                        if (date1.Date == date2.Date)
                                         {
-                                            DateTime date2 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[1].Rows[i]["HolidayDate"].ToString());
-                                            if (date1.Date == date2.Date)
-                                            {
-                                                e.Row.Font.Bold = true;
+                                            e.Row.Font.Bold = true;
 
-                                                Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                                lblDate1.Text = strDate;
-                                                lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
+                                            Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                                            lblDate1.Text = strDate;
+                                            lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
 
-                                                lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
+                                            lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
 
-                                                Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                                lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
-                                                LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                                lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
+                                            Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                                            lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
+                                            LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                                            lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
 
-                                                Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                                lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
-                                                LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                                lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
-                                                Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
-                                                lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    DataSet dsweeklyOff = new DataSet();
-                                    dsweeklyOff = objSignInSignOutBOL.GetWeeklyOff(objSignInSignOutModel);
-                                    bool flagWeekOff = false;
-                                    for (int i = 0; i < dsweeklyOff.Tables[0].Rows.Count; i++)
-                                    {
-                                        DateTime weekoff1 = Convert.ToDateTime(dsweeklyOff.Tables[0].Rows[i]["Weekoff1"]);
-                                        DateTime weekoff2 = Convert.ToDateTime(dsweeklyOff.Tables[0].Rows[i]["Weekoff2"]);
-
-                                        if ((weekoff1.ToString("MM/dd/yy") == date1.ToString("MM/dd/yy")) || (weekoff2.ToString("MM/dd/yy")) == date1.ToString("MM/dd/yy"))
-                                        {
-                                            flagWeekOff = true;
-                                            break;
-                                        }
-                                    }
-                                    if (flagWeekOff == true)
-                                    {
-                                        e.Row.Font.Bold = true;
-
-                                        Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                        lblDate1.Text = strDate;
-                                        lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
-                                        lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
-
-                                        Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                        lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
-                                        LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                        lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
-
-                                        Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                        lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
-                                        LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                        lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
-                                        Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
-                                        lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < dsLoadSignInSigOutData.Tables[4].Rows.Count; i++)
-                                        {
-                                            DateTime date2 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[4].Rows[i]["HolidayDate"].ToString());
-                                            if (date1.Date == date2.Date)
-                                            {
-                                                e.Row.Font.Bold = true;
-
-                                                Label lblDate1 = (Label)e.Row.FindControl("lblDate");
-                                                lblDate1.Text = strDate;
-                                                lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
-
-                                                lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
-
-                                                Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
-                                                lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
-                                                LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
-                                                lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
-
-                                                Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
-                                                lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
-                                                LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
-                                                lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
-                                                Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
-                                                lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
-                                            }
+                                            Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                                            lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
+                                            LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                                            lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
+                                            Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
+                                            lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
                                         }
                                     }
                                 }
                             }
-                            //absenteesim dataset doesnt have any config or holiday table
-                            if (dsLoadSignInSigOutData.Tables[1].Rows.Count == 0)
+                            else
                             {
-                                grdSignInSignOut.Columns[11].Visible = false;
+                                DataSet dsweeklyOff = new DataSet();
+                                dsweeklyOff = objSignInSignOutBOL.GetWeeklyOff(objSignInSignOutModel);
+                                bool flagWeekOff = false;
+                                for (int i = 0; i < dsweeklyOff.Tables[0].Rows.Count; i++)
+                                {
+                                    DateTime weekoff1 = Convert.ToDateTime(dsweeklyOff.Tables[0].Rows[i]["Weekoff1"]);
+                                    DateTime weekoff2 = Convert.ToDateTime(dsweeklyOff.Tables[0].Rows[i]["Weekoff2"]);
+
+                                    if ((weekoff1.ToString("MM/dd/yy") == date1.ToString("MM/dd/yy")) || (weekoff2.ToString("MM/dd/yy")) == date1.ToString("MM/dd/yy"))
+                                    {
+                                        flagWeekOff = true;
+                                        break;
+                                    }
+                                }
+                                if (flagWeekOff == true)
+                                {
+                                    e.Row.Font.Bold = true;
+
+                                    Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                                    lblDate1.Text = strDate;
+                                    lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
+                                    lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
+
+                                    Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                                    lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
+                                    LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                                    lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
+
+                                    Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                                    lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
+                                    LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                                    lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
+                                    Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
+                                    lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < dsLoadSignInSigOutData.Tables[4].Rows.Count; i++)
+                                    {
+                                        DateTime date2 = Convert.ToDateTime(dsLoadSignInSigOutData.Tables[4].Rows[i]["HolidayDate"].ToString());
+                                        if (date1.Date == date2.Date)
+                                        {
+                                            e.Row.Font.Bold = true;
+
+                                            Label lblDate1 = (Label)e.Row.FindControl("lblDate");
+                                            lblDate1.Text = strDate;
+                                            lblDate1.Text = "<b>" + lblDate1.Text + "</b>";
+
+                                            lnkDate1.Text = "<font style='color:Black'>" + lnkDate1.Text + "<font>";
+
+                                            Label lblInTime1 = (Label)e.Row.FindControl("lblInTime");
+                                            lblInTime1.Text = "<b>" + lblInTime1.Text + "</b>";
+                                            LinkButton lnkInTime1 = (LinkButton)e.Row.FindControl("lnkInTime");
+                                            lnkInTime1.Text = "<font style='color:Black'>" + lnkInTime1.Text + "<font>";
+
+                                            Label lblOutTime1 = (Label)e.Row.FindControl("lblOutTime");
+                                            lblOutTime1.Text = "<b>" + lblOutTime1.Text + "</b>";
+                                            LinkButton lnkOutTime1 = (LinkButton)e.Row.FindControl("lnkOutTime");
+                                            lnkOutTime1.Text = "<font style='color:Black'>" + lnkOutTime1.Text + "<font>";
+                                            Label lblStatus = (Label)e.Row.FindControl("lblStatus1");
+                                            lblStatus.Text = "<b>" + lblStatus.Text + "</b>";
+                                        }
+                                    }
+                                }
                             }
-                            if (Convert.ToInt32(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["IsBulk"]) == 1)
-                            {
-                                LinkButton lnkEdit = (LinkButton)e.Row.FindControl("lnkbtnEdit");
-                                lnkEdit.Visible = false;
-                                Label lblStatus = (Label)e.Row.FindControl("lblStatus");
-                                lblStatus.Visible = true;
-                                lblStatus.Text = "Bulk";
-                            }
+                        }
+                        //absenteesim dataset doesnt have any config or holiday table
+                        if (dsLoadSignInSigOutData.Tables[1].Rows.Count == 0)
+                        {
+                            grdSignInSignOut.Columns[11].Visible = false;
+                        }
+                        if (Convert.ToInt32(dsLoadSignInSigOutData.Tables[0].Rows[e.Row.DataItemIndex]["IsBulk"]) == 1)
+                        {
+                            LinkButton lnkEdit = (LinkButton)e.Row.FindControl("lnkbtnEdit");
+                            lnkEdit.Visible = false;
+                            Label lblStatus = (Label)e.Row.FindControl("lblStatus");
+                            lblStatus.Visible = true;
+                            lblStatus.Text = "Bulk";
                         }
                     }
                 }
             }
+            //}
             catch (V2Exceptions ex)
             {
                 throw;
