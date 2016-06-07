@@ -31,15 +31,11 @@ namespace V2.Helpdesk.web.admin
         private Boolean IsRecordUpdated;
         public int intStatusID, intReportIssueID, EmployeeID, SAEmployeeID, varEmployeeID;
         public string strFromEmailID, strToEmailID, strgetUserName;
-
         public string strMailSubForUser, strMailBodyForUser, strMailSubForITDept, strMailBodyForITDept;
 
         #endregion Variable declaration
 
-        //  protected System.Web.UI.WebControls.TextBox txtCommentDesc;
-        // protected System.Web.UI.WebControls.LinkButton lnkFileName;
         protected System.Web.UI.WebControls.LinkButton lnkbtnFileName;
-
         protected System.Web.UI.WebControls.RangeValidator RangeValidatorEndDate;
         protected System.Web.UI.WebControls.RangeValidator RangeValidatorFromDate;
         public string Department = string.Empty, strDeptCCEmailID = string.Empty, strEmployeeEmailID = string.Empty;
@@ -61,28 +57,15 @@ namespace V2.Helpdesk.web.admin
                 intStatusID = Convert.ToInt32(Session["StatusID"]);
                 txtFromDate.Attributes.Add("readonly", "readonly");
                 txtEndDate.Attributes.Add("readonly", "readonly");
-                /*	if(EmployeeID.ToString()=="" && SAEmployeeID.ToString() != "" )
-                    {
-                        EmployeeID = SAEmployeeID;
-                    }*/
-                //if (EmployeeID.ToString() == "" || EmployeeID == 0)
-                //{
                 if (SAEmployeeID.ToString() == "" || SAEmployeeID == 0)
                 {
                     Response.Redirect(ConfigurationManager.AppSettings["Log-OffURL"].ToString());
                 }
-                //}
-                /*	else
-                    {
-                        Response.Redirect("AuthorizationErrorMessage.aspx");
-                    }*/
                 pnlMessage.Visible = false;
                 clsIssueAssignment objIssueAssignment = new clsIssueAssignment();
                 clsBLIssueAssignment objBLIssueAssignment = new clsBLIssueAssignment();
                 if (!IsPostBack)
                 {
-                    //if (EmployeeID.ToString() == "" || EmployeeID == 0)
-                    //{
                     if (SAEmployeeID.ToString() == "" || SAEmployeeID == 0)
                     {
                         Response.Redirect(ConfigurationManager.AppSettings["Log-OffURL"].ToString());
@@ -92,50 +75,20 @@ namespace V2.Helpdesk.web.admin
                         varEmployeeID = SAEmployeeID;
                         Session["varEmployeeID"] = varEmployeeID;
                     }
-                    //}
-                    //else
-                    //{
-                    //    varEmployeeID = EmployeeID;
-                    //    Session["varEmployeeID"] = varEmployeeID;
-                    //}
 
                     lblCheckHistory.Visible = false;
                     dgIssueDetails.Visible = false;
                     GetSelectedIssue();
                     GetReportIssueHistory();
-                    //objIssueAssignment.ReportIssueID = intReportIssueID;
-                    //dsfileName = objBLIssueAssignment.FileName(objIssueAssignment);
-                    ////lnkbtnFileName.Text = dsfileName;
-                    //if (dsfileName.Tables[0].Rows.Count > 0)
-                    //{
-                    //    for (int i = 0, j = 0; i < dsfileName.Tables[0].Rows.Count; i++, j++)
-                    //    {
-                    //        lnkFileName = new LinkButton();
-                    //        //lnkFileName.ID = "lnk2FileName";
-                    //        lnkFileName.Attributes.Add("runat", "server");
-                    //        Session["FileNames"] = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
-                    //        lnkFileName.Text = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
-
-                    //        lnkFileName.Click += new EventHandler(lnkFileName_Click);
-                    //        pnlFileName.Controls.Add(lnkFileName);
-                    //        pnlFileName.Controls.Add(new LiteralControl("<br/>"));
-
-                    //        // Add control to container:
-                    //        //pnlFileName.Controls.Add(lnk1);
-                    //        //lblFileName.Text = dsfileName.Tables[0].Rows[0]["FileName"].ToString();
-                    //    }
-                    //}
                 }
 
                 objIssueAssignment.ReportIssueID = intReportIssueID;
                 dsfileName = objBLIssueAssignment.FileName(objIssueAssignment);
-                //lnkbtnFileName.Text = dsfileName;
                 if (dsfileName.Tables[0].Rows.Count > 0)
                 {
                     for (int i = 0, j = 0; i < dsfileName.Tables[0].Rows.Count; i++, j++)
                     {
                         lnkFileName = new LinkButton();
-                        //lnkFileName.ID = "lnk2FileName";
                         lnkFileName.Attributes.Add("runat", "server");
                         Session["FileNames"] = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
                         lnkFileName.Text = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
@@ -143,13 +96,8 @@ namespace V2.Helpdesk.web.admin
                         lnkFileName.Click += new EventHandler(lnkFileName_Click);
                         pnlFileName.Controls.Add(lnkFileName);
                         pnlFileName.Controls.Add(new LiteralControl("<br/>"));
-
-                        // Add control to container:
-                        //pnlFileName.Controls.Add(lnk1);
-                        //lblFileName.Text = dsfileName.Tables[0].Rows[0]["FileName"].ToString();
                     }
                 }
-                // lnkFileName.Visible = true;
                 btnSubmit.Attributes.Add("onclick", "return validate();");
             }
             catch (System.Threading.ThreadAbortException ex)
@@ -246,12 +194,7 @@ namespace V2.Helpdesk.web.admin
                     lblIssueReportedOn.Text = dsSelectedIssue.Tables[0].Rows[0]["ReportIssueDate"].ToString();
                     lblProblemType.Text = dsSelectedIssue.Tables[0].Rows[0]["SubCategory"].ToString();
                     lblProblemSeverity.Text = dsSelectedIssue.Tables[0].Rows[0]["ProblemSeverity"].ToString();
-                    //// lblPriority.Text = dsSelectedIssue.Tables[0].Rows[0]["ProblemPriority"].ToString();
                     lblDescription.Text = dsSelectedIssue.Tables[0].Rows[0]["Description"].ToString();
-                    //				lblCause.Text = dsSelectedIssue.Tables[0].Rows[0]["Cause"].ToString();
-                    //				lblFix.Text = dsSelectedIssue.Tables[0].Rows[0]["Fix"].ToString();
-                    //txtCause.Text = dsSelectedIssue.Tables[0].Rows[0]["Cause"].ToString();
-                    //txtFix.Text = dsSelectedIssue.Tables[0].Rows[0]["Fix"].ToString();
 
                     //Added By Nikhil
                     lblProjectName.Text = dsSelectedIssue.Tables[0].Rows[0]["ProjectName"].ToString();
@@ -276,13 +219,11 @@ namespace V2.Helpdesk.web.admin
                     if (lblPreviousComment.Text == "")
                     {
                         lblComment.Visible = false;
-                        //lblColon.Visible = false;
                     }
                     FillStatusList();
                     ddlStatus.SelectedValue = dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString();
                     Session["OldStatus"] = ddlStatus.SelectedItem.Text.ToString();
                     Session["IssueAssignmentID"] = Convert.ToInt32(dsSelectedIssue.Tables[0].Rows[0]["IssueAssignmentID"].ToString());
-                    // lnkbtnFileName.Text = "filename";
 
                     if (dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "1" || dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "2" ||
                         dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "3" || dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "4" ||
@@ -290,6 +231,9 @@ namespace V2.Helpdesk.web.admin
                         dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "7")
                     {
                         ddlStatus.Items.Remove(ddlStatus.Items.FindByText("Closed"));
+                        ddlStatus.Items.Remove(ddlStatus.Items.FindByText("Assigned"));
+                        ddlStatus.Items.Remove(ddlStatus.Items.FindByText("ReOpened"));
+                        ddlStatus.Items.Remove(ddlStatus.Items.FindByText("Cancelled"));
                     }
                     if (dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "8" || dsSelectedIssue.Tables[0].Rows[0]["StatusID"].ToString() == "9")
                     {
@@ -323,18 +267,11 @@ namespace V2.Helpdesk.web.admin
                 int EmployeeID = Convert.ToInt32(Session["varEmployeeID"]);
                 int Status = Convert.ToInt32(Session["status"]);
                 dsStatus = objBLViewIssue.GetStatusAccToRole(EmployeeID, Status);
-                // dsStatus = objBLViewIssue.GetStatus();
-                // ddlStatus.Items.Add(new ListItem(dsStatus.Tables[0].Rows[i]["GroupName"].ToString(), dsStatus.Tables[0].Rows[i]["GroupID"].ToString()))
                 ddlStatus.Items.Clear();
                 for (int i = 0; i < dsStatus.Tables[0].Rows.Count; i++)
                 {
                     ddlStatus.Items.Add(new ListItem(dsStatus.Tables[0].Rows[i]["StatusDesc"].ToString(), dsStatus.Tables[0].Rows[i]["StatusID"].ToString()));
                 }
-                //     ddlStatus.Items.Insert(0, "Select");
-                //ddlStatus.DataSource = Status.BindStatusEnum(typeof(IssueStatus), "");
-                //ddlStatus.DataTextField = "Key";
-                //ddlStatus.DataValueField = "Value";
-                //ddlStatus.DataBind();
             }
             catch (V2Exceptions ex)
             {
@@ -360,11 +297,8 @@ namespace V2.Helpdesk.web.admin
                     fileName = myButton.Text;
                 }
                 string remoteHostName = Request.Headers["Host"].ToString();
-                //string applicationPath = Request.ApplicationPath.ToString();
                 string resumePath = "http://" + remoteHostName + "/Uploads/" + fileName;
-                //string resumePath = "http://" + remoteHostName + "/PublishHelpdeskAdmin/Uploads/" + fileName;
                 //D:\NEWHRMSPUBLISH\Uploads
-                //string resumePath = fileName;
                 Response.Write("<script language='JavaScript'>" + '\n');
                 Response.Write("val = window.open('" + resumePath + "')" + '\n');
 
@@ -390,7 +324,6 @@ namespace V2.Helpdesk.web.admin
                 objBLViewIssue = new BusinessLayer.clsBLViewMyIssues();
 
                 objViewIssue.ReportIssueID = intReportIssueID;
-                //				objViewIssue.StatusID = intStatusID;
                 dsReportIssueHistory = objBLViewIssue.GetReportIssueHistory(objViewIssue);
                 if (dsReportIssueHistory.Tables[0].Rows.Count > 0)
                 {
@@ -472,7 +405,6 @@ namespace V2.Helpdesk.web.admin
                 {
                     objIssueAssignment.AddComment = "";
                 }
-                //lblPreviousComment.Text+
                 try
                 {
                     IsRecordUpdated = objBLIssueAssignment.UpdateIssueByLoginUser(objIssueAssignment, name1);
@@ -482,13 +414,10 @@ namespace V2.Helpdesk.web.admin
                         GetReportIssueHistory();
                         if (ddlStatus.SelectedItem.Value != "1")
                         {
-                            //Department=
                             SendMail();
                         }
                         lblMsg.Text = "";
                         pnlMessage.Visible = true;
-
-                        //pnlIssueDetails.Visible = false;
                     }
                     else
                     {
@@ -515,29 +444,9 @@ namespace V2.Helpdesk.web.admin
 
         protected void btnCancel_Click(object sender, System.EventArgs e)
         {
-            //clsIssueAssignment objIssueAssignment = new clsIssueAssignment();
-            //clsBLIssueAssignment objBLIssueAssignment = new clsBLIssueAssignment();
             try
             {
                 Response.Redirect("ViewMyIssues.aspx");
-
-                //GetSelectedIssue();
-                //GetReportIssueHistory();
-                //objIssueAssignment.ReportIssueID = intReportIssueID;
-                //string fileName = objBLIssueAssignment.FileName(objIssueAssignment);
-                //if (fileName != "")
-                //{
-                //    lnkbtnFileName.Text = fileName;
-                //}
-                //else
-                //{
-                //    lnkbtnFileName.Text = "";
-                //}
-                //lblColon1.Visible = false;
-                //lblComment1.Visible = false;
-                //txtAddcomment.Text = "";
-                //txtAddcomment.Visible = false;
-                //btnAddComment.Visible = true;
             }
             catch (V2Exceptions ex)
             {
@@ -578,29 +487,7 @@ namespace V2.Helpdesk.web.admin
         {
             try
             {
-                //foreach (DataGridItem dgi in dgIssueDetails.Items)
-                //{
-                //    if (dgi.ItemType == ListItemType.Item || dgi.ItemType == ListItemType.AlternatingItem)
-                //    {
-                //        int intStatusID = Convert.ToInt32(((Label)dgi.FindControl("lblStatusID")).Text);
-                //        if (intStatusID == 1)
-                //        {
-                //            ((Label)dgi.FindControl("lblStatus")).Text = IssueStatus.New.ToString();
-                //        }
-                //        else if (intStatusID == 2)
-                //        {
-                //            ((Label)dgi.FindControl("lblStatus")).Text = IssueStatus.Resolved.ToString();
-                //        }
-                //        else if (intStatusID == 3)
-                //        {
-                //            ((Label)dgi.FindControl("lblStatus")).Text = IssueStatus.Moved.ToString();
-                //        }
-                //        else if (intStatusID == 4)
-                //        {
-                //            ((Label)dgi.FindControl("lblStatus")).Text = IssueStatus.Reopen.ToString();
-                //        }
-                //    }
-                //}
+
             }
             catch (V2Exceptions ex)
             {
@@ -833,9 +720,6 @@ namespace V2.Helpdesk.web.admin
                                 objSendMailToUser.CC.Add(email);
                             }
                         }
-                        //SmtpMail.UseDefaultCredentials = false;
-                        //SmtpMail.Credentials = new System.Net.NetworkCredential("username", "password");
-                        //SmtpMail.Send(objSendMailToUser);
                     }
 
                     // If there is only change in comment, then following mail body will trigger.
@@ -874,10 +758,6 @@ namespace V2.Helpdesk.web.admin
                                 objSendMailToUser.CC.Add(email);
                             }
                         }
-
-                        //SmtpMail.UseDefaultCredentials = false;
-                        //SmtpMail.Credentials = new System.Net.NetworkCredential("username", "password");
-                        //SmtpMail.Send(objSendMailToUser);
                     }
 
                     SmtpMail.UseDefaultCredentials = false;
@@ -889,7 +769,6 @@ namespace V2.Helpdesk.web.admin
                 Session["UserEmailId"] = "";
                 Session["Username"] = "";
                 Session["OldStatus"] = "";
-                //Session["Department"] = "";
             }
             catch (V2Exceptions ex)
             {
@@ -974,7 +853,6 @@ namespace V2.Helpdesk.web.admin
         public static string GetNewAllocation(string helpdeskid, string projectid, string projectrole, string workhours, string fromdate, string enddate, string hdnreportedbyEmpid)
         {
             // instantiate a serializer
-
             JavaScriptSerializer TheSerializer = new JavaScriptSerializer();
             CommonMethodsDAL Commondal = new CommonMethodsDAL();
             ArrayList list = new ArrayList();
@@ -999,7 +877,6 @@ namespace V2.Helpdesk.web.admin
         public static string GetUpdateCurrentAllocation(string helpdeskid, string projectid, string projectrole, string workhours, string fromdate, string enddate, string hdnreportedbyEmpid)
         {
             // instantiate a serializer
-
             JavaScriptSerializer TheSerializer = new JavaScriptSerializer();
             CommonMethodsDAL Commondal = new CommonMethodsDAL();
             ArrayList list = new ArrayList();
