@@ -2275,9 +2275,9 @@ namespace HRMS.Orbitweb
                 intUserIDForMail = Convert.ToInt32(lblTMmember.Text.ToString()); //For Sending mail to user
                 //Getting All the Holidays Details
                 // DataSet dsHolidaysList = objHolidayMasterBOL.bindData();
-                objHolidayModel.UserID = objLeaveDetailsModel.UserID;
-                objHolidayModel.StartDate = objLeaveDetailsModel.LeaveDateFrom;
-                objHolidayModel.EndDate = objLeaveDetailsModel.LeaveDateTo;
+                objHolidayModel.UserID = objCompensationDetailsModel.UserID;
+                objHolidayModel.StartDate = Convert.ToDateTime(strFromDate);
+                objHolidayModel.EndDate = Convert.ToDateTime(strFromDate);
                 DataSet dsHolidaysList = objHolidayBOL.bindHolidaysForLeaveApprovals(objHolidayModel);
                 //For Getting ConfigDate from Database
                 DataSet dsConfigItem = objCompensationDetailsBOL.GetCompensationDetails(objCompensationDetailsModel);
@@ -2295,13 +2295,12 @@ namespace HRMS.Orbitweb
                             flag = true;
                             break;
                         }
-                        if (FromDate.DayOfWeek.ToString() == "Saturday" || FromDate.DayOfWeek.ToString() == "Sunday")
-                        {
-                            flag = true;
-                            break;
-                        }
                     }
 
+                    if (FromDate.DayOfWeek.ToString() == "Saturday" || FromDate.DayOfWeek.ToString() == "Sunday")
+                    {
+                        flag = true;
+                    }
                     if (flag)
                     {
                         objCompensationDetailsModel.AppliedFor = Convert.ToDateTime(FromDate.ToString());
