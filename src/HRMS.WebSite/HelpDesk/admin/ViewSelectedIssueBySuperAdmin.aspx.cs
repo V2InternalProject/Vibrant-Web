@@ -228,6 +228,7 @@ namespace V2.Helpdesk.web.admin
                 {
                     Session["Username"] = dsSelectedIssue.Tables[1].Rows[0]["UserName"].ToString();
                     Session["UserEmailId"] = dsSelectedIssue.Tables[1].Rows[0]["EmailID"].ToString();
+                    Session["IssueReportDateTime"] = dsSelectedIssue.Tables[0].Rows[0]["ReportIssueDateTime"].ToString();
                 }
                 if (dsSelectedIssue.Tables[0].Rows.Count > 0)
                 {
@@ -640,6 +641,7 @@ namespace V2.Helpdesk.web.admin
                             objIssueAssignment.EmployeeID = EmployeeID;
                             objIssueAssignment.Cause = txtCause.Text;
                             objIssueAssignment.Fix = txtFix.Text;
+                            objIssueAssignment.IssueReportDateTime = Convert.ToDateTime(Session["IssueReportDateTime"]);
                         }
 
                         if (ddlCatagory.SelectedValue == "")
