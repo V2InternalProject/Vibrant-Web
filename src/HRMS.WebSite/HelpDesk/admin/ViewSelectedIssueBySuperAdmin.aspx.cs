@@ -1432,7 +1432,7 @@ namespace V2.Helpdesk.web.admin
                 clsBLReportIssue objClsBLReportIssue = new clsBLReportIssue();
                 DataSet dsType = objClsBLReportIssue.GetType();
 
-                for (int i = 0; i < dsType.Tables[0].Rows.Count; i++)
+                for (int i = dsType.Tables[0].Rows.Count - 1; i >= 0; i--)
                 {
                     ddlIssueType.Items.Add(new ListItem(dsType.Tables[0].Rows[i]["RequestType"].ToString(), dsType.Tables[0].Rows[i]["TypeID"].ToString()));
                 }
