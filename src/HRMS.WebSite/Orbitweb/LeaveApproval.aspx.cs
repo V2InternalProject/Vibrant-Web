@@ -31,7 +31,7 @@ namespace HRMS.Orbitweb
         private string lblgrvStatusNameText = string.Empty, strTotalLeaveBalance = string.Empty;
         private DateTime FromDate, ToDate;
         private double TotalLeaves = 0;
-        private int j = 0, TotalLeavesApplyedFor = 0;
+        private int j = 0, TotalLeavesApplyedFor = 0, leaveStatusId = 0;
         private int BalanceLeaves, absent;
         private double CorrectionLeaves;
         private String[] strLeaves, TotalLeavesBalance;
@@ -641,6 +641,7 @@ namespace HRMS.Orbitweb
 
                 TotalLeaves = ts.TotalDays + 1;
                 strLeaves = new String[Convert.ToInt32(TotalLeaves)];
+                leaveStatusId = Convert.ToInt32(ddlStatusID.SelectedValue);
 
                 if (ddlStatusID.SelectedValue == Convert.ToString("3"))
                 {
@@ -659,46 +660,10 @@ namespace HRMS.Orbitweb
                     lblSuccess.Text = "Leave Details are Rejected";
                     lblError.Text = "";
                     gvLeaveApprovals.EditIndex = -1;
+
+                    SendingMailToReportingPerson();
+
                     GetLeaveDetails();
-                    if (WfApprovedLocked == false)
-                    {
-                        if (ddlStatusID.SelectedValue == Convert.ToString("3"))
-                        {
-                            try
-                            {
-                                WorkflowRuntime wr = (WorkflowRuntime)Application["WokflowRuntime"];
-                                WorkflowInstance wi = wr.GetWorkflow(objLeaveDetailsModel.WorkFlowID);
-                                if (wi != null)
-                                {
-                                    wi.Resume();
-                                    LeaveDetailsService objLeaveDetailsService = (LeaveDetailsService)wr.GetService(typeof(LeaveDetailsService));
-                                    objLeaveDetailsService.RaiseRejectEvent(wi.InstanceId);
-                                }
-                            }
-                            catch (V2Exceptions)
-                            {
-                                try
-                                {
-                                    Response.Redirect("LeaveApproval.aspx");
-                                }
-                                catch (System.Threading.ThreadAbortException ex)
-                                {
-                                    throw;
-                                }
-                            }
-                            catch (System.Exception)
-                            {
-                                try
-                                {
-                                    Response.Redirect("LeaveApproval.aspx");
-                                }
-                                catch (System.Threading.ThreadAbortException ex)
-                                {
-                                    throw;
-                                }
-                            }
-                        }
-                    }
                     return;
                 }
 
@@ -1023,112 +988,43 @@ namespace HRMS.Orbitweb
                 {
                     if (ddlStatusID.SelectedValue == Convert.ToString("2"))
                     {
-                        try
-                        {
-                            WorkflowRuntime wr = (WorkflowRuntime)Application["WokflowRuntime"];
-                            WorkflowInstance wi = wr.GetWorkflow(objLeaveDetailsModel.WorkFlowID);
-                            if (wi != null)
-                            {
-                                wi.Resume();
-                                LeaveDetailsService objLeaveDetailsService = (LeaveDetailsService)wr.GetService(typeof(LeaveDetailsService));
-                                objLeaveDetailsService.RaiseApproveEvent(wi.InstanceId);
-                            }
-                        }
-                        catch (V2Exceptions)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
-                        catch (System.Exception)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
+                        SendingMailToReportingPerson();
                     }
                     if (ddlStatusID.SelectedValue == Convert.ToString("3"))
                     {
-                        try
-                        {
-                            WorkflowRuntime wr = (WorkflowRuntime)Application["WokflowRuntime"];
-                            WorkflowInstance wi = wr.GetWorkflow(objLeaveDetailsModel.WorkFlowID);
-                            if (wi != null)
-                            {
-                                wi.Resume();
-                                LeaveDetailsService objLeaveDetailsService = (LeaveDetailsService)wr.GetService(typeof(LeaveDetailsService));
-                                objLeaveDetailsService.RaiseRejectEvent(wi.InstanceId);
-                            }
-                        }
-                        catch (V2Exceptions)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
-                        catch (System.Exception)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
+                        SendingMailToReportingPerson();
                     }
-                    if (ddlStatusID.SelectedValue == Convert.ToString("4"))
-                    {
-                        try
-                        {
-                            WorkflowRuntime wr = (WorkflowRuntime)Application["WokflowRuntime"];
-                            WorkflowInstance wi = wr.GetWorkflow(objLeaveDetailsModel.WorkFlowID);
-                            if (wi != null)
-                            {
-                                wi.Resume();
-                                LeaveDetailsService objLeaveDetailsService = (LeaveDetailsService)wr.GetService(typeof(LeaveDetailsService));
-                                objLeaveDetailsService.RaiseCancelEvent(wi.InstanceId);
-                            }
-                        }
-                        catch (V2Exceptions)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
-                        catch (System.Exception)
-                        {
-                            try
-                            {
-                                Response.Redirect("LeaveApproval.aspx");
-                            }
-                            catch (System.Threading.ThreadAbortException ex)
-                            {
-                                throw;
-                            }
-                        }
-                    }
+                    // Commented by Nilesh Dalal.
+                    // No need to have this as Approver can't Cancel the Leave.
+                    //if (ddlStatusID.SelectedValue == Convert.ToString("4"))
+                    //{
+                    //    try
+                    //    {
+                    //        SendingMailToReportingPerson();
+                    //    }
+                    //    catch (V2Exceptions)
+                    //    {
+                    //        try
+                    //        {
+                    //            Response.Redirect("LeaveApproval.aspx");
+                    //        }
+                    //        catch (System.Threading.ThreadAbortException ex)
+                    //        {
+                    //            throw;
+                    //        }
+                    //    }
+                    //    catch (System.Exception)
+                    //    {
+                    //        try
+                    //        {
+                    //            Response.Redirect("LeaveApproval.aspx");
+                    //        }
+                    //        catch (System.Threading.ThreadAbortException ex)
+                    //        {
+                    //            throw;
+                    //        }
+                    //    }
+                    //}
                 }
                 else
                 {
@@ -1558,7 +1454,7 @@ namespace HRMS.Orbitweb
                 dsReportingTo = objLeaveDeatilsBOL.GetReportingTo(objLeaveDetailsModel);
                 if (dsReportingTo.Tables[0].Rows.Count > 0)
                 {
-                    //Send  new password to the employee through Email.
+                    //Send new password to the employee through Email.
                     MailMessage objMailMessage = new MailMessage();
                     SmtpClient smtpClient = new SmtpClient();
                     objMailMessage.Subject = "Updated Leave Details";
@@ -1589,9 +1485,23 @@ namespace HRMS.Orbitweb
                         }
                     }
 
-                    objMailMessage.Subject = "Updated Leave Details";
+                    switch (leaveStatusId)
+                    {
+                        case 2:
+                            objMailMessage.Subject = "Leave Approved Details";
+                            objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Leave Rejection Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + "Approval Reason: " + objLeaveDetailsModel.ApproverComments + " <br> " + " <br> " + " Update the Leave Approved Details, the required updates are made in the system.";
+                            break;
 
-                    objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Updated Leave Application Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + " <br> " + " Update the Approved Leave Details, the required updates are made in the system.";
+                        case 3:
+                            objMailMessage.Subject = "Leave Rejected Details";
+                            objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Leave Rejection Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + "Rejection Reason: " + objLeaveDetailsModel.ApproverComments + " <br> " + " <br> " + " Update the Leave Rejected Details, the required updates are made in the system.";
+                            break;
+
+                        default:
+                            objMailMessage.Subject = "Updated Leave Details";
+                            objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Updated Leave Application Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + " <br> " + " Update the Approved Leave Details, the required updates are made in the system.";
+                            break;
+                    }
 
                     SMTPHelper objhelper = new SMTPHelper();
                     objhelper.SendMail(objMailMessage.From.ToString(), objMailMessage.To.ToString(), objMailMessage.Subject, objMailMessage.Body, null, null, 1);
