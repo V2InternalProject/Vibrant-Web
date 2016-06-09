@@ -1489,7 +1489,7 @@ namespace HRMS.Orbitweb
                     {
                         case 2:
                             objMailMessage.Subject = "Leave Approved Details";
-                            objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Leave Rejection Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + "Approval Reason: " + objLeaveDetailsModel.ApproverComments + " <br> " + " <br> " + " Update the Leave Approved Details, the required updates are made in the system.";
+                            objMailMessage.Body = "<font style= color:Navy;font-size:smaller;font-family:Arial>" + "Hi " + "<b>" + UserName + "</b>" + " ," + "<br>" + "<br>" + "Leave Approved Details: " + "<br>" + "<br>" + " <br> " + "FromDate: " + FromDate + " <br> " + "ToDate: " + ToDate + " <br> " + "Leave Reason: " + Reason + " <br> " + "Leave Applied For: " + Applyleaves + " <br> " + "Approval Reason: " + objLeaveDetailsModel.ApproverComments + " <br> " + " <br> " + " Update the Leave Approved Details, the required updates are made in the system.";
                             break;
 
                         case 3:
