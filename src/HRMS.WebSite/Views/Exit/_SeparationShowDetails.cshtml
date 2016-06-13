@@ -218,7 +218,7 @@
 
         $("#ReasonForSeparartion option").each(function () {
             if ($(this).text() == '@Model.SeparationFormDetails.ReasonForSeparartion') {
-                $(this).attr('selected', 'selected');
+                $("#ReasonForSeparartion").next().find('.selectBox-label').text($(this).text())
             }
         });
 
@@ -279,7 +279,7 @@
                 }
             });
         }
-
+        checkValidationOnDateChangeEvent();
     });
 
     $("#btnShowDetailsSubmit").click(showDetailsSubmit);

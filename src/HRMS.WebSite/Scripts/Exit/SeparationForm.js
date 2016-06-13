@@ -253,7 +253,7 @@ function SaveSeparationForm() {
                                                         $("#loading").dialog("destroy");
                                                         if (data.validCcId == true && data.validtoId == true) {
                                                             if (data.status == true) {
-                                                                window.location.href = "SeparationForm/Exit";
+                                                                window.location.href = "EmpSeparationApprovals";
                                                             }
                                                         }
                                                         else if (data.status == "Error") {
@@ -295,7 +295,7 @@ function SaveSeparationForm() {
                                                                 }
                                                             }
                                                         }); //end dialog
-                                                        window.location.href = "SeparationForm/Exit";
+                                                        window.location.href = "EmpSeparationApprovals";
                                                     }
                                                 });
                                             }

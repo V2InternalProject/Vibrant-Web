@@ -25,6 +25,7 @@ namespace V2.Helpdesk.Model
         private int intNumberOfResources;
         private DateTime? dtFromDate;
         private DateTime? dtToDate;
+        private DateTime? issueReportDateTime;
 		#endregion
 
 		public clsIssueAssignment()
@@ -128,6 +129,12 @@ namespace V2.Helpdesk.Model
         {
             get { return dtToDate; }
             set { dtToDate = value; }
+        }
+
+        public DateTime? IssueReportDateTime
+        {
+            get { return issueReportDateTime; }
+            set { issueReportDateTime = value; }
         }
 
 		#endregion

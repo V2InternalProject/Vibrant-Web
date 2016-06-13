@@ -228,6 +228,7 @@ namespace V2.Helpdesk.web.admin
                 {
                     Session["Username"] = dsSelectedIssue.Tables[1].Rows[0]["UserName"].ToString();
                     Session["UserEmailId"] = dsSelectedIssue.Tables[1].Rows[0]["EmailID"].ToString();
+                    Session["IssueReportDateTime"] = dsSelectedIssue.Tables[0].Rows[0]["ReportIssueDateTime"].ToString();
                 }
                 if (dsSelectedIssue.Tables[0].Rows.Count > 0)
                 {
@@ -640,6 +641,7 @@ namespace V2.Helpdesk.web.admin
                             objIssueAssignment.EmployeeID = EmployeeID;
                             objIssueAssignment.Cause = txtCause.Text;
                             objIssueAssignment.Fix = txtFix.Text;
+                            objIssueAssignment.IssueReportDateTime = Convert.ToDateTime(Session["IssueReportDateTime"]);
                         }
 
                         if (ddlCatagory.SelectedValue == "")
@@ -1432,7 +1434,7 @@ namespace V2.Helpdesk.web.admin
                 clsBLReportIssue objClsBLReportIssue = new clsBLReportIssue();
                 DataSet dsType = objClsBLReportIssue.GetType();
 
-                for (int i = 0; i < dsType.Tables[0].Rows.Count; i++)
+                for (int i = dsType.Tables[0].Rows.Count - 1; i >= 0; i--)
                 {
                     ddlIssueType.Items.Add(new ListItem(dsType.Tables[0].Rows[i]["RequestType"].ToString(), dsType.Tables[0].Rows[i]["TypeID"].ToString()));
                 }

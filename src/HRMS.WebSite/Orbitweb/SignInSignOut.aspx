@@ -56,14 +56,10 @@
 
         function ChangeVisibility(visible) {
             if (visible) {
-                $('#ManualSignIn').show();
-                //$('#lblNote').show();
-                $('#disp_time').show();
+                $('#ManualSignIn').add();
             }
             else {
-                $('#ManualSignIn').hide();
-                //$('#lblNote').hide();
-                $('#disp_time').hide();
+                $('#ManualSignIn').remove();
             }
         }
 
@@ -105,13 +101,8 @@
             </div>
             <div class="OrbitAuto">
                 <%--<asp:Label runat="server" ID="lblNote" Text="Please ensure that the timezone in the system was same while signin." ClientIDMode="Static" ForeColor="Maroon" Font-Bold="true" style="text-align:center;display:block;"></asp:Label>--%>
-                <div id="disp_time" style="text-align: center;">
-                    <img id="img2" src="../Images/timezone1.gif" style="vertical-align: top;" /><img id="img1" src="../Images/timezone2.gif" style="margin-left: -8px;" />
-                </div>
                 <div class="clearfix">
                     <div class="floatL mrgnL20 mrgnT3">
-                        <%--                            <input type="button" value="Sign In" class="ButtonBlue mrgnR11">
-                            <input type="button" value="Sign Out" class="ButtonSignOut">--%>
                         <asp:Button ID="btnSignIn" runat="server" Text="Sign In" OnClick="btnSignIn_Click"
                             CausesValidation="False" CssClass="ButtonBlue mrgnR11" />
 

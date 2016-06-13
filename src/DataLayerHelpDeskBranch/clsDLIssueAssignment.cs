@@ -197,7 +197,7 @@ namespace V2.Helpdesk.DataLayer
 
 		public bool IssueAssignmentBySuperAdmin(Model.clsIssueAssignment objIssueAssignment)
 		{
-			SqlParameter[] objParam = new SqlParameter[13];
+			SqlParameter[] objParam = new SqlParameter[14];
 
 			objParam[0]= new SqlParameter("@StatusID", SqlDbType.Int);
 			objParam[0].Value = objIssueAssignment.StatusID;
@@ -223,30 +223,37 @@ namespace V2.Helpdesk.DataLayer
             objParam[7] = new SqlParameter("@TypeID", SqlDbType.Int);
             objParam[7].Value = objIssueAssignment.TypeID;
             //Modified by Mahesh F For Issue ID:22449
-            objParam[12] = new SqlParameter("@ProblemSeverity", SqlDbType.Int);
-            objParam[12].Value = objIssueAssignment.ProblemSeverity;
+            objParam[8] = new SqlParameter("@ProblemSeverity", SqlDbType.Int);
+            objParam[8].Value = objIssueAssignment.ProblemSeverity;
 
-            objParam[8] = new SqlParameter("@WorkHours", SqlDbType.Int, 8);
-            objParam[8].Value = objIssueAssignment.WorkHours;
-            objParam[8].Direction = ParameterDirection.Input;
-
-            objParam[9] = new SqlParameter("@FromDate", SqlDbType.DateTime);
-            if (objIssueAssignment.FromDate.ToString() == "")
-                objParam[9].Value = null;
-            else
-                objParam[9].Value = objIssueAssignment.FromDate;
+            objParam[9] = new SqlParameter("@WorkHours", SqlDbType.Int, 8);
+            objParam[9].Value = objIssueAssignment.WorkHours;
             objParam[9].Direction = ParameterDirection.Input;
 
-            objParam[10] = new SqlParameter("@ToDate", SqlDbType.DateTime);
-            if (objIssueAssignment.ToDate.ToString() == "")
+            objParam[10] = new SqlParameter("@FromDate", SqlDbType.DateTime);
+            if (objIssueAssignment.FromDate.ToString() == "")
                 objParam[10].Value = null;
             else
-                objParam[10].Value = objIssueAssignment.ToDate;
+                objParam[10].Value = objIssueAssignment.FromDate;
             objParam[10].Direction = ParameterDirection.Input;
 
-            objParam[11] = new SqlParameter("@NumberOfResources", SqlDbType.Int, 8);
-            objParam[11].Value = objIssueAssignment.NumberOfResources;
+            objParam[11] = new SqlParameter("@ToDate", SqlDbType.DateTime);
+            if (objIssueAssignment.ToDate.ToString() == "")
+                objParam[11].Value = null;
+            else
+                objParam[1].Value = objIssueAssignment.ToDate;
             objParam[11].Direction = ParameterDirection.Input;
+
+            objParam[12] = new SqlParameter("@IssueReportDateTime", SqlDbType.DateTime);
+            if (objIssueAssignment.IssueReportDateTime.ToString() == "")
+                objParam[12].Value = null;
+            else
+                objParam[12].Value = objIssueAssignment.IssueReportDateTime;
+            objParam[12].Direction = ParameterDirection.Input;
+
+            objParam[13] = new SqlParameter("@NumberOfResources", SqlDbType.Int, 8);
+            objParam[13].Value = objIssueAssignment.NumberOfResources;
+            objParam[13].Direction = ParameterDirection.Input;
 
 			int recaffected1;
 			try
