@@ -241,7 +241,7 @@ namespace V2.Helpdesk.DataLayer
             if (objIssueAssignment.ToDate.ToString() == "")
                 objParam[11].Value = null;
             else
-                objParam[1].Value = objIssueAssignment.ToDate;
+                objParam[11].Value = objIssueAssignment.ToDate;
             objParam[11].Direction = ParameterDirection.Input;
 
             objParam[12] = new SqlParameter("@IssueReportDateTime", SqlDbType.DateTime);
