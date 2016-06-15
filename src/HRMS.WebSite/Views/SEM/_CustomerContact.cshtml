@@ -34,10 +34,10 @@
                 { name: "ContactPerson", index: "ContactPerson", align: "left", width: 120, editable: true, editrules: { required: true }},
                 { name: "TypeofContact", index: "TypeofContact", align: "left", width: 90, editable: true, editrules: { required: true },edittype: "select", editoptions: { value: a}},
                 { name: "EmailID", index: "EmailID", align: "left", width: 120 , editable: true, editrules: { required: true, custom: true, custom_func: isValidEmailAddress}},
-                { name: "MobileNumber", index: "MobileNumber", align: "left", width: 90, editable: true, editrules: { required: true } },
-                { name: "PhoneNumber", index: "PhoneNumber", align: "left", width: 90 , editable: true, editrules: { required: true }},
-                { name: "FaxNumber", index: "FaxNumber", align: "left", width: 90 , editable: true },
-                { name: "OnlineContact", index: "OnlineContact", align: "left", width: 90 , editable: true},
+                { name: "MobileNumber", index: "MobileNumber", align: "left", width: 90, editable: true, editrules: { required: true, custom: true, custom_func: isValidCustomerContactNumber }},
+                { name: "PhoneNumber", index: "PhoneNumber", align: "left", width: 90 , editable: true, editrules: { required: true, custom: true, custom_func: isValidCustomerContactNumber }},
+                { name: "FaxNumber", index: "FaxNumber", align: "left", width: 90 , editable: true, editrules: { custom: true, custom_func: isValidCustomerContactNumber } },
+                { name: "OnlineContact", index: "OnlineContact", align: "left", width: 90 , editable: true, editrules: { custom: true, custom_func: isValidCustomerContactNumber }},
                 {
                     name: "Delete",
                     index: "Delete",
@@ -262,7 +262,88 @@
 			}
 			);
 	$('#deletecustomerConConfirmation').dialog('open');
-    }
+     }
+
+    // To check the Mobile Number, Phone Number, Fax Number and Online Contact is containing only numerics.
+    function isValidCustomerContactNumber(value, Colname) {
+        debugger;
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+        var valid = pattern.test(value);
+
+        if (value != "" && !valid) {
+            if (Colname == "Mobile Number") {
+                $("#ValidCustomerMobileNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Phone Number") {
+                $("#ValidCustomerPhoneNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Fax Number") {
+                $("#ValidCustomerFaxNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Online Contact") {
+                $("#ValidCustomerOnlineContactNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+        }
+        else {
+            return [true, ""];
+        }
+    } //
 </script>
 @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addCustomerContacts" }))
 {
@@ -285,5 +366,25 @@
 <div id="EmailValid" style="display: none;">
     <p>
         Please Enter Valid Email Id.
+    </p>
+</div>
+<div id="ValidCustomerMobileNumberDialog" style="display: none;">
+    <p>
+        Customer Mobile Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerPhoneNumberDialog" style="display: none;">
+    <p>
+        Customer Phone Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerFaxNumberDialog" style="display: none;">
+    <p>
+        Customer Fax Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerOnlineContactNumberDialog" style="display: none;">
+    <p>
+        Customer Online Contact can not contain alphabets.
     </p>
 </div>
