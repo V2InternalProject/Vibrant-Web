@@ -431,7 +431,7 @@ public partial class Masters : System.Web.UI.Page
 
         int userID = Convert.ToInt32(Session["userID"].ToString());
 
-        if ((int)Session["InsertFlag"] == 1)
+        if (Session["InsertFlag"] != null && (int)Session["InsertFlag"] == 1)
         {
             string SLaTypeName = string.Empty;
             GridViewRow row = grdMaster.FooterRow;
