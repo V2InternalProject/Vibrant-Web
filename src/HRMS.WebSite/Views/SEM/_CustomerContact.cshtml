@@ -266,7 +266,6 @@
 
     // To check the Mobile Number, Phone Number, Fax Number and Online Contact is containing only numerics.
     function isValidCustomerContactNumber(value, Colname) {
-        debugger;
         var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
         var valid = pattern.test(value);
 
