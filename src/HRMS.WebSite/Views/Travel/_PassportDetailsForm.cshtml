@@ -23,7 +23,7 @@
                     <label>Passport Number:</label>
                 </div>
                 <div class="InputDiv">
-                    @Html.LabelFor(t => t.PassportNumber, Model.PassportNumber)
+                    @Html.LabelFor(t => t.PassportNumber, String.Format("{0}", Model.PassportNumber != null ? Model.PassportNumber : "N/A"))
                 </div>
             </div>
             <div class="rightcol">
@@ -31,7 +31,7 @@
                     <label>Son of/Wife of/Daughter of:</label>
                 </div>
                 <div class="InputDiv">
-                    @Html.LabelFor(t => t.SonofWifeOfDaughterof, Model.SonofWifeOfDaughterof)
+                    @Html.LabelFor(t => t.SonofWifeOfDaughterof, String.Format("{0}", Model.SonofWifeOfDaughterof != null ? Model.SonofWifeOfDaughterof : "N/A"))
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                     <label>Place of Issue:</label>
                 </div>
                 <div class="InputDiv">
-                    @Html.LabelFor(t => t.PlaceOfIssue, Model.PlaceOfIssue)
+                    @Html.LabelFor(t => t.PlaceOfIssue, String.Format("{0}", Model.PlaceOfIssue != null ? Model.PlaceOfIssue : "N/A"))
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                     <label>Full Name as in Passport:</label>
                 </div>
                 <div class="InputDiv">
-                    @Html.LabelFor(t => t.FullNameAsInPassport, Model.FullNameAsInPassport)
+                    @Html.LabelFor(t => t.FullNameAsInPassport, String.Format("{0}", Model.FullNameAsInPassport != null ? Model.FullNameAsInPassport : "N/A"))
                 </div>
             </div>
         </div>
