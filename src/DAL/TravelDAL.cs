@@ -4208,6 +4208,7 @@ namespace HRMS.DAL
                     if (field == "Organization Unit")
                     {
                         List<FieldChildDetails> child = (from l in dbContext.tbl_PM_Location
+                                                         where l.LocationID <= 5
                                                          select new FieldChildDetails
                                                          {
                                                              Id = l.LocationID,
