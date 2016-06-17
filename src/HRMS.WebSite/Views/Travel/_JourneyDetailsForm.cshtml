@@ -218,8 +218,6 @@
                         isJourneyRowInAddEditMode = true;
                         $("#" + rowid + "_JourneyFeedback").parent().next().find('img').hide();
                         $('#addTravelsJourneyDetails #JourneyId').val(0);
-                        $("#JourneyTable").jqGrid('hideCol', 'TicketName');
-                        $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
                         $(".UploadButtons").children().hide();
                         //                    $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[class="'+rowid+'_UploadLink"]').show();
                         $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[type="button"]').show();
@@ -231,12 +229,15 @@
                         else
                         {
                             $(".modeDetailsClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                            $(".feedbackClass").find("input").addClass("bg-gray").attr("disabled","disabled");
                         }
-                        if(('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
+                        if(('@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
                         {
                             $(".feedbackClass").find("input").removeClass("bg-gray").removeAttr("disabled");
                         }
                         $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                        $("#JourneyTable").jqGrid('hideCol', 'TicketName');
+                        $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
 
                     }
                 }
