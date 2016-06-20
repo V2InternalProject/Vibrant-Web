@@ -485,9 +485,11 @@
             $("#TravelExtensionEndDate").attr("disabled", "disabled");
             $("#TravelExtDetails").attr("disabled", "disabled");
         }
-        $("#TravelStartDate, #TravelEndDate, #TravelExtensionEndDate, #TravelImmigrationDateDate").keypress(function () {
-            return false;
-        });
+
+        // -- Issue-1191: This is to allow the datepicker to get the date manually from keypad.
+        //$("#TravelStartDate, #TravelEndDate, #TravelExtensionEndDate, #TravelImmigrationDateDate").keypress(function () {
+        //    return false;
+        //});
 
         if ('@Model.StageID' == 4 && '@ViewBag.UserRole' == 'Travel_Admin') {
             $('#btnCancelTravelRequestForm').show();
@@ -2440,7 +2442,20 @@
             data: $('#AccomodationDetailsForm').serialize(),
             success: function (results) {
                 if (results.status == true) {
-                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                    $("#TravelFormRecordSuccess").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                            }
+                        }
+                    });
+                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
                     //callTravelMail(results.travelId, results.isApproved, false, false, null, null, null, null, null, null);
                     //var Sucessmsg = "Travel request approved successfully."
                     //                    if ('@Model.StageID' == 3) {
