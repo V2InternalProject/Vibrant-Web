@@ -119,7 +119,7 @@
                             onCellSelect: function (rowid, iCol) {
                                 var viewstatus = '@ViewBag.StageID';
                                 var rowData = $(this).getRowData(rowid);
-                                
+
                                 var columnName = $(this).jqGrid("getGridParam", "colModel");
                                 var colName = columnName[iCol];
                                 if(isJourneyRowInAddEditMode == false)
@@ -357,12 +357,12 @@
         }
         else if('@ViewBag.StageID' == 4 && '@ViewBag.UserRole' == "Travel_Admin")
         {
-            $("#journeyTablePager_left").css("visibility","hidden");
+            $("#journeyTablePager_left").css("visibility","visible");
         }
         else
             $("#journeyTablePager_left").css("visibility","hidden");
 
-        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 4) {
+        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && ('@ViewBag.IsLoggedInUser' == 'True' || '@ViewBag.UserRole' == "Travel_Admin") && '@ViewBag.StageID' == 4) {
             $("#JourneyTable_iladd").css("visibility","visible");
         }
     });//end ready
@@ -460,7 +460,8 @@
 
     function isJourneyFieldRequired(value,colname)
     {
-        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "")
+        //if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "")
+        if(value == "")
         {
             $("#JourneyFieldRequiredDialog span").html("").append(colname);
             $("#JourneyFieldRequiredDialog").dialog({

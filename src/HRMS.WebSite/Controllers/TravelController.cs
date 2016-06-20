@@ -707,7 +707,12 @@ namespace HRMS.Controllers
                 }
                 else
                 {
-                    if (User.IsInRole("Management"))
+                    if (Roles.GetRolesForUser().Contains("Travel_Admin"))
+                    {
+                        ViewBag.UserRole = "Travel_Admin";
+                        model.SearchedUserDetails.UserRole = "Travel_Admin";
+                    }
+                    else if (User.IsInRole("Management"))
                     {
                         ViewBag.UserRole = "Management";
                         model.SearchedUserDetails.UserRole = "Management";
@@ -1724,15 +1729,30 @@ namespace HRMS.Controllers
                     ViewBag.UserRole = "Travel_Admin";
                     model.SearchedUserDetails.UserRole = "Travel_Admin";
                 }
-                if (User.IsInRole("Travel Approver"))
+                else if (User.IsInRole("Travel Approver"))
                 {
                     ViewBag.UserRole = "TravelApprover";
                     model.SearchedUserDetails.UserRole = "TravelApprover";
                 }
-                if (User.IsInRole(UserRoles.GroupHead))
+                else if (User.IsInRole(UserRoles.GroupHead))
                 {
                     ViewBag.UserRole = "Group Head";
                     model.SearchedUserDetails.UserRole = "GroupHead";
+                }
+                else if (User.IsInRole("Delivery Manager"))
+                {
+                    ViewBag.UserRole = "Delivery Manager";
+                    model.SearchedUserDetails.UserRole = "Delivery Manager";
+                }
+                else if (User.IsInRole("Account Owners"))
+                {
+                    ViewBag.UserRole = "Account Owners";
+                    model.SearchedUserDetails.UserRole = "Account Owners";
+                }
+                else if (User.IsInRole("Management"))
+                {
+                    ViewBag.UserRole = "Management";
+                    model.SearchedUserDetails.UserRole = "Management";
                 }
             }
             else
@@ -1742,47 +1762,46 @@ namespace HRMS.Controllers
                     ViewBag.UserRole = "Travel_Admin";
                     model.SearchedUserDetails.UserRole = "Travel_Admin";
                 }
-                if (User.IsInRole("Travel Approver") && TravelAppRoverId == employeeId && stageid.StageID == 1)
+                else if (User.IsInRole("Travel Approver") && TravelAppRoverId == employeeId && stageid.StageID == 1)
                 {
                     ViewBag.UserRole = "TravelApprover";
                     model.SearchedUserDetails.UserRole = "TravelApprover";
                 }
-                if (User.IsInRole("Group Head") && GroupHeadId == employeeId && stageid.StageID == 2)
+                else if (User.IsInRole("Group Head") && GroupHeadId == employeeId && stageid.StageID == 2)
                 {
                     ViewBag.UserRole = "Group Head";
                     model.SearchedUserDetails.UserRole = "GroupHead";
                 }
-
-                if (User.IsInRole("Travel_Admin") && stageid.StageID == 4)
+                else if (User.IsInRole("Travel_Admin") && stageid.StageID == 4)
                 {
                     ViewBag.UserRole = "Travel_Admin";
                     model.SearchedUserDetails.UserRole = "Travel_Admin";
                 }
-                if (User.IsInRole("Travel Approver") && TravelAppRoverId == employeeId && stageid.StageID == 2)
+                else if (User.IsInRole("Travel Approver") && TravelAppRoverId == employeeId && stageid.StageID == 2)
                 {
                     ViewBag.UserRole = "TravelApprover";
                     model.SearchedUserDetails.UserRole = "TravelApprover";
                 }
-                if (User.IsInRole("Group Head") && GroupHeadId == employeeId && stageid.StageID == 3)
+                else if (User.IsInRole("Group Head") && GroupHeadId == employeeId && stageid.StageID == 3)
                 {
                     ViewBag.UserRole = "Group Head";
                     model.SearchedUserDetails.UserRole = "Group Head";
                 }
-            }
-            if (User.IsInRole("Delivery Manager"))
-            {
-                ViewBag.UserRole = "Delivery Manager";
-                model.SearchedUserDetails.UserRole = "Delivery Manager";
-            }
-            if (User.IsInRole("Account Owners"))
-            {
-                ViewBag.UserRole = "Account Owners";
-                model.SearchedUserDetails.UserRole = "Account Owners";
-            }
-            if (User.IsInRole("Management"))
-            {
-                ViewBag.UserRole = "Management";
-                model.SearchedUserDetails.UserRole = "Management";
+                else if (User.IsInRole("Delivery Manager"))
+                {
+                    ViewBag.UserRole = "Delivery Manager";
+                    model.SearchedUserDetails.UserRole = "Delivery Manager";
+                }
+                else if (User.IsInRole("Account Owners"))
+                {
+                    ViewBag.UserRole = "Account Owners";
+                    model.SearchedUserDetails.UserRole = "Account Owners";
+                }
+                else if (User.IsInRole("Management"))
+                {
+                    ViewBag.UserRole = "Management";
+                    model.SearchedUserDetails.UserRole = "Management";
+                }
             }
 
             Tbl_HR_Travel TravelDetails = dal.GetTravelDetails(Convert.ToInt32(decryptedTravelId));
