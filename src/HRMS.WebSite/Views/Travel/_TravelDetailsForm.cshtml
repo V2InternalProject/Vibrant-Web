@@ -978,6 +978,11 @@
         Travel Extension deatails form submited successfully.
     </p>
 </div>
+<div id="TravelSubmitFormRecordSuccess" style="display: none;" title="Travel Details">
+    <p>
+        Travel details form submited successfully.
+    </p>
+</div>
 <div id="DateValidateforEmptydialog" style="display: none;">
     <p>
         Please select travel extension dates and fill Travel Extension Details.
@@ -2442,7 +2447,7 @@
             data: $('#AccomodationDetailsForm').serialize(),
             success: function (results) {
                 if (results.status == true) {
-                    $("#TravelFormRecordSuccess").dialog({
+                    $("#TravelSubmitFormRecordSuccess").dialog({
                         resizable: false,
                         height: 'auto',
                         width: 300,
