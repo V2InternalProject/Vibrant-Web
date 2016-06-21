@@ -132,6 +132,9 @@
                                         if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.viewDetailClick' != 'yes') {
                                             DeleteJourneyDetail(rowData['JourneyID']);
                                         }
+                                        if (viewstatus == 4 && '@ViewBag.UserRole' == 'Travel_Admin' && '@ViewBag.viewDetailClick' != 'yes') {
+                                            DeleteJourneyDetail(rowData['JourneyID']);
+                                        }
                                         if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes')) {
                                             return false;
                                         }
@@ -435,7 +438,8 @@
 
     function isJourneyModeSelected(value,colname)
     {
-        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "0")
+        //if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "0")
+        if(value == "0")
         {
             $("#JourneyModeRequiredDialog").dialog({
                 modal: true,
