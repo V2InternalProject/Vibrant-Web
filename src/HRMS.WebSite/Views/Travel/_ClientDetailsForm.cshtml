@@ -47,18 +47,18 @@
         //        });
 
         stringClientList = @(Html.Raw(Json.Encode(ViewBag.clientList)));
-            var clients = [];
-            clients.push("Select");
-            $.each(stringClientList, function (index,value) {
+        var clients = [];
+        clients.push("Select");
+        $.each(stringClientList, function (index,value) {
             clients.push(value.TravellingLocationName);
-            });
+        });
 
         stringProjectList = @(Html.Raw(Json.Encode(ViewBag.ProjectNameList)));
-            var projects = [];
-            projects.push("Select");
-            $.each(stringProjectList, function (index,value) {
+        var projects = [];
+        projects.push("Select");
+        $.each(stringProjectList, function (index,value) {
             projects.push(value.ProjectName);
-            });
+        });
         // Set up the jquery grid
         $("#clientTable").jqGrid({
             // Ajax related configurations
@@ -154,23 +154,26 @@
                         {
                             DeleteClientDetail(ClitntId);
                         }
+                        if ('@ViewBag.StageID' == 4 && '@ViewBag.UserRole' == 'Travel_Admin' && '@ViewBag.viewDetailClick' != 'yes') {
+                            DeleteClientDetail(ClitntId);
+                        }
                         else {
                             return false;
                         }
                     }
                 }
-//                else if(rowid == "new_row")
-//                {
-//                LinkClientLetterClickUpload(ClitntId,TravelID,locationId);
-//                }
-//                else {
-//                    if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes')) {
-//                        return false;
-//                    }
-//                    else {
-//                        EditClientDetails(rowData);
-//                    }
-//                }
+                //                else if(rowid == "new_row")
+                //                {
+                //                LinkClientLetterClickUpload(ClitntId,TravelID,locationId);
+                //                }
+                //                else {
+                //                    if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes')) {
+                //                        return false;
+                //                    }
+                //                    else {
+                //                        EditClientDetails(rowData);
+                //                    }
+                //                }
             }
         }).navGrid("#clientTablePager",
             { search: false, refresh: false, add: false, edit: false, del: false }
@@ -178,26 +181,26 @@
 
         $("#clientTable").jqGrid('inlineNav', "#clientTablePager",
         {
-             edit: true,
+            edit: true,
             editicon: "ui-icon-pencil",
-           edittext:"Edit",
+            edittext:"Edit",
             add: true,
             addicon: "ui-icon-plus",
-           addtext:"Add",
+            addtext:"Add",
             save: true,
             saveicon: "ui-icon-disk",
-           savetext:"Save",
+            savetext:"Save",
             cancle: true,
             cancelicon: "ui-icon-cancel",
-           canceltext:"Cancel",
+            canceltext:"Cancel",
             addParams: {
                 useFormatter: false,
-                 addRowParams: {
-                     oneditfunc: function (rowid) {
-                         isClientRowInAddEditMode = true;
-                         $('#ClientForm #selectedClientID').val(0);
-                    $('#addTravelsClientDetails #ClientId').val(0);
-                    $("#" + rowid + "_PurposeOfVisit").parent().next().find('img').hide();
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        isClientRowInAddEditMode = true;
+                        $('#ClientForm #selectedClientID').val(0);
+                        $('#addTravelsClientDetails #ClientId').val(0);
+                        $("#" + rowid + "_PurposeOfVisit").parent().next().find('img').hide();
                         $(".ClientLocationFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
                         $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
                         $(".ProspectFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
@@ -206,35 +209,35 @@
                         $(".UploadButtons").children().hide();
                         $("#" + rowid + "_ClientEmailId").parent().next().next().find('input[type="button"]').show();
                     }
-                 }
+                }
             },
             editParams: {
                 keys: false,
                 oneditfunc: function(rowId){
                     isClientRowInAddEditMode = true;
-                 $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterName');
-                        $("#clientTable").jqGrid('showCol', 'ClientInviteLetterNameUpload');
-                var rowData = $("#clientTable").getRowData(rowId);
-                var locationName = rowData["TravellingLocNameHidden"];
-                      if(locationName == "V2 Mumbai" || locationName == "V2 Bangalore" || locationName == "V2 US"){
-                      $(".ClientLocationFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
-                      $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
-                      $(".ProspectFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
-                      }
-                      else if(locationName == "Client Location")
-                      {
+                    $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterName');
+                    $("#clientTable").jqGrid('showCol', 'ClientInviteLetterNameUpload');
+                    var rowData = $("#clientTable").getRowData(rowId);
+                    var locationName = rowData["TravellingLocNameHidden"];
+                    if(locationName == "V2 Mumbai" || locationName == "V2 Bangalore" || locationName == "V2 US"){
+                        $(".ClientLocationFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                        $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                        $(".ProspectFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                    }
+                    else if(locationName == "Client Location")
+                    {
                         $(".ProspectFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
                         $(".ClientLocationFields").find("input,select").removeClass("bg-gray").removeAttr("disabled");
                         $(".ClientLocationUpload").find("input,select").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
-                      }
-                      else if(locationName == "Prospect")
-                      {
-                         $(".ClientLocationFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
-                         $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
-                         $(".ProspectFields").find("input,select").removeClass("bg-gray").removeAttr("disabled","disabled");
-                      }
-                      $(".UploadButtons").children().hide();
-                      $("#" + rowId + "_ClientEmailId").parent().next().next().find('input[type="button"]').show();
+                    }
+                    else if(locationName == "Prospect")
+                    {
+                        $(".ClientLocationFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                        $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                        $(".ProspectFields").find("input,select").removeClass("bg-gray").removeAttr("disabled","disabled");
+                    }
+                    $(".UploadButtons").children().hide();
+                    $("#" + rowId + "_ClientEmailId").parent().next().next().find('input[type="button"]').show();
                 },
                 sucessfunc: function (data) {
                 },
@@ -251,8 +254,8 @@
                     isClientRowInAddEditMode = false;
                     var result = $.parseJSON(response.responseText);
                     jQuery("#clientTable").trigger("reloadGrid");
-                     $("#clientTable").jqGrid('showCol', 'ClientInviteLetterName');
-                        $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterNameUpload');
+                    $("#clientTable").jqGrid('showCol', 'ClientInviteLetterName');
+                    $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterNameUpload');
                     if (result.status == true) {
                         $("#AddClientSuccessMessege").dialog({
                             resizable: false,
@@ -292,32 +295,32 @@
                 errorfunc: null,
                 afterrestorefunc: function(){
                     isClientRowInAddEditMode = false;
-                     $("#clientTable").jqGrid('showCol', 'ClientInviteLetterName');
-                        $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterNameUpload');
-                        ClearClientTempDetails();
+                    $("#clientTable").jqGrid('showCol', 'ClientInviteLetterName');
+                    $("#clientTable").jqGrid('hideCol', 'ClientInviteLetterNameUpload');
+                    ClearClientTempDetails();
                 },
                 restoreAfterError: true,
                 mtype: "POST"
             }
         });
-        
+
         if(('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == "") && '@ViewBag.IsLoggedInUser' == "True")
         {
-             $("#clientTablePager_left").css("visibility", "visible");
+            $("#clientTablePager_left").css("visibility", "visible");
         }
         else if('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True" && '@ViewBag.viewDetailClick' == "Ext")
         {
-             $("#clientTablePager_left").css("visibility", "visible");
+            $("#clientTablePager_left").css("visibility", "visible");
         }
         else if('@ViewBag.StageID' == 3 && '@ViewBag.IsLoggedInUser' != "True")
         {
-             $("#clientTablePager_left").css("visibility", "visible");
+            $("#clientTablePager_left").css("visibility", "visible");
         }
         else
         {
             $("#clientTablePager_left").css("visibility", "hidden");
         }
-        
+
         if('@ViewBag.viewDetailClick'=='yes')
         {
             $("#clientTablePager_left").css("visibility", "hidden");
@@ -332,18 +335,18 @@
         else {
             return "<a href=# id=" + rowobject['ClientId'] + " class=EmpLink onClick = LinkClientLetterClick(this," + rowobject['TravelId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
         }
-    }  
-     
+    }
+
     function formatlinkUpload(cellvalue, options, rowobject) {
-           
-            return "<a href=# id=" + rowobject['ClientId'] + " class=EmpLink onClick = LinkClientLetterClickUpload(this," + rowobject['TravelId'] + ") class=EmployeeNameLink >" + 'Upload' + "</a>";
-       
-    }  
-     function uploadClientButton(cellvalue, options, rowobject) {
-            var uplaodBtn = "<input type='button' value='Upload' id=" + rowobject['ClientId'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenClientUploadPopup() />"
-            var fileLbl = "<label id=" + rowobject['ClientId'] + '_UploadedFileName' + "></label>";
-            return uplaodBtn + fileLbl;
-        }
+
+        return "<a href=# id=" + rowobject['ClientId'] + " class=EmpLink onClick = LinkClientLetterClickUpload(this," + rowobject['TravelId'] + ") class=EmployeeNameLink >" + 'Upload' + "</a>";
+
+    }
+    function uploadClientButton(cellvalue, options, rowobject) {
+        var uplaodBtn = "<input type='button' value='Upload' id=" + rowobject['ClientId'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenClientUploadPopup() />"
+        var fileLbl = "<label id=" + rowobject['ClientId'] + '_UploadedFileName' + "></label>";
+        return uplaodBtn + fileLbl;
+    }
 
     function OpenClientUploadPopup() {
         AddClientDetails();
@@ -355,183 +358,183 @@
             type: 'POST',
             data: { ClientId: $('#addTravelsClientDetails #ClientId').val()},
             success: function (data) {
-                
+
             }
         });
     }
 
-     function ChangeTravelLocation(e) {
-      var locationName = e.target[e.target.selectedIndex].text;
-      selectedLocationName = locationName;
+    function ChangeTravelLocation(e) {
+        var locationName = e.target[e.target.selectedIndex].text;
+        selectedLocationName = locationName;
 
-      if(locationName == "V2 Mumbai" || locationName == "V2 Bangalore" || locationName == "V2 US"){
-      $(".ClientLocationFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
-      $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
-      $(".ProspectFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
-      }
-      else if(locationName == "Client Location")
-      {
-        $(".ProspectFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
-        $(".ClientLocationFields").find("input,select").val("").removeClass("bg-gray").removeAttr("disabled");
-        $(".ClientLocationUpload").find("input,select").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
-      }
-      else if(locationName == "Prospect")
-      {
-         $(".ClientLocationFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
-         $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
-         $(".ProspectFields").find("input,select").val("").removeClass("bg-gray").removeAttr("disabled","disabled");
-      }
-      var ID=0;
-      $.each(stringClientList,function(index, value) {
-      if(value.TravellingLocationName == locationName)
-      {
-         ID=value.TravellingLocationId;
-      }
-      });
-      $('#ClientForm #selectedLocationID').val(ID);
+        if(locationName == "V2 Mumbai" || locationName == "V2 Bangalore" || locationName == "V2 US"){
+            $(".ClientLocationFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
+            $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+            $(".ProspectFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
+        }
+        else if(locationName == "Client Location")
+        {
+            $(".ProspectFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
+            $(".ClientLocationFields").find("input,select").val("").removeClass("bg-gray").removeAttr("disabled");
+            $(".ClientLocationUpload").find("input,select").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
+        }
+        else if(locationName == "Prospect")
+        {
+            $(".ClientLocationFields").find("input,select").val("").addClass("bg-gray").attr("disabled","disabled");
+            $(".ClientLocationUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+            $(".ProspectFields").find("input,select").val("").removeClass("bg-gray").removeAttr("disabled","disabled");
+        }
+        var ID=0;
+        $.each(stringClientList,function(index, value) {
+            if(value.TravellingLocationName == locationName)
+            {
+                ID=value.TravellingLocationId;
+            }
+        });
+        $('#ClientForm #selectedLocationID').val(ID);
     }
 
-      function ChangeClientName(e) {
-      var clientName = e.target[e.target.selectedIndex].text;
-      var ID=0;
-      $.each(stringProjectList,function(index, value) {
-      if(value.ProjectName == clientName)
-      {
-         ID=value.ProjectNameID;
-      }
-      });
-      $('#ClientForm #selectedClientID').val(ID);
+    function ChangeClientName(e) {
+        var clientName = e.target[e.target.selectedIndex].text;
+        var ID=0;
+        $.each(stringProjectList,function(index, value) {
+            if(value.ProjectName == clientName)
+            {
+                ID=value.ProjectNameID;
+            }
+        });
+        $('#ClientForm #selectedClientID').val(ID);
     }
 
-      function isTravelLocationSelected(value,colname)
-      {
+    function isTravelLocationSelected(value,colname)
+    {
         if(value == "0")
         {
-          $("#TravelLocationRequiredDialog").dialog({
-	      modal: true,
-	      resizable: false,
-	      height: 'auto',
-	      width: 300,
-          dialogClass: "noclose",
-	      buttons:
-	      {
-	          "Ok": function () {
-	              $(this).dialog("close");
-	          }
-	      }
-	   });
-        $.preventDefault();
+            $("#TravelLocationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
         }
         else
         {
             return [true,""];
         }
-     }//
+    }//
 
-       function isClientNameSelected(value,colname)
-      {
+    function isClientNameSelected(value,colname)
+    {
         if(selectedLocationName == "Client Location" && value == "0")
         {
-          $("#ClientNameRequiredDialog").dialog({
-	      modal: true,
-	      resizable: false,
-	      height: 140,
-	      width: 300,
-          dialogClass: "noclose",
-	      buttons:
-	      {
-	          "Ok": function () {
-	              $(this).dialog("close");
-	          }
-	      }
-	   });
-        $.preventDefault();
+            $("#ClientNameRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
         }
         else
         {
             return [true,""];
         }
-     }//
+    }//
 
-      function clientLocationRequired(value,Colname)
-      {
+    function clientLocationRequired(value,Colname)
+    {
         if(selectedLocationName == "Client Location" && $.trim(value) == "")
         {
-          $("#ClientLocationRequiredDialog span").html("").append(Colname);
-          $("#ClientLocationRequiredDialog").dialog({
-	      modal: true,
-	      resizable: false,
-	      height: 140,
-	      width: 300,
-          dialogClass: "noclose",
-	      buttons:
-	      {
-	          "Ok": function () {
-	              $(this).dialog("close");
-	          }
-	      }
-	   });
-        $.preventDefault();
+            $("#ClientLocationRequiredDialog span").html("").append(Colname);
+            $("#ClientLocationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
         }
         else
         {
             return [true,""];
         }
-     }//
+    }//
 
-     function purposeRequired(value,Colname)
-      {
+    function purposeRequired(value,Colname)
+    {
         if($.trim(value) == "")
         {
-          $("#ClientLocationRequiredDialog span").html("").append(Colname);
-          $("#ClientLocationRequiredDialog").dialog({
-	      modal: true,
-	      resizable: false,
-	      height: 140,
-	      width: 300,
-          dialogClass: "noclose",
-	      buttons:
-	      {
-	          "Ok": function () {
-	              $(this).dialog("close");
-	          }
-	      }
-	   });
-        $.preventDefault();
+            $("#ClientLocationRequiredDialog span").html("").append(Colname);
+            $("#ClientLocationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
         }
         else
         {
             return [true,""];
         }
-     }//
+    }//
 
-     function prospectRequired(value,Colname)
-      {
+    function prospectRequired(value,Colname)
+    {
         if(selectedLocationName == "Prospect" && $.trim(value) == "")
         {
-          $("#ClientLocationRequiredDialog span").html("").append(Colname);
-          $("#ClientLocationRequiredDialog").dialog({
-	      modal: true,
-	      resizable: false,
-	      height: 140,
-	      width: 300,
-          dialogClass: "noclose",
-	      buttons:
-	      {
-	          "Ok": function () {
-	              $(this).dialog("close");
-	          }
-	      }
-	   });
-        $.preventDefault();
+            $("#ClientLocationRequiredDialog span").html("").append(Colname);
+            $("#ClientLocationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
         }
         else
         {
             return [true,""];
         }
-     }//
+    }//
 
-       function isValidClientContactNumber(value, Colname) {
+    function isValidClientContactNumber(value, Colname) {
         var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
         var valid = pattern.test(value);
 
@@ -577,9 +580,9 @@
 
     function isValidClientEmailAddress(value, Colname)
     {
-       var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-       var valid = pattern.test(value);
-       if(selectedLocationName == "Client Location" && $.trim(value) == ""){
+        var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        var valid = pattern.test(value);
+        if(selectedLocationName == "Client Location" && $.trim(value) == ""){
             $("#ClientLocationRequiredDialog span").html("").append(Colname);
             $("#ClientLocationRequiredDialog").dialog({
                 modal: true,
@@ -596,29 +599,29 @@
 	            }
             });
             $.preventDefault();
-     }
-	 else if(selectedLocationName == "Client Location" && !valid) {
-     $("#ClientEmailValid").dialog({
-      modal: true,
-      resizable: false,
-      height: 140,
-      width: 300,
-      title: "Client Information",
-      dialogClass: "noclose",
-      buttons:
-      {
-          "Ok": function () {
-              $(this).dialog("close");
-          }
-      }
-    });
-        $.preventDefault();
-    } 
-    else
-    {
-    return [true,""];
-    }
-  }//
+        }
+        else if(selectedLocationName == "Client Location" && !valid) {
+            $("#ClientEmailValid").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Client Information",
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }//
 </script>
 @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ClientForm" }))
 {
