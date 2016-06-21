@@ -85,8 +85,11 @@
                     data: { employeeId: '@Model.TravelEmployeeId', countryId: $('#ddlCurrentCountry').val() },
                     type: "POST",
                     success: function (results) {
-
-                        if (results.IsVisaValid == true && results.IsVisaExist == true) {
+                        if (results.IsVisaValid == true && results.IsVisaExist == true && results.IsVisaRequired == true) {
+                            jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            $('#hideddlCurrentCountry').hide();
+                        }
+                        else if (results.IsVisaValid == false && results.IsVisaExist == false && results.IsVisaRequired == false) {
                             jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
                             $('#hideddlCurrentCountry').hide();
                         }
@@ -947,13 +950,13 @@
     @if (Model.StageID >= 0 && Model.StageID <= 4)
     {
         <p>
-            Travel Form details have been saved successfully.
+            Travel Form Details have been saved successfully.
         </p>
     }
     else
     {
         <p>
-            Travel Form details have been saved successfully. Please fill the below sections
+            Travel Form Details have been saved successfully. Please fill the below sections
             to complete the request.
         </p>
     }
@@ -975,17 +978,17 @@
 </div>
 <div id="SumitExtConfirmationDialog" style="display: none;">
     <p>
-        Travel Extension deatails form submited successfully.
+        Travel Extension Details form submitted successfully.
     </p>
 </div>
 <div id="TravelSubmitFormRecordSuccess" style="display: none;" title="Travel Details">
     <p>
-        Travel details form submited successfully.
+        Travel Details form submitted successfully.
     </p>
 </div>
 <div id="DateValidateforEmptydialog" style="display: none;">
     <p>
-        Please select travel extension dates and fill Travel Extension Details.
+        Please select Travel Extension Dates and fill Travel Extension Details.
     </p>
 </div>
 <div id="DateValidateforImmigrationDetails" style="display: none;">
@@ -998,7 +1001,7 @@
 </div>
 <div id="accomodationRecordSuccess" style="display: none;">
     <p>
-        Travel Requirement details has been saved successfully.
+        Travel Requirement Details has been saved successfully.
     </p>
 </div>
 <div id="DeleteConfirmationDialog" style="display: none">

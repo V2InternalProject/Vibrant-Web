@@ -4255,10 +4255,12 @@ namespace HRMS.Controllers
                 travel.VisaDetails.CountryID = countryId;
 
                 Session["CountryId"] = countryId;
-                if (CheckPassportValid.IsVisaValid == true && CheckPassportValid.IsVisaExist == true)
-                    return Json(new { IsVisaValid = true, IsVisaExist = true }, JsonRequestBehavior.AllowGet);
+                if (CheckPassportValid.IsVisaValid == true && CheckPassportValid.IsVisaExist == true && CheckPassportValid.IsVisaRequired == true)
+                    return Json(new { IsVisaValid = true, IsVisaExist = true, IsVisaRequired = true }, JsonRequestBehavior.AllowGet);
+                if (CheckPassportValid.IsVisaValid == false && CheckPassportValid.IsVisaExist == false && CheckPassportValid.IsVisaRequired == false)
+                    return Json(new { IsVisaValid = false, IsVisaExist = false, IsVisaRequired = false }, JsonRequestBehavior.AllowGet);
                 else
-                    return Json(new { IsVisaValid = false, IsVisaExist = false }, JsonRequestBehavior.AllowGet);
+                    return Json(new { IsVisaValid = false, IsVisaExist = false, IsVisaRequired = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
