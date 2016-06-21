@@ -1,8 +1,13 @@
 ﻿using HRMS.Models;
+using Microsoft.ApplicationBlocks.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Security;
+using V2.CommonServices.Exceptions;
 
 namespace HRMS.DAL
 {
@@ -4490,18 +4495,55 @@ namespace HRMS.DAL
         {
             tbl_PM_EmployeeVisaDetails tbl_PM_EmployeeVisaDetails = new tbl_PM_EmployeeVisaDetails();
             CheckPassportValid CheckPassportValid = new CheckPassportValid();
-            tbl_PM_EmployeeVisaDetails = dbContext.tbl_PM_EmployeeVisaDetails.Where(x => x.EmployeeID == employeeId && x.CountryID == countryId).FirstOrDefault();
-            if (tbl_PM_EmployeeVisaDetails != null)
+
+            int isVisaRequired = CheckCountryRequiresVisa(countryId);
+            if (isVisaRequired != 0)
             {
-                CheckPassportValid.IsVisaValid = tbl_PM_EmployeeVisaDetails.ValidUpto < DateTime.Now ? false : true;
-                CheckPassportValid.IsVisaExist = true;
-            }
-            else
-            {
+                CheckPassportValid.IsVisaRequired = false;
                 CheckPassportValid.IsVisaExist = false;
                 CheckPassportValid.IsVisaValid = false;
             }
+            else
+            {
+                tbl_PM_EmployeeVisaDetails = dbContext.tbl_PM_EmployeeVisaDetails.Where(x => x.EmployeeID == employeeId && x.CountryID == countryId).FirstOrDefault();
+                if (tbl_PM_EmployeeVisaDetails != null)
+                {
+                    CheckPassportValid.IsVisaValid = tbl_PM_EmployeeVisaDetails.ValidUpto < DateTime.Now ? false : true;
+                    CheckPassportValid.IsVisaExist = true;
+                    CheckPassportValid.IsVisaRequired = true;
+                }
+                else
+                {
+                    CheckPassportValid.IsVisaRequired = true;
+                    CheckPassportValid.IsVisaExist = false;
+                    CheckPassportValid.IsVisaValid = false;
+                }
+            }
             return CheckPassportValid;
+        }
+
+        public int CheckCountryRequiresVisa(int countryId)
+        {
+            string ConnectionString = ConfigurationManager.ConnectionStrings["myConnectionString"].ToString();
+            SqlParameter[] objParam = new SqlParameter[1];
+
+            objParam[0] = new SqlParameter("@CountryID", SqlDbType.Int);
+            objParam[0].Value = countryId;
+
+            try
+            {
+                var count = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "sp_CheckCountryRequiresVisa", objParam);
+                return count != null ? Convert.ToInt32(count) : 0;
+            }
+
+            catch (V2Exceptions ex)
+            {
+                throw;
+            }
+            catch (System.Exception ex)
+            {
+                throw new V2Exceptions(ex.ToString(), ex);
+            }
         }
     }
 }
