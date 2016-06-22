@@ -1,0 +1,56 @@
+﻿@model HRMS.Models.ClientViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Travel/ClientDetails.js" type="text/javascript"></script>
+@using (Html.BeginForm("UploadClientFileDetails", "Travel", FormMethod.Post, new { @id = "addTravelsClientDetails" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(Model => Model.ClientId, new { @id = "ClientId" });
+    <div class="mrgnT25">
+    <div class="formrow clearfix">
+            <div class="LabelDiv">
+              @Html.Label("Client Invite Letter")
+            </div>
+            <div class="InputDiv positionR">
+                   <input type="file" name="doc" id="clientInviteLetter" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" style="width:100px"/>
+                <div class="BrowserVisible">
+                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                        id="FalseClientFileUploadTxt" class="FileField" value="No files selected" />
+                </div>
+                <p>
+                     <span id="ClientLetterUploadError" class="field-validation-error"></span>
+                    @Html.HiddenFor(model => model.ClientInviteLetterName, new { id = "clientLetter" })
+                </p>
+            </div>
+        </div>
+        
+    </div> 
+    <div id="ClientInviteLetterUploadError" title="Error" style="display: none">
+        <p>
+            Please check the file you are uploading
+        </p>
+        <p>
+            '.exe' file is not allowed to upload
+        </p>
+    </div>      	
+   <div class="mrgnB18 floatR">
+            <input id="saveClientDetails" type="submit" value="Save" class="ButtonGray" />
+            <input id="resetClient" type="button" value="Reset" onclick="resetClientDetails()" class="ButtonGray " />
+        </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#saveClientDetails').off('click').on('click', function () {
+            if ($('#clientInviteLetter').val() != "")
+                SaveClientDetails();
+            else {
+                $("#ClientLetterUploadError").text("Please select File to upload").show();
+                return false;
+            }
+
+        });
+
+    });
+
+</script>

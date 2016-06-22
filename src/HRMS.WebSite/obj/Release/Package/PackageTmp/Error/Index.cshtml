@@ -1,0 +1,24 @@
+﻿@model HRMS.Models.ErrorViewModel
+@{
+    ViewBag.Title = "Error Occurred";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+
+}
+@section HeaderLinks{
+@Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+@if (ViewBag.ErrorCode != null)
+{
+@*    <span>Error is : <b>@HRMS.Resources.Errors.ResourceManager.GetString(ViewBag.ErrorCode)</b></span>*@
+    <span style="font-style:italic">Error is : <b style="font-size:larger">@ViewBag.ErrorCode</b></span>
+}
+else
+{
+    <span><b>Unexpected Error Occurred!</b></span>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#frmSearchEmployeeLayout").hide();
+    });
+</script>

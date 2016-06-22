@@ -1,0 +1,306 @@
+﻿@model HRMS.Models.EmployeeChangesApprovalViewModel
+@{
+    ViewBag.Title = "Approvals";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+
+    $(document).ready(function () {
+     $("#txtSearchTextApproval").autocomplete({
+        source: function (request, response) {
+            $.getJSON('@Url.Action("SearchEmployeeAutoSuggest", "Approvals")', { term: request.term }, function (data) {
+                response($.map(data, function (el) {
+
+                    var emplyeeInformation = el.CreatedBy + " {" + el.Module + "}";
+                    return {
+                        label: emplyeeInformation,
+                        value: el.CreatedBy
+
+                    };
+
+                }));
+            });
+        }
+    });
+
+        $('#employeeApprovalTable').on('click', ".employee-module-link-class", function () {
+
+            LinkClick($(this));
+        });
+
+        $('#employeeApprovalOnholdTable').on('click', ".employee-module-link-class", function () {
+            LinkClick($(this));
+        });
+
+        // Set up the jquery grid
+        $("#employeeApprovalTable").jqGrid({
+            url: '@Url.Action("EmployeeApprovalsLoadGrid", "Approvals")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { term: function () { return $("#txtSearchTextApproval").val(); }, Module: function () { return "NewApproval"; } },
+            // Specify the column names
+            colNames: ["Employee ID", "Name", "New Entries Module"],
+            // Configure the columns
+            colModel:
+            [
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" },
+                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left" },
+                { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatLink }
+
+            ],
+            width: 500,
+            height: 300,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#employeeApprovalTablePager"),
+            rowNum: 20,
+            loadonce: true,
+            sortable: true,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            //caption: "Employees - Changed Module For New Entries"
+            gridComplete: function () {
+                var count = jQuery("#employeeApprovalTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_employeeApprovalTable').hide();
+                }
+                else {
+                    $('#gbox_employeeApprovalTable').show();
+                    if (count > 20) {
+                        $('#employeeApprovalTablePager').show();
+                    }
+                    else {
+                        $('#employeeApprovalTablePager').hide();
+                    }
+                }
+                //$('#totalcount').text("Total Records : " + count);
+            }
+        }).navGrid("#employeeApprovalTablePager",
+            { search: false, refresh: true, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+        $("#employeeApprovalOnholdTable").jqGrid({
+            url: '@Url.Action("EmployeeApprovalsLoadGrid", "Approvals")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { term: function () { return $("#txtSearchTextApproval").val(); }, Module: function () { return "OnHoldApproval"; } },
+            // Specify the column names
+            colNames: ["Employee ID", "Name", "Module"],
+            // Configure the columns
+            colModel:
+            [
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" },
+                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left" },
+                 { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatOnholdLink }
+            ],
+            width: 500,
+            height: 300,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#employeeApprovalOnholdTablePager"),
+            rowNum: 20,
+            loadonce: true,
+            sortable: true,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            //caption: "Employees - Changed Module For Onhold Entries"
+
+        }).navGrid("#employeeApprovalOnholdTablePager",
+            { search: false, refresh: true, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+         $("#txtSearchTextApproval").keypress(function (e) {
+        if (e.keyCode == 13) {
+            searchterm = $("#txtSearchTextApproval").val();
+            jQuery("#employeeApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            jQuery("#employeeApprovalOnholdTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+
+        }
+    });
+
+    });          //end document.ready
+
+    function FormatLink(cellvalue, options, rowobject) {
+
+        return "<a href=# id=" + rowobject['EmployeeID'] + " class='employee-module-link-class' >New " + cellvalue + "</a>";
+
+    }
+
+    function FormatOnholdLink(cellvalue, options, rowobject) {
+        return "<a href=# id=" + rowobject['EmployeeID'] + " class='employee-module-link-class' >OnHold " + cellvalue + "</a>";
+    }
+
+    function LinkClick(event) {
+        $("#CommentsErrorMessage").hide();
+        var selectedEmployeeId = event.attr("id");
+        var selectedModule = event.text();
+        $('#txtChildComments').val("");
+        $('#txtOnholdChildComments').val("");
+        $("#SelectedParentID").val(selectedEmployeeId);
+        $("#SelectedParentModule").val(selectedModule);
+
+        if (selectedModule == "New Certification Details" || selectedModule == "OnHold Certification Details") {
+            $("#txtCertificationComments").val("");
+            jQuery("#employeeCertificateDetailTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#employeeCertificateDetailsDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1150,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            if (selectedModule == "New Certification Details") {
+                $("#txtCertificationComments").val("");
+            }
+            $('#employeeCertificateDetailsDialog').dialog('open');
+
+        } else if (selectedModule == "New Qualification Details") {
+
+            jQuery("#AdminApprovalQualificationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+
+            $('#adminQualificationApprovalDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1150,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            $('#adminQualificationApprovalDialog').dialog('open');
+            $('#txtAdminApporvalComments').val('');
+
+        } else if (selectedModule == "OnHold Qualification Details") {
+            $("#txtAdminApporvalComments").val('');
+            jQuery("#AdminApprovalQualificationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#adminQualificationApprovalDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1150,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            $('#adminQualificationApprovalDialog').dialog('open');
+
+        }
+        else if (selectedModule == "New Skill Details" || selectedModule == "OnHold Skill Details") {
+            $("#txtSkillComments").val("");
+            jQuery("#employeeSkillDetailTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#employeeSkillDetailsDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1000,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            if (selectedModule == "New Skill Details") {
+                $("#txtSkillComments").val("");
+            }
+            $('#employeeSkillDetailsDialog').dialog('open');
+
+        }
+        else if (selectedModule == "New Personal Details" || selectedModule == "New Residential Details") {
+            jQuery("#employeeChangeDetailTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#employeeChangeDetailDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1000,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            $('#employeeChangeDetailDialog').dialog('open');
+            $('#DivPRNew').show();
+            $('#DivPROnhold').hide();
+        }
+        else if (selectedModule == "OnHold Personal Details" || selectedModule == "OnHold Residential Details") {
+            $("#txtOnholdChildComments").val('');
+            jQuery("#employeeChangeOnholdDetailTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#employeeChangeDetailDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1000,
+                height: 'auto',
+                resizable: false,
+                title: "Employee Change Details"
+            });
+            $('#employeeChangeDetailDialog').dialog('open');
+            $('#DivPROnhold').show();
+            $('#DivPRNew').hide();
+        }
+    }
+</script>
+<section class="ConfirmationContainer Container TransparentMainbody clearfix">
+    <div class="FixedHeader clearfix">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Approvals</h2>
+        </div>
+        <nav class="sub-menu-colored">
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody clearfix">
+        <div class="FormContainerBox clearfix ProjectIndexFliter">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        <label id="lblsearch">@HRMS.Resources.EmployeeMessages.SearchEmployeeLabel.ToString()</label></div>
+                    <div class="InputDiv">
+                        <input type="text" name="searchValueApproval" id="txtSearchTextApproval" class="srchinput" /></div>
+                </div>
+            </div>
+        </div>
+        <div class="InnerContainer mrgnT28">
+            <div class="globalApprovalLeft tablestyle3">
+                <table id="employeeApprovalTable" class="scroll">
+                </table>
+                <div id="employeeApprovalTablePager">
+                </div>
+            </div>
+            <div class="globalApprovalRight tablestyle3">
+                <table id="employeeApprovalOnholdTable" class="scroll">
+                </table>
+                <div id="employeeApprovalOnholdTablePager">
+                </div>
+            </div>
+            <div id="employeeChangeDetailDialog" style="display: none">
+                @Html.Partial("_EmployeeChangeDetails", Model)
+            </div>
+            <div id="employeeCertificateDetailsDialog" style="display: none">
+                @Html.Partial("_EmployeeCertificateDetails", Model)
+            </div>
+            <div id="employeeSkillDetailsDialog" style="display: none">
+                @Html.Partial("_SkillChangeDetails", Model)
+            </div>
+            <div id="adminQualificationApprovalDialog" style="display: none">
+                @Html.Partial("_AdminQualificationApproval")
+            </div>
+            <div>
+                @Html.HiddenFor(m => m.EmployeeID, new { @id = "SelectedParentID" })
+                @Html.HiddenFor(m => m.Module, new { @id = "SelectedParentModule" })
+            </div>
+        </div>
+    </div>
+    @*<div id="loading" style="display: none" title="Please Wait....">
+    <center class="LoadingWrap">
+          <img class="loadImg" src="@Url.Content("~/Images/loading_animation.gif")" style="width: 40px; height: 40px;" alt="Loading..." />
+    </center>
+</div>
+*@
+</section>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="test" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="ApplicationServices-Web.config Connection String" description="" value="Data Source=192.168.8.27;Initial Catalog=V2tools_UAT;Persist Security Info=True;User ID=sa;Password=mail_123;MultipleActiveResultSets=True;Application Name=EntityFramework" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ApplicationServices']/@connectionString" />
+  </parameter>
+  <parameter name="ConnectionString-Web.config Connection String" description="" value="Data Source=192.168.8.27;Initial Catalog=Orbitphase2_UAT;Persist Security Info=True;User ID=sa;Password=mail_123;MultipleActiveResultSets=True;Application Name=EntityFramework" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ConnectionString']/@connectionString" />
+  </parameter>
+  <parameter name="HRMSDBEntities-Web.config Connection String" description="" value="metadata=res://*/HRMS.csdl|res://*/HRMS.ssdl|res://*/HRMS.msl;provider=System.Data.SqlClient;provider connection string=&quot; data source=192.168.8.27;initial catalog=V2intranet_UAT;user id=sa;password=mail_123;multipleactiveresultsets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='HRMSDBEntities']/@connectionString" />
+  </parameter>
+  <parameter name="myConnectionString-Web.config Connection String" description="" value="Server=192.168.8.27;Database=V2Intranet_UAT;uid=sa;pwd=mail_123;Connect Timeout=4000; pooling='true';  Max Pool Size=400;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='myConnectionString']/@connectionString" />
+  </parameter>
+  <parameter name="PMS3_HRMSDBEntities-Web.config Connection String" description="" value="metadata=res://*/PMS3HRMS.csdl|res://*/PMS3HRMS.ssdl|res://*/PMS3HRMS.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=192.168.8.27;initial catalog=PMS3;User id=sa;password=mail_123;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='PMS3_HRMSDBEntities']/@connectionString" />
+  </parameter>
+  <parameter name="PMSDbEntities-Web.config Connection String" description="" value="metadata=res://*/PMSData.csdl|res://*/PMSData.ssdl|res://*/PMSData.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=192.168.8.27;initial catalog=Orbitphase2_UAT;persist security info=True;user id=sa;password=mail_123;multipleactiveresultsets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='PMSDbEntities']/@connectionString" />
+  </parameter>
+  <parameter name="V2toolsDBEntities-Web.config Connection String" description="" value="metadata=res://*/V2Tools.csdl|res://*/V2Tools.ssdl|res://*/V2Tools.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=192.168.8.27;initial catalog=V2tools_UAT;persist security info=True;user id=sa;password=mail_123;multipleactiveresultsets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='V2toolsDBEntities']/@connectionString" />
+  </parameter>
+  <parameter name="WSEMDBEntities-Web.config Connection String" description="" value="metadata=res://*/WSEM.csdl|res://*/WSEM.ssdl|res://*/WSEM.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=192.168.8.27;initial catalog=V2Intranet_UAT;user id=sa;password=mail_123;multipleactiveresultsets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\mahesh\ \.F\\VB\\src\\HRMS\.WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='WSEMDBEntities']/@connectionString" />
+  </parameter>
+</parameters>

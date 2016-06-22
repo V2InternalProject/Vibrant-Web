@@ -1,0 +1,123 @@
+﻿@model HRMS.Models.ResourceAllocationViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Resource Allocation View";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix NoTitleGridsContainer SemContainer">
+    <div class="clearfix">
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Employee Name:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix clearL">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Sort By:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>Year</option>
+                        <option>Quarter</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>Year</option>
+                        <option>Quarter</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Year:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>2013</option>
+                        <option>2014</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tablestyle3">
+        <table id="jqResourceAlloViewTable">
+        </table>
+    </div>
+    <div id="jqResourceAlloViewTablePager">
+    </div>
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+            $("#jqResourceAlloViewTable").jqGrid({
+            // Ajax related configurations
+
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: mydata,//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee Name", "Jan", "Feb", "March", "Average"],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeName", index: "EmployeeName", align: "left"}, //, formatter: returnEmplyeeLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'}
+                { name: "Jan", index: "Jan", align: "left"},
+                { name: "Feb", index: "Feb", align: "left"},
+                { name: "March", index: "March", align: "left" },
+                { name: "Avg", index: "Avg", align: "left" },
+
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqResourceAlloViewTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Resource Allocation",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqResourceAlloViewTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+      var mydata = [ {EmployeeName : "<a href='/Resource/ResourceAllocationDashboard' class='clearB'>Nitin</a>" }];
+
+     for(var i=0;i<=mydata.length;i++)
+     {
+            jQuery("#jqResourceAlloViewTable").addRowData(i, mydata[i]);
+            }//function
+     });
+</script>

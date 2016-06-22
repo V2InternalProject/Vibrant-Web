@@ -1,0 +1,142 @@
+
+2016-02-25 @ 11:46:17  Informational , App start Global.asax App_Start  
+2016-02-25 @ 11:46:22  Informational , App start finished Global.asax App_Start  
+2016-02-25 @ 11:47:17  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:48:17  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:50:49  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:51:10  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:53:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:54:48  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 11:55:53  FATAL ERROR   , Index was outside the bounds of the array. SignInSignOutDAL.cs GetSISOForAdminApproval     at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+2016-02-25 @ 11:56:17  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 1006
+   at V2.Orbit.BusinessLayer.SignInSignOutBOL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\BusinessLayer\SignInSignOutBOL.cs:line 398
+   at HRMS.Orbitweb.AdminApproval.BindSISOData() in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 815
+   at HRMS.Orbitweb.AdminApproval.ddlStatus_SelectedIndexChanged(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 626
+   at System.Web.UI.WebControls.ListControl.OnSelectedIndexChanged(EventArgs e)
+   at System.Web.UI.WebControls.DropDownList.RaisePostDataChangedEvent()
+   at System.Web.UI.WebControls.DropDownList.System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent()
+   at System.Web.UI.Page.RaiseChangedEvents()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_adminapproval_aspx.ProcessRequest(HttpContext context) in c:\Users\rahul.r\AppData\Local\Temp\Temporary ASP.NET Files\root\7efda58e\547b78e6\App_Web_zwtxec3a.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-25 @ 11:56:17  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-25 @ 11:58:46  FATAL ERROR   , Index was outside the bounds of the array. SignInSignOutDAL.cs GetSISOForAdminApproval     at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+2016-02-25 @ 11:58:57  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 1006
+   at V2.Orbit.BusinessLayer.SignInSignOutBOL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\BusinessLayer\SignInSignOutBOL.cs:line 398
+   at HRMS.Orbitweb.AdminApproval.BindSISOData() in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 815
+   at HRMS.Orbitweb.AdminApproval.ddlStatus_SelectedIndexChanged(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 626
+   at System.Web.UI.WebControls.ListControl.OnSelectedIndexChanged(EventArgs e)
+   at System.Web.UI.WebControls.DropDownList.RaisePostDataChangedEvent()
+   at System.Web.UI.WebControls.DropDownList.System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent()
+   at System.Web.UI.Page.RaiseChangedEvents()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_adminapproval_aspx.ProcessRequest(HttpContext context) in c:\Users\rahul.r\AppData\Local\Temp\Temporary ASP.NET Files\root\7efda58e\547b78e6\App_Web_zwtxec3a.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-25 @ 11:58:57  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-25 @ 11:59:28  FATAL ERROR   , Index was outside the bounds of the array. SignInSignOutDAL.cs GetSISOForAdminApproval     at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+2016-02-25 @ 11:59:32  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 985
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.SignInSignOutDAL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\DataLayer\SignInSignOutDAL.cs:line 1006
+   at V2.Orbit.BusinessLayer.SignInSignOutBOL.GetSISOForAdminApproval(Int32 StatusID, String FromDate, String ToDate, Int32 UserID) in d:\rahul\New folder\src\BusinessLayer\SignInSignOutBOL.cs:line 398
+   at HRMS.Orbitweb.AdminApproval.BindSISOData() in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 815
+   at HRMS.Orbitweb.AdminApproval.ddlStatus_SelectedIndexChanged(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 626
+   at System.Web.UI.WebControls.ListControl.OnSelectedIndexChanged(EventArgs e)
+   at System.Web.UI.WebControls.DropDownList.RaisePostDataChangedEvent()
+   at System.Web.UI.WebControls.DropDownList.System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent()
+   at System.Web.UI.Page.RaiseChangedEvents()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_adminapproval_aspx.ProcessRequest(HttpContext context) in c:\Users\rahul.r\AppData\Local\Temp\Temporary ASP.NET Files\root\7efda58e\547b78e6\App_Web_zwtxec3a.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-25 @ 11:59:32  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-02-25 @ 15:30:48  Informational , App start Global.asax App_Start  
+2016-02-25 @ 15:30:58  Informational , App start finished Global.asax App_Start  
+2016-02-25 @ 15:31:26  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 15:37:16  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'images' was not found on controller 'HRMS.Controllers.ExitController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-25 @ 15:37:16  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-25 @ 15:37:34  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 15:37:55  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'images' was not found on controller 'HRMS.Controllers.ExitController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-25 @ 15:37:55  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-02-25 @ 16:30:13  Informational , App start Global.asax App_Start  
+2016-02-25 @ 16:30:17  Informational , App start finished Global.asax App_Start  
+2016-02-25 @ 16:31:25  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-25 @ 17:04:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-26 @ 11:24:26  Informational ,  SignInSignOut.aspx.cs   User IP: ::1

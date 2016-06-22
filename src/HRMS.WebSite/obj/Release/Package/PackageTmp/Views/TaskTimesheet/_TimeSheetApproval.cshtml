@@ -1,0 +1,562 @@
+﻿@model HRMS.Models.TimeSheetApprovalModel
+@{
+    ViewBag.Title = "TimeSheetApproval";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var btnClicked = "";
+        var timeSheetID = "";
+        var ProjectIdTemp = "";
+        var ResourceIDTemp = "";
+        var TimeSheetIDs = "";
+
+        var approverData = [];
+        if ($('#TimeSheetApprovalForm #SelectedStatus').val() == "" || $('#TimeSheetApprovalForm #SelectedStatus').val() == null)
+            $('#TimeSheetApprovalForm #SelectedStatus').val($('#TimeSheetApprovalStatusID').val());
+        var currentDate = new Date();
+        var currentDate1 = new Date();
+        var lastWeekDate = new Date(currentDate1.setDate(currentDate1.getDate() - 7));
+        $('#StartDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true
+        });
+
+        $('#EndDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true
+        });
+        $("#StartDate").datepicker("setDate", lastWeekDate);
+        $("#EndDate").datepicker("setDate", currentDate);
+
+        // TypeAhead for Select Project
+
+        $("#TimeSheetApprovalProjectID").keyup(function () {
+            if (this.value.trim() == null || this.value.trim() == '') {
+                ProjectIdTemp = "";
+                $("#jqTimeSheetApprovalTable").jqGrid('clearGridData');
+                $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+        });
+
+        $("#TimeSheetApprovalProjectID").autocomplete({
+            source: function (request, response) {
+                var id = '@ViewBag.EmployeeId';
+
+                $.getJSON('@Url.Action("ProjectNameAutoSuggestForTimesheetApproval", "TaskTimesheet")', { term: request.term, EmployeeCode: id }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.ProjectID + "{" + el.ProjectName + "}";
+                        return {
+                            label: el.ProjectName,
+                            value: el.ProjectName,
+                            projectId: el.ProjectID
+                        };
+
+                    }));
+
+
+                });
+            },
+            select: function (event, ui) {
+                //debugger;
+                ProjectIdTemp = ui.item.projectId;
+                $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+        });
+
+        // TypeAhead for Select Resource
+        $("#TimeSheetApprovalResourceID").keyup(function () {
+            if (this.value.trim() == null || this.value.trim() == '') {
+                ResourceIDTemp = "";
+                $("#jqTimeSheetApprovalTable").jqGrid('clearGridData');
+                $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+        });
+
+        
+        $("#TimeSheetApprovalResourceID").autocomplete({
+            source: function (request, response) {
+                var id = '@ViewBag.EmployeeId1';
+                //debugger;
+                $.getJSON('@Url.Action("ProjectNameAutoSuggestForTimesheetApproval1", "TaskTimesheet")', { term: request.term, EmployeeID: id }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.ResourceID + "{" + el.ResourceName + "}";
+                        return {
+                            label: el.ResourceName,
+                            value: el.ResourceName,
+                            resourceId: el.ResourceID
+                        };
+
+                    }));
+
+
+                });
+            },
+            select: function (event, ui) {
+                //debugger;
+                ResourceIDTemp = ui.item.resourceId;
+                $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+        });
+
+        $("#jqTimeSheetApprovalTable").jqGrid({
+            url: '@Url.Action("TimeSheetApprovalLoadGrid", "TaskTimesheet")',
+            postData: {
+                ProjectID: function () { return ProjectIdTemp },
+                ResourceID: function () { return ResourceIDTemp },
+                StatusID: function () { return $('#TimeSheetApprovalForm #SelectedStatus').val() },
+                StartDate: function () { return $('#TimeSheetApprovalForm #StartDate').val() },
+                EndDate: function () { return $('#TimeSheetApprovalForm #EndDate').val() }
+            },
+            datatype: "json",
+            mtype: "POST",
+            colNames: ["", "", "Project", "", "Resource", "Date", "Task", "Start Date", "End Date", "Hours", "Units", "Status", "Comments", "Approver Comments", "Select"],
+
+            colModel: [
+                { name: "TimeSheetID", index: "TimeSheetID", hidden: true },
+                 { name: "ProjectID", index: "ProjectID", hidden: true },
+                 { name: "ProjectName", index: "ProjectName", width: 60, sortable: true, align: "left" },
+                 { name: "ResourceID", index: "ResourceID", hidden: true },
+                 { name: "ResourceName", index: "ResourceName", width: 80, sortable: true, align: "left" },
+                 { name: "Date", index: "Date", width: 42, sortable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, align: "left" },
+                 { name: "Task", index: "Task", width: 80, sortable: true, align: "left" },
+                 { name: "StartDate", index: "StartDate", width: 42, sortable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, align: "left" },
+                 { name: "EndDate", index: "EndDate", width: 42, sortable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, align: "left" },
+                 { name: "Hours", index: "Hours", align: "left", width: 21, sortable: true, align: "left" },
+                 { name: "Units", index: "Units", align: "left", width: 21, sortable: true, align: "left" },
+                 { name: "Status", index: "Status", align: "left", width: 28, sortable: true },
+                 { name: "Comments", index: "Comments", width: 80, sortable: true, align: "left" },
+                 { name: "ApproverComments", index: "ApproverComments", editable: true, width: 85, align: "left", formatter: CommentForApprover, sortable: true },
+                 {
+                     name: "Select",
+                     index: "Select",
+                     width: 20,
+                     align: "center",
+                     formatter: SelectItemForApprover,
+                     sortable: false,
+                     align: "left"
+                 }
+            ],
+            width: 700,
+            shrinkToFit: true,
+            toppager: false,
+            loadonce: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqTimeSheetApprovalTablePager"),
+            rowNum: 10,
+            rowList: [5, 10, 20],
+            viewrecords: true,
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("TimeSheetApprovalLoadGrid", "TaskTimesheet")',
+            gridComplete: function () {
+
+            },
+            onCellSelect: function (rowid, iCol) {
+
+            }
+        }).navGrid("#jqTimeSheetApprovalTablePager",
+                { search: false, refresh: false, add: false, edit: false, del: false }
+            );
+
+        function SelectItemForApprover(cellValue, options, rowdata, action) {
+            if (rowdata['Status'] == "Submit") {
+                var A = '<input type="checkbox" name=' + rowdata['TimeSheetID'] + ' class="chkForApprover" id=Chk_' + rowdata['TimeSheetID'] + '>';
+                var B = '<label for=Chk_' + rowdata['TimeSheetID'] + ' class="LabelForCheckbox"></label>';
+                return A + B;
+            }
+            else
+                return "";
+        }
+
+        function CommentForApprover(cellValue, options, rowdata, action) {
+            if (rowdata['Status'] == "Submit") {
+                return '<textarea class="clsAppComments"  cols="18" id=AppCmnts_' + rowdata['TimeSheetID'] + '></textarea>';
+            }
+            else
+                return rowdata['ApproverComments'];
+        }
+
+        //$("#TimeSheetApprovalProjectID").change(function () {
+        //    $('#TimeSheetApprovalForm #SelectedProjectID').val($("#TimeSheetApprovalProjectID").val());
+        //    $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        //});
+
+        //$("#TimeSheetApprovalResourceID").change(function () {
+        //    $('#TimeSheetApprovalForm #SelectedResourceID').val($("#TimeSheetApprovalResourceID").val());
+        //    $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        //});
+        $("#TimeSheetApprovalResourceID").change(function () {
+            //debugger;
+            $('#TimeSheetApprovalForm #SelectedResourceID').val($("#TimeSheetApprovalResourceID").val());
+            $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+        //$("#generateInvoiceForm #SelectedProjectID").val($('#IRGeneratorProjectDD :selected').val());
+
+        $("#TimeSheetApprovalStatusID").change(function () {
+            if ($('#TimeSheetApprovalStatusID option:selected').text() == "Approved" || $('#TimeSheetApprovalStatusID option:selected').text() == "Rejected")
+                $("#jqTimeSheetApprovalTable").jqGrid('hideCol', 'Select');
+            else
+                $("#jqTimeSheetApprovalTable").jqGrid('showCol', 'Select');
+            $('#TimeSheetApprovalForm #SelectedStatus').val($("#TimeSheetApprovalStatusID").val());
+            $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#StartDate").change(function () {
+            //debugger;
+
+            if (Date.parse($("#StartDate").val()) > Date.parse($("#EndDate").val())) {
+
+                $(".ui-datepicker").hide();
+                $("#StartDateValidationMessage").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    dialogClass: "noclose",
+                    open: function () {
+                        $('#loading').parent().css('background-color', 'transparent');
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                        $(this).parent().css('z-index', '33');
+                    },
+                    buttons:
+                         {
+                             "Ok": function () {
+                                 $(this).dialog("close");
+                             }
+                         }
+                });
+                // $("#StartDate").datepicker("setDate", currentDate);
+            }
+            else
+                $('#TimeSheetApprovalForm #SelectedStartDate').val($("#StartDate").val());
+            $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#EndDate").change(function () {
+            if (Date.parse($("#StartDate").val()) > Date.parse($("#EndDate").val())) {
+
+                $(".ui-datepicker").hide();
+                $("#EndDateValidationMessage").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    dialogClass: "noclose",
+                    open: function () {
+                        $('#loading').parent().css('background-color', 'transparent');
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                        $(this).parent().css('z-index', '33');
+                    },
+                    buttons:
+                         {
+                             "Ok": function () {
+                                 $(this).dialog("close");
+                             }
+                         }
+                });
+                //$("#EndDate").datepicker("setDate", currentDate);
+            }
+            else
+                $('#TimeSheetApprovalForm #SelectedEndDate').val($("#EndDate").val());
+            $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $('#btnTimeSheetApprove').click(function () {
+            btnClicked = "Approve";
+            UpdateTimeSheetApprovalData(btnClicked);
+        });
+        $('#btnTimeSheetReject').click(function () {
+            btnClicked = "Reject";
+            UpdateTimeSheetApprovalData(btnClicked);
+        });
+
+        function UpdateTimeSheetApprovalData(btnClicked) {
+            if ($(".chkForApprover:checked").length < 1) {
+                $("#NoItemCheckedValidationMessage").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    dialogClass: "noclose",
+                    buttons:
+              {
+                  "Ok": function () {
+                      $(this).dialog("close");
+                  }
+              }
+                });
+                $.preventDefault();
+                return false;
+            }
+            var ApprovalData = "";
+            approverData = [];
+            $(".chkForApprover:checked").each(function (i, val) {
+                if (this.checked) {
+                    if (btnClicked == 'Reject') {
+                        if ($(this).parent().prev().find('textarea').eq(0).val() == '') {
+                            $("#RejectValidationMessage").dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                dialogClass: "noclose",
+                                buttons:
+                                        {
+                                            "Ok": function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                            });
+                            $.preventDefault();
+                            return false;
+                        }
+                    }
+                    ApprovalData = {
+                        TimeSheetID: $(val).attr("name"),
+                        ApproverComments: $(this).parent().prev().find('textarea').eq(0).val(),
+                        ResourceID: $(this).parent().parent().find('td:eq(3)').text()
+                    };
+                    approverData.push(ApprovalData);
+                }
+            }); //end of each function
+            DisplayLoadingDialog();
+            $.ajax({
+                url: '@Url.Action("UpdateTimeSheetApprovalStatus", "TaskTimesheet")',
+                data: JSON.stringify({
+                    AppData: approverData,
+                    ButtonClicked: btnClicked
+                }),
+                type: 'post',
+                datatype: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.isApproved == "Approve")
+                        $("#TimeSheetApprovalSuccessMessage").dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            dialogClass: "noclose",
+                            buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                        });
+                    else
+                        $("#TimeSheetRejectedSuccessMessage").dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            dialogClass: "noclose",
+                            buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                        });
+                    $("#jqTimeSheetApprovalTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                },
+                error: function (result) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    DisplayErrorDialog();
+                }
+            }); //end of ajax call
+        } //end of UpdateTimeSheetApprovalData function
+
+        $('#selectAllForTimeSheetApproval').on('click', function () {
+            $(".chkForApprover").each(function (i, val) {
+                $(".chkForApprover").attr("checked", true);
+            });
+        });
+
+        $('#DeselectAllForTimeSheetApproval').on('click', function () {
+            $(".chkForApprover").each(function (i, val) {
+                $(".chkForApprover").attr("checked", false);
+            });
+        });
+
+        $('#btnExportToExcel').click(function () {
+            debugger;
+            var Currentcount = jQuery("#jqTimeSheetApprovalTable").jqGrid('getGridParam', 'records');
+            if (Currentcount == 0) {
+                $("#TableGridError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            var ProjectID = ProjectIdTemp;
+            var ResourceID = $('#TimeSheetApprovalForm #SelectedResourceID').val();
+            var StatusID = $('#TimeSheetApprovalForm #SelectedStatus').val();
+            var StartDate = $('#TimeSheetApprovalForm #StartDate').val();
+            var EndDate = $('#TimeSheetApprovalForm #EndDate').val();
+            var rows = jQuery("#jqTimeSheetApprovalTable").jqGrid('getGridParam', 'records');
+            var page = jQuery("#jqTimeSheetApprovalTable").jqGrid('getGridParam', 'page');
+            TimeSheetIDs = "";
+            $(".chkForApprover:checked").each(function (i, val) {
+                if (this.checked) {
+                    TimeSheetIDs = TimeSheetIDs + $(val).attr("name") + ",";
+                }
+            });
+            window.location.href = '@Url.Action("ExportToExcelTimeSheetApprovalData", "TaskTimesheet")?ProjectID=' + ProjectID + "&ResourceID=" + ResourceID + "&StatusID=" + StatusID + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&TimeSheetIds=" + TimeSheetIDs + "&page=" + page + "&rows=" + rows;
+        });
+
+
+
+    });            //end of ready function
+
+
+
+</script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                TimeSheet
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "TimeSheetApprovalForm" }))
+        {
+            @Html.HiddenFor(x => x.SelectedProjectID)
+            @Html.HiddenFor(x => x.SelectedResourceID)
+            @Html.HiddenFor(x => x.SelectedStatus)
+            @Html.HiddenFor(x => x.StartDate, new { @id = "SelectedStartDate" })
+            @Html.HiddenFor(x => x.EndDate, new { @id = "SelectedEndDate" })
+
+            <div class="clearfix FormContainerBox">
+                <div class="colOneThird">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            @Html.Label("Select Project:")
+                        </div>
+                        <div class="InputDiv">
+                            @*@Html.DropDownListFor(x => x.SelectedProjectID, new SelectList(Model.ProjectList, "ProjectID", "ProjectName"), "Select", new { @id = "TimeSheetApprovalProjectID" })*@
+                            <input type="text" name="searchValue" id="TimeSheetApprovalProjectID" class="srchinput" />
+                        </div>
+                    </div>
+                </div>
+                <div class="colOneThird">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            @Html.Label("Select Resource:")
+                        </div>
+                        <div class="InputDiv">
+                            @*@Html.DropDownListFor(x => x.SelectedResourceID, new SelectList(Model.ResourceList, "ResourceID", "ResourceName"), "Select", new { @id = "TimeSheetApprovalResourceID" })*@
+                            <input type="text" name="searchValue" id="TimeSheetApprovalResourceID" class="srchinput" />
+                        </div>
+                    </div>
+                </div>
+                <div class="colOneThird">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            @Html.Label("Select Status:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.SelectedStatus, new SelectList(Model.StatusList, "StatusID", "Status", 1059), "Select", new { @id = "TimeSheetApprovalStatusID" })
+                        </div>
+                    </div>
+                </div>
+                <div class="colOneThird">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            @Html.Label("Start Date :")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.StartDate, String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="colOneThird">
+                    <div class="clearfix formrow">
+                        <div class="LabelDiv">
+                            @Html.Label("End Date :")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.EndDate, String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ProjectApprovalDiv">
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" value="Clear All" class="ButtonGray" id="DeselectAllForTimeSheetApproval" />
+                    <input type="button" value="Select All" class="ButtonGray" id="selectAllForTimeSheetApproval" />
+                    <input type="button" value="Approve" class="ButtonGray" id="btnTimeSheetApprove" />
+                    <input type="button" value="Reject" class="ButtonGray mrgnR8 clsbtn" id="btnTimeSheetReject" />
+                    <input type="button" value="Export to Excel" class=" ButtonGray mrgnr8 clsbtn floatR"
+                           id="btnExportToExcel" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqTimeSheetApprovalTable"></table>
+                </div>
+                <div id="jqTimeSheetApprovalTablePager">
+                </div>
+            </div>
+        }
+    </div>
+</section>
+<div id="StartDateValidationMessage" title="Record Saved" style="display: none;">
+    <p>
+        Start date should be less than or equal to end date.
+    </p>
+</div>
+<div id="EndDateValidationMessage" title="Record Saved" style="display: none;">
+    <p>
+        End date should be greater than or equal to start date.
+    </p>
+</div>
+<div id="RejectValidationMessage" title="Record Saved" style="display: none;">
+    <p>
+        Please enter rejection comments.
+    </p>
+</div>
+<div id="TimeSheetApprovalSuccessMessage" title="Record Saved" style="display: none;">
+    <p>
+        Timesheet approved successfully.
+    </p>
+</div>
+<div id="TimeSheetRejectedSuccessMessage" title="Record Saved" style="display: none;">
+    <p>
+        Timesheet rejected successfully.
+    </p>
+</div>
+<div id="NoItemCheckedValidationMessage" title="Record Saved" style="display: none;">
+    <p>
+        Please select a record.
+    </p>
+</div>
+<div id="errorDialog" title="Error" style="display: none">
+    <p>
+        Some Error Occured.
+    </p>
+</div>
+<div id="TableGridError" style="display: none">
+    <p>
+        There is no entry in the Grid.
+    </p>
+</div>

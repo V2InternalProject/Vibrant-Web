@@ -1,0 +1,1933 @@
+﻿@model HRMS.Models.GeneralTasksModel
+@{
+    ViewBag.Title = "General Tasks";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix">
+    <h2 class="title-bgcolor">
+        Generic Tasks</h2>
+    <div class="clearL clearfix mrgnT10">
+        <input class="button" type="button" value="Save" />
+        <input class="button" type="button" value="Select More" id="btnSelectMore"/>
+        <input class="button" type="button" value="Show Active Tasks" />
+        <input class="button" type="button" value="Show All Tasks" />
+    </div>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_Emp" class="mrgnT10">
+        <tr>
+            <td>
+                <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders tablescrollwidth tablescrollhead">
+                    <tr>
+                        <th class="bluebgtable1 whiteB" colspan="4">
+                        </th>
+                        <th class="bluebgtable1 whiteB" colspan="4">
+                            Current
+                        </th>
+                        <th class="bluebgtable1 whiteB" colspan="4">
+                            Baseline
+                        </th>
+                        <th class="bluebgtable1 whiteB" colspan="4">
+                            Actual
+                        </th>
+                        <th class="bluebgtable1" colspan="2">
+                        </th>
+                    </tr>
+                    <tr>
+                        <th width="8%" class="bluebgsubtable1">
+                            Task Name
+                        </th>
+                        <th width="5%" class="bluebgsubtable1">
+                            Resource
+                        </th>
+                        <th width="5%" class="bluebgsubtable1">
+                            Priority
+                        </th>
+                        <th class="bluebgsubtable1" width="8%">
+                            Task Type
+                        </th>
+                        <th width="6%" class="bluebgsubtable1">
+                            Start Date
+                        </th>
+                        <th class="bluebgsubtable1" width="6%">
+                            End Date
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Duration (days)
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Work (hrs)
+                        </th>
+                        <th width="6%" class="bluebgsubtable1">
+                            Start Date
+                        </th>
+                        <th class="bluebgsubtable1" width="6%">
+                            End Date
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Duration (days)
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Work (hrs)
+                        </th>
+                        <th width="6%" class="bluebgsubtable1">
+                            Start Date
+                        </th>
+                        <th class="bluebgsubtable1" width="6%">
+                            End Date
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Duration (days)
+                        </th>
+                        <th class="bluebgsubtable1" width="5%">
+                            Work (hrs)
+                        </th>
+                        <th class="bluebgsubtable1" width="4%">
+                            Billable
+                        </th>
+                        <th class="bluebgsubtable1" width="3%">
+                            Void
+                        </th>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="width: 100%; height: 600px; overflow: auto;">
+                    <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders tablescrollwidth tablescrollbody">
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                         <tr>
+                            <td width="8%" align="center">
+                                Approvals
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td width="5%" align="center">
+                                N/A
+                            </td>
+                            <td align="center" width="8%">
+                                Approvals
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="6%">
+                                14/11/2014
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="6%">
+                                N/A
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="5%">
+                                0.00
+                            </td>
+                            <td align="center" width="4%">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center" width="3%">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+    @*<a href="#" id="LinkTaskMapping">Temporary Link(Opens pop up on click of employee link)</a>*@
+     <div id="SelectTasksPop" style="display: none">
+        @Html.Partial("_SelectMoreTasks", Model.SelectMoreTasks)
+    </div>
+    <div id="TaskMappingDiv" style="display: none">
+        @Html.Partial("_TaskMapping", Model.TaskMapping)
+    </div>
+    
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#btnSelectMore').click(function () {
+            $('#SelectTasksPop').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Select Other Tasks"
+            });
+            $('#SelectTasksPop').dialog('open');
+        });
+
+        $('#LinkTaskMapping').click(function () {
+            $('#TaskMappingDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Task Mapping"
+            });
+            $('#TaskMappingDiv').dialog('open');
+        });
+
+    });
+</script>

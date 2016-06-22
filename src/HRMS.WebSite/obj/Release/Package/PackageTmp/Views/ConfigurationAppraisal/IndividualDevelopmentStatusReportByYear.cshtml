@@ -1,0 +1,112 @@
+﻿@model HRMS.Models.AppraisalStatusReport
+
+<!DOCTYPE html>
+<script type="text/javascript">
+</script>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+   @* <title>Appraisal Status Report</title>*@
+   <title></title>
+</head>
+<body>
+  @using (Html.BeginForm("ExportToExcel", "ConfigurationAppraisal"))
+  {
+        <div style="float:  left">
+        <input class="button" type="submit" value="Export To Excel" />
+        </div>
+        <br />
+        <br />
+        <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Employee Name
+                </td>
+                <td class="bluebgtable1" width="15%">
+                   Employee Code
+                </td>
+                <td class="bluebgtable1" width="15%">
+                   Delivery Team
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Designation
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Confirmation Date
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Stage
+                </td>
+                <td class="bluebgtable1" width="12%">
+                    Appraisee Agree/Disagree
+                </td>
+                <td class="bluebgtable1" width="12%">
+                    Appraisee Comments
+                </td>
+                <td class="bluebgtable1" width="12%">
+                    Employee Email
+                </td>
+                <td class="bluebgtable1" width="12%">
+                    Appraiser 1 Email
+                </td>
+            </tr>
+        </thead>
+
+            @for (var i = 0; i < Model.IndividualDevelopmentStatusReportList.Count; i++)
+            {
+                <tr>
+                    <td>
+                     @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeName)
+                     @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeName, new { style = "display: none;" })
+                    </td>
+                    <td>
+                       @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeCode)
+                       @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeCode, new { style = "display: none;" })
+                    </td>
+                    <td>
+                      @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].DeliveryTeam)
+                       @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].DeliveryTeam, new { style = "display: none;" })
+                    </td>
+                    <td>
+                      @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].Designation)
+                       @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].Designation, new { style = "display: none;" })
+                    </td>
+                    <td>
+                      @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].ConfirmationDate)
+                       @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].ConfirmationDate, new { style = "display: none;" })
+                    </td>
+                    <td>
+                      @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].Status)
+                       @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].Status, new { style = "display: none;" })
+                    </td>
+                     <td>
+                     @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].Appraiseeagreedisagree)
+                     @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].Appraiseeagreedisagree, new { style = "display: none;" })
+                    </td>
+                     <td>
+                     @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].ApraiseeComment)
+                     @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].ApraiseeComment, new { style = "display: none;" })
+                    </td>
+
+                     <td>
+                     @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeEmail)
+                     @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].EmployeeEmail, new { style = "display: none;" })
+                    </td>
+                     <td>
+                     @Html.DisplayFor(x => Model.IndividualDevelopmentStatusReportList[i].Appraiser1Email)
+                     @Html.TextBoxFor(x => Model.IndividualDevelopmentStatusReportList[i].Appraiser1Email, new { style = "display: none;" })
+                    </td>
+                </tr>
+            }
+    </table>
+
+  }
+    <div>
+     @*<a href="@Url.Action("AddAppraisalParameter", "ConfigurationAppraisal", new { orderID = item.OrderNo })" id="editRecord">@item.Parameter</a>*@
+    @* <a href="@Url.Action("ExportToExcel", "ConfigurationAppraisal", new { YearID = @Model.IndividualDevelopmentYearID , Report="Individual Development Report"})">Export To Excel</a>*@
+     @*<a href="#" id="excelExport" onclick="ExcelExport()">Export To Excel</a>*@
+      @*<a href="#" id="excelExport" onclick="ExcelExport()">Export To Excel</a>*@
+    </div>
+</body>
+</html>

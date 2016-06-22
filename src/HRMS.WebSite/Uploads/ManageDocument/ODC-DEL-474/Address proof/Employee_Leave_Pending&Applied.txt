@@ -1,0 +1,39 @@
+USE [OrbitPhase2]
+
+select leavebal.userid,leavebal.EmployeeName,Leavebalanace, TotalLeaveApplied,ResourcePoolName,EmployeeStatus,EmployeementStatus,OfficeLocation,ReportingTo,CompetencyManager,ConfirmationExitManager  from 
+(
+
+select userid,employeename,sum(TotalLeaveDays)+ sum(LeaveCorrectionDays) TotalLeaveApplied  from
+(
+SELECT e.UserID, e.EmployeeName,LD.TotalLeaveDays , LD.LeaveCorrectionDays, LeaveDateFrom		
+					FROM  vwEmployee_Master e left join LeaveDetails LD
+					 on e.userid=LD.UserID					
+					left JOIN StatusMaster SM ON LD.StatusID = SM.StatusID	
+					
+					where e.IsDeleted = 0 
+					group by e.UserID, e.EmployeeName,LD.TotalLeaveDays , LD.LeaveCorrectionDays, LeaveDateFrom
+					) a
+					where LeaveDateFrom between '10/1/2014' and '12/31/2014' 
+					group by userid,employeename
+					) leav full outer join 
+
+(
+SELECT e.UserID, e.EmployeeName,sum(Quantity) Leavebalanace, r.ResourcePoolName	, EmployeeStatus,st.EmployeementStatus,l.OfficeLocation,reportingMgr.EmployeeName as ReportingTo,competencyMgr.EmployeeName as CompetencyManager,confirmExitMgr.EmployeeName as ConfirmationExitManager			
+					FROM  vwEmployee_Master e
+					left join LeaveTransaction LT on LT.UserID = e.UserId	
+					left join v2hrms..tbl_PM_Employee emp on e.userid= emp.employeecode
+					left join v2hrms..tbl_PM_Employee reportingMgr on e.ReportingTo = reportingMgr.EmployeeID
+					left join v2hrms..tbl_PM_Employee competencyMgr on e.CompetencyManager = competencyMgr.EmployeeID
+					left join v2hrms..tbl_PM_Employee confirmExitMgr on emp.ReportingTo = confirmExitMgr.EmployeeID
+					left join v2hrms..tbl_pm_resourcepool r on r.ResourcePoolID= emp.ResourcePoolID
+					left join V2HRMS..tbl_PM_EmployeeStatus s on s.EmployeeStatusID= emp.EmployeeStatusID
+					left join V2HRMS..tbl_PM_EmployeeStatusMaster st on st.EmployeementStatusId = emp.EmployeeStatusMasterID
+					left join V2HRMS..tbl_PM_OfficeLocation l on l.OfficeLocationID = emp.OfficeLocation 
+					where e.IsDeleted = 0 and TransactionDate <= '10/1/2014' 
+					group by e.UserID, e.EmployeeName,r.ResourcePoolName, EmployeeStatus,st.EmployeementStatus,l.OfficeLocation,reportingMgr.EmployeeName,competencyMgr.EmployeeName,confirmExitMgr.EmployeeName 	
+					) leavebal on leavebal.userid= leav.UserId
+
+					--select * from vwEmployee_Master
+
+
+select * from LeaveTransaction where userid is null

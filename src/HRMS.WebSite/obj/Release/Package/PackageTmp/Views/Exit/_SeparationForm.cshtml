@@ -1,0 +1,353 @@
+﻿        @model HRMS.Models.ExitProcessViewModel
+        <link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+        <script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+        <script src="@Url.Content("../../Scripts/Exit/SeparationForm.js")" type="text/javascript"></script>
+        <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+        <script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+        <script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+        @{
+            ViewBag.Title = "Menu";
+            Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+        }
+        <script type="text/javascript">
+            $.ajaxSetup({
+                // Disable caching of AJAX responses
+                cache: false
+            });
+
+            var postUrl = '@Url.Action("SaveSeparationForm", "Exit")';
+            var IsExitConfManagerSet = '@ViewBag.IsExitConfManagerSet';
+            var EmpDateJoiningDate = '@ViewBag.EmpJoiningDate';
+
+            $(document).ready(function () {
+
+                $(".ValidationDropDown").each(function () {
+                    $('.ValidationDropDown').show();
+                    $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+                    $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-40px', 'left': '79PX' });
+                    $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-24px' });
+                    $('#errorReasonForSeparartionID').css({ 'margin-top': '-40px', 'float': 'left' });
+                    $('#errorModeOfSeparationID').css({ 'margin-top': '-36px', 'float': 'left' });
+
+                });
+
+                $(".Title").hide();
+                $('#ResignedDate').datepicker({
+                    dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: new Date(EmpDateJoiningDate), maxDate: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true,
+                    onSelect: function (dateStr) {
+                        var noticePeriod = parseInt($('#NoticePeriod').val());
+                        var resignedDate = $.datepicker.parseDate("mm/dd/yy", dateStr);
+                        resignedDate.setDate(resignedDate.getDate("mm/dd/yy") + noticePeriod);
+                        var dayOfWeek = $.datepicker.formatDate('DD', resignedDate);
+                        if (dayOfWeek == "Saturday") {
+                            resignedDate.setDate(resignedDate.getDate("mm/dd/yy") - 1);
+                        }
+                        else if (dayOfWeek == "Sunday") {
+                            resignedDate.setDate(resignedDate.getDate("mm/dd/yy") - 2);
+                        }
+                        resignedDate = $.datepicker.formatDate("mm/dd/yy", resignedDate);
+                        $("label[for='SystemReleavingDate']").text(resignedDate);
+                        $('#hdSystemReleavingDate').val($('#SystemReleavingDate').val());
+                    }
+
+                });
+
+                if ('@Model.SearchedUserDetails.UserRole' != "RMG" || '@Model.SearchedUserDetails.UserRole' != "HR Admin" || '@Model.SearchedUserDetails.UserRole' != "Manager") {
+
+                    $('#TentativeReleaseDate').removeAttr('disabled');
+                    $('#TentativeReleaseDate').removeAttr('readonly');
+                    $('#TentativeReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", maxDate: $('#hdSystemReleavingDate').val(), showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true });
+
+                }
+                $('#btnBack').click(function () {
+                    window.location.href = '@Url.Action("ExitProcess", "Exit")';
+                });
+
+                $('#TentativeReleaseDate').change(function () {
+                    var tentativeDate = $("#TentativeReleaseDate").val();
+                    var resignDate = $("#ResignedDate").val();
+
+                    var tentative = $.datepicker.parseDate('mm/dd/yy', tentativeDate);
+                    var resign = $.datepicker.parseDate('mm/dd/yy', resignDate);
+                   // $('#ErrorMessage').hide();
+                    if (tentative < resign) {
+                        if (tentative == null || tentative == '') {
+                            $('#ErrorMessage').show();
+                            document.getElementById("ErrorMessage").innerHTML = "<span class='ErrorMsg'>Tentative Release Date is Required.</span>";
+                        }
+                        else {
+                            $('#ErrorMessage').show();
+                            document.getElementById("ErrorMessage").innerHTML = "<span class='ErrorMsg'>Tentative release date cannot be less than Resign date.</span>";
+                            $('#TentativeReleaseDate').val('');
+                        }
+                    }
+                    else {
+                        $('#ErrorMessage').hide();
+                    }
+
+                });
+
+                $('#btnSaveSeparation').click(function () {
+
+                    var tentativeDate = $("#TentativeReleaseDate").val();
+                    var resignDate = $("#ResignedDate").val();
+
+                    var tentative = $.datepicker.parseDate('mm/dd/yy', tentativeDate);
+                    var resign = $.datepicker.parseDate('mm/dd/yy', resignDate);
+
+                    if (tentative < resign) {
+                        $('#ErrorMessage').show();
+                        document.getElementById("ErrorMessage").innerHTML = "<span class='ErrorMsg'>Tentative release date cannot be less than Resign date.</span>";
+                        $('#TentativeReleaseDate').val('');
+                        return false;
+                    }
+                    else {
+                        $('#ErrorMessage').hide();
+                        SaveSeparationForm();
+                        return false;
+                    }
+                });
+
+                $('#ReasonForSeparartion').change(function () {
+                    $('#errorReasonForSeparartionID').hide();
+                });
+
+                $('#ModeOfSeparation').change(function () {
+                    $('#errorModeOfSeparationID').hide();
+                });
+
+                //$('#btnSaveSeparation').click(SaveSeparationForm);
+                $("#lblEmpComment").hide();
+                $("#lblReasonForSeparartion").hide();
+                $("#lblResignedDate").hide();
+                $("#lblTentativeReleaseDate").hide();
+                $("#lblModeOfSeparation").hide();
+                //        $("#ResignedDate").attr('disabled', 'disabled');
+                //        $("#ResignedDatecalendarimagedisabledID .ui-datepicker-trigger").hide();
+                DisplayLabel();
+                function DisplayLabel() {
+                    $.each($(".ClassDisabledFields"), function (l, val) {
+
+                        if ($(val).is(':disabled')) {
+                            if (val.id == "ReasonForSeparartion" || val.id == "ModeOfSeparation") {
+                                $(this).next().hide().next().show().append("</br>");
+                            }
+                            else if (val.id == "EmpComment") {
+                                $(this).hide().next().show().children().show();
+                            }
+                            else if (val.id == "ResignedDate" || val.id == "TentativeReleaseDate" || val.id == "AgreedReleaseDate" || val.id == "SystemReleavingDate")
+                                $(this).hide().next().next().show();
+                            else
+                                $(this).hide().next().show();
+                        }
+                    });
+                }
+
+            });
+        </script>
+        <section class="ConfirmationContainer Container">
+            <div class="FixedHeader">
+                <div class="clearfix">
+                    <h2 class="MainHeading">
+                        Separation Process
+                    </h2>
+                </div>
+                <nav class="sub-menu-colored">
+                    <a id="lnkSeparationForm" href="@Url.Action("SeparationForm", "Exit")" class="selected">
+                        Fill My Separation Form
+                    </a><a href="@Url.Action("EmpSeparationApprovals", "Exit")">
+                        Employee Separation Approvals
+                    </a>
+                    @if (Model.UserRole == "HR Admin")
+                    {
+                        <a href="@Url.Action("EmpSeparationTermination", "Exit")">
+                            Employee Separation - Termination
+                        </a>
+                    }
+                </nav>
+            </div>
+            <div class="MainBody">
+                <div class="Hrmain clearfix">
+                    @if (ViewBag.IsSeparationLinkVisible == true || Model.Isterminate == "yes")
+                    {
+                        using (Html.BeginForm("", "", FormMethod.Post, new { @id = "SeparationForm" }))
+                        {
+                            @Html.ValidationSummary(true)
+                            @Html.HiddenFor(m => m.UserRole)
+                            @Html.HiddenFor(m => m.EmployeeId)
+                            @Html.HiddenFor(m => m.Isterminate)
+                            @Html.HiddenFor(m => m.TerminatedEmpId)
+                            <div class="fill-dtls separate clearfix">
+                                <div class="floatFix">
+                                    <div class="leftcol">
+                                        @if (Model.Isterminate == "yes")
+                                        {
+                                            <div class="clearfix formrow">
+                                                <div class="LabelDiv">
+                                                    <span class="hiddenstar">* </span>@Html.Label("Employee Name:")
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.TextBoxFor(model => model.EmpName, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                                                    @Html.LabelFor(model => model.EmpName, Model.EmpName, new { @class = "ClassDisplayLabel" })
+                                                    @Html.HiddenFor(model => model.EmpName, new { id = "hdempName" })
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="clearfix formrow">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Employee Comment:", new { @class = "select-type" })
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.TextAreaFor(model => model.EmpComment, new { @class = "reason ClassDisabledFields" })
+                                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmpComment)</p>
+                                                @Html.LabelFor(model => model.EmpComment, Model.EmpComment, new { @id = "lblEmpComment", @class = "ClassDisplayLabel" })
+                                                @Html.HiddenFor(model => model.EmpComment, new { id = "hdempComment" })
+                                            </div>
+                                        </div>
+                                        <div class="clearfix formrow">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Resigned Date:", new { @class = "select-type" })
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.ResignedDate, String.Format("{0:MM/dd/yyyy}", Model.ResignedDate), new { @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(model => model.ResignedDate, String.Format("{0:MM/dd/yyyy}", Model.ResignedDate), new { @id = "lblResignedDate", @class = "ClassDisplayLabel" })
+                                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ResignedDate)</p>
+                                                @{
+                            DateTime resignedDate = Model.ResignedDate.HasValue ? Model.ResignedDate.Value : DateTime.MinValue;
+                                                }
+                                                <input type="hidden" id="hdresignedDate" value="@resignedDate.ToString("MM/dd/yyyy")" />
+                                            </div>
+                                        </div>
+                                        <div class="clearfix formrow">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Notice Period:", new { @class = "select-type" })
+                                            </div>
+                                            <div class="LabelDiv">
+                                                @Html.TextBoxFor(model => model.NoticePeriod, new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(model => model.NoticePeriod, Model.NoticePeriod.ToString(), new { @class = "ClassDisplayLabel" })
+                                                @Html.Label("Day(s)", new { @class = "select-type suffix " })
+                                                @Html.ValidationMessageFor(model => model.NoticePeriod)
+                                                @Html.HiddenFor(model => model.NoticePeriod, new { id = "hdnoticePeriod" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rightcol">
+                                        <div class="clearfix formrow">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Reason for Separation:", new { @class = "select-type" })
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.DropDownListFor(model => model.ReasonForSeparartion, new SelectList(Model.SeparationReasonList, "ReasonId", "Reason", "Select"), "Select", new { @class = "ValidationDropDown ClassDisabledFields" })
+                                                @Html.LabelFor(model => model.ReasonForSeparartion, new { @id = "lblReasonForSeparartion", @class = "ClassDisplayLabel" })
+                                                <p class="qualif-detail" id="errorReasonForSeparartionID">@Html.ValidationMessageFor(x => x.ReasonForSeparartion)</p>
+                                                @Html.HiddenFor(model => model.ReasonForSeparartion, new { id = "hdreasonForSeparartion" })
+                                            </div>
+                                        </div>
+                                        <div class="clearfix formrow mrgnTN18">
+                                            <div class="LabelDiv">
+                                                <span class="hiddenstar">*</span>
+                                                @Html.Label("Tentative Release Date:", new { @class = "select-type" })
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.TentativeReleaseDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TentativeReleaseDate", @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(model => model.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.TentativeReleaseDate), new { @id = "lblTentativeReleaseDate", @class = "ClassDisplayLabel" })
+                                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TentativeReleaseDate)</p>
+                                                @Html.HiddenFor(model => model.TentativeReleaseDate, new { id = "hdtentativeReleaseDate" })
+                                                <span id="ErrorMessage">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @if (Model.Isterminate != "yes" && Model.AgreedReleaseDate.ToString() != "")
+                                        {
+                                            <div class="clearfix formrow termHide">
+                                                <div class="LabelDiv">
+                                                    <span class="hiddenstar">*</span>
+                                                    @Html.Label("Agreed Relieving Date:", new { @class = "select-type" })
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.TextBoxFor(model => model.AgreedReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.AgreedReleaseDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                                    @Html.LabelFor(model => model.AgreedReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.AgreedReleaseDate), new { @class = "ClassDisplayLabel" })
+                                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.SystemReleavingDate)</p>
+                                                    @{
+                                            DateTime agreedReleaseDate = Model.AgreedReleaseDate.HasValue ? Model.AgreedReleaseDate.Value : DateTime.MinValue;
+                                                    }
+                                                    @Html.Hidden("AgreedReleaseDate", String.Format("{0:MM/dd/yyyy}", Model.AgreedReleaseDate), new { id = "hdAgreedReleaseDate" })
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (Model.Isterminate == "yes")
+                                        {
+                                            <div class="clearfix formrow">
+                                                <div class="LabelDiv">
+                                                    <span class="mandatory">* </span>@Html.Label("Mode of Exit:")
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.DropDownListFor(model => model.ModeOfSeparation, (SelectList)ViewBag.Separation, "Select", new { @class = "ValidationDropDown ClassDisabledFields" })
+                                                    @Html.LabelFor(model => model.ModeOfSeparation, new { @id = "lblModeOfSeparation", @class = "ClassDisplayLabel" })
+                                                    <p class="qualif-detail" id="errorModeOfSeparationID">@Html.ValidationMessageFor(model => model.ModeOfSeparation)</p>
+                                                    @Html.HiddenFor(model => model.ModeOfSeparation, new { id = "hdForModeOfSeparartion" })
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (Model.Isterminate == null)
+                                        {
+                                            <div class="clearfix formcol">
+                                                <div class="LabelDiv">
+                                                    <span class="hiddenstar">*</span>
+                                                    @Html.Label("System Generated Relieving Date:", new { @class = "select-type" })
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.TextBoxFor(model => model.SystemReleavingDate, String.Format("{0:MM/dd/yyyy}", Model.SystemReleavingDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                                    @Html.LabelFor(model => model.SystemReleavingDate, String.Format("{0:MM/dd/yyyy}", Model.SystemReleavingDate), new { @class = "ClassDisplayLabel" })
+                                                    <div>
+                                                        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.SystemReleavingDate)</p>
+                                                    </div>
+                                                    @{
+                                            DateTime systemReleavingDate = Model.SystemReleavingDate.HasValue ? Model.SystemReleavingDate.Value : DateTime.MinValue;
+                                                    }
+                                                    @Html.Hidden("SystemReleavingDate", String.Format("{0:MM/dd/yyyy}", Model.SystemReleavingDate), new { id = "hdSystemReleavingDate" })
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <span class="visarednote">Employee has already applied for Sepration. </span>
+                    }
+                </div>
+                @if (ViewBag.IsSeparationLinkVisible == true || Model.Isterminate == "yes")
+                {
+                    <div class="sep-buttons">
+                        <input id="btnSaveSeparation" type="submit" class="ButtonGray mrgnR11" value="Submit">
+                        @* <input type="button" class="ButtonGray mrgnR11" value="Reset" onclick="RestoreSeparationValues()">*@
+                        @*<input id="btnBack" type="button" class="ButtonGray mrgnR11" value="Back">*@
+                    </div>
+                }
+            </div>
+            <div id="SeparationMailDialog" style="display: none">
+                @{Html.RenderPartial("_MailTemplateSeparation", Model.Mail);}
+            </div>
+            <div id="SeparationFormSuccessMessage" style="display: none">
+                <p>
+                    Exit Form submited successfully.
+                </p>
+            </div>
+            <div id="terminationconfirmation" style="display: none">
+                <p>
+                    This action will initiate a 'Termination Process' for '@Model.EmpName'. Do you want
+                    to continue?
+                </p>
+            </div>
+            <div id="ExitConfirmationManagerError" style="display: none">
+                <p>
+                    Your Exit/Confirmation manager is not set in the system,
+                </p>
+                <p>
+                    Please contact RMG.
+                </p>
+            </div>
+        </section>

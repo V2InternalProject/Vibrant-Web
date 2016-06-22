@@ -1,0 +1,110 @@
+﻿@model HRMS.Models.TravelDetailsViewModel
+@{
+    ViewBag.Title = "Employee Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/TravelDetails.js")"  type="text/javascript"></script>
+<script type="text/javascript">
+   $(function () {
+         $("#travelDetailsTabPassport").tabs({ cache: false, ajaxOptions: { cache: false} });
+    });
+
+//    function ClickforLI() {
+//        //DisplayNotPresentSpouseDetails('@Model.checkSpouseDetails.isApproved', '@Model.checkSpouseDetails.isPresent', '@Model.checkSpouseDetails.spouseMaritalStatusName', '@Model.checkSpouseDetails.approvalStatusId');
+//    }
+</script>
+
+@Html.HiddenFor(m => m.UserRole)
+
+<section class="EmployeeContainer Container">
+
+        <div class="FixedHeader">
+            <div class="clearfix">
+                <h2 class="MainHeading">Employee Details</h2>
+            </div>
+           @* <nav class="sub-menu-colored">
+                <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Passport / Visa</a>
+                <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+            </nav>*@
+            <nav class="sub-menu-colored">
+            @if (ViewBag.EmployeeId != null)
+            {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Experience</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+            }
+            </nav>
+        </div>
+        <div class="MainBody passport-details">
+            <div class="tabs comptabs" id="travelDetailsTabPassport">
+                <ul class="employee-personalD-tabs">
+                    <li id="tab1">
+                        <a onclick="RemoveSpouseTravelDetailsContainer();" href="@Url.Action("PersonalTravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId, type = HRMS.Models.Enums.TravelDetailsPerson.Own })">
+                            Own
+                        </a>
+                    </li>
+                    @if ((Model.checkSpouseDetails.isApproved == true && Model.checkSpouseDetails.isPresent == true) ||
+            (Model.checkSpouseDetails.spouseMaritalStatusName == "Married" && (Model.checkSpouseDetails.approvalStatusId == 2 || Model.checkSpouseDetails.approvalStatusId == 3)))
+                    {
+                        <li id="tab2">
+                            <a onclick="RemoveOwnTravelDetailsContainer();" href="@Url.Action("PersonalTravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId, type = HRMS.Models.Enums.TravelDetailsPerson.Spouse })">
+                                Spouse
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        //<li id ="SpousenotPresent" onclick ="ClickforLI();" ><a href="#" >Spouse</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+            <div id="SpouseDetailsNotPresentDialogMessage" style="display: none;">
+        <p>
+            Employee is Single
+        </p>
+    </div>
+    </section>

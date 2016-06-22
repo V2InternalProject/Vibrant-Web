@@ -1,0 +1,120 @@
+﻿@model HRMS.Models.MailTemplateViewModel
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addMailTemplate" }))
+
+{
+  @Html.HiddenFor(model => model.employeeId, new { @id = "hdnformailEmployeeId" })
+       @Html.ValidationSummary(true)
+
+       <div class="mrgnT25">
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("From")<span class="mandatory">*</span>
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.TextBoxFor(model => model.From)
+
+                           @Html.ValidationMessageFor(model => model.From)
+
+                           @Html.HiddenFor(model => model.From, new { id = "hdFrom" })
+                    </div>
+             </div>
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("To")<span class="mandatory">*</span>
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.TextBoxFor(model => model.To)
+
+                           @Html.ValidationMessageFor(model => model.To)
+
+                           @Html.HiddenFor(model => model.To, new { id = "hdTo" })
+                            <span id="ToErrorMessage" style="display: none; color: red">Please enter proper Email ID </span>
+                    </div>
+             </div>
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("Cc")<span class="mandatory">*</span>
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.TextBoxFor(model => model.Cc)
+
+                           @Html.HiddenFor(model => model.Cc, new { id = "hdCc" })
+                           <span id="CCErrorMessage" style="display: none; color: red">Please enter proper Email IDs </span>
+                    </div>
+             </div>
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("Subject")
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.TextBoxFor(model => model.Subject, null, new { @readonly = "readonly" })
+
+                           @Html.ValidationMessageFor(model => model.Subject)
+
+                           @Html.HiddenFor(model => model.Subject, new { @id = "hdSubject" })
+                    </div>
+             </div>
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("Note")
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.Label("The valid separators for the Email IDs are space(" + " " + "), comma(" + "," + ") and semi-colon(" + ";" + ").")
+                    </div>
+             </div>
+
+             <div class="formcol clearfix">
+
+                    <div class="editor-label labelwidth-initiat floatL">
+
+                           @Html.Label("Message")
+                    </div>
+
+                    <div class="editor-field fieldwidth-initiat floatL">
+
+                           @Html.TextAreaFor(model => model.Message)
+
+                           @Html.ValidationMessageFor(model => model.Message)
+
+                           @Html.HiddenFor(model => model.Message, new { @id = "txtAgeDependant" })
+                    </div>
+             </div>
+       </div>
+
+       <div class="clear popup_button ">
+
+             <div class="floatR-initiat">
+
+                    <input id="sendInitiateMail" type="submit" value="Send" class="button" />
+
+                    @*<input id="cancel" type="button" value="Reset" onclick="emptyDialogdependant()" class="button " />*@
+             </div>
+       </div>
+
+}

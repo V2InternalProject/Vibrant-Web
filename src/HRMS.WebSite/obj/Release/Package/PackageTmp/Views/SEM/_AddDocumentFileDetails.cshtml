@@ -1,0 +1,324 @@
+﻿@model HRMS.Models.DocumentFileDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $(".CategoryValidationDropDown").each(function () {
+            $('.CategoryValidationDropDown').show();
+            $('.CategoryValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.CategoryValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-28px' });
+            $('.CategoryValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-32px' });
+        });
+        $("#DocumentFile").change(function () {
+            if ($('#DocumentFile').val() != "") {
+                $("#DocumentFileUploadError").hide();
+                $("#ManageDocField").val($(this).val());
+                var validExtensions = ['bat', 'exe', 'dll', 'js'];
+                var fileName = $(this).val();
+                var fileNameExt = fileName.substr(fileName.lastIndexOf('.') + 1);
+                if ($.inArray(fileNameExt, ['bat', 'exe', 'dll', 'js']) != -1) {
+                    $("#DocumentFileExtensionError").text("File fomat not supported.").show();
+                    $('#DocumentFile').val('');
+                    $("#ManageDocField").val("No files selected");
+                    return false;
+                }
+                else
+                    $("#DocumentFileExtensionError").hide();
+            }
+        });
+    });
+
+    $('#btnSaveDocumentFileDetails').click(function () {if ($('#DocumentFile').val() != "" && $("#DocumentCategoryList").val() != "") {
+            $("#hdnUploadedBy").val($("#txtUploadedBy").val());
+            $("#hdnUploadedOn").val($("#txtUploadedOn").val());
+            $("#hdnDetails").val($("#txtDetails").val());
+            $('#DocumentSubCategoryList').val($('#DocumentSubCategoryList').val());
+            $('#hdSubCategory').val($("#DocumentSubCategoryList option:selected").text());
+            $('#htcategory').val($("#DocumentCategoryList option:selected").text());
+            OpenLoadingPopup();
+            $("#frmAddProjectDocumentFileDetails").ajaxForm({
+                success: function (results) {
+                    CloseLoadingPopup();
+                    //                    $("#loading").dialog("close");
+                    //                    $("#loading").dialog("destroy");
+                    var st = $.parseJSON(results);
+                    if (st.status == true) {
+                        $("#addDocumentFileDialog").dialog('close');
+                        $("#DocumentFile").replaceWith($("#DocumentFile").clone(true));
+
+                        $('#DocumentFileUploadSuccess').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            dialogClass: "noclose",
+                            buttons: {
+                                "OK": function () {
+                                    $(this).dialog("close");
+                                    //jQuery("#jqManageDocumentTable").trigger("reloadGrid");
+                                    $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                    $('#DocumentFile').val('');
+                                }
+                            }
+                        });
+                    }
+                    else if (st.status == "Error") {
+                        DisplayErrorDialog("Add Documnet");
+                    }
+
+                    else if (st.status == false) {
+                        $('#DocumentFileUploadSameName').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Error",
+                            open: function () {
+                                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                $(this).parent().css('z-index', '27');
+                    },
+                        buttons: {
+                                "OK": function () { $(this).dialog('close'); }
+                    }
+                    });
+                }
+
+            else {
+                        $('#errorUploadDocumentFile').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Error",
+                            open: function () {
+                                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                $(this).parent().css('z-index', '27');
+                            },
+                            buttons: {
+                                "OK": function () { $(this).dialog('close'); }
+                            }
+                        });
+        }
+    },
+        error: function () {
+            CloseLoadingPopup();
+            //                    $("#loading").dialog("close");
+            //                    $("#loading").dialog("destroy");
+            $('#errorUploadDocumentFile').dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                title: "Error",
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                    $(this).parent().css('z-index', '27');
+                },
+                buttons: {
+                    "OK": function () { $(this).dialog('close'); }
+                }
+            });
+        }
+    });
+    }
+    else {
+        //            $("#loading").dialog("close");
+        //            $("#loading").dialog("destroy");
+        $("#DocumentFileExtensionError").hide();
+        if ($('#DocumentFile').val() == "" || $('#DocumentFile').val() == undefined)
+            $("#DocumentFileUploadError").text("Please select File to upload").show();
+        if ($("#DocumentCategoryList").val() == "")
+            $("#DocumentValidation").show();
+        return;
+    }
+    });
+
+    function resetDocumentFileDetails() {
+        $(".field-validation-error span").html("");
+        $('input').removeClass("input-validation-error");
+
+        $("#DocumentFile").replaceWith($("#DocumentFile").val("").clone(true));
+        $("#ManageDocField").val("No files selected");
+        //if ($('#documentCategoryId').val() == "") {
+        $("#addDocumentFileDialog #DocumentCategoryList option[value = " + $('#addDocumentFileDialog #documentCategoryId').val() + "] ").attr('selected', 'selected');
+        //        }
+        //        else {
+        //            $("#CategoryId option:contains(" + $('#addDocumentFileDialog #documentCategoryId').val() + ')').attr('selected', 'selected');
+        //        }
+        //$("#addDocumentFileDialog #DocumentCategoryList option[value = " + rowDataObject['CategoryId'] + "] ").attr('selected', 'selected');
+        $('#txtDetails').val($('#hdnDetails').val());
+        $("#DocumentCategoryList").next().find(".sbSelector").text($("#DocumentCategoryList :selected").text());
+    }
+
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+
+    $("#DocumentCategoryList").change(function () {
+        @*$.ajax({
+            Url: '@Url.Action("GetSubCategory", "SEM")',
+            data: { categoryId: $(this).val() },
+            type: 'GET',
+            success: function (result) {*@
+        var categoryID = $(this).val();
+        $.ajax({
+            url: '@Url.Action("GetSubCategory", "SEM")',
+            type: 'GET',
+            data: { categoryId: categoryID },
+            datatype: "json",
+            async: false,
+            success: function (result) {
+
+                $('#DocumentSubCategoryList').selectBox("destroy");
+                $('#DocumentSubCategoryList').empty();
+                $('#DocumentSubCategoryList').append($("<option></option>")
+          .attr("value", "")
+          .text("Select"));
+                $.each(result.List, function (index, value) {
+
+                    var optionhtml = '<option value="' +
+                                          value.DocumentSubCategoryId + '">' + value.DocumentSubCategory + '</option>';
+                    $('#DocumentSubCategoryList').append(optionhtml);
+                });
+                $('#DocumentSubCategoryList').selectBox('create');
+            }
+        });
+
+        var selectedValue = $(this)[0].value;
+        if (selectedValue != "")
+            $("#DocumentValidation").hide();
+        else
+            $("#DocumentValidation").show();
+    });
+</script>
+@using (@Html.BeginForm("UploadProjectDocumentFileDetails", "SEM", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmAddProjectDocumentFileDetails" }))
+{
+    <div class="mrgnT25">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.LoggedInUser)
+        @Html.HiddenFor(m => m.ProjectId, new { @id = "hdnProjectId" })
+        @Html.HiddenFor(m => m.DocumentAttachmentID, new { @id = "hdnDocumentAttachmentID" })
+        @Html.HiddenFor(m => m.EmployeeName, new { @id = "hdnEmployeeName" })
+        @Html.HiddenFor(m => m.SubCategory, new { @id = "hdSubCategory" })
+        @Html.HiddenFor(m => m.Category, new { @id = "htcategory" })
+
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">*</span>@Html.Label("Upload Document File:")
+            </div>
+            <div class="InputDiv positionR BrowseSpacingFix">
+                <input type="file" name="doc" class="FileUploadBtn" id="DocumentFile" size="24" data-val="true"
+                       data-val-required="please select a file to Upload" />
+                <div class="BrowserVisible">
+                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                                                                                              id="ManageDocField" class="FileField" value="No files selected" />
+                </div>
+                <p class="qualif-detail">
+                    <span id="DocumentFileUploadError" class="field-validation-error"></span>
+                    <span id="DocumentFileExtensionError" class="field-validation-error"></span>
+                </p>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">*</span>@Html.Label("Document Category:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.DocumentCategoryDetailsList, "DocumentCategoryId", "DocumentCategory", "Select"), "Select", new { @id = "DocumentCategoryList", @class = "CategoryValidationDropDown" })
+                <p class="qualif-detail" id="DocumentValidation">
+                    @Html.ValidationMessageFor(model => model.CategoryId)
+                    @Html.HiddenFor(model => model.CategoryId, new { id = "documentCategoryId" })
+                </p>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Document Sub Category:")
+            </div>
+            <div class="InputDiv">
+                @Html.DropDownListFor(model => model.SubCategoryId, new SelectList(Model.DocumentSubCategoryDetailsList, "DocumentSubCategoryId", "DocumentSubCategory", "Select"), "Select", new { @id = "DocumentSubCategoryList" })
+                <p class="qualif-detail" id="DocumentValidation">
+                    @Html.ValidationMessageFor(model => model.SubCategoryId)
+                    @Html.HiddenFor(model => model.SubCategoryId, new { id = "documentsubCategoryId" })
+                </p>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Uploaded By:")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.UploadedBy, new { @id = "txtUploadedBy", @disabled = "disabled" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.UploadedBy)</p>
+                @Html.HiddenFor(m => m.UploadedBy, new { @id = "hdnUploadedBy" })
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Uploaded On:")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.UploadedOn, String.Format("{0:MM/dd/yyyy}", Model.UploadedOn), new { @id = "txtUploadedOn", @disabled = "disabled" })<br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.UploadedOn)
+                </p>
+                @Html.Hidden("UploadedOn", String.Format("{0:MM/dd/yyyy}", Model.UploadedOn), new { @id = "hdnUploadedOn" })
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Details:")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.Details, new { @id = "txtDetails" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Details)</p>
+                @Html.HiddenFor(m => m.Details, new { @id = "hdnDetails" })
+            </div>
+        </div>
+        <div class="mrgnB18 floatR mrgnT10">
+            <input type="submit" value="Save" id="btnSaveDocumentFileDetails" class="ButtonGray mrgnR11" />
+            <input type="button" value="Reset" id="btnResetDocumentFileDetails" onclick="resetDocumentFileDetails()"
+                   class="ButtonGray" />
+        </div>
+    </div>
+}
+<div id="errorUploadDocumentFile" style="display: none">
+    <center>
+        Some error occurred while uploading document.Please try again.
+    </center>
+</div>
+<div id="DocumentFileUploadSuccess" title="Save Contract File" style="display: none">
+    <center>
+        Document file Saved Successfully.
+    </center>
+</div>
+<div id="DocumentFileUploadSameName" title="Save Contract File" style="display: none">
+    <center>
+        Cant save Document file with same name.
+    </center>
+</div>

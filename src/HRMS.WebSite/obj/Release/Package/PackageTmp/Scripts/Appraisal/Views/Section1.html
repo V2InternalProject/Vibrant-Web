@@ -1,0 +1,46 @@
+﻿<div ng-init="Init()">
+    <div id="mydiv" ng-show="myDiv">
+        <img src="../../../Images/New Design/loader.GIF" class="ajax-loader" />
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="SmallHeading pull-left">{{questionConfig.sectionName}}</h4>
+        </div>
+        <div class="col-sm-6 clearfix">
+            <button ng-click="submitForm()" ng-show="questionConfig.isSubmit=='yes'" class="ButtonGray pull-right">Submit</button>
+        </div>
+        <div class="col-sm-12">
+            <h4 class="SmallHeading msgBox {{msgType}}">
+                <img ng-show="msgtype=='bg-info'" src="../../../Images/712.gif" />{{message}}
+            </h4>
+        </div>
+    </div>
+    <form ng-submit="submit(dform)" name="dform" novalidate>
+
+        <div class="table-responsive section-grid ngGrid">
+            <table class="table table-striped table-bordered th-min-width">
+                <thead>
+                    <tr class="section-grid-header">
+                        <th ng-repeat="a in HeaderColumns track by $index">{{a}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="data in Data track by $index" class="appraisal-label">
+                        <td ng-show="IsNewRowAllowed" class="data"> <input type="checkbox" ng-disabled="disableCommand('Chk')" ng-model="$removeList[$index]" name="Row{{$index}}" /></td>
+                        <td class="data" ng-repeat="a in DataColumns track by $index">
+                            <div render value="a.key" template="a.template" required="a.requiredField" mymodel="Data[$parent.$index]" index="$parent.$index"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="cmdPanel">
+
+                <button type="button" ng-show="showCommand('Add')" ng-click="NewRow()" class="ButtonGray">Add New Row</button>
+                <button type="button" ng-show="showCommand('remove')" ng-click="Remove()" class="ButtonGray">Remove Selected</button>
+                <span ng-repeat=" cmd in CommandList">
+                    <button type="submit" ng-click="action(cmd)" ng-show="showCommand('save')" class="ButtonGray">{{cmd.text}}</button>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>

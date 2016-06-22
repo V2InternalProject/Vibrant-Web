@@ -1,0 +1,300 @@
+﻿@model HRMS.Models.ConfirmationFormViewModel
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addCorporateContributionDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        @Html.HiddenFor(x => x.CorporateEmployeeID)
+        @Html.HiddenFor(x => x.CorporateId)
+        @Html.HiddenFor(x => x.confirmationID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Area Of Contribution")<span class="mandatory spanEmployee" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.AreaOfContribution)
+                @Html.ValidationMessageFor(model => model.AreaOfContribution)
+                @Html.HiddenFor(model => model.AreaOfContribution, new { id = "areaOfContribution" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL labelContributionDesc">
+                @Html.Label("Contribution Description")<span class="mandatory spanEmployee" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ContributionDesc)
+                @Html.ValidationMessageFor(model => model.ContributionDesc)
+                @Html.HiddenFor(model => model.ContributionDesc, new { @id = "txtContributionDesc" })
+            </div>
+        </div>
+        <div class="formcol clearfix mngrViewDetails">
+            <div class="editor-label labelwidth-achie floatL labelManagerComments">
+                @Html.Label("Manager Comments")<span class="mandatory spanManager" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ManagerComments, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.ManagerComments)
+                @Html.HiddenFor(model => model.ManagerComments, new { @id = "txtManagerComments" })
+            </div>
+        </div>
+        <div class="formcol clearfix managerSecond mngrViewDetails">
+            <div class="editor-label labelwidth-achie floatL labelManagerCommentsSecond">
+                @Html.Label("Manager 2 Comments")<span class="mandatory spanManager2" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ManagerCommentsSecond, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.ManagerCommentsSecond)
+                @Html.HiddenFor(model => model.ManagerCommentsSecond, new { @id = "txtManagerCommentsSecond" })
+            </div>
+        </div>
+        <div class="formcol clearfix revViewDetails">
+            <div class="editor-label labelwidth-achie floatL labelReviewerComments">
+                @Html.Label("Reviewer Comments")<span class="mandatory spanReviewer" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ReviewerComments, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.ReviewerComments)
+                @Html.HiddenFor(model => model.ReviewerComments, new { @id = "txtReviewerComments" })
+            </div>
+        </div>
+        <div class="formcol clearfix revViewDetails">
+            <div class="editor-label labelwidth-achie floatL labelHRReviewerComments">
+                @Html.Label("HRReviewer Comments")<span class="mandatory spanHR" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.HRReviewerComments, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.HRReviewerComments)
+                @Html.HiddenFor(model => model.HRReviewerComments, new { @id = "txtHRReviewerComments" })
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="savedependant" type="button" value="Save" class="button btnCorporate" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialogdependant()" class="button btnReset " />
+        </div>
+    </div>
+    @Html.HiddenFor(emp => emp.IsManagerOrEmployee)
+}
+<div id="AddCorporateSuccessMessege" title="Corporate Contribution Details" style="display: none;">
+    <p>
+        Corporate details have been saved.
+    </p>
+</div>
+<div id="AddCorporateErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>
+<script type="text/javascript">
+    if ('@ViewBag.IsManagerOrEMployee' == "Employee") {
+        $('.spanEmployee').show();
+    }
+    $('#ContributionDesc').attr('title', $('#ContributionDesc').val());
+
+    if ('@ViewBag.IsManagerOrEMployee' == "Manager") {
+        $('#AreaOfContribution').attr('disabled', true);
+        $('#ContributionDesc').attr('disabled', true);
+        if ('@ViewBag.clickedViewDetails' == "yes")
+            $('#ManagerComments').attr('disabled', true);
+        else
+            $('#ManagerComments').attr('disabled', false);
+        $('#ManagerCommentsSecond').attr('disabled', true);
+        $('#HRReviewerComments').hide();
+        $('#ReviewerComments').hide();
+        $('.labelHRReviewerComments').hide();
+        $('.labelReviewerComments').hide();
+        $('.btnCorporate').show();
+        $('.btnQual').hide();
+        $('.btnSkill').hide();
+        $('.btnReset').show();
+        $('.spanManager').show();
+    }
+    if ('@ViewBag.IsManagerOrEMployee' == "Manager2") {
+        $('#AreaOfContribution').attr('disabled', true);
+        $('#ContributionDesc').attr('disabled', true);
+        if ('@ViewBag.clickedViewDetails' == "yes")
+            $('#ManagerCommentsSecond').attr('disabled', true);
+        else
+            $('#ManagerCommentsSecond').attr('disabled', false);
+        $('#ManagerComments').attr('disabled', true);
+        $('#HRReviewerComments').hide();
+        $('#ReviewerComments').hide();
+        $('.labelHRReviewerComments').hide();
+        $('.labelReviewerComments').hide();
+        $('.btnCorporate').show();
+        $('.btnQual').hide();
+        $('.btnReset').show();
+        $('.spanManager2').show();
+    }
+
+    if ('@ViewBag.IsManagerOrEMployee' == "Reviewer") {
+        $('#AreaOfContribution').attr('disabled', true);
+        $('#ContributionDesc').attr('disabled', true);
+        if ('@ViewBag.clickedViewDetails' == "yes")
+            $('#ReviewerComments').attr('disabled', true);
+        else
+            $('#ReviewerComments').attr('disabled', false);
+        $('#HRReviewerComments').show();
+        $('#ManagerComments').show();
+        $('#ManagerComments').attr('disabled', true);
+        $('#ManagerCommentsSecond').attr('disabled', true);
+        $('.labelHRReviewerComments').show();
+        $('.btnCorporate').show();
+        $('.btnQual').hide();
+        $('.btnSkill').hide();
+        $('.btnReset').show();
+        $('.spanReviewer').show();
+
+    }
+    if ('@ViewBag.IsManagerOrEMployee' == "HR" && '@Model.StageID' != 6) {
+        $('#AreaOfContribution').attr('disabled', true);
+        $('#ContributionDesc').attr('disabled', true);
+        if ('@ViewBag.clickedViewDetails' == "yes")
+            $('#HRReviewerComments').attr('disabled', true);
+        else
+            $('#HRReviewerComments').attr('disabled', false);
+        $('#ReviewerComments').show();
+        $('#ManagerComments').show();
+        $('#ManagerComments').attr('disabled', true);
+        $('#ManagerCommentsSecond').attr('disabled', true);
+        $('#ReviewerComments').attr('disabled', true);
+        $('.btnCorporate').show();
+        $('.btnQual').hide();
+        $('.btnSkill').hide();
+        $('.btnReset').show();
+        $('.spanHR').show();
+    }
+    if ('@Model.StageID' == 6) {
+        $('#AreaOfContribution').attr('disabled', true);
+        $('#ContributionDesc').attr('disabled', true);
+        $('.btnCorporate').hide();
+        $('.btnReset').hide();
+    }
+    $('#AreaOfContribution').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+			{
+			    required: "Area Of Contribution is required."
+			}
+    });
+
+    $('#ContributionDesc').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+			{
+			    required: "Contribution Description is required."
+			}
+    });
+
+    $('#ManagerComments').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Manager");
+        },
+        messages:
+			{
+			    required: "Manager Comments is required."
+			}
+    });
+
+    $('#ReviewerComments').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Reviewer");
+        },
+        messages:
+			{
+			    required: "Reviewer Comments is required."
+			}
+    });
+    $('#HRReviewerComments').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "HR");
+        },
+        messages:
+			{
+			    required: "HR's Reviewer Comments is required."
+			}
+    });
+    //if ('@ViewBag.hasManager2' == 'no2mngr') {     //if no second mngr
+    //    $('.divManagerSecond').hide();
+    //}
+    var postUrl = '@Url.Action("SaveCorporateInfo", "ConfirmationProcess")';
+    $('#savedependant').off('click').on('click', function () {
+        if ($('#addCorporateContributionDetails').valid()) {
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#addCorporateContributionDetails').serialize(),
+                success: function (results) {
+                    if (results.status == true) {
+                        $('#addCorporateDialog').dialog("close");
+                        jQuery("#corporateTable").trigger("reloadGrid");
+                        $("#AddCorporateSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        $("#errorDialog").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#AddCorporateErrorMessege").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        return false;
+    });
+
+    var emptyDialogdependant = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#AreaOfContribution").val($('#areaOfContribution').val());
+        $("#ContributionDesc").val($('#txtContributionDesc').val());
+        $("#ManagerComments").val($('#txtManagerComments').val());
+        $("#ManagerCommentsSecond").val($('#txtManagerCommentsSecond').val());
+        $("#ReviewerComments").val($('#txtReviewerComments').val());
+        $("#HRReviewerComments").val($('#txtHRReviewerComments').val());
+    }
+</script>

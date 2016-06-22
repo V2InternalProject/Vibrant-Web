@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<!DOCTYPE html>
+<html ng-app="HRMS">
+<head lang="en">
+    <meta charset="utf-8">
+    <title>Appraisal Master</title>
+    @*<link rel="stylesheet" type="text/css" href="http://angular-ui.github.com/ng-grid/css/ng-grid.css" />*@
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.7/ng-grid.min.js"></script>
+    <script src="~/Scripts/AppraisalMaster/ng-grid-csv-export.js"></script>
+    <script src="~/Scripts/AppraisalMaster/FreezedListController.js"></script>
+    <link href="~/Content/AppraisalMaster/AppraisalMaster.css" rel="stylesheet" />
+</head>
+<body ng-controller="MyCtrl">
+    <section class="AppraisalContainer Container">
+        <div class="FixedHeader">
+            <div class="clearfix">
+                <h2 class="MainHeading">
+                    Appraisal Master
+                </h2>
+            </div>
+            <nav class="sub-menu-colored">
+                <a href="@Url.Action("AppraisalMainForm", "AppraisalSection")">
+                    Appraisal SetUp
+                </a>
+                <a href="@Url.Action("AppraisalInitiate", "AppraisalMaster")">
+                    Appraisal Initiation
+                </a>
+                <a href="@Url.Action("ReviewInitiation", "AppraisalMaster")">
+                    Ready To Initiate
+                </a>
+                <a href="@Url.Action("Initiated", "AppraisalMaster")">
+                    Initiated
+                </a>
+                <a href="@Url.Action("FreezedList", "AppraisalMaster")" class="selected">
+                    Freezed List
+                </a>
+            </nav>
+        </div>
+        @*<button type="submit" ng-click="saveGrid()">Initiate New</button>*@
+        <div class="appraisal-page">
+            <div id="mydiv" ng-show="myDiv">
+                <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+            </div>
+
+            <strong>Resource Name: </strong><input type="text" ng-model="nameFilter" ng-change="filterName()" /> <strong> &nbsp; &nbsp; OR &nbsp; &nbsp; </strong>
+            <strong>  Resource Pool: </strong><input type="text" ng-model="poolFilter" ng-change="filterRpool()" /> <strong> &nbsp; &nbsp; OR &nbsp; &nbsp; </strong>
+            <strong>  Delivery Unit: </strong><input type="text" ng-model="DUFilter" ng-change="filterDU()" />
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-sm-12"><h4 class="SmallHeading {{msgType}}">{{message}}</h4></div>
+            </div>
+            <div class="gridStyle" ng-grid="gridFreezedOptions"></div>
+            <div class="footer"></div>
+            <button type="submit" ng-click="reInitiate()" class="ButtonGray mrgnR8">ReInitiate</button>
+            <button type="submit" ng-click="cancelFreezeGrid()" class="ButtonGray mrgnR8">Back To Appraisal Initiation</button>
+        </div>
+    </section>
+</body>
+</html>

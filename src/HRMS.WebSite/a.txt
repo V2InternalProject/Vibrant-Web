@@ -1,0 +1,203 @@
+file browse : http://forums.asp.net/t/1447236.aspx/1
+http://www.4guysfromrolla.com/articles/090110-1.aspx
+http://www.knowfreely.com/index.php?option=com_content&view=article&id=182:list-all-folders-subfolders-files-in-a-directory-to-gridview-aspnet-c&catid=19:c-code-samples&Itemid=37
+
+*poplate gridview : http://www.codinghub.net/2011/06/how-to-fill-grid-with-files-in-folder-c.html
+
+
+(5:27 PM) prasad.shigwan: http://stackoverflow.com/questions/5272902/how-to-apply-openfiledialog-function-to-a-webapplication
+(5:27 PM) prasad.shigwan: using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace foldertest
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
+        {
+           // FolderBrowserDialog folderBrowserDialog1;
+
+           //folderBrowserDialog1 = new FolderBrowserDialog();
+           //this.folderBrowserDialog1.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog btn = new FolderBrowserDialog();
+            DialogResult result = btn.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                textBox1.Text = btn.SelectedPath;
+            }
+        }
+    }
+}
+
+
+====================================
+FolderBrowserDialog in asp.net:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Windows.Forms;
+using System.Threading;
+
+namespace file_browser
+{
+    public partial class _Default : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+       [STAThread]
+        protected void Browse_btn_Click(object sender, EventArgs e)
+        {
+            Thread t1 = new Thread(browse);
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = false;
+            t1.Start();
+            t1.Join();
+        }
+
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void File_Extension_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Search_btn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void RadioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void RadioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        //[STAThread]
+        protected void Path_Selected_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        public void browse()
+        {
+            FolderBrowserDialog FBD = new FolderBrowserDialog();
+            //DialogResult result = FBD.ShowDialog();
+            if (FBD.ShowDialog() == DialogResult.OK)
+            {
+                Lbl_PathSelected.Text = (FBD.SelectedPath).ToString();          
+                    //Path_Selected.Text = FBD.SelectedPath;
+            }
+        }
+    }
+}
+
+
+
+
+==================================
+
+
+double Number;
+        string s_Number;
+        bool isNumber = false;
+        String[] Arr0 = { "Zero" };
+        String[] Arr1 = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" };        
+        String[] Arr2 = { "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+        String[] Arr3 = { "", "Ten", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+        String[] Arr4 = { "", "One Hundred", "Two Hundred", "Three Hundred", "Four Hundred", "Five Hundred", "Six Hundred", "Seven Hundred", "Eight Hundred", "Nine Hundred" };
+        String[] Arr5 = { "", "One Thousand", "two Thousand", "three Thousand", "Four Thousand", "Five Thousand", "Six Thousand", "Seven Thousand", "Eight Thousand", "Nine Thousand" };
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void txtNumber_TextChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void btnConvert_Click(object sender, EventArgs e)
+        {
+
+            //Number = double.Parse(txtNumber.Text);
+            //MessageBox.Show(Number.ToString());
+
+            //Number = double.Parse(txtNumber.Text);
+            if (txtNumber.TextLength >= 5)
+            {
+                MessageBox.Show("Between 0 and 9999");
+                txtNumber.Clear();
+            }
+
+            else
+            {
+                int num;
+                isNumber = int.TryParse(txtNumber.Text, out num);
+                //Number = double.Parse(txtNumber.Text);
+                
+                if (isNumber)
+                {
+                    txtRead.Text = NumberToWords(txtNumber.Text);
+                }
+                else
+                {
+                    MessageBox.Show("Please enter only numeric values", "Message");
+                    txtNumber.Focus();
+                    return;
+                }
+            }
+        }
+
+
+        public string NumberToWords(string Numbers)
+        {
+            string x = Numbers;
+            string amountinWords = string.Empty;
+            int y = x.Length;
+            int i;
+		if (y == 1)
+            {
+
+                amountinWords = Arr1.GetValue(int.Parse(x)).ToString();
+            }
+		
+		 return amountinWords;
+
+
+==================
+
+default text on text box :-
+<input type="text" name="theName" value="DefaultValue" onblur="if(this.value == ''){ this.value = 'DefaultValue'; this.style.color = '#BBB';}" onfocus="if(this.value == 'DefaultValue'){ this.value = ''; this.style.color = '#000';}" style="color:#BBB;" />

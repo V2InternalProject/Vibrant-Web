@@ -1,0 +1,692 @@
+
+2015-12-01 @ 10:35:21  Informational , App start Global.asax App_Start  
+2015-12-01 @ 10:35:25  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 10:35:52  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 10:35:52  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 10:35:53  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 10:35:53  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 10:35:53  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 10:36:10  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "AjaxControlToolkit.Properties.Resources.NET4.resources" was correctly embedded or linked into assembly "AjaxControlToolkit" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)
+   at AjaxControlToolkit.Properties.Resources_NET4.get_E_NoScriptManager()
+   at AjaxControlToolkit.ScriptObjectBuilder.RegisterCssReferences(Control control)
+   at AjaxControlToolkit.ExtenderControlBase.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_vuuu3xt0.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 10:36:10  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 10:38:22  Informational , App start Global.asax App_Start  
+2015-12-01 @ 10:38:23  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 10:38:32  Informational , App start Global.asax App_Start  
+2015-12-01 @ 10:38:33  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 10:38:33  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/7ec995f1b9084f2584ba6bb91c750ef7' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 10:38:33  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 10:38:48  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 10:38:48  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 10:38:48  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 10:38:48  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 10:38:48  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:02:11  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:02:12  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:02:14  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpParseException (0x80004005): Unexpected end of file looking for </div> tag.
+   at System.Web.UI.TemplateParser.ProcessException(Exception ex)
+   at System.Web.UI.TemplateParser.HandlePostParse()
+   at System.Web.UI.TemplateControlParser.HandlePostParse()
+   at System.Web.UI.PageParser.HandlePostParse()
+   at System.Web.UI.TemplateParser.Parse()
+   at System.Web.Compilation.BaseTemplateBuildProvider.get_CodeCompilerType()
+   at System.Web.Compilation.BuildProvider.GetCompilerTypeFromBuildProvider(BuildProvider buildProvider)
+   at System.Web.Compilation.BuildProvidersCompiler.ProcessBuildProviders()
+   at System.Web.Compilation.BuildProvidersCompiler.PerformBuild()
+   at System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean throwIfNotFound)
+   at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp)
+   at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)
+   at System.Web.UI.PageHandlerFactory.GetHandler(HttpContext context, String requestType, String virtualPath, String path)
+   at System.Web.HttpApplication.MaterializeHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:02:14  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:12:39  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:12:40  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 11:12:46  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:12:47  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:13:11  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:13:11  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:13:12  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:13:12  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:13:12  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:16:46  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:16:47  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 11:16:51  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:16:53  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:18:11  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:18:11  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:18:12  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:18:12  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:18:12  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:26:46  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:26:47  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:26:50  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.InvalidOperationException: The control with ID 'UpdatePanel2' requires a ScriptManager on the page. The ScriptManager must appear before any controls that need it.
+   at System.Web.UI.UpdatePanel.get_ScriptManager()
+   at System.Web.UI.UpdatePanel.RegisterPanel()
+   at System.Web.UI.UpdatePanel.OnInit(EventArgs e)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_i2aqoduu.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:26:50  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:26:52  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:26:54  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:27:17  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:27:17  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:27:19  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:27:19  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:27:19  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 11:27:32  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.InvalidOperationException: The control with ID 'UpdatePanel2' requires a ScriptManager on the page. The ScriptManager must appear before any controls that need it.
+   at System.Web.UI.UpdatePanel.get_ScriptManager()
+   at System.Web.UI.UpdatePanel.RegisterPanel()
+   at System.Web.UI.UpdatePanel.OnInit(EventArgs e)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Control.InitRecursive(Control namingContainer)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_zseriro1.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:27:32  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:28:25  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'ReportIssue.aspx' was not found on controller 'HRMS.Controllers.HelpDeskController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:28:25  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:33:48  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:33:49  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 11:33:51  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:33:53  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:34:23  Informational ,  SignInSignOut.aspx.cs   User IP: 127.0.0.1
+2015-12-01 @ 11:34:23  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=127.0.0.1&format=xml
+2015-12-01 @ 11:34:24  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:34:24  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>127.0.0.1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:34:24  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 11:34:38  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "AjaxControlToolkit.Properties.Resources.NET4.resources" was correctly embedded or linked into assembly "AjaxControlToolkit" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)
+   at AjaxControlToolkit.Properties.Resources_NET4.get_E_NoScriptManager()
+   at AjaxControlToolkit.ScriptObjectBuilder.RegisterCssReferences(Control control)
+   at AjaxControlToolkit.ExtenderControlBase.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_et0lsill.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:34:38  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:36:29  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "AjaxControlToolkit.Properties.Resources.NET4.resources" was correctly embedded or linked into assembly "AjaxControlToolkit" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)
+   at AjaxControlToolkit.Properties.Resources_NET4.get_E_NoScriptManager()
+   at AjaxControlToolkit.ScriptObjectBuilder.RegisterCssReferences(Control control)
+   at AjaxControlToolkit.ExtenderControlBase.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_et0lsill.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:36:29  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:36:43  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "AjaxControlToolkit.Properties.Resources.NET4.resources" was correctly embedded or linked into assembly "AjaxControlToolkit" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)
+   at AjaxControlToolkit.Properties.Resources_NET4.get_E_NoScriptManager()
+   at AjaxControlToolkit.ScriptObjectBuilder.RegisterCssReferences(Control control)
+   at AjaxControlToolkit.ExtenderControlBase.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_et0lsill.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:36:43  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:37:50  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'ReportIssue.aspx' was not found on controller 'HRMS.Controllers.HelpDeskController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:37:50  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:39:31  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:39:33  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 11:39:37  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:39:39  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:40:02  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:40:02  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:40:02  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:40:02  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:40:02  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:41:25  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:41:27  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 11:41:36  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:41:38  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:41:38  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/f8158b1151a7441fbfd80d4146c79bd6' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:41:38  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:41:57  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:41:57  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:41:57  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:41:57  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:41:57  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:47:17  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:47:19  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:47:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:47:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:47:39  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:47:39  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:47:39  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 11:50:43  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:50:45  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:50:47  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpParseException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'. ---> System.Web.HttpParseException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'. ---> System.Web.HttpException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'.
+   at System.Web.UI.ControlBuilder.GetChildPropertyBuilder(String tagName, IDictionary attribs, Type& childType, TemplateParser templateParser, Boolean defaultProperty)
+   at System.Web.UI.ControlBuilder.CreateChildBuilder(String filter, String tagName, IDictionary attribs, TemplateParser parser, ControlBuilder parentBuilder, String id, Int32 line, VirtualPath virtualPath, Type& childType, Boolean defaultProperty)
+   at System.Web.UI.TemplateParser.ProcessBeginTag(Match match, String inputText)
+   at System.Web.UI.TemplateParser.ParseStringInternal(String text, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ProcessException(Exception ex)
+   at System.Web.UI.TemplateParser.ParseStringInternal(String text, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseString(String text, VirtualPath virtualPath, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseString(String text, VirtualPath virtualPath, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseFile(String physicalPath, VirtualPath virtualPath)
+   at System.Web.UI.TemplateParser.ParseInternal()
+   at System.Web.UI.TemplateParser.Parse()
+   at System.Web.Compilation.BaseTemplateBuildProvider.get_CodeCompilerType()
+   at System.Web.Compilation.BuildProvider.GetCompilerTypeFromBuildProvider(BuildProvider buildProvider)
+   at System.Web.Compilation.BuildProvidersCompiler.ProcessBuildProviders()
+   at System.Web.Compilation.BuildProvidersCompiler.PerformBuild()
+   at System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean throwIfNotFound)
+   at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp)
+   at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)
+   at System.Web.UI.PageHandlerFactory.GetHandler(HttpContext context, String requestType, String virtualPath, String path)
+   at System.Web.HttpApplication.MaterializeHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:50:47  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:50:56  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:50:58  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:51:18  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:51:18  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:51:19  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:51:19  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:51:19  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 11:51:32  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpParseException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'. ---> System.Web.HttpParseException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'. ---> System.Web.HttpException (0x80004005): Type 'System.Web.UI.UpdatePanel' does not have a public property named 'section'.
+   at System.Web.UI.ControlBuilder.GetChildPropertyBuilder(String tagName, IDictionary attribs, Type& childType, TemplateParser templateParser, Boolean defaultProperty)
+   at System.Web.UI.ControlBuilder.CreateChildBuilder(String filter, String tagName, IDictionary attribs, TemplateParser parser, ControlBuilder parentBuilder, String id, Int32 line, VirtualPath virtualPath, Type& childType, Boolean defaultProperty)
+   at System.Web.UI.TemplateParser.ProcessBeginTag(Match match, String inputText)
+   at System.Web.UI.TemplateParser.ParseStringInternal(String text, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ProcessException(Exception ex)
+   at System.Web.UI.TemplateParser.ParseStringInternal(String text, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseString(String text, VirtualPath virtualPath, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseString(String text, VirtualPath virtualPath, Encoding fileEncoding)
+   at System.Web.UI.TemplateParser.ParseFile(String physicalPath, VirtualPath virtualPath)
+   at System.Web.UI.TemplateParser.ParseInternal()
+   at System.Web.UI.TemplateParser.Parse()
+   at System.Web.Compilation.BaseTemplateBuildProvider.get_CodeCompilerType()
+   at System.Web.Compilation.BuildProvider.GetCompilerTypeFromBuildProvider(BuildProvider buildProvider)
+   at System.Web.Compilation.BuildProvidersCompiler.ProcessBuildProviders()
+   at System.Web.Compilation.BuildProvidersCompiler.PerformBuild()
+   at System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean throwIfNotFound)
+   at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp)
+   at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)
+   at System.Web.UI.PageHandlerFactory.GetHandler(HttpContext context, String requestType, String virtualPath, String path)
+   at System.Web.HttpApplication.MaterializeHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:51:32  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 11:53:00  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "AjaxControlToolkit.Properties.Resources.NET4.resources" was correctly embedded or linked into assembly "AjaxControlToolkit" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)
+   at AjaxControlToolkit.Properties.Resources_NET4.get_E_NoScriptManager()
+   at AjaxControlToolkit.ScriptObjectBuilder.RegisterCssReferences(Control control)
+   at AjaxControlToolkit.ExtenderControlBase.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\mahesh.farad\AppData\Local\Temp\Temporary ASP.NET Files\root\f858c42d\46640ece\App_Web_bjtek2au.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 11:53:00  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 11:56:07  Informational , App start Global.asax App_Start  
+2015-12-01 @ 11:56:10  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 11:56:28  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 11:56:28  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 11:56:28  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 11:56:28  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 11:56:28  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+
+2015-12-01 @ 12:21:00  Informational , App start Global.asax App_Start  
+2015-12-01 @ 12:21:01  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 12:21:03  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpCompileException (0x80004005): d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\HelpDesk\ReportIssue.aspx(521): error CS0118: 'HRMS.HelpDesk.ReportIssue.btnReset' is a 'field' but is used like a 'method'
+   at System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile, Boolean throwIfNotFound, Boolean ensureIsUpToDate)
+   at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean throwIfNotFound)
+   at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp)
+   at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)
+   at System.Web.UI.PageHandlerFactory.GetHandler(HttpContext context, String requestType, String virtualPath, String path)
+   at System.Web.HttpApplication.MaterializeHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 12:21:03  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2015-12-01 @ 12:24:20  Informational , App start Global.asax App_Start  
+2015-12-01 @ 12:24:21  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 12:24:25  Informational , App start Global.asax App_Start  
+2015-12-01 @ 12:24:28  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 12:24:57  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 12:24:57  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 12:24:57  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 12:24:57  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 12:24:57  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 12:25:21  FATAL ERROR   , Thread was being aborted. ReportIssue.aspx resetAll     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HelpDesk.ReportIssue.btnReset_Click(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\HelpDesk\ReportIssue.aspx.cs:line 807
+
+2015-12-01 @ 12:27:17  Informational , App start Global.asax App_Start  
+2015-12-01 @ 12:27:19  Informational , App start finished Global.asax App_Start  
+
+2015-12-01 @ 12:27:24  Informational , App start Global.asax App_Start  
+2015-12-01 @ 12:27:27  Informational , App start finished Global.asax App_Start  
+2015-12-01 @ 12:27:35  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/47ccb98db93242f380f50c2d3fc1ae5a' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 12:27:35  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2015-12-01 @ 12:27:46  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 12:27:46  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 12:27:46  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 12:27:46  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 12:27:46  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 12:28:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2015-12-01 @ 12:28:08  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2015-12-01 @ 12:28:08  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2015-12-01 @ 12:28:08  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2015-12-01 @ 12:28:08  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VibrentWeb\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\vibrantweb-master-092b95e3ad3ac6b5a114721aaf3695fbfcf6a07c\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 117
+2015-12-01 @ 12:28:53  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'ReportIssue.aspx' was not found on controller 'HRMS.Controllers.HelpDeskController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2015-12-01 @ 12:28:53  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------

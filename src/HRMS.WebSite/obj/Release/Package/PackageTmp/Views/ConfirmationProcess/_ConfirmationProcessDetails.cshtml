@@ -1,0 +1,73 @@
+﻿@model HRMS.Models.ConfirmationDetailsViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<script src="@Url.Content("~/Scripts/Common.js")" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/New Design/common.js"></script>
+    <section class="ConfirmationContainer Container">
+					    <div class="FixedHeader">
+							<div class="clearfix">
+								<h2 class="MainHeading">Confirmation</h2>
+							</div>
+							<nav class="sub-menu-colored">
+								<a href="#" class="selected">Confirmation Process</a>
+								<a href="#">Initiate Confirmation Process</a>
+							</nav>
+						</div>
+						<div class="MainBody">
+							<div class="Hrmain clearfix">
+									<div class="fill-dtls clearfix">
+										<div class="LabelDiv">
+											<label for="From Date" class="select-type">Employee Search:</label>
+										</div>
+										<div class="InputDiv">
+											<input type="text">
+										</div>
+										<div class="LabelDiv">
+											<label for="Field" class="select-type">Field:</label>
+										</div>
+										<div class="InputDiv">
+											<select>
+												<option value="abc">abc</option>
+												<option value="pqe">pqe</option>
+												<option value="xyz">xyz</option>
+												<option value="typ">typ</option>
+											</select>
+										</div>
+										<div class="remain">
+											<button type="button" class="ButtonGray">Submit</button>
+										</div>
+									</div>
+							</div>
+						</div>
+				</section>
+<script type="text/javascript">
+    $("#txtSearchTextConfrmPrc").keypress(function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            searchterm = $("#txtSearchTextConfrmPrc").val();
+            jQuery("#ConfirmationTableInbox").trigger("reloadGrid");
+            jQuery("#ConfirmationTableWatchList").trigger("reloadGrid");
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(document).click(function (e) {
+        if (!$(e.target).is('.EmpLink')) {
+            $("#LinkPopUp").fadeOut();
+        }
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+    });
+</script>
+<script src="@Url.Content("../../Scripts/Confirmation/ConfirmationProcess.js")" type="text/javascript"></script>

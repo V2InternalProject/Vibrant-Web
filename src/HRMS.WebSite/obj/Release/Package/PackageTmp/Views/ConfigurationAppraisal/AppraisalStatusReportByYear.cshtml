@@ -1,0 +1,177 @@
+﻿@model HRMS.Models.AppraisalStatusReport
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    @using (Html.BeginForm("ExportToExcel", "ConfigurationAppraisal"))
+    {
+        <div style="float: left">
+            <input class="button" type="submit" id="exportToExcel" value="Export To Excel" />
+        </div>
+        <br />
+        <br />
+        @Html.AntiForgeryToken()
+        int? AppYear = @Model.AppraisalReportViewModelList.Select(s => s.AppraisalYearID).FirstOrDefault();
+        <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel">
+            <thead>
+                <tr class="bluebgtable1">
+                    <td class="bluebgtable1" width="15%">
+                        Employee Code
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Employee ID
+                    </td>
+                    <td width="10%">
+                        Employee Name
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Delivery Team
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Designation
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Probation Review Date
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Confirmation Date
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Appraiser 1
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Appraiser 2
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Reviewer 1
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Reviewer 2
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Group Head
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Stage
+                    </td>
+                    <td class="bluebgtable1" width="12%">
+                        Employee Email
+                    </td>
+                    <td class="bluebgtable1" width="15%">
+                        Appraiser 1 Email
+                    </td>
+                    <td class="bluebgtable1" width="12%">
+                        Appraiser 2 Email
+                    </td>
+                    <td class="bluebgtable1" width="12%">
+                        Reviewer 1 Email
+                    </td>
+                    <td class="bluebgtable1" width="12%">
+                        Reviewer 2 Email
+                    </td>
+                    <td class="bluebgtable1" width="12%">
+                        Group Head Email
+                    </td>
+                </tr>
+            </thead>
+            @for (var i = 0; i < Model.AppraisalReportViewModelList.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Employeecode)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Employeecode, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].EmployeeID)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].EmployeeID, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].EmployeeName)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].EmployeeName, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].DeliveryTeamName)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].DeliveryTeamName, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].DesignationName)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].DesignationName, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].ProbationReviewDate)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].ProbationReviewDate, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].ConfirmationDate)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].ConfirmationDate, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Appraiser1Name)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Appraiser1Name, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Appraiser2Name)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Appraiser2Name, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Reviewer1Name)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Reviewer1Name, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Reviewer2Name)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Reviewer2Name, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].GroupHeadName)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].GroupHeadName, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].AppraisalStageDesc)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].AppraisalStageDesc, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].EmployeeEmail)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].EmployeeEmail, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Appraiser1Email)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Appraiser1Email, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Appraiser2Email)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Appraiser2Email, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Reviewer1Email)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Reviewer1Email, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].Reviewer2Email)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].Reviewer2Email, new { style = "display: none;" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => Model.AppraisalReportViewModelList[i].GroupHeadEmail)
+                        @Html.TextBoxFor(x => Model.AppraisalReportViewModelList[i].GroupHeadEmail, new { style = "display: none;" })
+                    </td>
+                    <td style="display: none">
+                        @Html.HiddenFor(x => Model.AppraisalReportViewModelList[i].AppraisalYearID)
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="11">
+                    <ul>
+                        <li>Total Employees: @Model.AppraisalReportViewModelList.Where(x => x.AppraisalYearID == AppYear).Count()</li>
+                        <li>Completed Employees: @Model.AppraisalReportViewModelList.Where(x => x.AppraisalStageID == 7 && x.AppraisalYearID == AppYear).Count()</li>
+                        <li>Pending Employees: @Model.AppraisalReportViewModelList.Where(x => x.AppraisalStageID != 7 && x.AppraisalYearID == AppYear).Count()</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+    }
+</body>
+</html>

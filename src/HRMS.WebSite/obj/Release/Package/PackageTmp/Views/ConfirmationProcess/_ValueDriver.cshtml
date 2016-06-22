@@ -1,0 +1,411 @@
+﻿@model List<HRMS.Models.ConfirmationParameter>
+@using HRMS.DAL
+@section HeaderLinks{
+}
+<input type="hidden" id="valueCount" value="@Model.Count()" />
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmValueDriver" }))
+{
+    if (this.Model.Any())
+    {
+        var counter = 1;
+    <table cellpadding="0" cellspacing="2" class="bluebgtable-confi1" border="0" width="100%">
+        <thead>
+            <tr>
+                <label class="conformsub-title">
+                    7. Confirmation Form (Rating Range : @ViewBag.minRating - @ViewBag.maxRating )
+                </label><br />
+                <label class="note-text">( Note: If the parameter is not applicable to you, kindly put ‘0’ under Rating and ‘NA’ under Comments )</label>
+            </tr>
+            <tr class="bluebgtable1">
+                <td>
+                    Parameter
+                </td>
+                <td>
+                    Self Rating
+                </td>
+                <td>
+                    Employee Comments
+                </td>
+                <td class="mngrViewDetails">
+                    Manager 1 Ratings
+                    <br />
+                    @Model[0].MgrName
+                </td>
+                <td class="mngrViewDetails">
+                    Manager 1 Comments
+                    <br />
+                    @Model[0].MgrName
+                </td>
+                <td class="managerSecond mngrViewDetails">
+                    Manager 2 Ratings
+                    <br />
+                    @Model[0].MgrNameSecond
+                </td>
+                <td class="managerSecond mngrViewDetails">
+                    Manager 2 Comments
+                    <br />
+                    @Model[0].MgrNameSecond
+                </td>
+                <td id="th_reviewerRating1" class="revViewDetails" style="display: none">
+                    Reviewer 1 Ratings
+                    <br />
+                    @Model[0].RevName
+                </td>
+                <td id="th_reviewerComment1" class="revViewDetails" style="display: none">
+                    Reviewer 1 Comments
+                    <br />
+                    @Model[0].RevName
+                </td>
+                <td id="th_hrRating" class="revViewDetails" style="display: none">
+                    HR Reviewer Ratings
+                    <br />
+                    @Model[0].HRName
+                </td>
+                <td id="th_hrComments" class="revViewDetails" style="display: none">
+                    HR Reviewer Comments
+                    <br />
+                    @Model[0].HRName
+                </td>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr class="bluebgtable-confi1">
+                <td id="employee_ID_@counter" style="display: none">
+                    <input type="hidden" id="employeeID_@counter" name="employeeID" class="clsEmployeeID" value="@item.employeeID" />
+                </td>
+                <td id="confirmation_ID_@counter" style="display: none">
+                    <input type="hidden" id="confirmationID_@counter" name="confirmationID" value="@item.confirmationID" />
+                </td>
+                <td id="parameter_ID_@counter" style="display: none">
+                    <input type="hidden" id="parameterID_@counter" name="confirmationID" value="@item.parameterID" />
+                </td>
+                <td id="competency_ID_@counter" style="display: none">
+                    <input type="text" id="competencyID_@counter" name="competencyID" class="competency ratingInput" value="@item.competencyID" />
+                </td>
+                <td id="Parameter_Description_@counter">
+                    <input type="text" id="ParameterDescription_@counter" name="ParameterDescription" value="@item.ParameterDescription" class="paramDescription confic-parameter ratingInput" readonly="readonly" />
+                </td>
+                <td id="Self_Rating_@counter">
+                    <input type="text" class="requiredField clsSelfRating clsnumber ratingInput " id="SelfRating_@counter" maxlength="3" name="SelfRating" value="@item.SelfRating" disabled="disabled" />
+                    <label style="color: #E80C4D; display: none;" id="Label_SelfRating_@counter" class="hide">
+                        Rating is required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;" id="Span_SelfRating_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Emp_Comments_@counter">
+                    <textarea rows="2" cols="20" class="requiredField clsEmpComments commentTxtBox" id="EmpComments_@counter" name="EmpComments" value="@item.EmpComments" disabled="disabled">@item.EmpComments</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_EmpComments_@counter" class="hide">
+                        Comment is required.
+                    </label>
+                </td>
+                <td id="Manager_Rating1_@counter" class="mngrViewDetails">
+                    <input type="number" id="ManagerRating1_@counter" maxlength="3" name="ManagerRating1" value="@item.ManagerRating1" class="requiredField clsManagerRating1 clsnumber ratingInput" />
+                    <label style="color: #E80C4D; ; display: none;" id="Label_ManagerRating1_@counter" class="hide">
+                        Rating required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;" id="Span_ManagerRating1_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Mngr_Comments1_@counter" class="mngrViewDetails">
+                    <textarea rows="2" cols="20" id="MngrComments1_@counter" name="MngrComments1 commentTxtBox" value="@item.MngrComments1" class="requiredField clsMngrComments1 commentTxtBox">@item.MngrComments1</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_MngrComments1_@counter" class="hide">
+                        Comment is required.</label>
+                </td>
+                <td id="Manager_Rating2_@counter" class="mngrViewDetails managerSecond">
+                    <input type="number" id="ManagerRating2_@counter" maxlength="3" name="ManagerRating2" value="@item.ManagerRating2" class="requiredField clsManagerRating2 clsnumber ratingInput" />
+                    <label style="color: #E80C4D; display: none;" id="Label_ManagerRating2_@counter" class="hide">
+                        Rating required.</label>
+                    <span style="color: #E80C4D; display: none;" id="Span_ManagerRating2_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Mngr_Comments2_@counter" class="mngrViewDetails managerSecond">
+                    <textarea rows="2" cols="20" id="MngrComments2_@counter" name="MngrComments2" value="@item.MngrComments2" class="requiredField clsMngrComment2 commentTxtBox">@item.MngrComments2</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_MngrComments2_@counter" class="hide">
+                        Comment is required.
+                    </label>
+                </td>
+                <td id="Reviewer_Rating_@counter" class="revViewDetails" style="display: none">
+                    <input type="number" id="ReviewerRating_@counter" maxlength="3" name="ReviewerRating" value="@item.ReviewerRating" class="ratingInput clsnumber requiredField" />
+                    <label style="color: #E80C4D; display: none;" id="Label_ReviewerRating_@counter" class="hide">
+                        Rating required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;" id="Span_ReviewerRating_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Reviewer_Comments_@counter" class="revViewDetails" style="display: none">
+                    <textarea rows="2" cols="20" id="ReviewerComments_@counter" name="ReviewerComments" value="@item.ReviewerComments" class="requiredField clsReviewerComments commentTxtBox">@item.ReviewerComments</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_ReviewerComments_@counter" class="hide">
+                        Comment is required.
+                    </label>
+                </td>
+                <td id="HRr_Rating_@counter" class="revViewDetails" style="display: none">
+                    <input type="number" id="HRrRating_@counter" maxlength="3"  name="HRrRating" value="@item.HRrRating" class="ratingInput clsnumber requiredField HrRating" />
+                    <label style="color: #E80C4D; display: none;" id="Label_HRrRating_@counter" class="hide">
+                        Rating required.</label>
+                    <span style="color: #E80C4D; display: none;" id="Span_HRrRating_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Hr_Comments_@counter" class="revViewDetails" style="display: none">
+                    <textarea rows="2" cols="20" id="HrComments_@counter" name="HrComments" value="@item.HrComments" class="requiredField HrComment commentTxtBox">@item.HrComments</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_HrComments_@counter" class="hide">
+                        Comment is required.
+                    </label>
+                </td>
+                <td id="IsManagerOrEmployee_" style="display: none">
+                    <input type="hidden" id="IsManagerOrEmployee_@counter"   name="IsManagerOrEmployee" value="@Model[0].IsManagerOrEmployee" class="ratingInput  requiredField " />
+                </td>
+            </tr>
+            if (Model.Count == counter)
+            {
+            <tr class="bluebgtable-confi1">
+                @if (ViewBag.hasManager2 == "noManager2")
+                {
+                    <td colspan="5" align="left">
+                        <label>
+                            <b>Overall Rating (Which is not average of the above parameters)</b>
+                        </label>
+                    </td>
+                }
+                else
+                {
+                    <td colspan="7" align="left">
+                        <label>
+                            <b>Overall Rating (Which is not average of the above parameters)</b>
+                        </label>
+                    </td>
+                }
+                <td id="employee_ID_@Model.Count" style="display: none">
+                    <input type="hidden" id="employeeID" name="employeeID" value="@Model[0].employeeID" />
+                </td>
+                <td id="OverallReview_Rating" class="revViewDetails" style="display: none">
+                    <input type="number" id="OverallReviewRating" maxlength="3"  name="OverallReviewRating" value="@Model[0].OverallReviewRating" disabled="disabled" class="requiredField clsnumber footer-rating-class" />
+                    <label style="color: #E80C4D; display: none;" id="Label_OverallReviewRating" class="hide">
+                        Rating required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;" id="Span_OverallReviewRating" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="OverallReview_RatingComments" class="revViewDetails" style="display: none">
+                    <textarea rows="2" cols="20" id="OverallReviewRatingComments"  name="OverallReviewRatingComments" value="@Model[0].OverallReviewRatingComments" disabled="disabled" class="requiredField  footer-comment-TxtBox">@Model[0].OverallReviewRatingComments</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_OverallReviewRatingComments"
+                        class="hide">
+                        Comment is required.</label>
+                </td>
+                <td id="OverallReview_HRRating" class="revViewDetails" style="display: none">
+                    <input type="number" maxlength="3" id="OverallReviewHRRating"   name="OverallReviewHRRating" value="@Model[0].OverallReviewHRRating" disabled="disabled" class="requiredField clsnumber footer-rating-class" />
+                    <label style="color: #E80C4D; display: none;" id="Label_OverallReviewHRRating" class="hide">
+                        Rating required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;" id="Span_OverallReviewHRRating" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="OverallReview_HRComments" class="revViewDetails" style="display: none">
+                    <textarea rows="2" cols="20" id="OverallReviewHRComments"   name="OverallReviewHRComments" value="@Model[0].OverallReviewHRComments" disabled="disabled" class="requiredField  footer-comment-TxtBox">@Model[0].OverallReviewHRComments</textarea>
+                    <label style="color: #E80C4D; display: none;" id="Label_OverallReviewHRComments"
+                        class="hide">
+                        Comment is required.</label>
+                </td>
+            </tr>
+            }
+            counter = counter + 1;
+        }
+    </table>
+    }
+    else
+    {
+    @Html.Label("Value Driver not present", new { @class = "mandatory" })
+    }
+    <br />
+    <input type="hidden" type="submit" id="btnValueDriverSubmit" />
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        var count = $('#valueCount').val();
+        $(".requiredField").keyup(function (value, element) {
+            var id = $(this).attr("id");
+            var textboxValue = $("#" + id).val();
+            if (textboxValue == "" || textboxValue == null) {
+                var labelid = "Label_" + id;
+                $("#" + labelid).css("display", "block");
+                return false;
+            }
+            else {
+                var labelid = "Label_" + id;
+                $("#" + labelid).css("display", "none");
+                return true;
+            }
+        });
+        if ('@ViewBag.hasManager2' == "noManager2") {  // validation to hide columns if no mngr2 is in the process.
+            $('.managerSecond').hide();
+            $("#corporateTable").jqGrid('hideCol', 'ManagerCommentsSecond');
+        }
+
+        $(".clsnumber").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });
+
+        if ('@ViewBag.IsManagerOrEMployee' == "Reviewer") {
+            $('#th_reviewerRating1').show();
+            $('#th_reviewerComment1').show();
+            if ('@ViewBag.clickedViewDetails' != "yes") {
+                $('#OverallReviewRating').attr('disabled', false);
+                $('#OverallReviewRatingComments').attr('disabled', false);
+            }
+            $('#OverallReview_Rating').show();
+            $('#OverallReview_RatingComments').show();
+        }
+        if ('@ViewBag.IsManagerOrEMployee' == "HR") {
+            $('#th_reviewerRating1').show();
+            $('#th_reviewerComment1').show();
+            $('#th_hrRating').show();
+            $('#th_hrComments').show();
+            $('#OverallReviewRating').show();
+            $('#OverallReviewRatingComments').show();
+            if ('@ViewBag.clickedViewDetails' != "yes") {
+                $('#OverallReviewHRRating').removeAttr('disabled');
+                $('#OverallReviewHRComments').removeAttr('disabled');
+            }
+            $('#OverallReview_Rating').show();
+            $('#OverallReview_RatingComments').show();
+            $('#OverallReview_HRRating').show();
+            $('#OverallReview_HRComments').show();
+
+        }
+        for (var i = 1; i <= count; i++) {
+            $('#ParameterDescription' + i).attr('disabled', true);
+            if ('@ViewBag.IsManagerOrEMployee' == "Employee") {
+                if ('@ViewBag.clickedViewDetails' != "yes") {
+                    $('#EmpComments_' + i).attr('disabled', false);
+                    $('#SelfRating_' + i).attr('disabled', false);
+                }
+                else {
+                    $('#EmpComments_' + i).attr('disabled', true);
+                    $('#SelfRating_' + i).attr('disabled', true);
+                }
+            }
+
+            if ('@ViewBag.IsManagerOrEMployee' == "Manager") {
+
+                $('#ManagerRating2_' + i).attr('disabled', true);
+                $('#MngrComments2_' + i).attr('disabled', true);
+                $('#ReviewerRating_' + i).hide();
+                $('#ReviewerComments_' + i).hide();
+                if ('@ViewBag.stageid' != 7 && '@ViewBag.stageid' != 1) {
+                    $('#HRrRating_' + i).hide();
+                    $('#HrComments_' + i).hide();
+                    $('#OverallReviewRating').hide();
+                    $('#OverallReviewRatingComments').hide();
+                    $('#OverallReviewHRRating').hide();
+                    $('#OverallReviewHRComments').hide();
+                }
+            }
+
+            if ('@ViewBag.IsManagerOrEMployee' == "Manager2") {
+                $('#ManagerRating1_' + i).attr('disabled', true);
+                $('#MngrComments1_' + i).attr('disabled', true);
+                if ('@ViewBag.stageid' != 7 &&  '@ViewBag.stageid' != 1) {
+                    $('#ReviewerRating_' + i).hide();
+                    $('#ReviewerComments_' + i).hide();
+                    $('#HRrRating_' + i).hide();
+                    $('#HrComments_' + i).hide();
+                    $('#OverallReviewRating').hide();
+                    $('#OverallReviewRatingComments').hide();
+                    $('#OverallReviewHRRating').hide();
+                    $('#OverallReviewHRComments').hide();
+                }
+            }
+
+            if ('@ViewBag.IsManagerOrEMployee' == "Reviewer") {
+                $('#ManagerRating1_' + i).attr('disabled', true);
+                $('#MngrComments1_' + i).attr('disabled', true);
+                $('#ManagerRating2_' + i).attr('disabled', true);
+                $('#MngrComments2_' + i).attr('disabled', true);
+                $('#OverallReviewRating').attr('disabled', false);
+                $('#OverallReviewRatingComments').attr('disabled', false);
+                $('#OverallReviewHRRating').show();
+                $('#OverallReviewHRComments').show();
+                $('#Reviewer_Comments_' + i).show();
+                $('#Reviewer_Rating_' + i).show();
+                $('#Hr_Comments_' + i).show();
+                $('#HRr_Rating_' + i).show();
+                $('#HRrRating_' + i).attr('disabled', true);
+                $('#HrComments_' + i).attr('disabled', true);
+                $('#th_hrRating').show();
+                $('#th_hrComments').show();
+                $('#OverallReview_HRRating').show();
+                $('#OverallReview_HRComments').show();
+            }
+            if ('@ViewBag.IsManagerOrEMployee' == "HR") {
+                $('#ManagerRating1_' + i).attr('disabled', true);
+                $('#MngrComments1_' + i).attr('disabled', true);
+                $('#ManagerRating2_' + i).attr('disabled', true);
+                $('#MngrComments2_' + i).attr('disabled', true);
+                $('#ReviewerRating_' + i).attr('disabled', true);
+                $('#ReviewerComments_' + i).attr('disabled', true);
+                if ('@ViewBag.stageid' == 6) {
+                    $('#HRrRating_' + i).attr('disabled', true);
+                    $('#HrComments_' + i).attr('disabled', true);
+                    $('#ManagerRating1_' + i).attr('disabled', true);
+                    $('#MngrComments1_' + i).attr('disabled', true);
+                    $('#ManagerRating2_' + i).attr('disabled', true);
+                    $('#MngrComments2_' + i).attr('disabled', true);
+                    $('#ReviewerRating_' + i).attr('disabled', true);
+                    $('#ReviewerComments_' + i).attr('disabled', true);
+                    $('#OverallReviewHRComments').attr('disabled', true);
+                    $('#OverallReviewHRRating').attr('disabled', true);
+                }
+                $('#Hr_Comments_' + i).show();
+                $('#HRr_Rating_' + i).show();
+                $('#Reviewer_Comments_' + i).show();
+                $('#Reviewer_Rating_' + i).show();
+            }
+        }
+        if ('@ViewBag.clickedViewDetails' == "yes") {
+            $('.button').hide();
+            $('.approveReject').hide();
+            $('.requiredField').attr('disabled', 'disabled');
+            $('#frmGoalAquire').find('textarea').attr('disabled', true);
+            if ('@ViewBag.stageid' != 7 && '@ViewBag.stageid' != 1) {
+                if ('@ViewBag.IsManagerOrEMployee' == 'Employee') {
+                    $('.revViewDetails').hide();
+                    $('.mngrViewDetails').hide();
+                    if ('@ViewBag.hasManager2' != "noManager2") {  // validation to hide columns if no mngr2 is in the process.
+                        $("#corporateTable").jqGrid('hideCol', 'ManagerCommentsSecond');
+                    }
+                    $("#corporateTable").jqGrid('hideCol', 'ManagerComments');
+
+                }
+                else if ('@ViewBag.IsManagerOrEMployee' == 'Manager' || '@ViewBag.IsManagerOrEMployee' == 'Manager2') {
+                    $('.revViewDetails').hide();
+                    $("#corporateTable").jqGrid('hideCol', 'ReviewerComments');
+                    $("#corporateTable").jqGrid('hideCol', 'HRReviewerComments');
+                }
+                else {
+                    $('.revViewDetails').show();
+                    if ('@ViewBag.hasManager2' == "noManager2") {
+                        $('.managerSecond').hide();
+                    }
+                    else {
+                        $('.managerSecond').show();
+                        $('.mngrViewDetails').show();
+                    }
+                    $("#corporateTable").jqGrid('showCol', 'ReviewerComments');
+                    $("#corporateTable").jqGrid('showCol', 'HRReviewerComments');
+                }
+            }
+            else {
+                $('.requiredField').show();
+                if ('@ViewBag.hasManager2' != "noManager2") {  // validation to hide columns if no mngr2 is in the process.
+                    $("#corporateTable").jqGrid('showCol', 'ManagerCommentsSecond');
+                }
+                $("#corporateTable").jqGrid('showCol', 'ManagerComments');
+                $("#corporateTable").jqGrid('showCol', 'ReviewerComments');
+                $("#corporateTable").jqGrid('showCol', 'HRReviewerComments');
+            }
+        }
+    });
+</script>

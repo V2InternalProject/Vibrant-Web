@@ -1,0 +1,87 @@
+﻿@model HRMS.Models.DependentDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/_DependentDetails.js" type="text/javascript"></script>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addDependantsDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25 NoNegMrgnContainer">
+        @Html.HiddenFor(x => x.EmployeeId)
+        @Html.HiddenFor(x => x.DependandsId)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Dependent Name:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.DependandsName)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.DependandsName)
+                    @Html.HiddenFor(model => model.DependandsName, new { id = "dependentName" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Dependent Relation:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.uniqueID, new SelectList(Model.RelationList, "uniqueID", "DependandsRelation", "Select"), "Select", new { @id = "DependantsDetails_Relation" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.uniqueID, "Please select Dependent Relation")
+                    @Html.HiddenFor(model => model.uniqueID, new { id = "dependandsRelation" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Date Of Birth:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.DependandsBirthDate, String.Format("{0:MM/dd/yyyy}", Model.DependandsBirthDate), new { @readonly = "readonly" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.DependandsBirthDate)
+                    @Html.Hidden("BirthDate", String.Format("{0:MM/dd/yyyy}", Model.DependandsBirthDate), new { id = "birthdateDependant" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Age(Years):")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.DependandsAge, null, new { @readonly = "readonly" })
+                <p class="qualif-detail">@Html.HiddenFor(model => model.DependandsAge, new { @id = "txtAgeDependant" })</p>
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="savedependant" type="button" value="Save" class="button" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialogdependant()" class="button " />
+        </div>
+    </div>
+}
+@*<div id="AddDependantSuccessMessege" title="Dependant details" style="display: none;">
+        <p>
+            Dependant details have been saved.
+        </p>
+    </div>
+    <div id="AddDependantErrorMessege" style="display: none;">
+        <p>
+            Unable to add record
+        </p>
+    </div>
+    <div id="DeleteConfirmation" style="display: none;">
+        <p>
+            Record has been deleted.
+        </p>
+    </div>
+    <div id="DeleteConfirmationDialog" style="display: none">
+        <p>
+            Are you sure you want to delete the records?</p>
+    </div>*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#DependandsBirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-100:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+        //save dependent details
+        $('#savedependant').click(function () {
+            SaveDependentDetails();
+        });
+    });
+</script>

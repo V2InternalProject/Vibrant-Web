@@ -1,0 +1,926 @@
+﻿@model HRMS.Models.ManageMilestonesModel
+@{
+    ViewBag.Title = "Manage Milestones";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "manageMilestones" }))
+{
+    @*@Html.HiddenFor(x => x.ProjectReviewerId)*@
+    @Html.HiddenFor(x => x.ResponsiblePerson)
+    @Html.HiddenFor(x => x.MilestoneStatus)
+    @Html.HiddenFor(x => x.ProjectID)
+    @Html.HiddenFor(x => x.MilestoneID)
+
+}
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+             @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="FormContainerBox clearfix">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Select Project:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.Prj, new SelectList(Model.ProjectList, "Projectids", "ProjectName", "Select"), "Select")
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(model => model.Prj)
+                        </p>
+                        @*@Html.HiddenFor(model => model.PMSApprovalStatus, new { id = "pMSApprovalStatus" })*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" value="Delete" class="ButtonGray mrgnR8" id="btnDelete" />
+            <input type="button" value="Select All" class="ButtonGray mrgnR8" id="btnSelectAll" />
+            <input type="button" value="Deselect All" class="ButtonGray mrgnR8" id="btnDeselectAll" />
+        </div>
+        <div class="tablestyle3">
+            <table id="jqAddMilestoneTable"></table>
+        </div>
+        <div id="jqAddMilestoneTablePager">
+        </div>
+        <div class="TotalRecordsDiv">
+            <div class="bluebgtable1" id="totalcount">
+            </div>
+        </div>
+        <div style="display: none;" id="ErrorGridLength">
+            No Records Found
+        </div>
+        <div id="MilestoneDetailsSucess" title="Milestone Details" style="display: none;">
+            <p>
+                Record has been saved successfully.
+            </p>
+        </div>
+        <div id="deleteMilestoneConfirmation" style="display: none">
+            <p>
+                Are you sure you want to delete the selected record?
+            </p>
+        </div>
+        <div id="deleteMiestoneSucess" style="display: none;">
+            <p>
+                Record has been deleted successfully.
+            </p>
+        </div>
+        <div id="MilestoneNameExistDialog" title="Milestone Details" style="display: none;">
+            <p>
+                Milestone Name already exists.
+            </p>
+        </div>
+        <div id="MilestoneSaveError" title="Milestone Details" style="display: none">
+            <p>
+                Milestone details could not be saved.
+            </p>
+        </div>
+        <div id="MilestoneStartDateGreaterDialog" title="Milestone details" style="display: none">
+            <p>
+                Start Date cannot be greater then End Date.
+            </p>
+        </div>
+        <div id="MilestoneEndDateLesserDialog" title="Milestone details" style="display: none">
+            <p>
+                End Date cannot be lesser then Start Date.
+            </p>
+        </div>
+        <div id="ErrroDeleteMilestone" style="display: none;">
+            <p>
+                Please select atleast one record to delete.
+            </p>
+        </div>
+        <div id="RequiredResponsiblePrsn" style="display: none;" title="Required Feild">
+            <p>
+                Please select Responsible Person.
+            </p>
+        </div>
+        <div id="TaskClosureMain" style="display: none; clear: both">
+            @* @Html.Partial("_TaskClosure", Model) *@
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    ProjectStartDate = null;
+    ProjectEndDate = null;
+    persponList = [];
+    respPersonList2 = [];
+    $(document).ready(function () {
+        if($('#Prj option:selected').text() == 'Select')
+            $('.TotalRecordsDiv').hide();
+        else
+            GetSelectedProjectDetails();
+        responsiblePersonName = "";
+        $('#manageMilestones #MilestoneStatus').val('');
+        $('#manageMilestones #ResponsiblePerson').val('');
+
+        $('#btnTaskClosure').click(function () {
+            TaskClosureListShow();
+        });
+
+        //     var SessionPrjID ='@Session["ProjectId"]';
+        //     if (SessionPrjID != null || SessionPrjID != '' )
+        //       {
+        //         $('#Prj').val(SessionPrjID);
+        //         GetSelectedProjectDetails();
+        //       }
+
+        // respPersonList = @(Html.Raw(Json.Encode(ViewBag.EmployeeLists)));
+        //        persponList = [];
+        //       persponList.push("Select");
+        //        $.each(respPersonList, function (index,value) {
+        //          persponList.push(value.EmployeeName);
+        //         });
+
+        milestoneStatusList = @(Html.Raw(Json.Encode(ViewBag.MilestoneStausList)));
+        var mStatusList = [];
+        mStatusList.push("Select");
+        $.each(milestoneStatusList, function (index,value) {
+            mStatusList.push(value.MilestoneStatus);
+        });
+
+        //         var projectID = $('#Prj option:selected').val();
+        //       if(projectID == '')
+        //       {
+        //             projectID =0;
+        //       }
+        $("#jqAddMilestoneTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadMilestoneGrid", "SEM")',
+            postData: { ProjectID: function () { return $('#Prj option:selected').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "","", "MileStone", "Description", "Start Date", "End Date", "Responsible Person", "Milestone Status", "Delete"],
+            // Configure the columns
+            colModel: [
+                { name: "MilestoneID", index: "MilestoneID", align: "left", width: 20, editable: true, hidden: true },
+                 { name: "ProjectID", index: "ProjectID", align: "left", width: 120, editable: true, hidden: true },
+               { name: "HiddenResponsiblePerson", index: "HiddenResponsiblePerson", align: "left", width: 120, editable: true, hidden: true },
+                { name: "MilestoneName", index: "MilestoneName", align: "left", width: 120, editable: true, editrules: { required: true }},
+                 { name: "MilestoneDescription", index: "MilestoneDescription", align: "left", width: 90, editable: true },
+                { name: "StartDate", index: "StartDate", width: 100, align: "left",  sortorder: "desc", editable: true,formatter: 'date', formatoptions: { newformat: 'm/d/Y'} , editoptions:{
+                    //                    readonly:true,
+                    //                    dataInit: function(element) {
+                    //                        $(element).datepicker({
+                    //                            dateFormat: 'mm/dd/yy',
+                    //                            maxDate: 'now',
+                    //                            changeMonth: true,
+                    //                            changeYear: true
+                    //                        });
+                    //                    }
+
+                    readonly:true,
+                    dataEvents: [{ type: 'change', fn: function(e) {ChangeMilestoneStartDate(e); } }],
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true,
+                            beforeShow: BeforeShowForDatePicker,
+                            onClose: onCloseForDatePicker
+                        }).bind("mouseover", function () {
+                            $(this).datepicker("option", "minDate", ProjectStartDate);
+                            $(this).datepicker("option", "maxDate", ProjectEndDate);
+                            var selectedDateID = this.id;
+                            var rowID = selectedDateID.split("_");
+                            var selectedStartDate = this.value;
+                            if(rowID[0]== "new")
+                                var endDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_EndDate").val();
+                            else
+                                var endDateValue = $("#"+rowID[0]+"_EndDate").val();
+                            //var endDateValue = $("#"+rowID[0]+"_EndDate").val();
+                            if(selectedStartDate > endDateValue && selectedStartDate != "" &&endDateValue != "")
+                            {
+                                $(this).val(oldStartDate);
+                            }
+                        });
+                    }
+                }
+                },
+
+                 { name: "EndDate", index: "EndDate", width: 100, align: "left", editable: true,formatter: 'date', formatoptions: { newformat: 'm/d/Y'} , editoptions:{
+                     //                    readonly:true,
+                     //                    dataInit: function(element) {
+                     //                        $(element).datepicker({
+                     //                            dateFormat: 'mm/dd/yy',
+                     //                            maxDate: 'now',
+                     //                            changeMonth: true,
+                     //                            changeYear: true
+                     //                        });
+                     //                    }
+
+                     readonly:true,
+                     dataEvents: [{ type: 'change', fn: function(e) {ChangeMilestoneEndDate(e); } }],
+                     dataInit: function(element) {
+                         $(element).datepicker({
+                             dateFormat: 'mm/dd/yy',
+                             changeMonth: true,
+                             changeYear: true,
+                             beforeShow: BeforeShowForDatePicker,
+                             onClose: onCloseForDatePicker
+                         }).bind("mouseover", function () {
+
+                             $(this).datepicker("option", "minDate", ProjectStartDate);
+                             $(this).datepicker("option", "maxDate", ProjectEndDate);
+                             var selectedDateID = this.id;
+                             var rowID = selectedDateID.split("_");
+                             var selectedEndDate = this.value;
+                             if(rowID[0]== "new")
+                                 var startDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_StartDate").val();
+                             else
+                                 var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+                             //var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+                             if(selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "")
+                             {
+                                 $(this).val(oldEndDate);
+                             }
+                         });
+                     }
+                 } },
+
+                  { name: "ResponsiblePerson", index: "ResponsiblePerson", align: "left", width: 107, editable: true, editrules: { required: true, custom: true, custom_func: IsResonsiblePrsnSelected }, edittype: "select", editoptions: { value: persponList, dataEvents: [{ type: 'change', fn: function(e) {getResponsiblePerson(e); } }]} },
+                  { name: "MilestoneStatus", index: "MilestoneStatus", align: "left", width: 107, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: mStatusList, dataEvents: [{ type: 'change', fn: function(e) {getMilestoneStatus(e); } }]} },
+                 //{ name: "Delete", index: "Delete", width: 50, align: "center", editable: true, edittype: "checkbox", editoptions: { value: '1:0'} },
+            {
+                name: "Delete",
+                index: "Delete",
+                width: 80,
+                align: "center",
+                sortable:false,
+                formatter: ForAppendID
+            }
+
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddMilestoneTablePager"),
+            rowNum: 5,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            loadonce : true,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Milestone",
+            editurl: '@Url.Action("SaveMilestoneDetails", "SEM")',
+            gridComplete: function () {
+                var count = jQuery("#jqAddMilestoneTable").jqGrid('getGridParam', 'records');
+                if (count > 20) {
+
+                    $('#jqAddMilestoneTablePager_center').show();
+                }
+                else {
+                    $('#jqAddMilestoneTablePager_center').hide();
+                }
+                var  gridData;
+                gridData = $("#jqAddMilestoneTable").getRowData();
+                if($('#Prj option:selected').text()!= 'Select')
+                {
+                    //             if (gridData.length <= 0) {
+                    //            $("#ErrorGridLength").dialog({
+                    //                            resizable: false,
+                    //                            height: 120,
+                    //                            width: 250,
+                    //                            modal: true,
+                    //                            title:'Milestones',
+                    //                            buttons: {
+                    //                                Ok: function () {
+                    //                                    $(this).dialog("close");
+                    //                                }
+                    //                            }
+                    //                        });
+                    //                    }
+                    $('#totalcount').text("Total Records : " + count);
+                    if(count == 0){
+                        $('.TotalRecordsDiv').hide();
+                    }
+                    else{
+                        $('.TotalRecordsDiv').show();
+                    }
+                }
+
+            },
+            onCellSelect: function(rowid, iCol) {
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] == "Delete") {
+                    var rowData = $(this).getRowData(rowid);
+                    //DeleteMilestoneDetail(rowData['MilestoneID']);
+                }
+                var rowData = $(this).getRowData(rowid);
+                responsiblePersonName = rowData["ResponsiblePerson"];
+                $('#manageMilestones #ResponsiblePerson').val(rowData["HiddenResponsiblePerson"]);
+                $('#manageMilestones #MilestoneStatus').val(rowData["MilestoneStatus"]);
+            }
+        }).navGrid("#jqAddMilestoneTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+
+        $("#jqAddMilestoneTable").jqGrid('inlineNav', "#jqAddMilestoneTablePager",
+       {
+           edit: true,
+           editicon: "ui-icon-pencil",
+           add: true,
+           addicon: "ui-icon-plus",
+           save: true,
+           saveicon: "ui-icon-disk",
+           cancle: true,
+           cancelicon: "ui-icon-cancel",
+           addtext: "Add",
+           edittext: "Edit",
+           canceltext: "Cancel",
+           savetext: "Save",
+           addParams: {
+               useFormatter: false,
+               addRowParams: {
+                   oneditfunc: function (rowid) {
+                       $("label[for='undefined']").hide();
+                       $('#new_row_ResponsiblePerson').empty();
+                       //$('#new_row_ResponsiblePerson')
+                       //        .append($("<option></option>")
+                       //         .attr("value",0)
+                       //         .text("Select"));
+                       $.each(persponList, function (index,value) {
+                           $('#new_row_ResponsiblePerson')
+                               .append($("<option></option>")
+                                .attr("value",index)
+                                .text(value));
+                       });
+                   }
+               }
+           },
+           editParams: {
+               keys: false,
+               oneditfunc: function (rowid) {
+                   $.each(persponList, function (index,value) {
+                       if(responsiblePersonName == value){
+                           $('#'+rowid+'_ResponsiblePerson')
+                               .append($("<option></option>")
+                                .attr("value",index)
+                                .attr("selected","selected")
+                                .text(value));
+                       }
+                       else{
+                           $('#'+rowid+'_ResponsiblePerson')
+                           .append($("<option></option>")
+                           .attr("value",index)
+                           .text(value));
+                       }
+
+                   });
+               },
+               sucessfunc: function (data) {
+               },
+               url: null,
+               extraparam: {
+                   ProjectID: function () {
+                       return $('#Prj option:selected').val();
+                   },
+
+                   ResponsiblePerson: function () {
+                       return $('#manageMilestones #ResponsiblePerson').val();
+                   },
+                   MilestoneStatus:  function () {
+                       return $('#manageMilestones #MilestoneStatus').val();
+                   }
+               },
+               beforeSaveRow: function(options, rowid) {
+               },
+               aftersavefunc: function (resultMessage, status) {
+                   var json = $.parseJSON(status.responseText);
+                   var isMilestoneNameExist = json.isMilestoneNameExist;
+                   var isValidMilestoneStatus  = json.isValidMilestoneStatus ;
+                   var status = json.status;
+                   var MilestoneID = json.MilestoneID;
+                   var ProjectID = $('#Prj option:selected').val();
+                   if( isValidMilestoneStatus ==false)
+                   {
+                       TaskClosureListShow(ProjectID,MilestoneID);
+                       return;
+                   }
+
+                   if(isMilestoneNameExist ==true)
+                   {
+                       $("#MilestoneNameExistDialog").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           closeOnEscape: false,
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                                   //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                                   $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                               }
+                           }
+                       });
+
+                   }
+                   else if(isMilestoneNameExist == false &&  status ==true)
+                   {
+                       $("#MilestoneDetailsSucess").dialog({
+                           resizable: false,
+                           autoOpen: true,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                                   //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                                   $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                                   $('#manageMilestones #MilestoneStatus').val('');
+                                   $('#manageMilestones #ResponsiblePerson').val('');
+                               }
+                           }
+                       });
+                   }
+                   else if(status ==false)
+                   {
+                       $("#MilestoneSaveError").dialog({
+                           resizable: false,
+                           autoOpen: true,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                                   //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                                   $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                               }
+                           }
+                       });
+                   }
+
+                   else if(status == "Error")
+                   {
+                       DisplayErrorDialog("Save Milestone Details");
+                   }
+                   else
+                   {
+                       DisplayErrorDialog("Save Milestone Details");
+                   }
+               },
+               errorfunc: null,
+               afterrestorefunc: null,
+               restoreAfterError: true,
+               mtype: "POST"
+           }
+       }
+       );
+
+        if($('#Prj').val() == "")
+        {
+            $('#jqAddMilestoneTablePager_left').hide();
+        }
+
+        $("#Prj").change(function () {
+            GetSelectedProjectDetails();
+        });
+        function  GetSelectedProjectDetails()
+        {
+            var projectID =0;
+            var  gridData;
+
+            projectID = $("#Prj option:selected").val();
+            $.ajax({
+                url: "GetSelectedProjectDetails/SEM",
+                type: 'POST',
+                async: false,
+                data: {ProjectID: projectID},
+                success: function (results)
+                {
+                    if(results != null)
+                    {
+                        if(results.ResponsilePersnList!=null){
+                            persponList.length = 0;
+                            respPersonList2.length =0;
+                            persponList.push("Select");
+                            $('#new_row_ResponsiblePerson').empty();
+                            $('#new_row_ResponsiblePerson')
+                                    .append($("<option></option>")
+                                     .attr("value",0)
+                                     .text("Select"));
+                            $.each(results.ResponsilePersnList, function (index,value) {
+                                respPersonList2  =results.ResponsilePersnList;
+                                persponList.push(value.EmployeeName);
+                                $('#new_row_ResponsiblePerson')
+                                    .append($("<option></option>")
+                                     .attr("value",index)
+                                     .text(value.EmployeeName));
+                            });
+                            //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                            $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                        }
+
+                        var startDate;
+                        var endDate;
+                        if(results.ProjectStartDate!=null)
+                        {
+                            startDate = eval(results.ProjectStartDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        }
+                        if(results.ProjectEndDate!=null)
+                        {
+                            endDate = eval(results.ProjectEndDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        }
+                        ProjectStartDate = startDate;
+                        ProjectEndDate = endDate;
+                    }
+                }
+            });
+
+            if ($("#Prj").val() != "") {
+                projectID = $("#Prj option:selected").val();
+                //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                $('#jqAddMilestoneTablePager_left').show();
+            } else {
+                //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                $('#manageMilestones #MilestoneStatus').val('');
+                $('#manageMilestones #ResponsiblePerson').val('');
+                $('#jqAddMilestoneTablePager_left').hide();
+                $('.TotalRecordsDiv').hide();
+            }
+        }
+
+        function getResponsiblePerson(e) {
+            var Name = e.target[e.target.selectedIndex].text;
+            var ID;
+            $.each(respPersonList2, function(index, value){
+                var empName=value.EmployeeName.replace('  ',' ');
+
+                if(empName  == Name)
+                {
+                    ID=value.EmployeeId;
+                }
+            });
+            $('#manageMilestones #ResponsiblePerson').val(ID);
+        }
+    });//end ready
+
+
+    function ForAppendID(cellValue, options, rowdata, action) {
+        //return '<img src="../../Content/themes/base/images/delete-icon.png" width="15px" height="15px" class="HideinPrint">';
+        var delChkbox = '<input type="checkbox" class="chkForDelete" id=' + rowdata["MilestoneID"] + '>';
+        var delLabel ='<label for='+rowdata["MilestoneID"] +' class="LabelForCheckbox"></label>';
+        return delChkbox+delLabel;
+    }
+
+    function DeleteMilestoneDetail(MilestoneID) {
+        $('#deleteMilestoneConfirmation').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+			    dialogClass: "noclose",
+			    title: "Delete Milestone Detail",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: '@Url.Action("DeleteMilestoneDetails", "SEM")',
+					            // data: { MilestoneID: MilestoneID },
+					            data: JSON.stringify(SelectedMilestoneId),
+					            contentType: "application/json",
+					            type: 'POST',
+					            success: function (data) {
+					                if (data.status == true) {
+					                    $("#deleteMilestoneConfirmation").dialog("close");
+					                    $("#deleteMiestoneSucess").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Deleted",
+					                        dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog("close");
+					                                //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+					                                $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                                $('#manageMilestones #MilestoneStatus').val('');
+					                                $('#manageMilestones #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    $("#deleteMilestoneConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Milestone Details',
+					                        dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+					                                $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                                $('#manageMilestones #MilestoneStatus').val('');
+					                                $('#manageMilestones #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+					                    $("#deleteMilestoneConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Milestone',
+					                        dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                //jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+					                                $("#jqAddMilestoneTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                                $('#manageMilestones #MilestoneStatus').val('');
+					                                $('#manageMilestones #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			}
+			);
+        $('#deleteMilestoneConfirmation').dialog('open');
+    }
+
+    //     function getResponsiblePerson(e) {
+    //         var Name = e.target[e.target.selectedIndex].text;
+    //         var ID;
+    //         $.each(respPersonList, function(index, value){
+    //         if(value.EmployeeName == Name)
+    //         {
+    //            ID=value.EmployeeId;
+    //         }
+    //         });
+    //         $('#manageMilestones #ResponsiblePerson').val(ID);
+    //          //alert("change " + $('#manageMilestones #ResponsiblePerson').val());
+    //           //$('#jqAddMilestoneTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'EmployeeId', ID);
+    //        }
+
+
+
+
+    function getMilestoneStatus(e) {
+        var status = e.target[e.target.selectedIndex].text;
+        $('#manageMilestones #MilestoneStatus').val(status);
+    }
+
+
+    var SelectedMilestoneId = [];
+
+    function GetSelectedCheckbox() {
+        SelectedMilestoneId = [];
+        $("#jqAddMilestoneTable :checked").each(function (i, val) {
+            SelectedMilestoneId.push($(this).prop("id"));
+        });
+    }
+
+    $('#btnSelectAll').on('click', function () {
+        SelectedMilestoneId = [];
+        $(".chkForDelete").each(function (i, val) {
+            $(".chkForDelete").attr("checked", true);
+            SelectedMilestoneId.push($(this).prop("id"));
+        });
+    });
+
+    $('#btnDeselectAll').on('click', function () {
+        SelectedMilestoneId = [];
+        $(".chkForDelete").each(function (i, val) {
+            $(".chkForDelete").attr("checked", false);
+        });
+    });
+
+    $('#btnDelete').on('click', function () {
+        GetSelectedCheckbox();
+        if(SelectedMilestoneId.length == 0)
+        {
+            $("#ErrroDeleteMilestone").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Delete Phase",
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        DeleteMilestoneDetail(SelectedMilestoneId);
+    });
+
+    function TaskClosureListShow(ProjectID,MilestoneID){
+        if(MilestoneID != 0 && MilestoneID !=null )
+        {
+            var flag =0;
+            DisplayLoadingDialog(); // Checked global.js // LOADING start
+            $.ajax({
+                url: '@Url.Action("LoadMilestoneTaskForCompletion", "SEM")',
+                type: 'GET',
+                async: true,
+                data: { ProjectID: ProjectID, MilestoneID: MilestoneID },
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#TaskClosureMain").empty().append(results);
+
+                    $("#TaskClosureMain").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 1180,
+                        title: "Task Closure",
+                        modal: true,
+                        close: function (event, ui) {
+                            $("#TaskClosureMain").dialog("destroy");
+                        }
+                    });
+                }
+            });  //ajax end
+        }
+    }
+
+    function ChangeMilestoneStartDate(e)
+    {
+
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedStartDate = e.target.value;
+        if(rowID[0]== "new")
+            var endDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_EndDate").val();
+        else
+            var endDateValue = $("#"+rowID[0]+"_EndDate").val();
+        //if(selectedStartDate > endDateValue && selectedStartDate != "" && endDateValue != "")
+        if(Date.parse(selectedStartDate) > Date.parse(endDateValue) && selectedStartDate != "" && endDateValue != "")
+        {
+            $("#MilestoneStartDateGreaterDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                        if(rowID[0]== "new")
+                            var endDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_StartDate").val(oldStartDate);
+                        else
+                            var endDateValue = $("#"+rowID[0]+"_StartDate").val(oldStartDate);
+                        //$("#"+rowID[0]+"_StartDate").val(oldStartDate);
+                    }
+                }
+            });
+        }
+    }
+    function ChangeMilestoneEndDate(e)
+    {
+
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedEndDate = e.target.value;
+        if(rowID[0]== "new")
+            var startDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_StartDate").val();
+        else
+            var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+        //var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+        //if(selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "")
+        if(Date.parse(selectedEndDate) < Date.parse(startDateValue) && selectedEndDate != "" && startDateValue != "")
+        {
+            $("#MilestoneEndDateLesserDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                        if(rowID[0]== "new")
+                            var endDateValue = $("#"+rowID[0]+"_"+rowID[1]+"_EndDate").val(oldEndDate);
+                        else
+                            var endDateValue = $("#"+rowID[0]+"_EndDate").val(oldEndDate);
+                        //$("#"+rowID[0]+"_EndDate").val(oldEndDate);
+                    }
+                }
+            });
+        }
+    }
+
+    function IsResonsiblePrsnSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredResponsiblePrsn").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+    //function TaskClosureListShow(){
+    //     // $("#TaskClosureMain").empty().append();
+
+    //$("#TaskClosureMain").dialog({
+    //                    closeOnEscape: false,
+    //                    resizable: false,
+    //                    height: 'auto',
+    //                    width: 1180,
+    //                    title: "Task Closure",
+    //                    close: function (event, ui) {
+    //                        $("#TaskClosureMain").dialog("destroy");
+    //                        }
+    //                     });
+
+    ////             var flag =0;
+    ////            DisplayLoadingDialog(); // Checked global.js // LOADING start
+    ////            $.ajax({
+    ////                url: '@Url.Action("LoadMilestoneTaskForCompletion", "SEM")',
+    ////                type: 'GET',
+    ////                async: true,
+    ////                data: { ProjectID: 0, MilestoneID: 0 },
+    ////                success: function (results) {
+    ////                       $("#loading").dialog("close");
+    ////                       $("#loading").dialog("destroy");
+    ////                       $("#TaskClosureMain").empty().append(results);
+
+    ////                    $("#TaskClosureMain").dialog({
+    ////                    closeOnEscape: false,
+    ////                    resizable: false,
+    ////                    height: 'auto',
+    ////                    width: 1180,
+    ////                    title: "Task Closure",
+    ////                    close: function (event, ui) {
+    ////                        $("#TaskClosureMain").dialog("destroy");
+    ////                        }
+    ////                     });
+    ////                  }
+    ////              });  //ajax end
+    //           }
+
+</script>

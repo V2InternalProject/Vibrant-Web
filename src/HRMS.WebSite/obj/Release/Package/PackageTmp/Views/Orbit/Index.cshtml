@@ -1,0 +1,47 @@
+﻿@model HRMS.Models.ConfigurationViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@{
+    CommonMethodsDAL dal = new CommonMethodsDAL();
+    string EncyptedEmploeeCode = dal.Encrypt((string)Session["SecurityKey"].ToString() + Model.SearchedUserDetails.EmployeeCode, true);
+    ViewBag.EncyptedEmploeeCode = EncyptedEmploeeCode;
+
+}
+<link href="../../Content/New%20Design/orbit.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="../../Scripts/New Design/common.js"></script>
+    <section class="AttendanceContainer Container">
+					<div class="FixedHeader">
+						<div class="clearfix">
+							<h2 class="MainHeading">Attendance</h2>
+						</div>
+						<nav class="sub-menu-colored">
+							<a href="~/Orbitweb/SigninPage.aspx" class="selected">Auto</a>
+							<a href="Manual.html">Manual</a>
+						</nav>
+					</div>
+				</section>
+@*<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+        Orbit</h2>
+</div>
+<br />
+<br />
+<br />
+@section HeaderLinks{
+	@Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div src="~/Orbit/LogOn.aspx?employeeCode=@ViewBag.EncyptedEmploeeCode&AsciiKey=@ViewBag.AsciiKey", width="100%" height="700" id="iframe" sandbox="allow-scripts allow-forms allow-same-origin" runat="server" seamless="seamless" frameborder="0">
+</div>*@
+<div src="~/OrbitWeb/LogOn.aspx?employeeCode=@ViewBag.EncyptedEmploeeCode&AsciiKey=@ViewBag.AsciiKey", width="100%" height="700" id="iframe" runat="server">
+</div>
+<script type="text/javascript">
+    if ('@Model.SearchedUserDetails.UserRole' == "HR Admin" || '@Model.SearchedUserDetails.UserRole' == "HR Executive" || '@Model.SearchedUserDetails.UserRole' == "RMG") {
+        $('#frmSearchEmployeeLayout').show();
+    }
+    else {
+        $('#frmSearchEmployeeLayout').hide();
+    }
+</script>

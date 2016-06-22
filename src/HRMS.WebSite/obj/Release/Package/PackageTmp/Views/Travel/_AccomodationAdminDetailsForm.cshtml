@@ -1,0 +1,579 @@
+﻿@using HRMS.Models
+@model HRMS.Models.AccomodationAdminViewModel
+@{
+    ViewBag.Title = "Accommodation Admin Details Form";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Travel/_AdminAccomodationDetails.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="../../Scripts/ajaxfileupload.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses 
+        cache: false
+    });
+    $(document).ready(function () {
+        //var loggedInEmployeeID = '@Model.SearchedUserDetails.EmployeeId';
+        //var AdminApproverID = '@ViewBag.AdminApproverId';
+        oldStartDate = "";
+        oldEndDate = "";
+        selectedAccomodationId = 0;
+        isAccomodationRowInAddEditMode = false;
+        //        if (loggedInEmployeeID != AdminApproverID) {
+        //            $("#btnAddAdminAccomodation").hide();
+        //        }
+        // Set up the jquery grid
+        $("#jqAccomodationAdminTabel").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadAccomodationAdminDetails", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelID: function () { return '@Model.newAccomodationAdmin.TravelId' } },
+            // Specify the column names
+            colNames: ["AccomodationID", "TravelID", "", "Hotel Name", "Hotel Address", "Hotel Contact Number", "Booking From Date", "Booking To Date", "Room Details", "Checkin Details", "Checkout Details", "Hotel Confirmation", "Hotel Confirmation", "Additional Details", ""],
+            // Configure the columns
+            colModel: [
+                { name: "AccomodationID", index: "AccomodationID", hidden: true, editable: true, width: 50, align: "left" },
+                { name: "TravelId", index: "TravelId", hidden: true, editable: true, width: 50, align: "left" },
+                { name: "FilePath", index: "FilePath", hidden: true, editable: true, width: 50, align: "left" },
+                { name: "HotelName", index: "HotelName", width: 100, editable: true, editoptions: { maxlength: 100 }, editrules: { custom: true, custom_func: isAdminFieldRequired }, align: "left", classes: "TravelAdminFields" },
+                { name: "HotelAddress", index: "HotelAddress", editable: true, width: 100, editoptions: { maxlength: 100 }, editrules: { custom: true, custom_func: isAdminFieldRequired }, align: "left", classes: "TravelAdminFields" },
+                { name: "HotelContactNumber", index: "HotelContactNumber", editable: true, editoptions: { maxlength: 10 }, editrules: { custom: true, custom_func: isValidContactNumber }, width: 90, align: "left", classes: "TravelAdminFields" },
+                { name: "BookingFromDate", index: "BookingFromDate", editable: true, width: 100, align: "left", classes: "TravelAdminFields", formatter: 'date', editrules: { custom: true, custom_func: isAdminFieldRequired }, formatoptions: { newformat: 'm/d/Y' },
+                    editoptions: {
+                        readonly: true,
+                        dataEvents: [{ type: 'change', fn: function (e) { ChangeBookingStartDate(e); } }],
+                        dataInit: function (element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true
+                            }).bind("mouseover", function () {
+                                var startDate = new Date($('#TravelStartDate').val());
+                                var endDate = new Date($('#TravelEndDate').val());
+                                var ValidationExtensionStartDate = $('#TravelEndDate').datepicker('getDate');
+                                ValidationExtensionStartDate.setDate(ValidationExtensionStartDate.getDate() + 1);
+                                var ExtensionStartDate = ValidationExtensionStartDate;
+                                var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+                                if (ExtensionEndDate == 'Invalid Date') {
+                                    if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                                        var startDate1 = new Date($('#TravelStartDate').val());
+                                        var endDate1 = new Date($('#TravelEndDate').val());
+                                        $(this).datepicker("option", "minDate", startDate1);
+                                        $(this).datepicker("option", "maxDate", endDate1);
+                                    }
+                                    else {
+                                        $(this).datepicker("option", "yearRange", "-60:+10");
+                                    }
+                                }
+                                else {
+                                    $(this).datepicker("option", "minDate", ExtensionStartDate);
+                                    $(this).datepicker("option", "maxDate", ExtensionEndDate);
+                                }
+                                var selectedDateID = this.id;
+                                var rowID = selectedDateID.split("_");
+                                var selectedStartDate = this.value;
+                                if (rowID[0] == "new")
+                                    var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_BookingToDate").val();
+                                else
+                                    var endDateValue = $("#" + rowID[0] + "_BookingToDate").val();
+                                if (selectedStartDate > endDateValue && selectedStartDate != "" && endDateValue != "") {
+                                    $(this).val(oldStartDate);
+                                }
+                            });
+                        }
+                    }
+                },
+                { name: "BookingToDate", index: "BookingToDate", editable: true, width: 100, align: "left", classes: "TravelAdminFields", formatter: 'date', editrules: { custom: true, custom_func: isAdminFieldRequired }, formatoptions: { newformat: 'm/d/Y' },
+                    editoptions: {
+                        readonly: true,
+                        dataEvents: [{ type: 'change', fn: function (e) { ChangeBookingEndDate(e); } }],
+                        dataInit: function (element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true
+                            }).bind("mouseover", function () {
+                                var startDate = new Date($('#TravelStartDate').val());
+                                var endDate = new Date($('#TravelEndDate').val());
+                                var ValidationExtensionStartDate = $('#TravelEndDate').datepicker('getDate');
+                                ValidationExtensionStartDate.setDate(ValidationExtensionStartDate.getDate() + 1);
+                                var ExtensionStartDate = ValidationExtensionStartDate;
+                                var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+                                if (ExtensionEndDate == 'Invalid Date') {
+                                    if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                                        var startDate1 = new Date($('#TravelStartDate').val());
+                                        var endDate1 = new Date($('#TravelEndDate').val());
+                                        $(this).datepicker("option", "minDate", startDate1);
+                                        $(this).datepicker("option", "maxDate", endDate1);
+                                    }
+                                    else {
+                                        $(this).datepicker("option", "yearRange", "-60:+10");
+                                    }
+                                }
+                                else {
+                                    $(this).datepicker("option", "minDate", ExtensionStartDate);
+                                    $(this).datepicker("option", "maxDate", ExtensionEndDate);
+                                }
+                                var selectedDateID = this.id;
+                                var rowID = selectedDateID.split("_");
+                                var selectedEndDate = this.value;
+                                if (rowID[0] == "new")
+                                    var startDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_BookingFromDate").val();
+                                else
+                                    var startDateValue = $("#" + rowID[0] + "_BookingFromDate").val();
+                                if (selectedEndDate < endDateValue && selectedEndDate != "" && startDateValue != "") {
+                                    $(this).val(oldEndDate);
+                                }
+                            });
+                        }
+                    }
+                },
+                { name: "RoomDetails", index: "RoomDetails", editable: true, width: "7.25%", align: "left", hidden: true },
+                { name: "CheckinDetails", index: "CheckinDetails", editable: true, width: "7.25%", align: "left", hidden: true },
+                { name: "CheckoutDetails", index: "CheckoutDetails", editable: true, width: "7.25%", align: "left", hidden: true },
+                { name: "FileName", index: "FileName", width: 100, align: "left", formatter: formatlink },
+            //                { name: "FileUpload", index: "FileUpload", editable: true, edittype: 'file', editoptions: { enctype: "multipart/form-data" }, width: 100, align: "left", hidden: true
+            //                },
+            {name: "FileUpload", index: "FileUpload", width: 100, align: "left", hidden: true, formatter: uploadButton, classes: "UploadButtons" },
+                { name: "AdditionalDetails", index: "AdditionalDetails", editable: true, editoptions: { maxlength: 100 }, width: 100, align: "left" },
+	        { name: "Delete", index: "Delete", width: "20", align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+            ],
+
+            width: 700,
+            shrinkToFit: true,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#jqAccomodationAdminPager"),
+            editurl: '@Url.Action("SaveAdminAccomodationDetails", "Travel")',
+            //caption: "Accommodation Details",
+            gridComplete: function () {
+                if ('@ViewBag.viewDetailClick' == 'yes') {
+                    $("#jqAccomodationAdminTabel").hideCol("Delete");
+                    $("#jqAccomodationAdminTabel").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                var viewstatus = '@ViewBag.StageID';
+                var IsloggedUser = '@ViewBag.IsLoggedInUser';
+                var userRole = '@ViewBag.UserRole';
+                var travelAdmin = '@UserRoles.TravelAdmin';
+                if (isAccomodationRowInAddEditMode == false) {
+                    var accomodationId = rowData['AccomodationID'];
+                    $('#adminAccomodationDialog #AccomodationID').val(rowData['AccomodationID']);
+                    var travelId = rowData['TravelId'];
+                    oldStartDate = rowData["BookingFromDate"];
+                    oldEndDate = rowData["BookingToDate"];
+                    if (colName['index'] == "Delete") {
+                        if (viewstatus == "4" || viewstatus <= 2) {
+                            return false;
+                        }
+                        else
+                            if (rowid != "new_row")
+                                DeleteAdminAccomodationDetail(accomodationId, travelId);
+                    }
+                }
+             
+                //                else
+                //                    if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+                //                        EditAdminAccomodationDetails(rowData, userRole, travelAdmin);
+                //                    }
+                //                    else {
+                //                        if (viewstatus == "4" || viewstatus <= 2) {
+                //                            return false;
+                //                        }
+                //                        else
+                //                        EditAdminAccomodationDetails(rowData, userRole, travelAdmin);
+                //                    }
+            }
+        }).navGrid("#jqAccomodationAdminPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+
+        $("#jqAccomodationAdminTabel").jqGrid('inlineNav', "#jqAccomodationAdminPager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            edittext: "Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+            addtext: "Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+            savetext: "Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            canceltext: "Cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        isAccomodationRowInAddEditMode = true;
+                        $("#" + rowid + "_AdditionalDetails").parent().next().find('img').hide();
+                        $('#adminAccomodationDialog #AccomodationID').val(0);
+                        $("#jqAccomodationAdminTabel").jqGrid('hideCol', 'FileName');
+                        $("#jqAccomodationAdminTabel").jqGrid('showCol', 'FileUpload');
+                        $(".UploadButtons").children().hide();
+                        $("#" + rowid + "_AdditionalDetails").parent().prev().find('input[type="button"]').show();
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function (rowId) {
+                    isAccomodationRowInAddEditMode = true;
+                    if ('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+                        $(".TravelAdminFields").find("input").addClass("bg-gray");
+                        $(".TravelAdminFields").find("input").attr("disabled", "disabled");
+                    }
+                    $("#jqAccomodationAdminTabel").jqGrid('hideCol', 'FileName');
+                    $("#jqAccomodationAdminTabel").jqGrid('showCol', 'FileUpload');
+                    $(".UploadButtons").children().hide();
+                    $("#" + rowId + "_AdditionalDetails").parent().prev().find('input[type="button"]').show();
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                },
+                aftersavefunc: function (data, response) {
+                    isAccomodationRowInAddEditMode = false;
+                    var result = $.parseJSON(response.responseText);
+                    jQuery("#jqAccomodationAdminTabel").trigger("reloadGrid");
+                    $("#jqAccomodationAdminTabel").jqGrid('hideCol', 'FileUpload');
+                    $("#jqAccomodationAdminTabel").jqGrid('showCol', 'FileName');
+                    if (result.status == true) {
+                        $("#AddAccomodationSuccessMessege").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            title: 'Accomodation Details',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == false) {
+                        $("#AddAccomodationErrorMessege").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            title: 'Accomodation Details',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog("Accomodation Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Accomodation Details");
+                    }
+
+                },
+                errorfunc: null,
+                afterrestorefunc: function (e) {
+                    isAccomodationRowInAddEditMode = false;
+                    $("#jqAccomodationAdminTabel").jqGrid('hideCol', 'FileUpload');
+                    $("#jqAccomodationAdminTabel").jqGrid('showCol', 'FileName');
+                    ClearTempDetails();
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        function formatlink(cellvalue, options, rowobject) {
+            if (cellvalue === undefined || cellvalue == null) {
+                cellvalue = '';
+                return cellvalue;
+            }
+            else {
+                return "<a href=# id=" + rowobject['AccomodationID'] + " class=EmpLink onClick = LinkPassportClick1(this," + rowobject['TravelId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+            }
+
+        }
+
+        function uploadButton(cellvalue, options, rowobject) {
+            var uplaodBtn = "<input type='button' value='Upload' id=" + rowobject['AccomodationID'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenUploadPopup() />"
+            var fileLbl = "<label id=" + rowobject['AccomodationID'] + '_UploadedFileName' + "></label>";
+            return uplaodBtn + fileLbl;
+        }
+
+
+        //        $("#btnAddAdminAccomodation").click(function () {
+        //            AddAdminAccomodation();
+        //        });
+        //        $("#btnSaveNContinueAccoDetails").click(function () {
+        //            var hdnTravelID = $("#newAccomodationAdmin_TravelId").val();
+        //            var addInfo = $("#newAccomodationAdmin_AdditionalInformation").val();
+        //            SaveNContinueAccoDetails(hdnTravelID, addInfo);
+        //        });
+
+
+        var viewstatus = '@ViewBag.StageID';
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+        if (viewstatus == "4" || viewstatus <= 2) {
+            //$("#btnAddAdminAccomodation").hide();
+            //            $("#newAccomodationAdmin_AdditionalInformation").attr('disabled', 'disabled');
+        }
+
+        if (viewstatus == 3 && '@ViewBag.UserRole' == '@UserRoles.TravelAdmin') {
+            $("#jqAccomodationAdminPager_left").css("visibility", "visible");
+        }
+        else if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+            $("#jqAccomodationAdminTabel_iladd").css("visibility", "hidden");
+        }
+        else {
+            $("#jqAccomodationAdminPager_left").css("visibility", "hidden");
+        }
+    });
+
+    function LinkPassportClick1(event, TravelID) {
+        var AccomodationID = event.id;
+        window.location = '@Url.Action("DownloadAdminAccomUploadedFile", "Travel")?TravelID=' + TravelID + '&AccomodationID=' + AccomodationID;
+    }
+    function OpenUploadPopup() {
+        AddAdminAccomodation();
+    }
+
+    function ClearTempDetails() {
+        $.ajax({
+            url: "DeleteAdminAccomodationUploadDetails/Travel",
+            type: 'POST',
+            data: { AccomodationID: $('#adminAccomodationDialog #AccomodationID').val()},
+            success: function (data) {
+                
+            }
+        });
+    }
+
+    function isValidContactNumber(value, Colname) {
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+        var valid = pattern.test(value);
+
+        if ($.trim(value) == "") {
+            $("#AdminRequiredDialog span").html("").append(Colname);
+            $("#AdminRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Accomodation Details",
+                dialogClass: "noclose",
+                buttons:
+	            {
+	                "Ok": function () {
+	                    $(this).dialog("close");
+	                }
+	            }
+            });
+            $.preventDefault();
+        }
+        else if (!valid) {
+            $("#ValidContactNumberDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Accomodation Details",
+                dialogClass: "noclose",
+                buttons:
+	            {
+	                "Ok": function () {
+	                    $(this).dialog("close");
+	                }
+	            }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    } //
+
+    function isAdminFieldRequired(value, Colname) {
+        if ($.trim(value) == "") {
+            $("#AdminRequiredDialog span").html("").append(Colname);
+            $("#AdminRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Accomodation Details",
+                dialogClass: "noclose",
+                buttons:
+	            {
+	                "Ok": function () {
+	                    $(this).dialog("close");
+	                }
+	            }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    } //
+
+    function ChangeBookingStartDate(e) {
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedStartDate = e.target.value;
+        if (rowID[0] == "new")
+            var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_BookingToDate").val();
+        else
+            var endDateValue = $("#" + rowID[0] + "_BookingToDate").val();
+        if (selectedStartDate > endDateValue && selectedStartDate != "" && endDateValue != "") {
+            $("#BookingStartDateGreaterDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	           {
+	               "Ok": function () {
+	                   $(this).dialog("close");
+	                   if (rowID[0] == "new")
+	                       $("#" + rowID[0] + "_" + rowID[1] + "_BookingFromDate").val(oldStartDate);
+	                   else
+	                       $("#" + rowID[0] + "_BookingFromDate").val(oldStartDate);
+	               }
+	           }
+            });
+        }
+    }
+
+    function ChangeBookingEndDate(e) {
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedEndDate = e.target.value;
+        if (rowID[0] == "new")
+            var startDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_BookingFromDate").val();
+        else
+            var startDateValue = $("#" + rowID[0] + "_BookingFromDate").val();
+        if (selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "") {
+            $("#BookingEndDateLesserDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	           {
+	               "Ok": function () {
+	                   $(this).dialog("close");
+	                   if (rowID[0] == "new")
+	                       $("#" + rowID[0] + "_" + rowID[1] + "_BookingToDate").val(oldEndDate);
+	                   else
+	                       $("#" + rowID[0] + "_BookingToDate").val(oldEndDate);
+	               }
+	           }
+            });
+        }
+    }
+</script>
+<h4 class="SmallHead">
+    * Accommodation Details</h4>
+<div id="adminAccomodationDialog" style="display: none">
+    @{Html.RenderPartial("_AddAdminAccomodationDetails", Model.newAccomodationAdmin);}
+</div>
+<div class="tablestyle3">
+    <table id="jqAccomodationAdminTabel" class="scroll">
+    </table>
+</div>
+<div id="jqAccomodationAdminPager">
+</div>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "AdminAccForm" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="formcol clearfix" style="width: 50%;">
+        @Html.HiddenFor(a => a.newAccomodationAdmin.TravelId)
+        @* <div class="editor-label labelwidth floatL">
+                @Html.Label("Additional Information")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextAreaFor(a => a.newAccomodationAdmin.AdditionalInformation)
+                <p class="qualif-detail">@Html.ValidationMessageFor(a => a.newAccomodationAdmin.AdditionalInformation)</p>
+            </div>*@
+    </div>
+}
+<div id="DeleteAccomodationDialog" style="display: none;">
+    <p>
+        Are you sure you want to delete the record.</p>
+</div>
+<div id="DeleteAccomodationSuccess" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="SaveNContAccoDialog" style="display: none;">
+    <p>
+        Accommodation Details Form has been Saved.<br />
+        Click Ok to Continue.
+    </p>
+</div>
+<div id="SaveNContinueErrorMessege" style="display: none;">
+    <p>
+        Unable to Save Accommodation Details Form.
+    </p>
+</div>
+<div id="ValidContactNumberDialog" style="display: none;">
+    <p>
+        Hotel Contact Number can not contain alphabets.
+    </p>
+</div>
+<div id="AdminRequiredDialog" style="display: none;">
+    The <span></span> field is required.
+</div>
+<div id="BookingStartDateGreaterDialog" title="Module details" style="display: none">
+    <p>
+        Booking From Date cannot be greater then Booking To Date.
+    </p>
+</div>
+<div id="BookingEndDateLesserDialog" title="Module details" style="display: none">
+    <p>
+        Booking To Date cannot be lesser then Booking From Date.
+    </p>
+</div>
+<div id="AddAccomodationSuccessMessege" style="display: none;">
+    <p>
+        Accommodation details have been saved.
+    </p>
+</div>
+<div id="AccomodationUploadSuccessMessege" style="display: none;">
+    <p>
+        File Selected successfully.
+    </p>
+</div>
+<div id="AddAccomodationErrorMessege" style="display: none;">
+    <p>
+        Unable to add record.
+    </p>
+</div>
+<div id="AccomodationUploadErrorMessege" style="display: none;">
+    <p>
+        Unable to save file.
+    </p>
+</div>

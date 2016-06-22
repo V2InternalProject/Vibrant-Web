@@ -1,0 +1,191 @@
+USE [OrbitPhase2]
+GO
+
+/****** Object:  StoredProcedure [dbo].[EmployeeName]    Script Date: 10/29/2014 17:53:49 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+/* Created by viveka*/
+ALTER  procedure [dbo].[EmployeeName]
+@prefixText varchar(100)    
+As 
+/*Declare @count int
+Begin
+	set @count=(SELECT count(EmployeeName) FROM vwEmployee_Master WHERE IsDeleted = 0 and EmployeeName like '%'+ @prefixText +'%' )
+if @count <= 0
+	begin
+		RAISERROR('Please Enter Employee name',16,1);
+	end
+Else
+    begin
+		select UserID,EmployeeName from vwEmployee_Master where  
+		IsDeleted = 0 and  EmployeeName like '%' + @prefixText + '%'
+	end
+End*/
+	begin
+		select UserID,EmployeeName from vwEmployee_Master 
+		where  
+/* Commented By viveka
+Resson.In leave transaction Textbox PMO wants to display for all the employee status
+*/
+	--	IsDeleted = 0 AND 
+	 EmployeeName like '%' + @prefixText + '%'
+	 and IsDeleted = 0
+	end
+
+-- EmployeeName 'v'
+
+
+
+GO
+
+
+------------------------------------------------------------------
+USE [OrbitPhase2]
+GO
+/****** Object:  StoredProcedure [dbo].[GetEmployeeNameRpt]    Script Date: 10/29/2014 18:03:20 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+/* created by viveka
+Modifided by viveka
+Modified date:28/02/2008	
+*/
+
+ALTER Procedure [dbo].[GetEmployeeNameRpt]
+@UserID int  
+As  
+Begin  
+--To get TeamLead and TeamMemberdetails
+select distinct e.EmployeeID,  
+e.userId, e.EmployeeName  
+from vwEmployee_Master e  
+,vwEmployee_Master e1  
+where e1.EmployeeID = e.reportingTo    
+and (e1.UserID = @UserID or e.UserID=@UserID)  
+--and e1.IsDeleted=0  
+order by e.UserID  
+
+
+-- Get All employee  
+--select EmployeeID,UserID,EmployeeName from vwemployee_Master where isdeleted =0  order by EmployeeName  
+select EmployeeID,Employeecode as UserID,EmployeeName from [V2Intranet].[dbo].HRMS_tbl_pm_employee where status = 0 order by EmployeeName  
+
+
+-- Get Congigitems  
+select * from ConfigItem  
+
+-- get Particuler employee details
+select EmployeeID,UserID,EmployeeName from vwemployee_Master where isdeleted =0 and UserID = @UserID
+
+
+ --Get PM and Teamlead & Teammembers
+
+/*SELECT e.EmployeeID, e.UserID, e.EmployeeName
+FROM  vwEmployee_Master AS e INNER JOIN
+      vwEmployee_Master AS e1 ON e.ReportingTo = e1.EmployeeID inner join
+	  vwEmployee_Master AS e2 ON e1.ReportingTo = e2.EmployeeID
+WHERE   (e1.UserID = @UserID  OR   e.UserID = @UserID OR e2.userID = @UserID )and e.IsDeleted = 0
+ORDER BY e.UserID*/
+
+
+
+--SELECT e.EmployeeID, e.UserID, e.EmployeeName,e.IsDeleted
+--FROM  vwEmployee_Master AS e INNER JOIN
+--      vwEmployee_Master AS e1 ON e.ReportingTo = e1.EmployeeID Left Outer join
+--	  vwEmployee_Master AS e2 ON e1.ReportingTo = e2.EmployeeID
+--WHERE   (e1.UserID = @UserID OR e.UserID = @UserID OR e2.userID = @UserID) and e.IsDeleted = 0
+--ORDER BY e.UserID
+
+-- Manager and TL Lable
+--exec GetHierarchWiseEmployeeId @userID
+
+End  
+  
+-- GetEmployeeNameRPT '1144'
+
+-----------------------------------------------------------------------
+
+USE [V2Intranet]
+GO
+/****** Object:  StoredProcedure [dbo].[CopyRFIIDDetails]    Script Date: 10/29/2014 18:12:15 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Hardik Vejani
+-- Create date: 04/08/2014
+-- Description:	to copy IR form details.
+-- =============================================
+ALTER PROCEDURE [dbo].[CopyRFIIDDetails] --1,0
+	-- Add the parameters for the stored procedure here
+(
+@RFIID int,
+@LoggedEmployeeId int,
+@Result int out
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+
+	SET NOCOUNT ON;
+--Update Details
+
+Declare @RfiidCount int
+Declare @LatesRFIID int
+Declare @CurrentUserName nvarchar(50)
+
+Select @RfiidCount=Count(*) from tbl_PM_RFIs Where RFIID = @RFIID
+
+IF (@RfiidCount > 0)
+Begin
+
+   Select @CurrentUserName=UserName from HRMS_tbl_PM_Employee where EmployeeId = @LoggedEmployeeId
+
+	Insert Into tbl_PM_RFIs (ImportedFromRFIID,ProjectID,IsProforma,RFITypeID,RFIRaisedBy,RFIRaisedOn,CurrentStatus,ApprovedBy,ApprovedOn,CustomerID,CustomerContactID,CustomerAddressID,
+	BillingCurrencyID,BillingCurrencyAmount,BaseCurrencyID,SalesPeriodID,BaseCurrencyAmount,LocalCurrencyID,LocalCurrencyAmount,BillingToBaseConversionRate,LocalToBaseConversionRate,
+	CreditDays,DueDate,LOC,ConfirmEmailID,MilestoneID,ContractID,ChecklistID,ChecklistInstanceID,RFIHeader,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,CompanyBaseCurrencyID,CompanyReportingCurrencyID1,
+	CompanyReportingCurrencyID2,CompanyReportingCurrencyID3,CompanyID,CompanyBaseCurrencyConversionRate,CompanyReportingCurrencyConversionRate1,CompanyReportingCurrencyConversionRate2,CompanyReportingCurrencyConversionRate3,
+	CompanyBaseCurrencyAmount,CompanyReportingCurrencyAmount1,CompanyReportingCurrencyAmount2,CompanyReportingCurrencyAmount3)
+	
+	Select @RFIID,ProjectID,IsProforma,RFITypeID,@CurrentUserName,GETDATE(),'Draft',ApprovedBy,ApprovedOn,CustomerID,CustomerContactID,CustomerAddressID,
+	BillingCurrencyID,BillingCurrencyAmount,BaseCurrencyID,SalesPeriodID,BaseCurrencyAmount,LocalCurrencyID,LocalCurrencyAmount,BillingToBaseConversionRate,LocalToBaseConversionRate,
+	CreditDays,DueDate,LOC,ConfirmEmailID,MilestoneID,ContractID,ChecklistID,ChecklistInstanceID,RFIHeader,@CurrentUserName,GETDATE(),(Case When ModifiedBy is not null Then @CurrentUserName Else null End),GETDATE(),CompanyBaseCurrencyID,CompanyReportingCurrencyID1,
+	CompanyReportingCurrencyID2,CompanyReportingCurrencyID3,CompanyID,CompanyBaseCurrencyConversionRate,CompanyReportingCurrencyConversionRate1,CompanyReportingCurrencyConversionRate2,CompanyReportingCurrencyConversionRate3,
+	CompanyBaseCurrencyAmount,CompanyReportingCurrencyAmount1,CompanyReportingCurrencyAmount2,CompanyReportingCurrencyAmount3
+	From tbl_PM_RFIs where RFIID = @RFIID
+	
+	Set @LatesRFIID = SCOPE_IDENTITY();
+	
+	SEt @Result=@LatesRFIID;
+	
+	Insert into tbl_PM_RFI_Items (RFIID,ItemDescription,Quantity,Rate,Amount,CustomField1,CustomField2,CustomField3,CustomField4,OrderNumber,ImportID,InvoiceGenerated,InvoiceID,
+	InvoiceItemID,BaseCurrencyAmount,LocalCurrencyAmount,BillingToBaseConversionRate,LocalToBaseConversionRate,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MilestoneID,DeliverableID,
+	CompanyBaseCurrencyConversionRate,CompanyReportingCurrencyConversionRate1,CompanyReportingCurrencyConversionRate2,CompanyReportingCurrencyConversionRate3,CompanyBaseCurrencyAmount,
+	CompanyReportingCurrencyAmount1,CompanyReportingCurrencyAmount2,CompanyReportingCurrencyAmount3,ExpensesEntryID,EmployeeID,ProjectTimesheetID,IsDiscountItem)
+	
+	Select @LatesRFIID,ItemDescription,Quantity,Rate,Amount,CustomField1,CustomField2,CustomField3,CustomField4,OrderNumber,ImportID,InvoiceGenerated,InvoiceID,
+	InvoiceItemID,BaseCurrencyAmount,LocalCurrencyAmount,BillingToBaseConversionRate,LocalToBaseConversionRate,@CurrentUserName,GETDATE(),(Case When ModifiedBy is not null Then @CurrentUserName Else null End),GETDATE(),MilestoneID,DeliverableID,
+	CompanyBaseCurrencyConversionRate,CompanyReportingCurrencyConversionRate1,CompanyReportingCurrencyConversionRate2,CompanyReportingCurrencyConversionRate3,CompanyBaseCurrencyAmount,
+	CompanyReportingCurrencyAmount1,CompanyReportingCurrencyAmount2,CompanyReportingCurrencyAmount3,ExpensesEntryID,EmployeeID,ProjectTimesheetID,IsDiscountItem
+	From tbl_PM_RFI_Items where RFIID = @RFIID
+	
+End
+
+			
+		
+	--IF @@ERROR<>0
+	--	SET @Result=@@ERROR
+	--ELSE 
+ --       SET @Result=1
+        
+   select @Result as Result
+END

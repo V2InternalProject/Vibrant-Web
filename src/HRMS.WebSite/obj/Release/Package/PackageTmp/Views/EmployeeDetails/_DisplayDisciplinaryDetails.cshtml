@@ -1,0 +1,50 @@
+﻿@model HRMS.Models.EmployeeDisciplinaryDetailsViewModel
+<form id="DisplayDisciplinaryDetailsId" method="post">
+<div class="PopUpForm">
+    <div class="formrow clearfix">
+        <div class="LabelDiv">
+            Date :
+        </div>
+        <div class="InputDiv">
+            @*@Html.TextBoxFor(model => model.AddedDate, new { @id = "txtAddedDate", @readonly = "true" })*@
+           @Html.TextBoxFor(model => model.AddedDate, new { @id = "txtAddedDate", @disabled = "disabled", @readonly = "readonly", @class = "ClassDisabledFields" })
+            @Html.LabelFor(model => Model.AddedDate, new { @id = "lbltxtAddedDate", @class = "ClassDisplayLabel" })
+        </div>
+    </div>
+    <div class="formrow clearfix">
+        <div class="LabelDiv">
+            Subject :
+        </div>
+        <div class="InputDiv">
+            @Html.TextBoxFor(model => model.DisciplineSubject, new { @id = "txtDisplayDisciplineSubject", @readonly = "true", @disabled = "disabled", @class = "ClassDisabledFields" })
+            @Html.LabelFor(model => model.DisciplineSubject, new {@id ="lbltxtDisplayDisciplineSubject" , @class = "ClassDisplayLabel" })
+        </div>
+    </div>
+    <div class="formrow clearfix">
+        <div class="LabelDiv">
+            Message :
+        </div>
+        <div class="InputDiv">
+            @Html.TextAreaFor(model => model.DisciplineMessage, new { @id = "txtDisplayDisciplineMessage", @readonly = "true", disabled = "disabled", @class = "ClassDisabledFields" })
+            @Html.LabelFor(model => model.DisciplineMessage,  new { @id = "lbltxtDisplayDisciplineMessage", @class = "ClassDisplayLabel" })
+        </div>
+    </div>
+</div>
+</form>
+<script type ="text/javascript">
+    $(document).ready(function () {
+                $("#txtDisplayDisciplineSubject").next().text($("#txtDisplayDisciplineSubject").val());
+                $("#txtDisplayDisciplineMessage").next().text($("#txtDisplayDisciplineMessage").val());
+                $("#txtAddedDate").next().text($("#txtAddedDate").val());
+                $(".ClassDisplayLabel").hide();
+                DisplayLabel();
+    });
+
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                $(this).hide().next().show();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,81 @@
+﻿@model HRMS.Models.AppraisalViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/orbit.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")" class="selected"> Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")"> Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+    <div class="MainBody outofOffice sepappraisal">
+        <div class="clearfix">
+        </div>
+        <div class="tabs comptabs">
+            <ul class="leave-mgmt-tabs">
+                <li id="tab1">Configure New Appraisal Year</li>
+                <li id="tab2">View Appraisal Year Records</li>
+            </ul>
+        </div>
+
+        <section class="add-detailsdata out-of-ofc clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="leftcol">
+                    <div class="LabelDiv">
+                        <label for="From Date" class="select-type">* Year:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option value="abc">abc</option>
+                            <option value="pqe">pqe</option>
+                            <option value="xyz">xyz</option>
+                            <option value="typ">typ</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="search-detailsdata">
+            <div class="fill-dtls clearfix">
+                <label for="From Date" class="select-type">Current Year:</label>
+                <select>
+                    <option value="abc">abc</option>
+                    <option value="pqe">pqe</option>
+                    <option value="xyz">xyz</option>
+                    <option value="typ">typ</option>
+                </select>
+                <label for="From Date" class="select-type">Past Year:</label>
+                <select>
+                    <option value="abc">abc</option>
+                    <option value="pqe">pqe</option>
+                    <option value="xyz">xyz</option>
+                    <option value="typ">typ</option>
+                </select>
+                @*<div class="remain">
+                    <label for="From Date">From Date:</label>
+                    <input type="text">
+                    <img src="images/calender-icon.png" class="datepicker-image mrgnR12">
+                    <label for="To Date">To Date:</label>
+                    <input type="text">
+                    <img src="images/calender-icon.png" class="datepicker-image">
+                    <button type="button" class="ButtonGray">Search</button>
+                    <button type="button" class="ButtonGray">Reset</button>
+                </div>*@
+            </div>
+        </section>
+    </div>
+</section>

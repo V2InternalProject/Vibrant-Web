@@ -1,0 +1,511 @@
+﻿@model HRMS.Models.EmpSeparationApprovals
+@{
+    ViewBag.Title = "Menu";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+<script src="@Url.Content("../../Scripts/Exit/EmpSeparationApprovalsScreen.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+@*<script src="../../Scripts/GridView/jquery-1.7.2.min.js" type="text/javascript"></script>*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).click(function (e) {
+        if (!$(e.target).is('.EmpLink')) {
+            $("#PopUpOfEmpInfo").fadeOut();
+        }
+    });
+
+    //----------------------------------------------------------------------------------------
+
+    // Document ready function starts here
+    $(document).ready(function () {
+
+        $("#FieldChild").next().css("display", "none");
+
+        $("#inbox").attr('checked', 'checked');
+
+        $("#exitIdToPassOnLinkClick").val(0);
+
+        $("#jqWatchListTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadWatchListGrid", "Exit")',
+            datatype: "json",
+            mtype: "POST",
+            postData: {
+                term: function () { return $("#txtSearchEmployee").val(); },
+                Field: function () { return $("#Field").val(); },
+                FieldChild: function () { if($("#Field").val()=="Business Group") return $("#DDFieldChildListExitBG").val(); if($("#Field").val()=="Organization Unit") return $("#DDFieldChildListExitOU").val();if($("#Field").val()=="Stage Name") return $("#DDFieldChildListExitSN").val(); if($("#Field").val()=="") return "";  },
+                employeeId: '@ViewBag.EncryptedEmployeeId'
+            },
+
+            // Specify the column names
+            colNames: ["StageId", "Reporting To", "Field", "ExitStageOrder", "ExitInstanceId", "EncryptedExitInstanceId", "EmployeeId", "Employee", "Status", "Stage", ""],
+
+            // Configure the columns
+            colModel: [
+                { name: "StageId", index: "StageId", hidden: true, width: 100, align: "left" },
+                { name: "ReportingTo", index: "ReportingTo", hidden: true, width: 100, align: "left" },
+                { name: "Field", index: "Field", hidden: true, width: 100, align: "left" },
+                { name: "ExitStageOrder", index: "ExitStageOrder", hidden: true, width: 100, align: "left" },
+                { name: "ExitInstanceId", index: "ExitInstanceId", hidden: true, width: 100, align: "left" },
+				{ name: "EncryptedExitInstanceId", index: "EncryptedExitInstanceId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "WatchListEmployeeName", index: "WatchListEmployeeName", formatter: formatlink, width: 100, sortable: true, align: "left" },
+                { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
+                { name: "stageName", index: "stageName", width: 100, align: "left" },
+                { name: "IsWithdrawn", index: "IsWithdrawn", hidden: true, width: 100, align: "left" }
+            ],
+
+            // Grid total width and height
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            loadonce:true,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+                //$('.ui-pg-table').find('select').selectBox("detach");
+                $('.selectBox-label').parents('td').find('select').removeAttr('style');
+                var Data = $('.selectBox-label').parents('td').find('a');
+                $(Data).each(function () {
+                    var obj = $(this);
+                    obj.remove();
+                });
+
+            },
+            pager: $("#jqWatchListDetailsPager"),
+
+            // Grid caption
+            //caption: "Watch List"
+        }).navGrid("#jqWatchListDetailsPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        //---------------------------------------------------2nd Grid --------------------------------
+
+        $("#jqInboxTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadInboxListGrid", "Exit")',
+            datatype: "json",
+            mtype: "POST",
+            postData: {
+                term: function () { return $("#txtSearchEmployee").val(); },
+                Field: function () { return $("#Field").val(); },
+                FieldChild: function () { if($("#Field").val()=="Business Group") return $("#DDFieldChildListExitBG").val(); if($("#Field").val()=="Organization Unit") return $("#DDFieldChildListExitOU").val();if($("#Field").val()=="Stage Name") return $("#DDFieldChildListExitSN").val(); if($("#Field").val()=="") return "";  },
+                employeeId: '@ViewBag.EncryptedEmployeeId'
+            },
+
+            // Specify the column names
+            colNames: ["StageId", "Reporting To", "Field", "ExitStageOrder", "ExitInstanceId", "EncryptedExitInstanceId", "EmployeeId", "Employee", "Status", "Stage", ""],
+
+            // Configure the columns
+            colModel: [
+                { name: "StageId", index: "StageId", hidden: true, width: 100, align: "left" },
+                { name: "ReportingTo", index: "ReportingTo", hidden: true, width: 100, align: "left" },
+                { name: "Field", index: "Field", hidden: true, width: 100, align: "left" },
+                { name: "ExitStageOrder", index: "ExitStageOrder", hidden: true, width: 100, align: "left" },
+                { name: "ExitInstanceId", index: "ExitInstanceId", hidden: true, width: 100, align: "left" },
+				{ name: "EncryptedExitInstanceId", index: "EncryptedExitInstanceId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "WatchListEmployeeName", index: "WatchListEmployeeName", formatter: formatlink, width: 100, sortable: true, align: "left" },
+                { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
+                { name: "stageName", index: "stageName", width: 100, align: "left" },
+                { name: "IsWithdrawn", index: "IsWithdrawn", hidden: true, width: 100, align: "left" }
+            ],
+
+            // Grid total width and height
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            loadonce: true,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+                $('.ui-pg-table').find('select').selectBox("detach");
+
+            },
+            pager: $("#jqInboxDetailsPager"),
+
+            // Grid caption
+            //caption: "Inbox"
+        }).navGrid("#jqInboxDetailsPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        $("#btnViewChecklist").click(ViewCheckList);
+
+        $("#btnFillChecklist").click(FillCheckList);
+
+        $("#btnWithDraw").click(WithdrawResign);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnShowStatus").click(ShowStatusResign);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnSubmitResignation").click(SubmitResignation);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnShowDetails").click(ShowDetailsResign);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnHeaderShowDetails").click(function () {
+            jQuery("#jqInboxTable").trigger("reloadGrid");
+            jQuery("#jqWatchListTable").trigger("reloadGrid");
+
+            $("#jqInboxTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $("#jqWatchListTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnFillExitInterViewForm").click(ExitInterviewForm);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnHRComments").click(HRCommentsDetailsForm);
+
+        //----------------------------------------------------------------------------------------
+
+        $("#btnHRClosureForm").click(HRCommentsDetailsForm);
+
+        $(".Title").hide();
+        if ('@ViewBag.IsManagerOrEMployee' == 'Employee') {
+            $("#btnWithDraw").show();
+        } else {
+            if ('@ViewBag.IsManagerOrEMployee' == 'Manager' && '@ViewBag.IsResignationExists' == true) {
+                $("#btnWithDraw").show();
+            } else {
+                $("#btnWithDraw").hide();
+            }
+        }
+
+        $("#txtSearchEmployee").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggest", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + "{" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName
+                        };
+                    }));
+                });
+            }
+        });
+
+        $("#Field").change(FieldDDLChange);
+        $("#gbox_jqInboxTable ").show();
+        $("#gbox_jqWatchListTable").show();
+        $("#btnAcceptOrReject").click(AcceptRejectResign);
+
+    });
+
+    //----------------------------------------------------------------------------------------
+
+    $.each($(".textAeraClass"), function () {
+        $(this).on("keyup", function (e) {
+            $(this).closest("tr").find("#errorComment").text("").css("display", "none");
+        }).on("focusout", function () {
+            if ($.trim($(this).val()) == "") {
+                $(this).closest("tr").find("#errorComment").text("Please enter comment").css("display", "block");
+            }
+        });
+    });
+
+    function LinkClick(event, encryptedExitId, empId, reportingTo, stageId, isWithdrawn) {
+        var target = event.id;
+        var width = $("#" + target).width();
+        var table = $("#" + target).parent().parent().parent().parent();
+        var tableid = $(table).attr('id');
+        $("#hdnReportingTo").val(reportingTo);
+        $("#btnHRClosureForm").hide();
+        $("#btnFillExitInterViewForm").hide();
+        $("#btnHRComments").hide();
+        $("#btnFillChecklist").hide();
+        $("#btnViewChecklist").hide();
+        $("#btnWithDraw").hide();
+        if (tableid == "jqInboxTable") {
+            $("#btnAcceptOrReject").show();
+            $("#btnShowDetails").hide();
+            if (stageId == 4) {
+                $("#btnFillChecklist").show();
+                $("#btnAcceptOrReject").hide();
+            }
+            if (stageId > 4 && '@ViewBag.UserRole' == 'HR Admin' && stageId < 7) {
+                $("#btnViewChecklist").show();
+            }
+        }
+        else {
+            if (stageId == 7) {
+                $("#btnHRClosureForm").show();
+            }
+            $("#btnAcceptOrReject").hide();
+            $("#btnShowDetails").show();
+            $("#btnFillChecklist").hide();
+            if (stageId >= 4 && empId != '@Model.EmployeeId' && stageId != 8) {
+                $("#btnViewChecklist").show();
+            }
+        }
+
+        if (empId == '@Model.EmployeeId') {
+            if (stageId != 7)
+                $("#btnWithDraw").show();
+            $("#btnAcceptOrReject").hide();
+
+            if (stageId == 1) {
+                if (isWithdrawn != true) {
+
+                    $("#btnSubmitResignation").show();
+                    $("#btnWithDraw").show();
+                }
+                else {
+                    $("#btnWithDraw").hide();
+                    $("#btnSubmitResignation").hide();
+                }
+            }
+            else {
+                $("#btnSubmitResignation").hide();
+                if (tableid != "jqInboxTable" && stageId != 7) {
+                    $("#btnWithDraw").show();
+                }
+            }
+        }
+        else {
+            $("#btnWithDraw").hide();
+            $("#btnSubmitResignation").hide();
+
+        }
+
+        if ('@ViewBag.UserRole' == 'HR Admin') {
+
+            if (stageId == 5) {
+                $("#btnFillExitInterViewForm").show();
+                $("#btnAcceptOrReject").hide();
+            }
+            else {
+                if (stageId == 6) {
+                    $("#btnHRComments").show();
+                    $("#btnAcceptOrReject").hide();
+                }
+                else {
+                    if (stageId == 4) {
+                        $("#btnAcceptOrReject").hide();
+                    }
+
+                }
+            }
+
+        }
+
+        var positionlink = $("#" + target).offset();
+
+        $("#PopUpOfEmpInfo").css({
+            top: positionlink.top,
+            left: positionlink.left + width,
+            position: "fixed"
+        }).fadeIn();
+
+        $("#btnAcceptOrReject").focus();
+        $("#exitIdToPassOnLinkClick").val(encryptedExitId);
+        $("#InboxOrWatchListCall").val(tableid);
+        $("#EmpIdToPassOnLinkClick").val(empId);
+
+    }
+
+    //----------------------------------------------------------------------------------------
+</script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="ConfirmationContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Separation Process</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("SeparationForm", "Exit")">Fill My Separation Form</a> <a href="@Url.Action("EmpSeparationApprovals", "Exit")" class="selected">
+                Employee Separation Approvals</a>
+            @if (Model.UserRole == "HR Admin")
+            {
+                <a href="@Url.Action("EmpSeparationTermination", "Exit")">Employee Separation - Termination</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody">
+        @Html.HiddenFor(m => m.loginUsersDepartment)
+        @Html.HiddenFor(m => m.UserRole)
+        @Html.HiddenFor(m => m.LoggedInUser)
+        @Html.HiddenFor(m => m.hdnReportingTo)
+        @Html.HiddenFor(m => m.ExitInstanceId)
+        @Html.HiddenFor(m => m.EncryptedExitInstanceId)
+        <div class="Hrmain ex-savedSUb clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("Employee Name")
+                </div>
+                <div class="InputDiv">
+                    <input type="text" name="searchValue" id="txtSearchEmployee" class="srchinput" />
+                </div>
+                <div class="LabelDiv">
+                    @Html.Label("Field")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetFieldList(), "Value", "Text"), "")
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListExitBG">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListBG, "Select", new { id = "DDFieldChildListExitBG" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListExitOU">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListOU, "Select", new { id = "DDFieldChildListExitOU" })
+                </div>
+                <div class="InputDiv" style="display: none" id="FieldChildListExitSN">
+                    @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListSN, "Select", new { id = "DDFieldChildListExitSN" })
+                </div>
+                <div class="remain">
+                    <input type="button" id="btnHeaderShowDetails" value="Show" class="ButtonGray mrgnLN96" />
+                </div>
+            </div>
+        </div>
+        <h4 class="SmallHead">
+            Inbox</h4>
+        <div class="tablestyle3">
+            <table id="jqInboxTable" class="scroll">
+            </table>
+            <div id="jqInboxDetailsPager">
+            </div>
+        </div>
+        <h4 class="SmallHeadW">
+            Watch List</h4>
+        <div class="tablestyle3 mrgnT33">
+            <table id="jqWatchListTable" class="scroll">
+            </table>
+            <div id="jqWatchListDetailsPager">
+            </div>
+        </div>
+    </div>
+</section>
+<div id="EmpSeparationShowDetails" style="display: none;">
+    @{Html.RenderPartial("_SeparationShowDetails", Model.ShowDetails);}
+</div>
+<div id="EmpSeparationShowStatus" style="display: none;">
+    @{Html.RenderPartial("_SeparationShowStatus", Model.ShowStatus);}
+</div>
+<div id="SeparationMailDialog" style="display: none">
+    @{Html.RenderPartial("_MailTemplateSeparation", Model.Mail);}
+</div>
+<div id="ExitInterviewFromDialog" style="display: none">
+    @{Html.RenderPartial("_ExitInterviewForm", Model.ExitInterviewForm);}
+</div>
+<div id="PopUpOfEmpInfo" style="display: none;">
+    <ul class="exitbutton">
+        <li id="btnAcceptOrReject" style="display: none;">Accept/Reject</li>
+        <li id="btnShowDetails">Show Details</li>
+        <li id="btnShowStatus">Show Status</li>
+        <li id="btnSubmitResignation">Submit</li>
+        <li id="btnWithDraw">Withdraw</li>
+        <li id="btnFillChecklist">Fill CheckList</li>
+        <li id="btnViewChecklist">View CheckList</li>
+        <li id="btnFillExitInterViewForm" style="display: none;">Fill Separation Interview Form</li>
+        <li id="btnHRComments" style="display: none;">HR Comments</li>
+        <li id="btnHRClosureForm" style="display: none;">HR Closure Form</li>
+    </ul>
+    <table>
+        <tr style="display: none;">
+            <td>
+                <span id="exitIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+            <td>
+                <span id="EmpIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="GreenSymbol">
+</div>
+<div id="YellowSymbol">
+</div>
+<div id="RedSymbol">
+</div>
+<div id="WithdrawConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to withdraw your resignation ?
+    </p>
+</div>
+<div id="HRSelection" style="display: none">
+    <p>
+        Select stage which you want to Perform.
+    </p>
+    <input type="radio" name="HR" value="1" id="radioHR1" checked="checked">
+    @Html.Label("Project Clearance", new { @class = "label-space LabelForRadio", @for = "radioHR1" })
+    <input type="radio" name="HR" value="2" id="radioHR2">
+    @Html.Label("HR Clearance", new { @class = "label-space LabelForRadio", @for = "radioHR2" })
+</div>
+<div id="ITSelection" style="display: none">
+    <p>
+        Select stage which you want to Perform.
+    </p>
+    <input type="radio" name="IT" value="1" id="radioIT1" checked="checked">
+    @Html.Label("Project Clearance", new { @class = "label-space LabelForRadio", @for = "radioIT1" })
+    <input type="radio" name="IT" value="2" id="radioIT2">
+    @Html.Label("IT Clearance", new { @class = "label-space LabelForRadio", @for = "radioIT2" })
+</div>
+<div id="AdminSelection" style="display: none">
+    <p>
+        Select stage which you want to Perform.
+    </p>
+    <input type="radio" name="Admin" value="1" id="radioAdmin1" checked="checked">
+    @Html.Label("Project Clearance", new { @class = "label-space LabelForRadio", @for = "radioAdmin1" })
+    <input type="radio" name="Admin" value="2" id="radioAdmin2">
+    @Html.Label("Admin Clearance", new { @class = "label-space LabelForRadio", @for = "radioAdmin2" })
+</div>
+<div id="FinanceSelection" style="display: none">
+    <p>
+        Select stage which you want to Perform.
+    </p>
+    <input type="radio" name="Finance" value="1" id="radioFinance1" checked="checked">
+    @Html.Label("Project Clearance", new { @class = "label-space LabelForRadio", @for = "radioFinance1" })
+    <input type="radio" name="Finance" value="2" id="radioFinance2">
+    @Html.Label("Finance Clearance", new { @class = "label-space LabelForRadio", @for = "radioFinance2" })
+</div>
+<div id="WithdrawSuccessMessage" style="display: none">
+    Your Resignation has been withdrawn successfully.
+</div>
+<div id="Adminclrearance">
+</div>
+<div id="dialog1_FinanceDept">
+</div>
+<div id="dialog1_ITDept">
+</div>
+<div id="dialog1_HRDept">
+</div>
+<div id="dialog1_ADMINDept">
+</div>
+<div id="dialog1_AssetDept">
+</div>
+<div id="dialog1_ProjectDept">
+</div>
+<span id="InboxOrWatchListCall" style="display: none;"></span>

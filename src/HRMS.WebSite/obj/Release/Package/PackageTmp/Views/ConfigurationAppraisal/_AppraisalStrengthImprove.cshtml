@@ -1,0 +1,192 @@
+﻿@model HRMS.Models.AppraisalStrengthImproveModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")" class="selected">Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")">Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+
+<div class="MainBody ProjectIndexbody clearfix">
+    <div class="clearfix">
+       <div class="ButtonContainer3 clearfix">
+            <input type="button" value="Back" class="ButtonGray mrgnR8" id="BackAppraisal" />
+            <input type="button" value="Next" class="ButtonGray mrgnR8" id="NextAppraisal" />
+        </div>
+        @{var minLimit = Convert.ToInt32(@ViewBag.minStrength);
+        var maxLimit = Convert.ToInt32(@ViewBag.maxStrength);}
+        @if (minLimit != maxLimit)
+        {
+            <h4 class="subHead">Configured Rating Scale is @ViewBag.minStrength-@ViewBag.maxStrength</h4>
+        }
+        else
+        {
+            <h4 class="subHead">Minimum rating has not been configured. Please do so under ‘Configurations -> Confirmation and Appraisal Process -> Configure Rating Scale.</h4>
+        }
+
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmstrengthimprovement" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(x => x.AppraisalYearID)
+            <div class="formPad FormContainerBox clearfix ProjectIndexFliter">
+                <div class="leftcol clearfix">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                           <span class="mandatory">*</span> @Html.Label("Strength Limit >=")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.StrengthLimit)
+                            <span style="display: none;" class="hide" id="strengthLmt">StrengthLimit should be between '@ViewBag.minStrengthPlusOne' to '@ViewBag.maxStrength'</span>
+                            @*@Html.ValidationMessageFor(x => x.StrengthLimit)*@
+                            @Html.HiddenFor(x => x.StrengthLimit)
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Improvement Limit <")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ImprovementLimit, new { @disabled = "disabled" })
+                            @Html.HiddenFor(x => x.ImprovementLimit)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+</section>
+<script type="text/javascript">
+    $(".Title").hide();
+    $(document).ready(function () {
+     if ('@ViewBag.IsInitiated' == "True") {
+            $('#StrengthLimit').attr('disabled', 'disabled');
+        }
+    });
+    $("#NextAppraisal").click(function () {
+        var test = checkValid();
+        if (test == true) {
+            saveStrengthImprovement();
+            //window.location.href = '@Url.Action("AppraiserReviewerMapping", "ConfigurationAppraisal")';
+        }
+        else
+            return false;
+
+    });
+
+    $("#BackAppraisal").click(function () {
+        window.location.href = '@Url.Action("AppraisalRatingScale", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.AppraisalYearID';
+
+    });
+
+    $("#StrengthLimit").blur(function () {
+        checkValid();
+    });
+
+    function checkValid() {
+        var strength = parseInt($("#StrengthLimit").val());
+        var minLimit = parseInt('@ViewBag.minStrengthPlusOne');
+        var maxLimit = parseInt('@ViewBag.maxStrength');
+        if (!(isNaN(strength))) {
+            if ((strength < minLimit) || (strength > maxLimit)) {
+                $('#strengthLmt').show();
+                return false;
+            }
+            else {
+                $('#strengthLmt').hide();
+                var strengthlimit = $('#StrengthLimit').val();
+                $('#ImprovementLimit').val(strengthlimit - 1);
+                return true;
+            }
+        }
+        else {
+            $('#strengthLmt').show();
+            return false;
+        }
+    }
+
+    function saveStrengthImprovement() {
+        var addStrengthImproveLimit = {
+            StrengthLimit: $('#StrengthLimit').val(),
+            ImprovementLimit: $('#ImprovementLimit').val(),
+            AppraisalYearID: '@Model.AppraisalYearID'
+        };
+        var postUrl = '@Url.Action("setStrengthImprovementLimit", "ConfigurationAppraisal")';
+        if ($("#frmstrengthimprovement").valid()) {
+            $("#loading").dialog(
+                {
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose"
+                });
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                async: false,
+                contentType: "application/json",
+                dataType: 'json',
+                data: JSON.stringify(addStrengthImproveLimit),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        window.location.href = '@Url.Action("AppraiserReviewerMapping", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.AppraisalYearID';
+                    }
+                    else {
+                        $("#ErrorAddParametercategory").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Errorincatefory").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+</script>

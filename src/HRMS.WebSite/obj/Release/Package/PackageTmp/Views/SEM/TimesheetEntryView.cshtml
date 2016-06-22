@@ -1,0 +1,195 @@
+﻿@model HRMS.Models.TimesheetEntryViewModel
+@{
+    ViewBag.Title = "Timesheet Entry";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix">
+   
+    <div class="clearfix">
+        <div class="colOneThird clearfix mrgnT10">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                   <span class="mandatory">*</span> @Html.Label("From Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif" />
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix mrgnT10">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("To Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif" />
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix mrgnT10">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Status:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tablestyle3">
+        <table id="jqTimesheetIBTable">
+        </table>
+    </div>
+    <div id="jqTimesheetIBTablePager">
+    </div>
+
+    <div class="tablestyle3">
+        <table id="jqTimesheetWLTable">
+        </table>
+    </div>
+    <div id="jqTimesheetWLTablePager">
+    </div>
+    @*<div id="AddTaskDiv" style="display: none">
+        @Html.Partial("_AddTask", Model.AddTaskModel)
+    </div>
+     <div id="TaskListDiv" style="display: none">
+        @Html.Partial("_TaskList", Model.TaskListModel)
+    </div>*@
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    $("#jqTimesheetIBTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData:  mydata,//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["From Date", "To Date", "Actual Hrs", "Status"],            
+            // Configure the columns
+            colModel: [
+                
+               
+                { name: "From", index: "From", align: "center", width: 120},
+                { name: "To", index: "To", align: "center", width: 120},
+                { name: "ActualHrs", index: "ActualHrs", align: "center", width: 120},
+                 { name: "Status", index: "Status", align: "center", width: 340},
+               
+               
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqTimesheetIBTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "Inbox",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqTimesheetIBTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        var mydata = [ {From : "<a href='/SEM/TimesheetEntry' class='clearB'>3/24/2014</a>" }];
+
+
+     for(var i=0;i<=mydata.length;i++)
+     {
+            jQuery("#jqTimesheetIBTable").addRowData(i, mydata[i]);              
+            }//function
+
+         $("#jqTimesheetWLTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["From Date", "To Date", "Actual Hrs", "Status"],            
+            // Configure the columns
+            colModel: [
+                
+               
+                { name: "From", index: "From", align: "center", width: 120},
+                { name: "To", index: "To", align: "center", width: 120},
+                { name: "ActualHrs", index: "ActualHrs", align: "center", width: 120},
+                 { name: "Status", index: "Status", align: "center", width: 340},
+               
+               
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqTimesheetWLTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "Watchlist",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqTimesheetWLTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+//        $('#btnAddTask').click(function () {
+//            $('#AddTaskDiv').dialog({
+//                autoOpen: false,
+//                modal: true,
+//                width: 500,
+//                resizable: false,
+//                title: "Add Task"
+//            });
+//            $('#AddTaskDiv').dialog('open');
+//        });
+
+//         $('#btnTaskList').click(function () {
+//            $('#TaskListDiv').dialog({
+//                autoOpen: false,
+//                modal: true,
+//                width: 1100,
+//                resizable: false,
+//                title: "My Task List"
+//            });
+//            $('#TaskListDiv').dialog('open');
+//        });
+    });
+    
+</script>

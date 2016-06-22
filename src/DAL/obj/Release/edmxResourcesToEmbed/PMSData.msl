@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Orbitphase2ModelStoreContainer" CdmEntityContainer="PMSDbEntities">
+    <EntitySetMapping Name="CalendarLists">
+      <EntityTypeMapping TypeName="Orbitphase2Model.CalendarList">
+        <MappingFragment StoreEntitySet="CalendarList">
+          <ScalarProperty Name="CalendarId" ColumnName="CalendarId" />
+          <ScalarProperty Name="CalendarLocation" ColumnName="CalendarLocation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ShiftMasters">
+      <EntityTypeMapping TypeName="Orbitphase2Model.ShiftMaster">
+        <MappingFragment StoreEntitySet="ShiftMaster">
+          <ScalarProperty Name="ShiftID" ColumnName="ShiftID" />
+          <ScalarProperty Name="ShiftName" ColumnName="ShiftName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="ShiftInTime" ColumnName="ShiftInTime" />
+          <ScalarProperty Name="ShiftOutTime" ColumnName="ShiftOutTime" />
+          <ScalarProperty Name="ISActive" ColumnName="ISActive" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

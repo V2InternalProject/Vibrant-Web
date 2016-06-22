@@ -1,0 +1,128 @@
+﻿@model HRMS.Models.AppraisalDesignationsModel
+@{
+    ViewBag.Title = "Index";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<h4 class="subHead3">Designation for Parameter</h4>
+<div class="ButtonContainer">
+    <input type="button" class="ButtonGray mrgnR8" id="savenewdesignation" value="Save" onclick="SaveNewDesignation()" />
+    <input type="button" class="ButtonGray mrgnR8" id="SelectAlldesignation" value="SelectAll" onclick="SelectAll()" />
+    <input type="button" class="ButtonGray mrgnR8" id="DeselectAlldesignation" value="DeselectAll" onclick="DeselectAll()" />
+</div>
+<div class="tbl_DeliveryTeams">
+    <table cellpadding="0" width="100%" cellspacing="0" border="0" class="TableJqgrid">
+        <thead>
+            <tr>
+                <td width="90%" class="tableHeaders">
+                    Designation
+                </td>
+                <td width="10%" class="anchorhyperlink tableHeaders">
+                    Select
+                </td>
+            </tr>
+        </thead>
+        <div id="competencyMainContainer">
+            @if (Model.AppraisalDesignations.Count == 0)
+            {
+                <tr class="tableRows">
+                    <td colspan="2">
+                        There are no items to show in this view.
+                    </td>
+                </tr>
+            }
+            @foreach (var item in Model.AppraisalDesignations)
+            {
+                <tr class="tableRows">
+                    <td id="designationID">
+                        @Html.DisplayFor(modelItem => item.Designation, new { @readonly = "readonly" })
+                    </td>
+                    <td id="Delete">
+                        @Html.CheckBoxFor(x => item.Checked, new { @class = "selectnewAll", @data = item.DesignationID, @for = item.ParameterID })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+</div>
+<table class="recordDivPopup">
+    <thead>
+        <tr>
+            <td>
+                Applicable Designations: @Model.AppraisalDesignations.Count
+            </td>
+        </tr>
+    </thead>
+</table>
+
+<div id="NorecordSelected" style="display: none" title="Record Save">
+    <center class="LoadingWrap">
+        Please select Atleast one record to save.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    function SaveNewDesignation() {
+        var designationID = [];
+        $.each($("input:checked"), function (i, val) {
+            designationID.push($(val).attr("data"));
+        });
+        var parameterID = $("input:checkbox").attr("for");
+        if (designationID.length == 0) {
+            $("#NorecordSelected").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $.ajax({
+                url: '@Url.Action("SaveNewDesignation", "ConfigurationAppraisal")',
+                data: JSON.stringify({ designationID: designationID,
+                    parameterID: parameterID
+                }),
+                type: 'post',
+                datatype: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        $("#SelectDesignationsDialog").dialog("close");
+                        $("#SelectDesignationsDialog").dialog("destroy");
+                        location.reload();
+                    }
+                }
+            });
+        }
+    }
+
+    function SelectAll() {
+        $(".selectnewAll").prop("checked", true);
+    }
+    function DeselectAll() {
+        $(".selectnewAll").prop("checked", false);
+    }
+</script>

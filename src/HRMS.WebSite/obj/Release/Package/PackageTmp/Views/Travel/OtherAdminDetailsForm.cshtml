@@ -1,0 +1,36 @@
+﻿@model HRMS.Models.OtherAdminViewModel
+@{
+    ViewBag.Title = "OtherAdminDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+
+<div>
+    <h2 class="mrgnT15 title-bgcolor">
+        Other Requirements</h2>
+    <div class="clearfix blueBorder">
+        <div class="mrgnT10" style="clear:left;">
+            <input type="button" value="Add" class="button"/>
+
+            @*grid*@
+             <div class="tablestyle3" style="width: 100%;">
+                <table>
+                </table>
+            </div>
+            <div>
+            </div>
+        </div>
+
+        
+    </div>
+    <div class="mrgnT30">
+        <input type="button" class="button" value="Save" />
+        <input type="button" class="button" value="Submit" />
+        <input type="button" class="button" value="Reject" />
+        <input type="button" class="button" value="Cancle Travel Request" />
+    </div>
+</div>
+
+

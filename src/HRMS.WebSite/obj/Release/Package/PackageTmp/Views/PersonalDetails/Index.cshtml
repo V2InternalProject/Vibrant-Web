@@ -1,0 +1,105 @@
+﻿@model HRMS.Models.PersonalDetailsViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Personal Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+@{string[] emplRoles = Roles.GetRolesForUser(Membership.GetUser().UserName);
+  CommonMethodsDAL commonmethodDAL = new CommonMethodsDAL();
+  var user = commonmethodDAL.GetMaxRoleForUser(emplRoles);
+  if (user != null)
+  {
+      if ((user == HRMS.Models.UserRoles.HRAdmin) || (user == HRMS.Models.UserRoles.HRExecutive) || (user == HRMS.Models.UserRoles.RMG))
+      {
+    <script type="text/javascript">
+        $(".Title").show();
+    </script>
+      }
+      else
+      {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //For Browse Button
+            $("#blogpic").bind("change", function (event) {
+                $("#FileBlogPicField").val($(this).val());
+            });
+
+        });
+        $(".Title").hide();
+    </script>
+      }
+  }
+  else
+  {
+    <script type="text/javascript">
+        $(".Title").hide();
+    </script>
+  }
+}
+@*<div id="tabs" class="tabstyle">
+    <ul>
+        @if (ViewBag.EmployeeId != null)
+        {
+            if (ViewBag.UserRole == "RMG" && Model.SearchUserID != ViewBag.loggedinEmployeeID)
+            {
+                <li><a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Personal Details</a></li>
+            <li><a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Educational Details</a></li>
+            <li><a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Certification Details</a></li>
+            <li><a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Skill Details</a></li>
+             <li><a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Contact Details</a></li>
+            }
+            else
+            {
+            <li><a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Personal Details</a></li>
+            <li><a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Dependent Details</a></li>
+            <li><a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Declaration Details</a></li>
+            <li><a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Residential Details</a></li>
+            <li><a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Contact Details</a></li>
+            <li><a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Educational Details</a></li>
+            <li><a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Certification Details</a></li>
+            <li><a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Skill Details</a></li>
+            <li><a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Medical History</a></li>
+            }
+        }
+        else
+        {
+            if (ViewBag.UserRole == "RMG")
+            {
+            <li><a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Educational Details</a></li>
+            <li><a href="#">Certification Details</a></li>
+            <li><a href="#">Skill Details</a></li>
+
+            }
+            else
+            {
+            <li><a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                Personal Details</a></li>
+            <li><a href="#">Residential Details</a></li>
+            <li><a href="#">Dependent Details</a></li>
+            <li><a href="#">Declaration Details</a></li>
+            <li><a href="#">Contact Details</a></li>
+            <li><a href="#">Educational Details</a></li>
+            <li><a href="#">Certification Details</a></li>
+            <li><a href="#">Skill Details</a></li>
+            <li><a href="#">Medical History</a></li>
+            }
+        }
+    </ul>
+</div>*@

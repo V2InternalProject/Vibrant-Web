@@ -1,0 +1,67 @@
+﻿@model HRMS.Models.VisaDetailsViewModel
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<div class="tablestyle3 mrgnT15">
+    <table border="0" cellpadding="0" cellspacing="0" class="TableJqgrid">
+        <tr align="center" class="tableRows">
+            <td align="right" width="30%">
+                <div class="display-label">
+                    <b>File Name </b>
+                </div>
+            </td>
+            <td align="left" width="70%">
+                <div class="display-field">
+                    @*@Html.ActionLink(Model.VisaFileName, "DownloadVisaFile", "EmployeeDetails", new { @Model.VisaFileName, @Model.EmployeeVisaId, @Model.EmployeeId, @Model.PersonType }, null)*@
+                    <a href="#" onclick="LinkVisaFileClick()">'@Model.VisaFileName'</a>
+                </div>
+            </td>
+        </tr>
+        <tr align="center" class="tableRows">
+            <td align="right" class="infoDisplayHead">
+                <div class="display-label">
+                    <b>Upload Date </b>
+                </div>
+            </td>
+            <td align="left">
+                <div class="display-field">
+                    @Model.CreatedDate
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function LinkVisaFileClick() {
+        var name = '@Model.VisaFileName';
+        $.ajax({
+            url: '@Url.Action("CheckIfFileExistVisa", "EmployeeDetails")',
+            data: { VisaFileName: '@Model.VisaFileName', EmployeeVisaId: '@Model.EmployeeVisaId', EmployeeID: '@Model.EmployeeId', PersonType: '@Model.PersonType' },
+            type: 'get',
+            success: function (results) {
+                if (results.status == true) {
+                    window.location = '@Url.Action("DownloadVisaFile", "EmployeeDetails")?VisaFileName=' + '@Model.VisaFileName' + '&EmployeeVisaId=' + '@Model.EmployeeVisaId' + '&EmployeeID=' + '@Model.EmployeeId' + '&PersonType=' + '@Model.PersonType';
+                }
+                else {
+                    $('#ShowEmployeeVisaDetails').dialog('close');
+                    $('#FileNotFoundVisa').dialog({
+                        autoOpen: false,
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "File Not Found",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                $(this).dialog('close');
+                                //$("#jqManageDocumentTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                    $('#FileNotFoundVisa').dialog('open');
+                }
+            }
+        });
+    }
+</script>

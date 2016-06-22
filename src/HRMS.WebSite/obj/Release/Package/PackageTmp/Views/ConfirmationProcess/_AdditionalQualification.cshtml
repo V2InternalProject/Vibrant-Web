@@ -1,0 +1,235 @@
+﻿@model HRMS.Models.AdditionalQualification
+@using HRMS.DAL
+@section HeaderLinks{
+}
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<div class="clearfix">
+    <fieldset class="blueBorder">
+        <div id="addAddQualificationDialog" style="display: none">
+            @Html.Partial("_AddAdditionalQualification", Model)
+        </div>
+        <div class="clear">
+            <input type="button" value="Add Additional Qualification Details" id="btnAddQualificationDetails"
+                class="button" />&nbsp;&nbsp;
+        </div>
+        <div class="tablestyle3">
+            <table id="AddQualificationTable" class="scroll">
+            </table>
+        </div>
+        <div id="AddQualificationTablePager">
+        </div>
+    </fieldset>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Set up the jquery grid
+        $("#AddQualificationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("AddQualificationDetailsLoadGrid", "ConfirmationProcess")',
+            postData: { employeeId: '@ViewBag.confirmationEmployeeId', ConfirmationID: '@Model.ConfirmationID' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee ID", "Confirmation ID", "Additional Qualification ID", "Title", "From Duration", "ToDuration", "Type", "Skills Acquired", "Extent to which the skill was used", ""],
+            // Configure the columns
+            colModel: [
+             { name: "QualifEmployeeID", index: "QualifEmployeeID", hidden: true, width: 100, align: "left" },
+             { name: "ConfirmationID", index: "ConfirmationID", hidden: true, width: 100, align: "left" },
+             { name: "AddQualificationID", index: "AddQualificationID", hidden: true, width: 150, align: "left" },
+             { name: "Title", index: "Title", width: 150, align: "left" },
+             { name: "FromDuration", index: "FromDuration", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+             { name: "ToDuration", index: "ToDuration", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+              { name: "skill", index: "skill", width: 70, align: "left" },
+             { name: "AddSkillAquired", index: "AddSkillAquired", width: 100, align: "left" },
+             { name: "AddSkillUsed", index: "AddSkillUsed", width: 150, align: "left" },
+             { name: "Delete", index: "Delete", width: 12, align: "center", formatter: function () {
+                 if ('@ViewBag.IsManagerOrEMployee' == "Employee" && '@ViewBag.clickedViewDetails' != "yes") {
+                     return '<img src="../../Content/themes/base/images/delete-icon.png" width="15px" height="15px">';
+                 }
+                 else {
+                     return '';
+                 }
+             }
+             }
+            ],
+
+            width: 700,
+            // Paging
+            toppager: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#AddQualificationTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+
+            caption: "Employee - Additional Qualification Details",
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var selectedAddQualificationID = rowData['AddQualificationID']
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] != "Delete") {
+                    EditQualificationDetails(rowData);
+                }
+                if (colName['index'] == "Delete" && '@ViewBag.clickedViewDetails' != "yes") {
+                    if ('@ViewBag.IsManagerOrEMployee' == "Employee") {
+                        DeleteAddQualificationDetails(selectedAddQualificationID);
+                    }
+                }
+            }
+        }).navGrid("#AddQualificationTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+        $("#btnAddQualificationDetails").click(function () {
+
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $("#addAddQualificationDialog #QualifEmployeeID").val($('#QualifEmployeeID').val());
+            $("#addAddQualificationDialog #ConfirmationID").val($('#ConfirmationID').val());
+            $("#addAddQualificationDialog #AddQualificationID").val('');
+            $("#addAddQualificationDialog #Title").val('');
+            $("#addAddQualificationDialog #FromDuration").val('');
+            $("#addAddQualificationDialog #ToDuration").val('');
+            $('#addAddQualificationDialog #skill').val('');
+            $('#addAddQualificationDialog #drpSkill').val('Select Qualification Type');
+            $("#addAddQualificationDialog #AddSkillAquired").val('');
+            $("#addAddQualificationDialog #AddSkillUsed").val('');
+
+            $("#addAddQualificationDialog #txtTitle").val('');
+            $("#addAddQualificationDialog #fromDuration").val('');
+            $("#addAddQualificationDialog #toDuration").val('');
+            $("#addAddQualificationDialog #txtAddSkillAquired").val('');
+            $("#addAddQualificationDialog #txtAddSkillUsed").val('');
+
+            $('#addAddQualificationDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 560,
+                resizable: false,
+                title: "Qualification Details"
+            });
+
+            $('#addAddQualificationDialog').dialog('open');
+        });
+
+        function EditQualificationDetails(Object) {
+
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $("#addAddQualificationDialog #QualifEmployeeID").val($('#QualifEmployeeID').val());
+            $('#addAddQualificationDialog #AddQualificationID').val(Object['AddQualificationID']);
+            $("#addAddQualificationDialog #ConfirmationID").val($('#ConfirmationID').val());
+            $('#addAddQualificationDialog #Title').val(Object['Title']);
+            $('#addAddQualificationDialog #FromDuration').val(Object['FromDuration']);
+            $('#addAddQualificationDialog #ToDuration').val(Object['ToDuration']);
+            $('#addAddQualificationDialog #AddSkillAquired').val(Object['AddSkillAquired']);
+            $('#addAddQualificationDialog #AddSkillUsed').val(Object['AddSkillUsed']);
+
+            $('#addAddQualificationDialog #skill option:selected').text(Object['skill']);
+            $('#addAddQualificationDialog #AddQualificationID').val(Object['AddQualificationID']);
+            $('#addAddQualificationDialog #txtTitle').val(Object['Title']);
+            $('#addAddQualificationDialog #fromDuration').val(Object['FromDuration']);
+            $('#addAddQualificationDialog #toDuration').val(Object['ToDuration']);
+            $('#addAddQualificationDialog #txtAddSkillAquired').val(Object['AddSkillAquired']);
+            $('#addAddQualificationDialog #txtAddSkillUsed').val(Object['AddSkillUsed']);
+
+            $('#addAddQualificationDialog').dialog
+            (
+                {
+                    autoOpen: false,
+                    modal: true,
+                    width: 560,
+                    resizable: false,
+                    title: "Edit Additional Qualification Details"
+                }
+            );
+            $('#addAddQualificationDialog').dialog('open');
+        }
+
+        function DeleteAddQualificationDetails(selectedAddQualificationID) {
+            $('#DeleteAddQualificationDialog').dialog(
+    			{
+    			    autoOpen: false,
+    			    modal: true,
+    			    width: 300,
+    			    height: 125,
+    			    resizable: false,
+    			    title: "Delete Additional Qualification Details",
+    			    buttons:
+    					{
+    					    "Ok": function () {
+    					        $.ajax({
+    					            url: '@Url.Action("DeleteAddQualificationDetails", "ConfirmationProcess")',
+    					            data: { AddQualificationID: selectedAddQualificationID },
+    					            datatype: "json",
+    					            success: function (data) {
+    					                if (data.status == true) {
+    					                    $("#DeleteAddQualificationDialog").dialog("close");
+    					                    $("#DeleteAddQualification").dialog(
+    						                {
+    						                    modal: true,
+    						                    resizable: false,
+    						                    height: 140,
+    						                    width: 300,
+    						                    title: "Deleted",
+    						                    buttons:
+    						                    {
+    						                        "Ok": function () {
+    						                            $(this).dialog('close');
+    						                            jQuery("#AddQualificationTable").trigger("reloadGrid");
+
+    						                        }
+    						                    }
+    						                }
+    						            );
+    					                }
+    					                else if (data.status == "Error") {
+    					                    $("#errorDialog").dialog({
+    					                        title: 'Confirmation Process',
+    					                        resizable: false,
+    					                        height: 'auto',
+    					                        width: 'auto',
+    					                        modal: true,
+    					                        buttons: {
+    					                            Ok: function () {
+    					                                $(this).dialog("close");
+    					                            }
+    					                        }
+    					                    }); //end dialog
+    					                }
+    					                else {
+    					                    $("#errorDialog").dialog({
+    					                        title: 'Confirmation Process',
+    					                        resizable: false,
+    					                        height: 'auto',
+    					                        width: 'auto',
+    					                        modal: true,
+    					                        buttons: {
+    					                            Ok: function () {
+    					                                $(this).dialog("close");
+    					                            }
+    					                        }
+    					                    }); //end dialog
+    					                }
+    					            } //end success
+    					        });
+    					    },
+    					    Cancel: function () {
+    					        $(this).dialog('close');
+    					    }
+    					}
+    			}
+    			);
+
+            $('#DeleteAddQualificationDialog').dialog('open');
+        }
+    });
+</script>

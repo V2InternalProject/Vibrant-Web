@@ -1,0 +1,476 @@
+﻿@model HRMS.Models.CustomerAddress
+<h4 class="SmallHead">
+    Customer Invoice Address</h4>
+<div class="tablestyle3">
+    <table id="jqAddInvoiceAddressTable">
+    </table>
+</div>
+<div id="jqAddInvoiceAddressTablePager">
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var DeomoTest;
+        var CustId = window.glob;
+
+      
+
+        stringCountryList = @(Html.Raw(Json.Encode(ViewBag.CountryLists)));
+       var a = [];
+       a.push("Select");
+        $.each(stringCountryList, function (index,value) {
+//          a.push({ index: value.TravellingLocationId, value: value.TravellingLocationName });
+          a.push(value.CountryName);
+         });
+        var SameAddess=0;
+        var ChkStatus=0;
+        $("#jqAddInvoiceAddressTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadAddressInvoiceGrid", "SEM")',
+            postData: { CustomerID: function () { return $('#addCustomerAddress #CustomerId').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "Same as Default Address","Address", "Country", "State", "City", "Zip Code", "Details", ""],
+            // Configure the columns
+            colModel: [
+                { name: "CutomerIds", index: "CutomerIds", align: "left", width: 120, editable: true, hidden: true },
+                { name: "CustID", index: "CustID", align: "left", width: 120, editable: true, hidden: true },
+                {name: "SameAddess", index: "SameAddess", width: 40, align: "left", sortable: false, formatter:ForADDCheckbox},
+                { name: "Address", index: "Address", align: "left", width: 120, editable: true, editrules: { required: true } },
+                { name: "Country", index: "Country", align: "left", width: 107, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: a, dataEvents: [{ type: 'change', fn: function(e) {ChangeCountry(e); } }]} },
+                { name: "State", index: "State", align: "left", width: 107, editable: true, editrules: { required: true } },
+                { name: "City", index: "City", align: "left", width: 107, editable: true, editrules: { required: true } },
+                { name: "ZipCode", index: "ZipCode", align: "left", width: 80, editable: true, editrules: { required: true } },
+                { name: "Details", index: "Details", align: "left", width: 100, editable: true },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 30,
+                    align: "center",
+                    formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; }
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddInvoiceAddressTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            editurl: '@Url.Action("SaveInvoiceAddressDetails", "SEM")',
+            // Grid caption
+            //caption: "Customer Address",
+            gridComplete: function () {
+           
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqAddInvoiceAddressTable").jqGrid('getGridParam', 'records');
+                
+                    if (count > 20) {
+                        $('#jqAddInvoiceAddressTablePager_center').show();
+                    }
+                    else {
+                        $('#jqAddInvoiceAddressTablePager_center').hide();
+                    }
+                    DeomoTest = window.glob;
+                    $('#addCustomerAddress #CustomerId').val(DeomoTest);
+                
+            },
+            onCellSelect: function (rowid, iCol) {
+            var rowData = jQuery("#jqAddInvoiceAddressTable").getRowData(rowid);
+             var cm = $(this).jqGrid("getGridParam", "colModel");
+            var Address = rowData["SameAddess"];
+             if (Address.indexOf('checked="checked"') > -1) {
+                 ChkStatus = 1;
+            }
+            else
+            {
+               ChkStatus = 0;
+
+            }
+            var colName = cm[iCol];
+                if (colName['index'] == "Delete" && rowid != "new_row") {
+                    DeleteCustomerAddressDetail(rowData["CutomerIds"]);
+                }
+            }
+        }).navGrid("#jqAddInvoiceAddressTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqAddInvoiceAddressTable").jqGrid('inlineNav', "#jqAddInvoiceAddressTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+//                position: "last",
+                addRowParams: {
+                  // the parameters of editRow used to edit new row
+                  keys: true,
+                  oneditfunc: function (rowid) {
+                  $("#new_row_Details").parent().next().find('img').hide();
+                  $('#addCustomerAddress #CountryID').val(0);
+                    $('label[for="new_row"]').bind('click',function(){
+                    if($('input[id="new_row"]').prop('checked') == false)
+                  {
+                      $('input[id="new_row"]').prop('checked','checked');
+                      var Countryname = $("#Countrynames option:selected").text();
+                      var Contryid;
+                      SameAddess = 1;
+                      $.each(a,function(index, value) {
+                              if(value == Countryname)
+                              {
+                                 Contryid = index;
+                              }
+                              });
+                      $('#new_row_Address').val($('#Address').val());
+                      $('#new_row_Address').attr('disabled', true);
+                      $('#new_row_Country').val(Contryid);
+                      $('#new_row_Country').attr('disabled', true);
+                      $('#new_row_State').val($('#State').val());
+                      $('#new_row_State').attr('disabled', true);
+                      $('#new_row_City').val($('#City').val());
+                      $('#new_row_City').attr('disabled', true);
+                      $('#new_row_ZipCode').val($('#ZipCode').val());
+                      $('#new_row_ZipCode').attr('disabled', true);
+
+                      var countryName = $("#new_row_Country option:selected").text();
+                      var ID;
+                      $.each(stringCountryList,function(index, value) {
+                      if(value.CountryName == countryName)
+                      {
+                         ID=value.CountryId;
+                      }
+                      });
+                      if(ID == "" || ID == undefined)
+                      ID = 0;
+                      $('#addCustomerAddress #CountryID').val(ID)
+                  }
+                    else
+                    {
+                    $('input[id="new_row"]').removeAttr('checked');
+                    SameAddess = 0;
+                    $('#new_row_Address').val('');
+                      $('#new_row_Country').val('');
+                      $('#new_row_State').val('');
+                      $('#new_row_City').val('');
+                      $('#new_row_ZipCode').val('');
+                      $('#new_row_Address').attr('disabled', false);
+                      $('#new_row_Country').attr('disabled', false);
+                      $('#new_row_State').attr('disabled', false);
+                      $('#new_row_City').attr('disabled', false);
+                      $('#new_row_ZipCode').attr('disabled', false);
+                    }
+                  });
+                      var Count = 0;
+                     $('.chkforInvoiceAdd').each(function(i, obj) {
+                         if($(".chkforInvoiceAdd").is(':checked'))
+                         {
+                           Count = 1;
+                         }
+                     });
+                     if(Count == 1)
+                     {
+                       $('label[for="new_row"]').hide();
+                     SameAddess = 0;
+                     }
+                     else if (Count == 0)
+                     {
+                        $('input[id="new_row"]').removeAttr('disabled');
+                     }
+               }
+            }
+            },
+            editParams: {
+                keys: true,
+                oneditfunc: function (data,value) { 
+                if($("#"+data+"_Country").val() == "0")
+                    $('#addCustomerAddress #CountryID').val(0);
+                if(ChkStatus == 1)
+                {
+                      $('input[id='+data+']').removeAttr('disabled');
+                      $('input[id='+data+']').attr('checked', 'checked');
+                      $('#'+data+'_Address').attr('disabled', true);
+                      $('#'+data+'_Country').attr('disabled', true);
+                      $('#'+data+'_State').attr('disabled', true);
+                      $('#'+data+'_City').attr('disabled', true);
+                      $('#'+data+'_ZipCode').attr('disabled', true);
+                      SameAddess = 1;
+                }
+                else
+                {
+                  var Total = 0;
+                  SameAddess = 0;
+                  $('.chkforInvoiceAdd').each(function(i, obj) {
+                         if($(".chkforInvoiceAdd").is(':checked'))
+                         {
+                           Total = 1;
+                         }
+                     });
+                     if(Total == 1)
+                        $('input[id='+data+']').attr('disabled', true);
+                     else if(Total == 0)
+                        $('input[id='+data+']').removeAttr('disabled');
+                }
+                $('label[for='+data+']').bind('click',function(){
+                if($('input[id='+data+']').prop('disabled') == false)
+                    ChangeAddres(this.id,data);
+                }); 
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    CustomerId: function () {
+                        return $('#addCustomerAddress #CustomerId').val();
+                    },
+                    CountryID: function () {
+                        return $('#addCustomerAddress #CountryID').val();
+                    },
+                    SameAddess: function () {
+                        return SameAddess;
+                    }
+                },
+                aftersavefunc: function () {
+                    $("#InvoiceAddressSucess").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqAddInvoiceAddressTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+         function ChangeAddres(id,ids)
+          {
+              if($('input[id='+ids+']').is(':checked'))
+                  {
+                      $('input[id='+ids+']').removeAttr('checked');
+                      SameAddess = 0;
+                      $('input[id='+ids+']').removeAttr('disabled');
+                      $('#'+ids+'_Address').val('');
+                      $('#'+ids+'_Country').val('');
+                      $('#'+ids+'_State').val('');
+                      $('#'+ids+'_City').val('');
+                      $('#'+ids+'_ZipCode').val('');
+                      $('#'+ids+'_Address').attr('disabled', false);
+                      $('#'+ids+'_Country').attr('disabled', false);
+                      $('#'+ids+'_State').attr('disabled', false);
+                      $('#'+ids+'_City').attr('disabled', false);
+                      $('#'+ids+'_ZipCode').attr('disabled', false);
+                  }
+                    else
+                    {
+                    $('input[id='+ids+']').prop('checked','checked');
+                    var Countryname = $("#Countrynames option:selected").text();
+                      var Contryid;
+                      SameAddess = 1;
+                      $.each(a,function(index, value) {
+                              if(value == Countryname)
+                              {
+                                 Contryid = index;
+                              }
+                              });
+                      $('#'+ids+'_Address').val($('#Address').val());
+                      $('#'+ids+'_Address').attr('disabled', true);
+                      $('#'+ids+'_Country').val(Contryid);
+                      $('#'+ids+'_Country').attr('disabled', true);
+                      $('#'+ids+'_State').val($('#State').val());
+                      $('#'+ids+'_State').attr('disabled', true);
+                      $('#'+ids+'_City').val($('#City').val());
+                      $('#'+ids+'_City').attr('disabled', true);
+                      $('#'+ids+'_ZipCode').val($('#ZipCode').val());
+                      $('#'+ids+'_ZipCode').attr('disabled', true);
+
+                      var countryName = $("#"+ids+"_Country option:selected").text();
+                      var ID;
+                      $.each(stringCountryList,function(index, value) {
+                      if(value.CountryName == countryName)
+                      {
+                         ID=value.CountryId;
+                      }
+                      });
+                      if(ID == "" || ID == undefined)
+                      ID = 0;
+                      $('#addCustomerAddress #CountryID').val(ID);
+                    }
+              }
+    });
+    
+    function ForADDCheckbox(cellValue, options, rowdata, action) {
+       var Address = rowdata["SameAddess"];
+       if(Address != true && Address != false && Address != undefined)
+       {
+        if (Address.indexOf('checked="checked"') > -1) {
+          var chkAddress= '<input type="checkbox" onclick = "ChangeAddress(' + rowdata["CutomerIds"] + ');" class="chkforInvoiceAdd" id=' + options.rowId + ' checked="checked" disabled="disabled">';
+          var lblAddress= '<label for=' + options.rowId + ' class="LabelForCheckbox"></label>';
+          return chkAddress + lblAddress;
+        } else {
+          var chkAddress = '<input type="checkbox" onclick = "ChangeAddress(' + rowdata["CutomerIds"] + ');" class="chkforInvoiceAdd" id=' + options.rowId + ' disabled="disabled">';
+          var lblAddress= '<label for=' + options.rowId + ' class="LabelForCheckbox"></label>';
+          return chkAddress + lblAddress;
+        }
+        }
+        else{
+       if(rowdata["SameAddess"] == true)
+       {
+       var chkAddress='<input type="checkbox" onclick = "ChangeAddress(' + rowdata["CutomerIds"] + ');" class="chkforInvoiceAdd" id=' + options.rowId + ' checked="checked" disabled="disabled">';
+       var lblAddress= '<label for=' + options.rowId + ' class="LabelForCheckbox"></label>';
+       return chkAddress+lblAddress;
+       }
+        else
+        {
+        var chkAddress='<input type="checkbox" onclick = "ChangeAddress(' + rowdata["CutomerIds"] + ');" class="chkforInvoiceAdd" id=' + options.rowId + ' disabled="disabled">';
+        var lblAddress= '<label for=' + options.rowId + ' class="LabelForCheckbox"></label>';
+        return chkAddress+lblAddress;
+        }
+        }
+    }
+
+         function ChangeCountry(e) {
+         var countryName = e.target[e.target.selectedIndex].text;
+         var ID;
+         $.each(stringCountryList,function(index, value) {
+         if(value.CountryName == countryName)
+         {
+            ID=value.CountryId;
+         }
+         });
+         if(ID == "" || ID == undefined)
+         ID = 0;
+         $('#addCustomerAddress #CountryID').val(ID)
+        }
+
+    function DeleteCustomerAddressDetail(CoustomerID) {
+        $('#deletecustomerAdressConfirmation').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+                dialogClass: "noclose",
+			    title: "Delete Invoice Address Detail",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: '@Url.Action("DeleteCustomerDetails", "SEM")',
+					            data: { CustomerID: CoustomerID },
+					            success: function (data) {
+					                if (data.status == true) {
+					                    $("#deletecustomerAdressConfirmation").dialog("close");
+					                    $("#deleteCustomAddRecord").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Deleted",
+                                            dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddInvoiceAddressTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    $("#deletecustomerAdressConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Delete Invoice Address Detail',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddInvoiceAddressTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+					                    $("#deletecustomerAdressConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Delete Invoice Address Detail',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddInvoiceAddressTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			}
+			);
+	$('#deletecustomerAdressConfirmation').dialog('open');
+    }
+</script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addCustomerAddress" }))
+{
+    @Html.HiddenFor(x => x.CustomerId)
+    @Html.HiddenFor(x => x.CountryID)
+}
+<div id="InvoiceAddressSucess" title="Invoice Address Details" style="display: none;">
+    <p>
+        Invoice Address Details saved successfully
+    </p>
+</div>
+<div id="deletecustomerAdressConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record?</p>
+</div>
+<div id="deleteCustomAddRecord" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>

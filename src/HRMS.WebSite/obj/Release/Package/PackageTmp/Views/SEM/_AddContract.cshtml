@@ -1,0 +1,573 @@
+﻿@model HRMS.Models.CustomerContract
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmCustomerContract" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="clearfix">
+        @Html.HiddenFor(x => x.ContractID)
+        @Html.HiddenFor(x => x.CustomerID)
+        @Html.HiddenFor(x => x.UserName)
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Contract Summary:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.ContractSummary)
+                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ContractSummary)</p>
+                    @Html.HiddenFor(x => x.ContractSummary, new { @id = "contractSummary" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Contract Details:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.ContractDetails)
+                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ContractDetails)</p>
+                    @Html.HiddenFor(x => x.ContractDetails, new { @id = "contractDetails" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Customer:")
+                </div>
+                <div class="InputDiv">
+                    @Html.LabelFor(model => model.CustomerName, Model.CustomerName, new { })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.CustomerName)</p>
+                    @Html.HiddenFor(x => x.CustomerName, new { @id = "customerName" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Contract Type:")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(x => x.ContractType, new SelectList(Model.ContractTypeList, "ContractTypeID", "ContractTypeName"), "Select", new { @class = "ContractValidationDD" })
+                    <p class="qualif-detail" id="ContractTypeValidation">@Html.ValidationMessageFor(x => x.ContractType)</p>
+                    @Html.HiddenFor(x => x.ContractType, new { @id = "contractType" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Commencement Date:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.CommencementDate, String.Format("{0:MM/dd/yyyy}", Model.CommencementDate), new { @id = "AddCommencementDate", @readonly = "readonly" })
+                    <p class="qualif-detail" id="CommencementDateValidation">@Html.ValidationMessageFor(model => model.CommencementDate)</p>
+                    @Html.Hidden("commencementdate", String.Format("{0:MM/dd/yyyy}", Model.CommencementDate), new { id = "commencementDate" })
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Contract Effective Date:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.ContractSigningDate, String.Format("{0:MM/dd/yyyy}", Model.ContractSigningDate), new { @id = "AddContractSigningDate", @readonly = "readonly" })
+                    @Html.TextBoxFor(x => x.CustomerContractSigningDate, String.Format("{0:MM/dd/yyyy}", Model.CustomerContractSigningDate), new { @id = "CustomerContractSigningDate", @readonly = "readonly", @hidden = "hidden" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractSigningDate)</p>
+                    @Html.Hidden("contractsigningdate", String.Format("{0:MM/dd/yyyy}", Model.ContractSigningDate), new { id = "contractSigningDate" })
+                </div>
+            </div>
+        </div>
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span> @Html.Label("Contract Validity Date:")
+                </div>
+                <div class="InputDiv">
+                    @Html.TextBoxFor(x => x.ContractValidityDate, String.Format("{0:MM/dd/yyyy}", Model.ContractValidityDate), new { @id = "AddContractValidityDate", @readonly = "readonly" })
+                    @Html.TextBoxFor(x => x.CustomerContractValidityDate, String.Format("{0:MM/dd/yyyy}", Model.CustomerContractValidityDate), new { @id = "CustomerContractValidityDate", @readonly = "readonly", @hidden = "hidden" })
+                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractValidityDate)</p>
+                    @Html.Hidden("contractvaliditydate", String.Format("{0:MM/dd/yyyy}", Model.ContractValidityDate), new { id = "contractValidityDate" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ButtonContainer2 clearfix">
+        <input id="btnSaveContract" type="button" value="Save" class="ButtonGray mrgnR11" />
+        <input id="cancel" type="button" value="Reset" onclick=" resetContractDetails()"
+            class="ButtonGray " />
+    </div>
+
+}
+<div class="commondivider mrgnT20 mrgnB20">
+</div>
+<div class="ButtonContainer2 clearfix">
+    <input type="button" id="btnAddContractFileDetails" value="Add Contract" class="ButtonGray"
+        style="display: none;" />
+</div>
+<div class="clearfix">
+    <div class="tablestyle3">
+        <table id="jqAddCustomerContractFile" class="scroll">
+        </table>
+    </div>
+    <div id="jqAddCustomerContractFilePager">
+    </div>
+</div>
+<div id="AddContractSuccessMessege" title="Customer Contract" style="display: none;">
+    <p>
+        Customer Contract details have been saved.
+    </p>
+</div>
+<div id="AddCustomerErrorMessege" title="Customer Contract" style="display: none;">
+    <p>
+        Customer Contract details have not been saved.
+    </p>
+</div>
+<div id="addContractFileDialog" style="display: none;">
+    @{Html.RenderPartial("_AddContractFileDetails", Model.ContractFileDetailsModel);}
+</div>
+<div id="DeleteCustomerContractFileDialog" style="display: none">
+    <p>
+        Are you sure you want to delete selected record?</p>
+</div>
+<div id="DeleteSuccessContractFileDialog" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="SiginingDateGreaterDialog" title="Customer Contract" style="display: none;">
+    <p>
+        Contract Sigining Date cannot be greater than Contract Validity Date.
+    </p>
+</div>
+<div id="ValidityDateLesserDialog" title="Customer Contract" style="display: none;">
+    <p>
+        Contract Validity Date cannot be lesser than Contract Sigining Date.
+    </p>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).ready(function () {
+        $('select').selectBox({
+            hideOnWindowScroll: true,
+            keepInViewport: false
+        });
+
+        $("#CustomerContractSigningDate").hide();
+        $("#CustomerContractValidityDate").hide();
+        //AddCommencementDate datepicker
+        $('#AddCommencementDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        //to set min date
+        var signingDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractSigningDate').val());
+        $('#AddCommencementDate').datepicker("option", "minDate", signingDate);
+        //to set max date
+        var validityDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractValidityDate').val());
+        $('#AddCommencementDate').datepicker("option", "maxDate", validityDate);
+
+        //AddContractSigningDate datepicker
+        $('#AddContractSigningDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+        .bind("change", function () {
+            if ($('#AddContractSigningDate').val() > $('#AddContractValidityDate').val()) {
+                $("#SiginingDateGreaterDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $('#AddContractSigningDate').val($("#contractSigningDate").val());
+                        }
+                    }
+                });
+            }
+        });
+        //to set min date
+        var signingDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractSigningDate').val());
+        $('#AddContractSigningDate').datepicker("option", "minDate", signingDate);
+        //to set max date
+        var validityDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractValidityDate').val());
+        $('#AddContractSigningDate').datepicker("option", "maxDate", validityDate);
+
+        //AddContractValidityDate datepicker
+        $('#AddContractValidityDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+        .bind("change", function () {
+            if ($('#AddContractValidityDate').val() < $('#AddContractSigningDate').val()) {
+                $("#ValidityDateLesserDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $('#AddContractValidityDate').val($("#contractValidityDate").val());
+                        }
+                    }
+                });
+            }
+        });
+        //to set min date
+        var signingDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractSigningDate').val());
+        $('#AddContractValidityDate').datepicker("option", "minDate", signingDate);
+        //to set max date
+        var validityDate = $.datepicker.parseDate("mm/dd/yy", $('#CustomerContractValidityDate').val());
+        $('#AddContractValidityDate').datepicker("option", "maxDate", validityDate);
+
+        //Start jQuery Grid View Binding for Contract File Details
+        $("#jqAddCustomerContractFile").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("CustomerContractFileLoadGrid", "SEM")',
+            postData: { ContractID: function () { return $("#ContractID").val(); } }, //hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            ajaxGridOptions: { cache: false },
+            // Specify the column names
+            colNames: ["", "", "IsFileExists", "File Name", "Attached By", "Attached Date", "Description", "Delete"],
+            // Configure the columns
+            colModel: [
+                { name: "IsFileExists", index: "IsFileExists", hidden: true, width: 100, align: "left" },
+                { name: "ContractID", index: "ContractID", hidden: true, width: 100, align: "left" },
+                { name: "ContractAttachmentID", index: "ContractAttachmentID", hidden: true, width: 100, align: "left" },
+                { name: "FileName", index: "FileName", width: 100, align: "left", formatter: contractFilelink },
+                { name: "AttachedBy", index: "AttachedBy", width: 100, align: "left" },
+                { name: "AttachedDate", index: "AttachedDate", width: 100, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                 { name: "Description", index: "Description", width: 100, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 25,
+                    align: "center",
+                    sortable: false,
+                    formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; }
+                }
+            ],
+            width: 500,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddCustomerContractFilePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            //caption: "Contract File details",
+            loadonce: true,
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                var ContractAttachmentID = rowData['ContractAttachmentID'];
+
+                if (colName['index'] != "Delete") {
+                    EditContractFileDetails(rowData);
+                }
+                else if (colName['index'] == "Delete" && rowid != "new_row") {
+                    DeleteContractFileDetails(rowData['ContractAttachmentID']);
+                }
+            }
+        }).navGrid("#jqAddCustomerContractFilePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        //End jQuery Grid View Binding for Contract File Details
+
+        $('#btnSaveContract').click(function () {
+            SaveCustomerContractDetails()
+        });
+
+        $("#btnAddContractFileDetails").click(function () {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#addContractFileDialog #txtAttachedBy').val('');
+            $('#addContractFileDialog #hdnAttachedBy').val('');
+            $('#addContractFileDialog #txtAttachedDate').val('');
+            $('#addContractFileDialog #hdnAttachedDate').val('');
+            $('#addContractFileDialog #txtDescription').val('');
+            $('#addContractFileDialog #hdnDescription').val('');
+            $('#addContractFileDialog #hdnContractID').val($("#ContractID").val());
+            $('#addContractFileDialog #hdnContractAttachmentID').val('0');
+            $('#addContractFileDialog #ContractFileField').val("No files selected");
+            $('#addContractFileDialog #lblAttachedBy').text('');
+            $('#addContractFileDialog #lblAttachedDate').text('');
+            $("#addContractFileDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 500,
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                    $(this).parent().css('z-index', '27');
+                },
+                title: "Add Contract File"
+            }); // End of Add Visa Details Dialog
+            $("#addContractFileDialog").dialog('open');
+        });
+
+        function EditContractFileDetails(rowDataObject) {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#addContractFileDialog #txtAttachedBy').val(rowDataObject['AttachedBy']);
+            $('#addContractFileDialog #hdnAttachedBy').val(rowDataObject['AttachedBy']);
+            $('#addContractFileDialog #lblAttachedBy').text(rowDataObject['AttachedBy']);
+            $('#addContractFileDialog #txtAttachedDate').val(rowDataObject['AttachedDate']);
+            $('#addContractFileDialog #hdnAttachedDate').val(rowDataObject['AttachedDate']);
+            $('#addContractFileDialog #lblAttachedDate').text(rowDataObject['AttachedDate']);
+            $('#addContractFileDialog #txtDescription').val(rowDataObject['Description']);
+            $('#addContractFileDialog #hdnDescription').val(rowDataObject['Description']);
+            $('#addContractFileDialog #hdnContractID').val(rowDataObject['ContractID']);
+            $('#addContractFileDialog #hdnContractAttachmentID').val(rowDataObject['ContractAttachmentID']);
+            $('#addContractFileDialog #ContractFileField').val("No files selected");
+            $("#addContractFileDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 500,
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                    $(this).parent().css('z-index', '27');
+                },
+                title: "Edit Contract File"
+            }); // End of Add Visa Details Dialog
+            $("#addContractFileDialog").dialog('open');
+        }
+
+        function SaveCustomerContractDetails() {
+            var postUrlnew = '@Url.Action("SaveCustomerContractFormDetails", "SEM")';
+            if ($("#frmCustomerContract").valid()) {
+                DisplayLoadingDialog();  //checked
+                $.ajax({
+                    url: postUrlnew,
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: $('#frmCustomerContract').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        //$("#addContract").dialog('close');
+                        jQuery("#jqCustomerContractDetailTable").trigger("reloadGrid");
+                        if (results.status == true) {
+                            isRecordAdded = "true";
+                            //                            var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+                            //                            if(stringNodeLevelAccessList==null)
+                            //                            window.location.href='@Url.Action("LogOn", "Account")';
+                            //                            else
+                            //                            if(stringNodeLevelAccessList.CanAdd==true)
+                            $('#btnAddContractFileDetails').css("display", "block");
+                            $('#ContractID').val(results.newcontractid);
+                            $("#AddContractSuccessMessege").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                open: function () {
+                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                    $(this).parent().css('z-index', '27');
+                                },
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == false) {
+                            $("#AddCustomerErrorMessege").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == "Error") {
+                            DisplayErrorDialog("Customer Contract");
+                        }
+                    },
+                    error: function (results) {
+                        DisplayErrorDialog("Customer Contract");
+                    }
+                });
+            } //end if form valid
+            else {
+                return false;
+            }
+        } //end save contract
+
+        FileName = "";
+        ContractAttachmentID = 0;
+        ContractID = 0;
+        function contractFilelink(cellvalue, options, rowobject) {
+           FileName = rowobject['FileName'];
+            //console.log(rowobject);
+            if ((rowobject['IsFileExists']  )) {
+                ContractAttachmentID = rowobject['ContractAttachmentID'];
+                ContractID = rowobject['ContractID']
+                return "<a href=# id=" + rowobject['ContractID'] + " class=EmpLink onClick = LinkContractFileClick(this.id,FileName) class=EmployeeNameLink >" + cellvalue + "</a>";
+            }
+            else
+            {
+                var label = "<label>File Not present.</label>"
+                return label;
+            }
+
+        }
+        if ('@ViewBag.ContractValdate' != '') {
+            var date = '@ViewBag.ContractValdate';
+            var ContartValDate = date.substring(0, 10);
+            $('#AddContractValidityDate').val(ContartValDate);
+            $('#AddContractValidityDate').datepicker("setDate", new Date('@ViewBag.ContractValdate'));
+        }
+
+        $("#ContractType").change(function () {
+            var selectedValue = $(this)[0].value;
+            if (selectedValue != "")
+                $("#ContractTypeValidation").hide();
+            else
+                $("#ContractTypeValidation").show();
+        });
+        $("#AddCommencementDate").change(function () {
+            var selectedValue = $(this)[0].value;
+            if (selectedValue != "")
+                $("#CommencementDateValidation").hide();
+            else
+                $("#CommencementDateValidation").show();
+        });
+        $("#AddContractValidityDate").datepicker("setDate", new Date('@Model.ContractValidityDate'));
+    });
+    function resetContractDetails() {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+
+        $('#ContractSummary').val($('#contractSummary').val());
+        $('#ContractDetails').val($('#contractDetails').val());
+        $('#ContractType').val($('#contractType').val());
+        $('#txtAddGapExperienceDetailsDuration').val($('#gapDuration').val());
+        $('#AddCommencementDate').val($('#commencementDate').val());
+        $('#AddContractSigningDate').val($('#contractSigningDate').val());
+        $('#AddContractValidityDate').val($('#contractValidityDate').val());
+        $("#ContractType").next().find(".sbSelector").text($("#ContractType :selected").text());
+    }
+
+    function LinkContractFileClick(id, FileName) {
+        //console.log( ContractID + '&ContractAttachmentID=' + ContractAttachmentID + '&FileName=' + FileName)
+       window.location = '@Url.Action("DownloadContractFile", "SEM")?ContractID=' + ContractID + '&ContractAttachmentID=' + ContractAttachmentID + '&FileName=' + FileName;
+    }
+
+    function DeleteContractFileDetails(ContractAttachmentID) {
+        $('#DeleteCustomerContractFileDialog').dialog({
+            modal: true,
+            width: 300,
+            height: 'auto',
+            resizable: false,
+            dialogClass: "noclose",
+            title: "Delete Customer Contract File Details",
+            open: function () {
+                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                $(this).parent().css('z-index', '27');
+            },
+
+            buttons: {
+                "Ok": function () {
+                    $.ajax({
+                        url: '@Url.Action("DeleteCustomerContractFileDetails", "SEM")',
+                        data: { ContractAttachmentID: ContractAttachmentID },
+                        datatype: "json",
+                        success: function (data) {
+                            if (data.status == true) {
+                                $("#DeleteCustomerContractFileDialog").dialog("close");
+                                $("#DeleteSuccessContractFileDialog").dialog({
+                                    modal: true,
+                                    resizable: false,
+                                    height: 140,
+                                    width: 300,
+                                    title: "Deleted",
+                                    dialogClass: "noclose",
+                                    open: function () {
+                                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                        $(this).parent().css('z-index', '27');
+                                    },
+
+                                    buttons: {
+                                        "Ok": function () {
+                                            $(this).dialog('close');
+                                            //$("#jqAddCustomerContractFile").trigger("reloadGrid");
+                                            $("#jqAddCustomerContractFile").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                        }
+                                    }
+                                });
+                            }
+                            else if (data.status == "Error") {
+                                DisplayErrorDialog("Customer Contract File");
+                            }
+                            else {
+                                DisplayErrorDialog("Customer Contract File");
+                            }
+                        } //end success
+                    });
+                },
+                Cancel: function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+    }
+    if ('@Model.ContractID' > 0) {
+        $('#btnAddContractFileDetails').css("display", "block");
+    }
+    //        if ('@Model.ContractID' > 0)
+    //            $('#btnAddContractFileDetails').css("display", "block");
+    //        var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+    //        if(stringNodeLevelAccessList==null)
+    //        window.location.href='@Url.Action("LogOn", "Account")';
+    //        else{
+    //        if(stringNodeLevelAccessList.CanAdd==true){
+    //        //$('#btnAddContractFileDetails').css("display", "block");
+    //        }
+    //        else
+    //        $('#btnAddContractFileDetails').css("display", "block");
+    //        if(stringNodeLevelAccessList.CanEdit==false){
+    //        $('#btnSaveContract').hide();
+    //        $('#cancel').hide();
+    //        }
+    //        if(stringNodeLevelAccessList.CanDelete==false){
+    //        $('#jqAddCustomerContractFile').hideCol("Delete");
+    //        }
+    //        if(stringNodeLevelAccessList.CanAdd==true && isRecordAdded=="AddNew"){
+    //        $('#btnSaveContract').show();
+    //        $('#cancel').show();
+    //        }
+    //        }
+</script>

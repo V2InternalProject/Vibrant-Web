@@ -1,0 +1,280 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+@{
+    
+}
+<script src="../../Scripts/New%20Design/TextareaAutoGrow.js" type="text/javascript"></script>
+@Html.Label("Contract Validity Date:", new { @class = "prefix" })
+@Html.Label("12/31/2014", new { @class = "suffix" })
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "ApproveRevisionDetails" }))
+{
+    @Html.HiddenFor(x => x.ProjectID)
+    @Html.HiddenFor(x => x.IsEndDateChanged)
+    @Html.HiddenFor(x => x.IsWorkHourChanged)
+    <table class="Graytable">
+        <tr>
+            <th width="100px" align="left">
+                Field Name
+            </th>
+            <th width="100px" align="left">
+                Old Value
+            </th>
+            <th width="100px" align="left">
+                New Value
+            </th>
+        </tr>
+        @if (@Model.RevisionFeilds != null)
+        {
+            for (int i = 0; i < Model.RevisionFeilds.Count; i++)
+            {
+            <tr>
+                <th align="left">
+                    @Html.DisplayFor(x => x.RevisionFeilds[i].FeildName)
+                </th>
+                <td>
+                    @Html.DisplayFor(x => x.RevisionFeilds[i].OldValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => x.RevisionFeilds[i].NewValue)
+                </td>
+            </tr>
+            }
+        }
+    </table>
+    <div class="mrgnT5 RevisionPopup">
+        <div class="LabelDiv">@Html.Label("Manager Revision Comments")</div>
+        <div class="InputDiv samebgText">
+            <div class="">
+                @Html.TextAreaFor(x => x.ManagerRevisionComment, new { @class = "ClassDisplayLabel", @disabled = "disabled" })
+            </div>
+            @*@Html.DisplayFor(model => model.ManagerRevisionComment)*@
+        </div>
+        <div class="LabelDiv">@Html.Label("Approver Decision Comments")</div>
+        <div class="InputDiv">
+            @*<textarea id="ApproverDesionComment"></textarea>*@
+            @Html.TextAreaFor(x => x.ApproverDecisionComment, new { @id = "ApproverDecisionComment" })
+        </div>
+    </div>
+    
+    <div class="clearfix mrgnT15 mrgnB18">
+        <input type="button" value="Approve" class="ButtonGray mrgnR11" id="btnApprove" />
+        <input type="button" value="Reject" class="ButtonGray" id="btnReject" />
+    </div>
+
+@*    <div id="ProjectMailDialogForApproveRevisions" style="display: none">
+    </div>*@
+    <div id="errorDialogForMailForApproveRevisions" style="display: none">
+        <p>
+            There is some Error.
+        </p>
+    </div>
+    <div id="CommentForApproveRevisions" style="display: none">
+        <p>
+            Please put a Approver decision comment.
+        </p>
+    </div>
+<div id="FailResetResourceAllocation" title="Project Allocation" style="display: none;">
+    <p>
+        Resource allocation failed.
+    </p>
+</div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        //        $('#popupforApproveandrejectRevision #ManagerRevisionComment').autoGrow();
+        $('#ApproverDecisionComment').focusout(function () {
+            $('#ApproverDecisionComment').val($(this).val());
+        });
+        //$('#ManagerRevisionComment').attr('disabled', 'disabled');
+        $('#btnApprove').click(function () {
+            OpenLoadingPopup();
+            ApproveRejectRevision("Approve", $('#ApproverDecisionComment').val());
+        });
+        $('#btnReject').click(function () {
+            OpenLoadingPopup();
+            ApproveRejectRevision("Reject", $('#ApproverDecisionComment').val());
+        });
+
+        function ApproveRejectRevision(buttonClick, ApprovalComments) {
+            if (ApprovalComments == "" || ApprovalComments == null) {
+                CloseLoadingPopup();
+                $("#CommentForApproveRevisions").dialog({
+                    title: 'Please fill Decision Comment',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: "noclose",
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons:
+                      {
+                          Ok: function () {
+                              $(this).dialog("close");
+                          }
+                      }
+                });
+                return false;
+            }
+            $.ajax({
+                url: '@Url.Action("ApproveRejectRevisionApproval", "SEM")',
+                data: { ProjectID: '@Model.ProjectID', btnClick: buttonClick, ApprovalComment: ApprovalComments, EmployeeId: '@ViewBag.loginUserId', IsEndDateChanged: '@Model.IsEndDateChanged', IsWorkHourChanged: '@Model.IsWorkHourChanged' },
+                type: 'POST',
+                success: function (results) {
+                    if (results.status == true) {
+                        var empId = '@ViewBag.loginUserId';
+                        var projectId = $('#ProjectID').val();
+                        if (buttonClick == "Approve") {
+                            var btnClick = "Approve Rivision Approval";
+                        }
+                        else {
+                            var btnClick = "Reject Rivision Approval";
+                        }
+                        $.ajax({
+                            url: '@Url.Action("ProjectSendMail", "SEM")',
+                            type: 'POST',
+                            data: { loggedinEmpID: empId, projectId: projectId, btnClick: btnClick },
+                            datatype: "json",
+                            async: false,
+                            success: function (data) {
+                                //                                $('#popupforApproveandrejectRevision').dialog('close');
+                                //                                $('#popupforApproveandrejectRevision').dialog('destroy');
+                                $('#popupforApproveandrejectRevision').dialog('close');
+                                $('#popupforApproveandrejectRevision').dialog('destroy');
+                                CloseLoadingPopup();
+                                if (data) {
+                                    $("#ProjectMailDialog").html(data);
+                                    $("#ProjectMailDialog").dialog({
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 800,
+                                        modal: true,
+                                        title: "Send Mail",
+                                        close: function () {
+                                            $(this).dialog('destroy');
+                                            location.reload();
+                                            return false;
+                                        }
+                                    });
+
+                                    $.validator.unobtrusive.parse($("#MailDetails"));
+                                    $('#sendCustomerMail').click(function () {
+                                        $("#CCErrorMessage").hide();
+                                        $("#ToErrorMessage").hide();
+                                        if ($('#CustMailDetails').valid()) {
+                                            OpenLoadingPopup();
+                                            var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                                            $.ajax(
+                                    {
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#CustMailDetails').serialize(),
+                                        async: false,
+                                        success: function (serverData) {
+                                            CloseLoadingPopup();
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    $("#ProjectMailDialog").dialog('destroy');
+                                                    location.reload();
+                                                    return false;
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+                                                $("#errorDialogForMail").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    dialogClass: "noclose",
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                            location.reload();
+                                                            return false;
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+                                            CloseLoadingPopup();
+                                            $("#errorDialogForMail").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                dialogClass: "noclose",
+                                                buttons:
+                                                {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                        location.reload();
+                                                        return false;
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                    else if (data.resetStatus == false)
+                    {
+                        $("#FailResetResourceAllocation").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        setTimeout(
+        '$("#popupforApproveandrejectRevision #ManagerRevisionComment").autoGrow()', 500);
+
+    });
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>

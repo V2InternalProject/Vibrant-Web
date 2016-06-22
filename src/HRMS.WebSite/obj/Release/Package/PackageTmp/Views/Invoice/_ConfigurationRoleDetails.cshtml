@@ -1,0 +1,140 @@
+﻿@model HRMS.Models.ConfigurationRoleModel
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@Html.HiddenFor(x => x.RoleID)
+<div class="clearfix mrgnT15" id="configurationRoleDetailsMainDivID">
+    <div class="leftcol">
+        <div class="formcol clearfix borderB paddingB5">
+            <div class="floatL width50P bold">
+                Role Description</div>
+            <div class="floatL width50P bold">
+                @Html.DisplayFor(model => model.RoleDescription)
+                @Html.HiddenFor(model => model.RoleDescription, new { @id = "RoleDescription" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("Project Creator")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.ProjectCreator)
+                @Html.HiddenFor(model => model.ProjectCreator, new { @id = "ProjectCreator" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("Resource Allocator")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.ResourceAllocator)
+                @Html.HiddenFor(model => model.ResourceAllocator, new { @id = "ResourceAllocator" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("IR Generator")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.IRGenerator)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("IR Approver")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.IRApprover)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("IR Finance Approver")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.IRFinanceApprover)
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="floatL width50P">
+                @Html.Label("Timesheet to be filled checkbox")
+            </div>
+            <div class="floatL width50P checkboxContainer">
+                @Html.CheckBoxFor(model => model.TimesheetToBeFilled)
+            </div>
+        </div>
+    </div>
+    <div class="rightcol">
+        <div class="formcol clearfix">
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Document Category:")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.ListBoxFor(model => model.SelectedItemId, new MultiSelectList(Model.CategoryList, "Value", "Text"), new { @id = "documentCategoryList" })
+            </div>
+        </div>
+    </div>
+</div>
+<div id="SuccessChangeCategory" title="Role Configuration details" style="display: none">
+    <p>
+       Details have been saved Successfully for @Model.RoleDescription Role.
+    </p>
+</div>
+<div id="ErrorChangeCategory" title="Role Configuration details" style="display: none">
+    <p>
+        Error in Saving Details for @Model.RoleDescription Role.
+    </p>
+</div>
+<input type="button" value="Save" id="btnSaveDetails" class="button" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#btnSaveDetails").click(function () {
+            DisplayLoadingDialog(); // Checked global.js
+
+            $.ajax({
+                url: "SaveDocumentCategory/Invoice",
+                type: 'POST',
+                data: $('#frmConfigurationRoleDetails').serialize(),
+                success: function (data) {
+
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (data.status == true) {
+                        $("#SuccessChangeCategory").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorChangeCategory").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>

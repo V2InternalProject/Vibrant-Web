@@ -1,0 +1,1987 @@
+﻿@model HRMS.Models.ConfirmationFormViewModel
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Confirmation Form";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<style type="text/css">
+    th.ui-th-column div {
+        white-space: pre !important;
+        height: auto !important;
+        padding: 2px;
+    }
+</style>
+<script type="text/javascript">
+    $(".Title").hide();
+
+    $(document).ready(function () {
+        //$('#ConfirmationDate').val("");
+        $('#TextEmployeeCode').val('@Model.EmployeeCode');
+        if ('@ViewBag.clickedViewDetails' == "yes") {
+            $('.InnerContainer').find('input,tr,textarea,select').attr('disabled', 'disabled');
+        }
+
+        $('.ClassDisplayLabel').hide();
+
+        if ($('#IsManagerOrEmployee').val() != "Manager") {
+            // $('#HRapprove').prop("disabled", true);
+            $('#ReportingManagerComments').attr("disabled", "disabled");
+            $('input[name="HRapprove"]').attr("disabled", "disabled");
+            $('#frmConfirmationFormQuetions').find('input,textarea').attr("disabled", "disabled");
+            $('#frmValueDriverConfirmation').find('select,textarea').attr("disabled", "disabled");
+        }
+
+        if ($("#IsAcceptedOrExtended").val() == "accept") {
+            $('#acceptConfirmation').attr('checked', true);
+            if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+                $("#ConfirmationAccept").show();
+                $("#ExtendConfirmation").hide();
+                $("#TerminateConfirmation").hide();
+                //$('#empType').val(1);
+                // $('#empType').attr("disabled", "disabled");
+            }
+        }
+        else if ($("#IsAcceptedOrExtended").val() == "extend") {
+            $('#extendProbation').attr('checked', true);
+            if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+                $("#ExtendConfirmation").show();
+                $("#ConfirmationAccept").hide();
+                $("#TerminateConfirmation").hide();
+            }
+        }
+        else if ($("#IsAcceptedOrExtended").val() == "sendPIP") {
+            $('#termination').attr('checked', true);
+            if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+                $("#ExtendConfirmation").hide();
+                $("#ConfirmationAccept").hide();
+                $("#TerminateConfirmation").show();
+            }
+        }
+
+        if ($("#IsFurtherApproverNeeded").is(':checked')) {
+            $("#HRComments").show();
+            $("#FurtherApproverName").show();
+            $('#confirmationFormHRDetails').hide();
+        }
+        else {
+            $("#FurtherApproverName").hide();
+            $("#HRComments").hide();
+            $('#confirmationFormHRDetails').show();
+        }
+
+        if ($('#IsFurtherApproverStageCleared').val() == "True") {
+            $(".clsApproverName").attr("disabled", "disabled");
+            $("#IsFurtherApproverNeeded").attr("disabled", "disabled");
+            $('#DUManagerComments').show();
+        }
+        var postUrl = '@Url.Action("SaveConfirmationFormQuetionsInfo", "ConfirmationProcess")';
+        var postSecondUrl = '@Url.Action("SaveValueDriverConfirmationInfo", "ConfirmationProcess")';
+        var postThirdUrl = '@Url.Action("SaveApproverComments", "ConfirmationProcess")';
+        var postForthUrl = '@Url.Action("SaveHrClosureFormDetails", "ConfirmationProcess")';
+        $('#btnSaveDetailsConfirmation').click(function () {
+            //var apprReject = $('#radioApproveValue').val();
+            $('.hide').hide();
+            SaveDetailsConfirmation("Save");
+        });
+
+        $('#btnRejectConfirmation,#btnDisagreewithManager').click(function () {
+            $('#RejectCommentDialog').dialog(
+			{
+			    autoOpen: true,
+			    modal: true,
+			    width: 425,
+			    height: 'auto',
+			    resizable: false,
+			    title: "Reject",
+			    buttons:
+					{
+					    Ok: function () {
+					        var comments = $("#txtRejectComment").val();
+					        if (comments.length <= 0) {
+					            $('#ErrorRejectComment').show();
+					            return false;
+					        }
+					        else {
+					            $('#ErrorComment').hide();
+					        }
+					        var postRejectUrl = '@Url.Action("RejectConfirmation", "ConfirmationProcess")'
+					        $.ajax({
+					            type: 'POST',
+					            url: postRejectUrl,
+					            async: false,
+					            data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), RejectComments: comments },
+					            success: function (resultApprove) {
+					                if (resultApprove.status == true) {
+					                    $('#RejectCommentDialog').dialog('close');
+					                    $('#RejectCommentDialog').dialog('destroy');
+
+					                    var status = "Reject";
+					                    var isExtendAccept = "";
+					                    //if ($('#IsManagerOrEmployee').val() == "HR" && $('#StageID').val() == 6)
+					                    isExtendAccept = '@Model.IsAcceptedOrExtended';
+
+					                    var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
+					                    $.ajax({
+					                        url: mailurl,
+					                        type: 'GET',
+					                        data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString() },
+					                        success: function (data) {
+					                            $('#MailTemplateDialog').html(data);
+					                            $("#MailTemplateDialog").dialog({
+					                                resizable: false,
+					                                height: 520,
+					                                width: 800,
+					                                modal: true,
+					                                title: 'Send Mail',
+					                                close: function () {
+					                                    window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
+					                                }
+					                            });
+					                            //here put send mail
+					                        }
+					                    });
+					                    @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
+					                }
+					            }
+					        });
+					    }
+					}
+			});
+        });
+
+        /*HR CLOSURE VALIDATION STARTS*/
+        $('#btnSubmitConfirmationFormDetails').submit(function () {
+            var radioName = $('input[name=HRapprove]:checked').val();
+            if (radioName == "accept") {
+                // $("#gradeName").removeData("previousValue");
+                //                if ($('#empType').val() == "" || $('#empStatus').val() == "" || $('#gradeName').val() == "" || $('#roleName').val() == "") {
+                //                    $('#checkHrConf').val(1);
+                //                }
+                //if ($('#empType').val() == "" || $('#empStatus').val() == "") {
+                if ($('#empStatus').val() == "") {
+                    $('#checkHrConf').val(1);
+                }
+                else {
+                    $('#checkHrConf').val(0);
+                }
+            }
+            else if (radioName == "extend") {
+                if ($('#ProbationComments').val() == "") {
+                    $('#checkHrConf').val(1);
+                }
+                else {
+                    $('#checkHrConf').val(0);
+                }
+            }
+            else if (radioName == "termintate") {
+                if ($('#PIPComments').val() == "") {
+                    $('#checkHrConf').val(1);
+                }
+                else {
+                    $('#checkHrConf').val(0);
+                }
+            }
+        });
+
+        /*HR CLOSURE VALIDATION END*/
+        function SaveDetailsConfirmation(ButtonClick) {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('textarea').removeClass("input-validation-error");
+
+            //            if ($('#StageID').val() == '6' || $('#StageID').val() == '3') {
+            //                apprReject = 'Approved';
+            //            }
+            //            if (apprReject == '0') {
+            //                $("#ApproveRejectMessage").dialog({
+            //                    resizable: false,
+            //                    height: 140,
+            //                    width: 300,
+            //                    modal: true,
+            //                    title: "Required",
+            //                    buttons: {
+            //                        Ok: function () {
+            //                            $(this).dialog("close");
+            //                        }
+            //                    }
+            //                });
+            //                return false;
+            //            }
+
+            //HR closure Form Validation
+            //$('#btnSubmitConfirmationFormDetails').submit();
+
+            $.each($('#frmValueDriverConfirmation input, #frmValueDriverConfirmation select, #frmValueDriverConfirmation textarea').serializeArray(), function (i, obj) {
+                $('<input type="hidden">').prop(obj).appendTo($('#frmConfirmationFormQuetions'));
+            });
+
+            if ($('#checkHrConf').val() != 0) {
+                return false;
+            }
+
+            DisplayLoadingDialog();  //checked
+            $('#frmValueDriverConfirmation').find('input,tr,textarea').removeAttr("disabled", "disabled");
+            $('#frmValueDriverConfirmation').find('input,tr,textarea').attr('enabled', 'enabled');
+            if ($('#frmConfirmationFormQuetions').valid()) {
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    async: false,
+                    data: $('#frmConfirmationFormQuetions').serialize(),
+                    success: function (results) {
+                        if (results.status == true) {
+                            var myArray = [];
+                            var empelement = '@Model.EmployeeIdConfirmation';
+                            var isMngrOrEmpElement = '@Model.IsManagerOrEmployee';
+                            var confrmationId = '@Model.confirmationID';
+                            $('#frmValueDriverConfirmation').find('tr').each(function () {
+                                var thisparent = $(this);
+                                if ($(this).find('.ratingInput').length) {
+                                    var ratingelement = thisparent.find('.clsManagerRating1').not(':disabled').not('.paramDescription').val();
+                                    // var ratingelement = thisparent.find('.clsManagerRating1').not(':disabled').not('.paramDescription').next().find('.ratingInput').text();
+                                    var commentelement = thisparent.find('.commentTxtBox').not(':disabled').not(':hidden').not('.paramDescription');
+                                    var descriptionelement = thisparent.find('.paramDescription').val();
+                                    var competencyelement = thisparent.find('.competency').val();
+
+                                    if ($('#IsManagerOrEmployee').val() == "Manager") {
+                                        var ConfirmationParameter = {
+                                            ManagerRating1: ratingelement,
+                                            MngrComments1: commentelement.val(),
+                                            competencyID: competencyelement,
+                                            employeeID: empelement,
+                                            IsManagerOrEmployee: isMngrOrEmpElement,
+                                            ConfirmationID: confrmationId
+                                        };
+                                        myArray.push(ConfirmationParameter);
+                                    }
+
+                                }
+                                if ($(this).find('.footer-rating-class').length) {
+                                    if ($('#IsManagerOrEmployee').val() == "Manager") {
+                                        var overallratingelement = thisparent.find('.footer-rating-class').not(':disabled').val();
+                                        //                                        var overallratingelement = thisparent.find('.footer-rating-class').next().find('.sbSelector').text();
+                                        var overallcommentelement = thisparent.find('.footer-comment-TxtBox').not(':disabled').not(':hidden');
+                                        var ConfirmationParameter = {
+                                            OverallManagerRating: overallratingelement,
+                                            OverallManagerRatingComments: overallcommentelement.val()
+                                        };
+                                        myArray.push(ConfirmationParameter);
+                                    }
+
+                                }
+                            });
+                            if ($('#IsManagerOrEmployee').val() == "Manager") {
+                                $('#IsManagerOrEmployee').val('Manager')
+                            }
+                            var datasecond = JSON.stringify(myArray);
+                            // if ($('#frmValueDriverConfirmation').valid()) {
+                            $.ajax({
+                                type: 'POST',
+                                url: postSecondUrl,
+                                data: JSON.stringify(myArray),
+                                contentType: "application/json; charset=utf-8",
+                                async: false,
+                                success: function (result) {
+                                    if (result.status == true) {
+                                        //$("#loading").dialog("close");
+                                        // $("#loading").dialog("destroy");
+                                        $('#frmConfirmationFormApproverComments').find('textarea').removeAttr('disabled', 'disabled');
+                                        $('#frmConfirmationFormApproverComments').find('textarea').attr('disabled', false);
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: postThirdUrl,
+                                            data: $('#frmConfirmationFormApproverComments').serialize(),
+                                            async: false,
+                                            success: function (output) {
+                                                if (output.status == true) {
+                                                    //$("#loading").dialog("close");
+                                                    //$("#loading").dialog("destroy");
+                                                    //                                                    if ($('#IsManagerOrEmployee').val() == "Manager" || $('#frmConfirmationFormHRDetails').valid()) {
+                                                    //if ($('#IsManagerOrEmployee').val() != "Manager") {
+                                                    //$('#empType').attr("disabled", false);
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: postForthUrl,
+                                                        data: $('#frmConfirmationFormHRDetails').serialize(),
+                                                        async: false,
+                                                        success: function (outputConf) {
+
+                                                            if (outputConf.status == true) {
+                                                                if (ButtonClick == "Save") {
+                                                                    window.location.href = window.location.href;
+                                                                }
+                                                                else {
+                                                                }
+                                                                //                                                                $("#AddRecordSuccessMessege").dialog({
+                                                                //                                                                    resizable: false,
+                                                                //                                                                    height: 140,
+                                                                //                                                                    width: 300,
+                                                                //                                                                    modal: true,
+                                                                //                                                                    title: "Confirmation Details",
+                                                                //                                                                    buttons: {
+                                                                //                                                                        Ok: function () {
+                                                                //                                                                            $(this).dialog("close");
+                                                                //                                                                            //                                                                            window.location.reload();
+                                                                //                                                                        }
+                                                                //                                                                    }
+                                                                //                                                                });
+                                                            }
+                                                            else if (outputConf.status == "Error") {
+                                                                $("#errorDialog").dialog({
+                                                                    title: 'Confirmation Process',
+                                                                    resizable: false,
+                                                                    height: 'auto',
+                                                                    width: 'auto',
+                                                                    modal: true,
+                                                                    buttons: {
+                                                                        Ok: function () {
+                                                                            $(this).dialog("close");
+                                                                        }
+                                                                    }
+
+                                                                }); //end dialog
+                                                            }
+                                                            else {
+                                                                $("#AddRecordErrorMessege").dialog({
+                                                                    resizable: false,
+                                                                    height: 140,
+                                                                    width: 300,
+                                                                    modal: true,
+                                                                    title: "Error",
+                                                                    buttons: {
+                                                                        Ok: function () {
+                                                                            $(this).dialog("close");
+                                                                        }
+
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                    //}
+                                                }
+                                                else if (output.status == "Error") {
+                                                    $("#errorDialog").dialog({
+                                                        title: 'Confirmation Process',
+                                                        resizable: false,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        modal: true,
+                                                        buttons: {
+                                                            Ok: function () {
+                                                                $(this).dialog("close");
+                                                            }
+                                                        }
+                                                    }); //end dialog
+                                                }
+                                                else {
+                                                    //$("#loading").dialog("close");
+                                                    //$("#loading").dialog("destroy");
+                                                    $("#AddRecordErrorMessege").dialog({
+                                                        resizable: false,
+                                                        height: 140,
+                                                        width: 300,
+                                                        modal: true,
+                                                        title: "Error",
+                                                        buttons: {
+                                                            Ok: function () {
+                                                                $(this).dialog("close");
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else if (result.status == "Error") {
+                                        $("#errorDialog").dialog({
+                                            title: 'Confirmation Process',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+                                    else {
+                                        //$("#loading").dialog("close");
+                                        //$("#loading").dialog("destroy");
+                                        $("#AddPerformanceErrorMessege").dialog({
+                                            resizable: false,
+                                            height: 140,
+                                            width: 300,
+                                            modal: true,
+                                            title: "Error",
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            // }
+                        }
+                        else if (results.status == "Error") {
+                            $("#errorDialog").dialog({
+                                title: 'Confirmation Process',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#AddPerformanceErrorMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: "Error",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            } //per Hinder frm end
+            $("#loading").dialog("close");
+            $("#loading").dialog("destroy");
+            if (ButtonClick == "Submit") {
+                $('#frmValueDriverConfirmation').find('input,tr,textarea').attr('disabled', 'disabled');
+            }
+            if ($("#errorDialog").dialog("isOpen") == true) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }; //SaveDetailsConfirmation ends here
+
+        $('#btnApproveConfirmation,#btnAgreeConfirmation').click(function () {
+            if ($('#frmConfirmationFormQuetions #AreaOfContributionComments').val() == "") {
+                $('#AddCommentsAreaOfContri').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#AddCommentsAreaOfContri').dialog('open');
+                return false;
+            }
+            if ($('#frmConfirmationFormQuetions #TrainingProgramComments').val() == "") {
+                $('#AddCommentsTraining').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#AddCommentsTraining').dialog('open');
+                return false;
+            }
+            if ($('#frmConfirmationFormQuetions #BehaviourComments').val() == "") {
+                $('#AddCommentsEmployeeBehaviour').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#AddCommentsEmployeeBehaviour').dialog('open');
+                return false;
+            }
+
+            if ('@Model.IsManagerOrEmployee.Equals("HR")' == 'True' && '@Model.StageID' == 1) {
+
+                if ($('#IsFurtherApproverNeeded').is(':checked') == true) {
+                    if ($('#Text_HRComments').val() == "") {
+                        $('#AddCommentsHR').dialog({
+                            autoOpen: false,
+                            modal: true,
+                            height: 'auto',
+                            width: 300,
+                            resizable: false,
+                            title: "Required",
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $('#AddCommentsHR').dialog('open');
+                        return false;
+                    }
+                    else if ('@Model.IsFurtherApproverStageCleared' == 'True' && '@Model.IsAcceptedOrExtended' == "accept") {
+                        ValidateHRForm();
+                    }
+                    else if ('@Model.IsFurtherApproverStageCleared' == 'True' && '@Model.IsAcceptedOrExtended' == "extend") {
+                        if ($('#ExtendProbationDateP').val() == "" || $('#ExtendProbationDateP').val() == "01/01/0001") {
+                            $('#EnterProbationDate').dialog({
+                                autoOpen: false,
+                                modal: true,
+                                height: 'auto',
+                                width: 300,
+                                resizable: false,
+                                title: "Required",
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $('#EnterProbationDateP').dialog('open');
+                            return false;
+                        }
+                        if ($('#ProbationComments').val() == "") {
+                            $('#EnterProbationComments').dialog({
+                                autoOpen: false,
+                                modal: true,
+                                height: 'auto',
+                                width: 300,
+                                resizable: false,
+                                title: "Required",
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $('#EnterProbationComments').dialog('open');
+                            return false;
+                        }
+                    }
+                    else if ('@Model.IsFurtherApproverStageCleared' == 'True' && '@Model.IsAcceptedOrExtended' == "sendPIP") {
+
+                        if ($('#PIPDate').val() == "" || $('#PIPDate').val() == "01/01/0001") {
+                            $('#EnterPIPDate').dialog({
+                                autoOpen: false,
+                                modal: true,
+                                height: 'auto',
+                                width: 300,
+                                resizable: false,
+                                title: "Required",
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $('#EnterPIPDate').dialog('open');
+                            return false;
+                        }
+                        if ($('#PIPComments').val() == "") {
+                            $('#EnterPIPComments').dialog({
+                                autoOpen: false,
+                                modal: true,
+                                height: 'auto',
+                                width: 300,
+                                resizable: false,
+                                title: "Required",
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $('#EnterPIPComments').dialog('open');
+                            return false;
+                        }
+                    }
+                }
+                else if ('@Model.IsAcceptedOrExtended' == "extend") {
+                    if ($('#ExtendProbationDateP').val() == "" || $('#ExtendProbationDateP').val() == "01/01/0001") {
+                        $('#EnterProbationDate').dialog({
+                            autoOpen: false,
+                            modal: true,
+                            height: 'auto',
+                            width: 300,
+                            resizable: false,
+                            title: "Required",
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $('#EnterProbationDate').dialog('open');
+                        return false;
+                    }
+                    if ($('#ProbationComments').val() == "") {
+                        $('#EnterProbationComments').dialog({
+                            autoOpen: false,
+                            modal: true,
+                            height: 'auto',
+                            width: 300,
+                            resizable: false,
+                            title: "Required",
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $('#EnterProbationComments').dialog('open');
+                        return false;
+                    }
+                }
+                else if ('@Model.IsAcceptedOrExtended' == "sendPIP") {
+                    if ($('#PIPDate').val() == "" || $('#PIPDate').val() == "01/01/0001") {
+                        $('#EnterPIPDate').dialog({
+                            autoOpen: false,
+                            modal: true,
+                            height: 'auto',
+                            width: 300,
+                            resizable: false,
+                            title: "Required",
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $('#EnterPIPDate').dialog('open');
+                        return false;
+                    }
+                    if ($('#PIPComments').val() == "") {
+                        $('#EnterPIPComments').dialog({
+                            autoOpen: false,
+                            modal: true,
+                            height: 'auto',
+                            width: 300,
+                            resizable: false,
+                            title: "Required",
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $('#EnterPIPComments').dialog('open');
+                        return false;
+                    }
+                }
+                else {
+                    ValidateHRForm();
+                }
+            }
+            if ('@Model.IsManagerOrEmployee.Equals("FurtherApprover")' == 'True' && '@Model.StageID' == 2) {
+                if ($('#txt_DUManagerComments').val() == "") {
+                    $('#AddCommentsDUManager').dialog({
+                        autoOpen: false,
+                        modal: true,
+                        height: 'auto',
+                        width: 300,
+                        resizable: false,
+                        title: "Required",
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    $('#AddCommentsDUManager').dialog('open');
+                    return false;
+                }
+
+            }
+            if ($('#frmConfirmationFormQuetions #AreaOfContributionComments').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmConfirmationFormQuetions #AreaOfContributionComments').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmConfirmationFormQuetions #TrainingProgramComments').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmConfirmationFormQuetions #TrainingProgramComments').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmConfirmationFormQuetions #BehaviourComments').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmConfirmationFormQuetions #BehaviourComments').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+
+            if ($('#frmValueDriverConfirmation #OverallReviewRatingComments').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #OverallReviewRatingComments').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_1').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_1').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_2').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_2').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_3').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_3').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_4').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_4').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_5').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_5').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmValueDriverConfirmation #EmpComments_6').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmValueDriverConfirmation #EmpComments_6').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            if ($('#frmConfirmationFormApproverComments #ReportingManagerComments').val() != "") {
+                var max = parseInt(1000);
+                var len = parseInt($('#frmConfirmationFormApproverComments #ReportingManagerComments').val().length);
+                if (len > max) {
+                    $("#CharacterExeeds").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        title: "Confirmation Details",
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            /*VALUE DRIVER VALIDATION START*/
+            var vaidationmessaggeRating = true;
+            var vaidationmessaggeComment = true;
+            var gridCount = true;
+            var validationArray = [];
+            $('#frmValueDriverConfirmation').find('tr').each(function () {
+                if ($(this).find('.ratingInput').length) {
+                    //var ratingelement = $(this).find('.ratingInput').not(':disabled').not(':hidden').not('.paramDescription');
+                    var ratingelement = $(this).find('.clsManagerRating1').not(':disabled').not('.paramDescription');
+                    var commentelement = $(this).find('.commentTxtBox').not(':disabled').not(':hidden').not('.paramDescription');
+                    var ratingid = ratingelement.attr("id");
+                    var commentid = commentelement.attr("id");
+                    var ratingVal = parseInt(ratingelement.val());
+                    if (ratingVal < '@Model.rating.min' || ratingVal > '@Model.rating.max') {
+                        var spanid = "Span_" + ratingid;
+                        $("#" + spanid).css("display", "block");
+                        vaidationmessaggeRating = false;
+                        validationArray.push(false);
+                    }
+                    else {
+                        var spanid = "Span_" + ratingid;
+                        $("#" + spanid).css("display", "none");
+                        vaidationmessaggeRating = true;
+                        validationArray.push(true);
+                    }
+
+                    if (commentelement.val() == 0 || commentelement.val() == '0') {
+                        var labelid = "Label_" + commentid;
+                        $("#" + labelid).css("display", "block");
+                        vaidationmessaggeComment = false;
+                        validationArray.push(false);
+                    }
+                    else {
+                        var labelid = "Label_" + commentid;
+                        $("#" + labelid).css("display", "none");
+                        validationArray.push(true);
+                        vaidationmessaggeComment = true;
+                    }
+                }
+                else if ($(this).find('.footer-rating-class').not(':disabled').not(':hidden').length) {
+                    ratingelement = $(this).find('.footer-rating-class');
+                    commentelement = $(this).find('.footer-comment-TxtBox').not(':disabled').not(':hidden');
+                    ratingVal = parseInt(ratingelement.val());
+
+                    ratingid = ratingelement.attr("id");
+                    if (ratingVal < '@Model.rating.min' || ratingVal > '@Model.rating.max') {
+                        spanid = "Span_" + ratingid;
+                        $("#" + spanid).css("display", "block");
+                        vaidationmessaggeRating = false;
+                        validationArray.push(false);
+                    } else {
+                        spanid = "Span_" + ratingid;
+                        $("#" + spanid).css("display", "none");
+                        vaidationmessaggeRating = true;
+                        validationArray.push(true);
+                    }
+                    commentid = commentelement.attr("id");
+                    if ($.trim(commentelement.val()) == "" || commentelement.val() == '') {
+                        labelid = "Label_" + commentid;
+                        $("#" + labelid).css("display", "block");
+                        vaidationmessaggeComment = false;
+                        validationArray.push(false);
+                    } else {
+                        labelid = "Label_" + commentid;
+                        $("#" + labelid).css("display", "none");
+                        vaidationmessaggeComment = true;
+                        validationArray.push(true);
+                    }
+                }
+
+            });
+            /*VALUE DRIVER VALIDATION END*/
+
+            for (var i = 0; i < validationArray.length; i++) {
+                if (validationArray[i] == false) {
+                    return false;
+                }
+            }
+
+            if ($('#ReportingManagerComments').val() == "") {
+                $('#AddCommentsReportingManager').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#AddCommentsReportingManager').dialog('open');
+                return false;
+            }
+            var statusReturn = null;
+            statusReturn = SaveDetailsConfirmation("Submit");
+            if (statusReturn == false)
+                return false;
+            //            $("#loading").dialog("close");
+            //            $("#loading").dialog("destroy");
+            DisplayLoadingDialog();
+            var empID = $('#EmployeeID').val();
+            //            var status = $('#radioApproveValue').val();
+            var status = "Approved";
+            var isExtendAccept = "";
+            //if ($('#IsManagerOrEmployee').val() == "HR" && $('#StageID').val() == 6)
+                isExtendAccept = '@Model.IsAcceptedOrExtended';
+                var postApproveUrl = '@Url.Action("ApproveConfirmationFormDetails", "ConfirmationProcess")'
+                $.ajax({
+                    type: 'POST',
+                    url: postApproveUrl,
+                    async: false,
+                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
+                    success: function (resultApprove) {
+                        if (resultApprove.status == true) {
+                            //$("#ConfirmationRecordSave").dialog({
+                            //    resizable: false,
+                            //    height: 140,
+                            //    width: 300,
+                            //    modal: true,
+                            //    title: "Confirmation Details",
+                            //    buttons: {
+                            //        Ok: function () {
+                            //            $(this).dialog("close");
+
+                            $('#btnApproveConfirmation').hide();
+                            $('#btnSaveDetailsConfirmation').hide();
+                            $('.button').hide();
+                            $('#frmConfirmationFormQuetions').find('input,tr,textarea').attr('disabled', 'disabled');
+                            $('#frmValueDriverConfirmation').find('input,tr,textarea').attr('disabled', 'disabled');
+                            $('#frmConfirmationFormApproverComments').find('input,textarea').attr('disabled', 'disabled');
+                            $('#frmConfirmationFormHRDetails').find('input,select,textarea').attr('disabled', 'disabled');
+                            /* added below code to hide delete column so that user cant click after the form is approved*/
+                            var colPos1 = 9;
+                            //   var corpoarteGrid = $('#corporateTable');
+                            //   corpoarteGrid.jqGrid('hideCol', corpoarteGrid.getGridParam("colModel")[colPos1].name);
+                            var colPos2 = 6;
+                            //  var skillGrid = $('#SkillAquiredTable');
+                            //   skillGrid.jqGrid('hideCol', skillGrid.getGridParam("colModel")[colPos2].name);
+                            var colPos3 = 9;
+                            //  var qualificationGrid = $('#AddQualificationTable');
+                            //   qualificationGrid.jqGrid('hideCol', qualificationGrid.getGridParam("colModel")[colPos3].name);
+                            var colPos4 = 8;
+                            //   var projGrid = $('#projectAchievementsTable');
+                            //   projGrid.jqGrid('hideCol', projGrid.getGridParam("colModel")[colPos4].name);
+                            /*mail start*/
+                            @*var mailurl = '@Url.Action("GetEmailTemplate", "ConfirmationProcess")';*@
+                            var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
+                            $.ajax({
+                                url: mailurl,
+                                type: 'GET',
+                                data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString(), IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
+                                success: function (data) {
+
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    $('#MailTemplateDialog').html(data);
+                                    $("#MailTemplateDialog").dialog({
+                                        resizable: false,
+                                        height: 520,
+                                        width: 800,
+                                        modal: true,
+                                        title: 'Send Mail',
+                                        close: function () {
+                                            window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
+                                        }
+                                    });
+                                    //here put send mail
+                                }
+                            }); /*end*/
+                            //}
+                            // }
+                            //});
+                        }
+                        else if (resultApprove.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                title: 'Confirmation Process',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#AddPerformanceErrorMessege").dialog({
+                                title: 'Confirmation Process',
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+        //DisplayLabel() function is used to hide disabled fields and display respective value as Label.
+        //        function DisplayLabel() {
+
+        //} //end function
+
+        function ValidateHRForm() {
+
+            if ($('#ConfirmationDate').val() == "") {
+                $('#EnterConfirmationDate').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#EnterConfirmationDate').dialog('open');
+                $.preventDefault();
+                //return false;
+            }
+            else if ($('#empStatus').val() == "") {
+                $('#EnterEmployeeStatus').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#EnterEmployeeStatus').dialog('open');
+                $.preventDefault();
+            }
+            else if ($('#ConfirmationComments').val().trim() == "") {
+
+                $('#EnterConfirmationComments').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    height: 'auto',
+                    width: 300,
+                    resizable: false,
+                    title: "Required",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $('#EnterConfirmationComments').dialog('open');
+                $.preventDefault();
+            }
+        }
+
+        $('#ExtendProbationDatePicker').change(function () {
+
+            //var a = new Date();
+            //if ($(this).val() != "0") {
+            var EmpidCon = $('#EmployeeIdConfirmation').val();
+            var extendedProbationDate = $('#ExtendProbationDatePicker').val();
+
+            $.ajax({
+                url: '@Url.Action("AddWorkingDays", "ConfirmationProcess")',
+                data: { empcode: EmpidCon, extendedDate: extendedProbationDate, isPIPDate: false },
+                type: 'POST',
+                async: false,
+                success: function (result) {
+                    //var FinalDate = eval(result.results.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+
+                    $('#NumberOfDaysProbation').text(result.results)
+                    $('#NumberOfDaysProbation').val(result.results)
+                    //$('#ExtendProbationDate').val(FinalDate);
+                    //$('#NumberOfDaysProbation').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    //$('#NumberOfDaysProbation').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                }
+            });
+            // }
+        });
+
+        $('#PIPDatePicker').change(function () {
+            //var a = new Date();
+            //if ($(this).val() != "0") {
+            var EmpidCon = $('#EmployeeIdConfirmation').val();
+            var PIPStartDate = $('#PIPDatePicker').val();
+            // var EmpidCon = $('#ConfirmationID').val();
+            $.ajax({
+                url: '@Url.Action("AddWorkingDays", "ConfirmationProcess")',
+                data: { empcode: EmpidCon, extendedDate: PIPStartDate, isPIPDate: true },
+                type: 'POST',
+                async: false,
+                success: function (result) {
+                    //  var FinalDate = eval(result.results.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                    $('#NumberOfDaysPIP').text(result.results)
+                    $('#NumberOfDaysPIP').val(result.results)
+                    //$('#ExtendProbationDate').val(FinalDate);
+                    //$('#PIPDate').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    //$('#PIPDate').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                }
+            });
+            //}
+        });
+
+        for (var i = 1; i <= '@Model.confParameterList.Count'; i++) {
+
+            $("#ManagerRating1_" + i).next().next().text($("#ManagerRating1_" + i + " :selected").text());
+        }
+        $('#Txt_OverallManagerRating').text($('#ManagerOverallRating').val());
+
+        //$('#txt_empType').text($('#empType').find(":selected").text());
+        $('#txt_empStatus').text($('#empStatus').find(":selected").text());
+        // $('#txt_gradeName').text($('#gradeName').find(":selected").text());
+        // $('#txt_roleName').text($('#roleName').find(":selected").text());
+        //$('#txt_NumberOfDaysProbation').text($('#NumberOfDaysProbation').val());
+        $('#txt_ExtendedProbationDate').text($('#ExtentedProbationDateP').val());
+        $('#txt_NumberOfDaysPIP').text($('#NumberOfDaysPIP').val());
+        //$('#txt_PIPDate').text($('#PIPDate').val());
+
+        if ('@Model.IsManagerOrEmployee.Equals("FurtherApprover")' == 'True') {
+            $('#IsFurtherApproverNeeded').attr("disabled", "disabled");
+            $('.LabelForCheckbox').attr("disabled", "disabled");
+            $('#btnRejectConfirmation').hide();
+        }
+        if ('@Model.IsManagerOrEmployee.Equals("FurtherApprover")' == 'True' && '@Model.StageID' == 2) {
+            $('#Text_HRComments').attr("disabled", "disabled");
+            $('#btnAgreeConfirmation').show();
+            $('#btnApproveConfirmation').hide();
+            $('#btnDisagreewithManager').show();
+        }
+        else {
+            $('#btnDisagreewithManager').hide();
+            $('#btnAgreeConfirmation').hide();
+        }
+
+        if ('@Model.IsFurtherApproverStageCleared' == 'True' && '@Model.IsManagerOrEmployee.Equals("HR")' == 'True') {
+            $('#confirmationFormHRDetails').show();
+            $('#txt_DUManagerComments').attr("disabled", "disabled");
+        }
+
+        if ('@Model.IsFurtherApproverStageCleared' == 'True' && $('#IsManagerOrEmployee').val() == 'Manager') {
+            //           $("#HRComments").show();
+            $("#FurtherApproverName").hide();
+            $("#FurtherApprover").hide();
+            //           $('#DUManagerComments').show();
+            $('#Text_HRComments').attr("disabled", "disabled");
+        }
+        if ('@Model.StageID' == 0) {
+            $('#btnRejectConfirmation').hide();
+        }
+        if ('@Model.StageID' == 1) {
+            $('#btnRejectConfirmation').show();
+        }
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                if ($(val).hasClass("clsManagerRating1") || val.id == "ManagerOverallRating" || $(val).hasClass("DisplayforHRDropdown")) {
+                    $(this).next().hide().next().show();
+                }
+                else if (val.id == "txtCurrentAddress" || val.id == "TrainingProgramComments" || val.id == "BehaviourComments" || val.id == "AreaOfContributionComments" || val.id == "ReportingManagerComments" || val.id == "OverallReviewRatingComments" || $(val).hasClass("clsEmpComments") || val.id == "Text_HRComments" || $(val).hasClass("DisplayforHR")) {
+
+                    $(this).hide().next().show().children().show();
+                }
+                else if (val.id == "ConfirmationDate") {
+                    $(this).hide().next().hide().next().show();
+                }
+                else if (val.id == "ExtendProbationDate" || val.id == "PIPDate") {
+                    $(this).hide().next().show();
+                }
+                else {
+                    $(this).hide().next().show();
+                }
+            }
+        });
+
+        if ('@ViewBag.clickedViewDetails' == "yes") {
+            $('#btnSaveDetailsConfirmation').hide();
+            $('#btnApproveConfirmation').hide();
+            $('#btnRejectConfirmation').hide();
+            $('#btnDisagreewithManager').hide();
+            $('#btnAgreeConfirmation').hide();
+        }
+
+        $('#anchor_guidelinesConfirmationRating').click(function () {
+            $('#guideLinesConfirmationRating').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 900,
+                height: 'auto',
+                resizable: false,
+                title: "Guidelines"
+            });
+            $('#guideLinesConfirmationRating').dialog('open');
+        });
+
+        //Character Left
+        $('.CharactersLeftTextarea').keypress(function (event) {
+            var max = parseInt(1000);
+            var len = parseInt($(this).val().length);
+
+            if (event.which < 0x20) {
+                // e.which < 0x20, then it's not a printable character
+                // e.which === 0 - Not a character
+                return; // Do nothing
+            }
+
+            if (len >= max) {
+                event.preventDefault();
+                $("#CharacterExeeds").dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: "Confirmation Details",
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+
+        });
+    });                                                                     //end Document.ready()
+</script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/jquery.validate.js" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Confirmation/ConfirmationCommon.js")" type="text/javascript"></script>
+<section class="ConfirmationContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfirmationDetailList", "ConfirmationProcess")">
+                Saved/Submitted
+                Requests
+            </a><a href="#" class="selected">Confirmation Process</a>
+        </nav>
+    </div>
+    <div class="MainBody">
+        <div class="InnerContainer">
+            <div class="clearfix">
+                <a class="LinkBrown floatL Expensewrap" href="@Url.Action("ConfirmationDetailList", "ConfirmationProcess")" id="BackPrevious">
+                    Back
+                </a>
+            </div>
+            <input type="hidden" id="check" value="0" />
+            <input type="hidden" id="checkHinders" value="0" />
+            <input type="hidden" id="checkValueDrivers" value="0" />
+            <input type="hidden" id="checkHrConf" value="0" />
+            <input type="hidden" id="radioApproveValue" value="0" />
+            @Html.HiddenFor(emp => emp.IsManagerOrEmployee)
+            @Html.HiddenFor(emp => emp.rating.max)
+            @Html.HiddenFor(emp => emp.rating.min)
+            @Html.HiddenFor(emp => emp.confirmationID)
+            @Html.HiddenFor(emp => emp.EmployeeIdConfirmation)
+            @Html.HiddenFor(emp => emp.StageID)
+            <div class="emp-details">
+                <form class="clearfix">
+                    <div class="floatL">
+                        @Html.Label("Employee Name:", new { @class = "prefix" })
+                        @Html.LabelFor(model => model.EmployeeName, Model.EmployeeName, new { @class = "suffix" })
+                    </div>
+                    <div class="floatL">
+                        @Html.Label("Employee Code:", new { @class = "prefix" })
+                        @Html.LabelFor(model => model.EmployeeCode, Model.EmployeeCode, new { @class = "suffix" })
+                    </div>
+                    <div class="floatL">
+                        @Html.Label("Role:", new { @class = "prefix" })
+                        @Html.LabelFor(model => model.EmpRole, Model.EmpRole, new { @class = "suffix" })
+                    </div>
+                    <div class="floatL">
+                        @Html.Label("Probation Review Date:", new { @class = "prefix" })
+                        @Html.LabelFor(model => model.ProbationReviewDate, Model.ProbationReviewDate, new { @class = "suffix" })
+                    </div>
+                    <div class="floatL">
+                        @Html.Label("Reporting Manager:", new { @class = "prefix" })
+                        @Html.LabelFor(model => model.ReportingManagerName, Model.ReportingManagerName, new { @class = "suffix" })
+                    </div>
+                    @if (Model.IsFurtherApproverNeeded == true)
+                    {
+                        <div class="floatL">
+                            @Html.Label("DU Head:", new { @class = "prefix" })
+                            @Html.LabelFor(model => model.FurtherApproverName, Model.FurtherApproverName, new { @class = "suffix" })
+                        </div>
+                    }
+                </form>
+            </div>
+            <h3 class="confirmationH">
+                Project Details
+            </h3>
+            @Html.Partial("_ProjectDetailsConfirmation", Model.projAchievement)
+            <h3 class="confirmationH">
+                Kindly Fill the questions below with reference to all the Projects listed above
+            </h3>
+            <div class="Project-tasks">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmConfirmationFormQuetions" }))
+                {
+                    @Html.HiddenFor(modelitem => modelitem.QuestionId)
+                    @Html.HiddenFor(modelitem => modelitem.confirmationID)
+                    @Html.HiddenFor(modelitem => modelitem.EmployeeIdConfirmation)
+                    @Html.HiddenFor(modelitem => modelitem.IsManagerOrEmployee)
+                    <div id="ContributionToProjectComments">
+                        <label class="displayB lb1">
+                            1. Specify any noteworthy areas of contribution to the project/s *
+                        </label>
+                        @Html.TextAreaFor(emp => emp.AreaOfContributionComments, new { @class = "text1 ClassDisabledFields CharactersLeftTextarea" })
+                        <div class="ClassTextareaDiv">
+                            @Html.LabelFor(emp => emp.AreaOfContributionComments, Model.AreaOfContributionComments, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div id="dvTrainingProgramComments">
+                        <label class="displayB lb1">
+                            2. Specify any training programs that the employee should undergo *
+                        </label>
+                        @Html.TextAreaFor(emp => emp.TrainingProgramComments, new { @class = "text1 ClassDisabledFields CharactersLeftTextarea" })
+                        <div class="ClassTextareaDiv">
+                            @Html.LabelFor(emp => emp.TrainingProgramComments, Model.TrainingProgramComments, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div id="BehaviorComments">
+                        <label class="displayB lb1">
+                            3. How would you judge the employee's behavior while working on the projects? *
+                        </label>
+                        @Html.TextAreaFor(emp => emp.BehaviourComments, new { @class = "text1 ClassDisabledFields CharactersLeftTextarea" })
+                        <div class="ClassTextareaDiv">
+                            @Html.LabelFor(emp => emp.BehaviourComments, Model.BehaviourComments, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <h3 class="confirmationH">
+                Kindly rate the employee on the below parameters <a id="anchor_guidelinesConfirmationRating"
+                                                                    href="#" class="floatR GuidelinesLink">Guidelines</a>
+            </h3>
+            @Html.Partial("_ValuDriverConfirmation", Model.confParameterList)
+            <div id="AddRecordSuccessMessege" style="display: none;">
+                <p>
+                    Confirmation Detail Form Record has been updated successfully.
+                </p>
+            </div>
+            <div id="AddRecordErrorMessege" style="display: none;">
+                <p>
+                    Confirmation Detail Form Record has been deleted successfully.
+                </p>
+            </div>
+            <div id="ApproveRejectMessage" style="display: none;">
+                <p>
+                    Please select approve/reject.
+                </p>
+            </div>
+            <div id="AddCommentsAreaOfContri" style="display: none;">
+                <p>
+                    please add comments for Area of Contribution(Point 1).
+                </p>
+            </div>
+            <div id="AddCommentsTraining" style="display: none;">
+                <p>
+                    please add comments for Training Program(Point 2).
+                </p>
+            </div>
+            <div id="AddCommentsEmployeeBehaviour" style="display: none;">
+                <p>
+                    please add comments for Employee's behaviour(Point 3).
+                </p>
+            </div>
+            <div id="AddCommentsReportingManager" style="display: none;">
+                <p>
+                    please add comments for Reporting Manager's Comments(Point 5).
+                </p>
+            </div>
+            <div id="AddCommentsHR" style="display: none;">
+                <p>
+                    please add comments for HR Comments(Point 5).
+                </p>
+            </div>
+            <div id="AddCommentsDUManager" style="display: none;">
+                <p>
+                    please add comments for DU Head's Comments.
+                </p>
+            </div>
+            <div id="EnterConfirmationDate" style="display: none;">
+                <p>
+                    please add Confirmation Date.
+                </p>
+            </div>
+            <div id="EnterempType" style="display: none;">
+                <p>
+                    please add Employment Status.
+                </p>
+            </div>
+            <div id="EnterEmployeeStatus" style="display: none;">
+                <p>
+                    please add Employee Status.
+                </p>
+            </div>
+            <div id="EnterGrade" style="display: none;">
+                <p>
+                    please add Grade.
+                </p>
+            </div>
+            <div id="EnterRole" style="display: none;">
+                <p>
+                    please add Role.
+                </p>
+            </div>
+            <div id="EnterConfirmationComments" style="display: none;">
+                <p>
+                    please add Confirmation Comments.
+                </p>
+            </div>
+            <div id="EnterProbationDate" style="display: none;">
+                <p>
+                    please add Extend Probation Date.
+                </p>
+            </div>
+            <div id="EnterProbationComments" style="display: none;">
+                <p>
+                    please add Extend Probation Comments.
+                </p>
+            </div>
+            <div id="EnterPIPDate" style="display: none;">
+                <p>
+                    please add PIP start date.
+                </p>
+            </div>
+            <div id="EnterPIPComments" style="display: none;">
+                <p>
+                    please add PIP Comments.
+                </p>
+            </div>
+            <div id="RejectCommentDialog" style="display: none">
+                <div class="clearfix">
+                    <div class="LabelDiv">
+                        <label>
+                            * Enter Comment:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        <textarea rows="3" cols="25" id="txtRejectComment" style="width: 160px; height: 45px;"></textarea>
+                        <div style="display: none" id="ErrorRejectComment" class="ErrorMsg">
+                            Please Enter Comment
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="MailTemplateDialog" style="display: none">
+                @{Html.RenderPartial("_MailTemplate", Model.MailDetail);}
+            </div>
+            <div id="guideLinesConfirmationRating" style="display: none">
+                @Html.Partial("_ConfirmationRatingGuidelines", Model.GuideLinesList)
+            </div>
+            <h3 class="confirmationH">
+                Recommendations
+            </h3>
+            <input type="radio" name="HRapprove" value="accept" id="acceptConfirmation" checked="checked"><label for="acceptConfirmation" class="LabelForRadio">Accept Confirmation</label>
+            <input type="radio" name="HRapprove" value="extend" id="extendProbation">
+            <label for="extendProbation" class="LabelForRadio">
+                Extend Probation
+            </label>
+            <input type="radio" name="HRapprove" value="terminate" id="termination">
+            <label for="termination" class="LabelForRadio">
+                Send For PIP
+            </label>
+            <div class="lastcomment" id="MangerComments">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmConfirmationFormApproverComments" }))
+                {
+                    @Html.HiddenFor(emp => emp.IsManagerOrEmployee)
+                    @Html.HiddenFor(Conf => Conf.confirmationID)
+                    @Html.HiddenFor(emp => emp.EmployeeIdConfirmation)
+                    @Html.HiddenFor(emp => emp.ApproverDetailId)
+                    @Html.HiddenFor(emp => emp.FurtherApproverId)
+                    @Html.HiddenFor(emp => emp.IsFurtherApproverStageCleared)
+                    <input type="hidden" type="submit" id="btnSubmitConfirmationFormApproverComments" />
+
+                    <label class="displayB lb1">
+                        * Reporting Manager's Comments:
+                    </label>
+                    @Html.TextAreaFor(emp => emp.ReportingManagerComments, new { @class = "text1 ClassDisabledFields CharactersLeftTextarea" })
+                    <div class="ClassTextareaDiv">
+                        @Html.LabelFor(emp => emp.ReportingManagerComments, Model.ReportingManagerComments, new { @class = "ClassDisplayLabel" })
+                    </div>
+
+                    if (Model.IsManagerOrEmployee.Equals("HR") || Model.IsManagerOrEmployee.Equals("FurtherApprover") || (Model.IsFurtherApproverStageCleared == true && Model.IsManagerOrEmployee.Equals("Manager")))
+                    {
+                        <div id="FurtherApprover" class="mrgnT20 floatL">
+                            @Html.Label("Further Approval Required")
+                            @Html.CheckBoxFor(emp => emp.IsFurtherApproverNeeded)
+                            <label for="IsFurtherApproverNeeded" class="LabelForCheckbox">
+                            </label>
+                        </div>
+                        <div id="FurtherApproverName" style="display: none" class="mrgnT22 floatL">
+                            @*<div class="confic-bot">*@
+                            @Html.Label("From:")
+                            @*</div>
+                                <div class="confic-bot">*@
+                            @Html.TextBoxFor(emp => emp.FurtherApproverName, new { @class = "clsApproverName text1 ClassDisabledFields", @readonly = "true", @id = "text_FurtherApproverName", @disabled = "disabled" })
+                            @*<div class="ClassTextareaDiv">*@
+                            @Html.LabelFor(x => x.FurtherApproverName, Model.FurtherApproverName, new { @class = "ClassDisplayLabel" })
+                            @*</div>*@ @*</div>*@
+                        </div>
+                        <div id="HRComments" style="display: none" class="clearL">
+                            <div class="confic-bot">
+                                @Html.Label("* HR Comments:")
+                            </div>
+                            <div class="">
+                                @Html.TextAreaFor(emp => emp.HRComments, new { @class = "text1 ClassDisabledFields CharactersLeftTextarea", @id = "Text_HRComments" })
+                                <div class="ClassTextareaDiv">
+                                    @Html.LabelFor(emp => emp.HRComments, Model.HRComments, new { @class = "ClassDisplayLabel" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    if (Model.IsManagerOrEmployee.Equals("FurtherApprover") || (Model.IsFurtherApproverStageCleared == true && Model.IsManagerOrEmployee.Equals("HR")))
+                    {
+                        <div id="DUManagerComments">
+                            <div class="confic-bot">
+                                @Html.Label("DU Head's Comments:")<span class="mandatory">*</span>
+                            </div>
+                            <div class="confic-bot">
+                                @Html.TextAreaFor(emp => emp.DUManagerComments, new { @class = "text1 ClassDisabledFields DisplayforHR CharactersLeftTextarea", @id = "txt_DUManagerComments" })
+                                <div class="ClassTextareaDiv">
+                                    @Html.LabelFor(emp => emp.DUManagerComments, Model.DUManagerComments, new { @class = "ClassDisplayLabel" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <div id="confirmationFormHRDetails" class="clearfix clearL">
+                    @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmConfirmationFormHRDetails" }))
+                    {
+
+                        @Html.HiddenFor(Conf => Conf.confirmationID);
+                        @Html.HiddenFor(emp => emp.EmployeeIdConfirmation)
+                        @Html.HiddenFor(emp => emp.IsAcceptedOrExtended)
+                        @Html.HiddenFor(emp => emp.IsManagerOrEmployee)
+                        <input type="hidden" type="submit" id="btnSubmitConfirmationFormDetails" />
+                        if (Model.IsManagerOrEmployee.Equals("HR"))
+                        {
+                            <div class="clearfix">
+                                <div id="ConfirmationAccept">
+                                    <div class="formrow clearfix" style="clear: both">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">
+                                                @* <span class="conform-acss">*@@Html.Label("* Confirmation Date:")@*</span>*@
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @readonly = "readonly", @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(emp => emp.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { @class = "ClassDisplayLabel" })
+                                                @Html.Hidden("ConfirmationDate", String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate), new { id = "ConfirmationDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formrow clearfix">
+                                        @*<div class="leftcol">
+                                                <div class="LabelDiv">
+                                                    @Html.Label("* Employment Status:")
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.DropDownListFor(x => x.empType, new SelectList(Model.EmployeeType, "Value", "Text", "Select"), "", new { @class = "ClassDisabledFields DisplayforHRDropdown" })
+                                                    @Html.LabelFor(emp => emp.empType, new { @class = "ClassDisplayLabel", @id = "txt_empType" })
+                                                    @Html.HiddenFor(x => x.empType, new { @id = "employeeType" })
+                                                </div>
+                                            </div>*@
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Employee Status:")
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.DropDownListFor(x => x.empStatus, new SelectList(Model.EmployeeStatus, "Value", "Text", "Select"), "", new { @class = "ClassDisabledFields DisplayforHRDropdown" })
+                                                @Html.LabelFor(emp => emp.empStatus, new { @class = "ClassDisplayLabel", @id = "txt_empStatus" })
+                                                @Html.HiddenFor(x => x.empStatus, new { @id = "employeeStatus" })
+                                                @*   @Html.LabelFor(model => model.empStatus, Model.EmployeeStatus)*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*         <div class="formrow clearfix">
+                                            <div class="leftcol">
+                                                <div class="LabelDiv">
+                                                    @Html.Label("* Grade:")
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.DropDownListFor(x => x.gradeName, new SelectList(Model.Grade, "Value", "Text", "Select"), "Select", new { @class = "ClassDisabledFields DisplayforHRDropdown" })
+                                                    @Html.LabelFor(emp => emp.gradeName, new { @class = "ClassDisplayLabel", @id = "txt_gradeName" })
+                                                    @Html.HiddenFor(x => x.gradeName, new { @id = "grade" })
+                                                </div>
+                                            </div>
+                                            <div class="rightcol">
+                                                <div class="LabelDiv">
+                                                    @Html.Label("* Role:")
+                                                </div>
+                                                <div class="InputDiv">
+                                                    @Html.DropDownListFor(model => model.roleName, new SelectList(Model.Role, "Value", "Text", "Select"), "Select", new { @class = "ClassDisabledFields DisplayforHRDropdown" })
+                                                    @Html.LabelFor(emp => emp.roleName, new { @class = "ClassDisplayLabel", @id = "txt_roleName" })
+                                                    @Html.HiddenFor(model => model.roleName, new { id = "RoleID" })
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="confic-bot">
+                                        @Html.Label("* Confirmation Comments:")
+                                    </div>
+                                    <div class="confic-bot">
+                                        @Html.TextAreaFor(emp => emp.ConfirmationComments, new { @class = "text1 ClassDisabledFields DisplayforHR CharactersLeftTextarea" })
+                                        <div class="ClassTextareaDiv">
+                                            @Html.LabelFor(emp => emp.ConfirmationComments, Model.ConfirmationComments, new { @class = "ClassDisplayLabel" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="ExtendConfirmation" style="display: none">
+
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label("* Extend Probation Date:")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.ExtendProbationDate, String.Format("{0:MM/dd/yyyy}", Model.ExtendProbationDate), new { @id = "ExtendProbationDatePicker" })
+                                                @Html.LabelFor(emp => emp.ExtendProbationDate, String.Format("{0:MM/dd/yyyy}", Model.ExtendProbationDate), new { @class = "ClassDisplayLabel", @id = "txt_ExtendedProbationDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label("*Probation Extended Days:")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.NumberOfDaysProbation, new { @readonly = "readonly" })
+                                                @*@Html.LabelFor(emp => emp.NumberOfDaysProbation, new { @class = "ClassDisplayLabel", @id = "txt_NumberOfDaysProbation" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">
+                                                @Html.Label("* Extend Probation Comments:")
+                                            </div>
+                                            <div class="InputDiv">
+                                                @Html.TextAreaFor(emp => emp.ProbationComments, new { @class = "ClassDisabledFields DisplayforHR CharactersLeftTextarea" })
+                                                <div class="ClassTextareaDiv">
+                                                    @Html.LabelFor(emp => emp.ProbationComments, Model.ProbationComments, new { @class = "ClassDisplayLabel" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="TerminateConfirmation" style="display: none">
+
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label("* PIP start date:")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @id = "PIPDatePicker", @class = "ClassDisabledFields" })
+                                                @Html.LabelFor(emp => emp.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @class = "ClassDisplayLabel", @id = "txt_PIPStartDate" })
+                                                @*@Html.Hidden("PIPDate", String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { id = "PIPDate" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label("*PIP Extended Days:")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.NumberOfDaysPIP, new { @readonly = "readonly", @class = "ClassDisabledFields" })
+                                                @*@Html.LabelFor(emp => emp.NumberOfDaysPIP, new { @class = "ClassDisplayLabel", @id = "txt_NumberOfDaysPIP" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*   <div class="editor-label labelwidth floatL confic-box_1">
+                                            <div class="title-wrap"></div>
+                                            <div class="editor-field floatL inputs-wrap">
+                                            </div>
+                                        </div>*@
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label("* PIP Comments:")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextAreaFor(emp => emp.PIPComments, new { @class = "ClassDisabledFields DisplayforHR CharactersLeftTextarea" })
+                                                <div class="ClassTextareaDiv">
+                                                    @Html.LabelFor(emp => emp.PIPComments, Model.PIPComments, new { @class = "ClassDisplayLabel" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div class="confic-bot confic-box_1">
+                                                                <div class="title-wrap">
+                                                                    @Html.Label(" :")<span class="mandatory">*</span>
+                                                                </div>
+                                                                <div class="qualif-detail-conf
+                                        inputs-wrap">
+                                                                </div>
+                                                            </div>*@
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            @*            <input type="button" class="ButtonGray mrgnR11" value="Save">
+                <input type="button" class="ButtonGray" value="Submit Confirmation Form">*@
+        </div>
+        <div class="clearfix ButtonContainer1">
+            <input type="button" value="Save" id="btnSaveDetailsConfirmation" class="ButtonGray mrgnR11" />
+            <input type="button" value="Submit Confirmation Form" id="btnApproveConfirmation"
+                   class="ButtonGray mrgnR11" />
+            <input type="button" value="Agree with Manager" id="btnAgreeConfirmation" class="ButtonGray" />
+            <input type="button" value="Reject" id="btnRejectConfirmation" class="ButtonGray mrgnR11" />
+            <input type="button" value="Disagree with Manager" id="btnDisagreewithManager" class="ButtonGray mrgnR11" />
+        </div>
+    </div>
+    <div id="ConfirmationRecordSave" style="display: none;">
+        <p>
+            Details Submited successfully.
+        </p>
+    </div>
+    <div id="CharacterExeeds" style="display: none;">
+        <p>
+            Cannot enter more than 1000 characters.
+        </p>
+    </div>
+</section>
+<script type="text/javascript">
+    var date = new Date();
+    var currentMonth = date.getMonth() - 4;
+    var currentDate = date.getDate();
+    var currentYear = date.getFullYear();
+    //Modified By Mahesh For Issue Id:24366
+    debugger;
+    $('#ConfirmationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
+    $('#PIPDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: new Date, yearRange: "c:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
+    $('#ExtendProbationDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
+    //$("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('accept');
+    $("#acceptConfirmation").click(function () {
+        $("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('accept');
+        if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+            $("#ConfirmationAccept").show();
+            $("#ExtendConfirmation").hide();
+            $("#TerminateConfirmation").hide();
+        }
+    });
+    $("#extendProbation").click(function () {
+        $("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('extend');
+        if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+            $("#ExtendConfirmation").show();
+            $("#ConfirmationAccept").hide();
+            $("#TerminateConfirmation").hide();
+        }
+    });
+    $("#termination").click(function () {
+        $("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('sendPIP');
+        if (!$("#IsFurtherApproverNeeded").is(':checked') || $('#IsManagerOrEmployee').val() != "Manager") {
+            $("#ExtendConfirmation").hide();
+            $("#ConfirmationAccept").hide();
+            $("#TerminateConfirmation").show();
+        }
+    });
+    $("#IsFurtherApproverNeeded").change(function () {
+        if (this.checked) {
+            $("#ExtendConfirmation").hide();
+            $("#ConfirmationAccept").hide();
+            $("#TerminateConfirmation").hide();
+            $("#FurtherApproverName").show();
+            $("#HRComments").show();
+            $('#confirmationFormHRDetails').show();
+        }
+        else if ($("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val() == "accept") {
+            $('#confirmationFormHRDetails').show();
+            $("#ConfirmationAccept").show();
+            $("#ExtendConfirmation").hide();
+            $("#TerminateConfirmation").hide();
+            $("#HRComments").hide();
+            $("#FurtherApproverName").hide();
+        }
+        else if ($("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val() == "extend") {
+            $('#confirmationFormHRDetails').show();
+            $("#ExtendConfirmation").show();
+            $("#ConfirmationAccept").hide();
+            $("#TerminateConfirmation").hide();
+            $("#HRComments").hide();
+            $("#FurtherApproverName").hide();
+        }
+        else if ($("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val() == "sendPIP") {
+            $('#confirmationFormHRDetails').show();
+            $("#ExtendConfirmation").hide();
+            $("#ConfirmationAccept").hide();
+            $("#TerminateConfirmation").show();
+            $("#HRComments").hide();
+            $("#FurtherApproverName").hide();
+        }
+    });
+</script>

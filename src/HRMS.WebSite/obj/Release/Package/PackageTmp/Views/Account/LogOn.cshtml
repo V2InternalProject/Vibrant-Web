@@ -1,0 +1,185 @@
+﻿@model HRMS.Models.LogOnModel
+@{
+    ViewBag.Title = "Log On";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    #body
+    {
+        background-color: transparent;
+        margin-top: -35px;
+        padding-bottom: 74px;
+    }
+    html
+    {
+        background-color: transparent;
+    }
+    body
+    {
+        border-top: 10px solid #ffffff;
+        height: 850px;
+        background: url("../../Images/bg.png") no-repeat center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+    /*#body{background-image:url("../../Images/bg.jpg");}*/
+
+    header
+    {
+        background-color: transparent;
+        height: 20px;
+    }
+    .logo
+    {
+        height: 100px;
+        text-align: center;
+        position: relative;
+    }
+    .logo img
+    {
+        margin: -30px auto;
+        width: 360px;
+    }
+
+    .content-wrapper
+    {
+        margin: 0 auto;
+        max-width: 1920px;
+    }
+    .loginWrap
+    {
+        border-left: 1px solid #589abd;
+        color: #FFFFFF;
+        float: right;
+        font-family: Corbel,Arial;
+        font-size: 1em;
+        height: 260px;
+        padding-left: 35px;
+        padding-top: 35px;
+        position: absolute;
+        right: 0;
+        text-align: left;
+        top: 191px;
+        width: 48%;
+    }
+    .fieldsetbox label
+    {
+        font-size: 1.5em;
+        font-weight: normal;
+        float: left;
+        margin-right: 10px;
+        width: 110px;
+        line-height: 35px;
+    }
+    .fieldsetbox input
+    {
+        width: 40%;
+        height: 22px;
+        border: 0px none;
+    }
+    .loginWrap h2
+    {
+        font-family: Corbel, Arial;
+        font-size: 2.4em;
+        color: #ffffff;
+        font-weight: normal;
+        margin-bottom: 25px;
+        margin-top: 0px;
+    }
+    .inputBtn
+    {
+        background: url("../../Images/login.png") no-repeat 0 4px transparent !important;
+        height: 42px !important;
+        width: 52px !important;
+    }
+    .changevalidation
+    {
+        margin-left: 120px;
+        height: 20px;
+        margin-left: 120px;
+        padding-left: 0px;
+    }
+    .changePassword, .forgotPassword
+    {
+
+        background: url("../../Images/key.png") no-repeat 0 0 transparent !important;
+        height: 25px;
+        margin-left: 120px;
+        padding-left: 30px;
+        float:left;
+    }
+    .changePassword
+    {
+         margin-left: 120px;
+    }
+    .forgotPassword
+    {
+        margin-left: 50px;
+    }
+    .changePassword a, .forgotPassword a
+    {
+        color: #AAD538;
+        font-size: 1.3em;
+        line-height: 30px;
+        margin-top: 16px;
+        padding: 0;
+        text-decoration: none;
+    }
+    .changePassword a:hover, .forgotPassword a:hover
+    {
+        background-color: transparent;
+    }
+</style>
+<script src="@Url.Content("../../Scripts/jquery-1.8.3.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<div class="logo">
+    <img src="../../Images/logo.png" />
+</div>
+<div class="loginWrap">
+    <h2>
+        Login</h2>
+    @*@Html.ActionLink("Register", "Register") if you don't have an account.*@
+    <fieldset class="clearfix">
+        @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
+        @using (Html.BeginForm())
+        {
+
+@*<legend>Account Information</legend>*@
+
+            <fieldset class="fieldsetbox">
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName)
+            </fieldset>
+			<fieldset class="changevalidation">
+                @Html.ValidationMessageFor(m => m.UserName)
+            </fieldset>
+            <fieldset class="fieldsetbox">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password)
+
+                <input type="submit" value=" " class="inputBtn" />
+            </fieldset>
+           <fieldset class="changevalidation">
+                @Html.ValidationMessageFor(m => m.Password)
+            </fieldset>
+
+@*  <div class="editor-label">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe)
+            </div>*@
+
+            <fieldset class="changePassword">
+                @Html.ActionLink("Change Password", "ChangePassword", "Account")
+            </fieldset>
+
+	   <fieldset class="forgotPassword">
+                @Html.ActionLink("Forgot Password", "ForgotPassword", "Account")
+            </fieldset>
+
+        }
+    </fieldset>
+</div>

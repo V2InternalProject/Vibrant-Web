@@ -1,0 +1,1796 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+@{
+    ViewBag.Title = "AddProject";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="~/Scripts/Global.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.ClassDisplayLabel').hide();
+        oldProjectStartDate = "";
+        oldProjectEndDate = "";
+        oldProjectStartDate = $('#PMSProjectStartDate').val();
+        oldProjectEndDate = $('#PMSProjectEndDate').val();
+        if('@Model.ProjectID' == 0)
+        {
+            $("#PMSProjectStatus").val(1);
+            $("#PMSProjectStatus").attr("disabled","disabled");
+        }
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({'margin-top': '-20px !important'});
+        });
+
+        $('#btnSendRevision').click(function () {
+            $('#SendForRevisionDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 570,
+                resizable: false,
+                title: "Kindly fill in the below details"
+            });
+            $('#SendForRevisionDiv').dialog('open');
+        });
+
+        $('#btnApproveRevisions').click(function () {
+            $('#ApproveRevisionDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 570,
+                resizable: false,
+                title: "Approve Revisions"
+            });
+            $('#ApproveRevisionDiv').dialog('open');
+        });
+
+        $('#PMSProjectStartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker,
+            onSelect: function() {
+                if($('#PMSCustomerDD :selected').val() == "")
+                {
+                    $("#NoCustomerSelectedDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        closeOnEscape: false,
+                        buttons: {
+                            Ok: function () {
+                                $('#PMSProjectStartDate').val(oldProjectStartDate);
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if($('#PMSProjectStartDate').val() > $('#PMSProjectEndDate').val() && $('#PMSProjectEndDate').val() != "")
+                {
+                    //alert("start cnt b greater");
+                    $("#StartDateGreaterDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        closeOnEscape: false,
+                        buttons: {
+                            Ok: function () {
+                                $("#PMSProjectStartDate").val(oldProjectStartDate);
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                if($('#PMSProjectEndDate').val() == '')
+                {
+                }
+                else
+                {
+                    CalculateBusinessDays();
+                }
+            } })
+     .bind("change", function () {
+         var startDate = $('#PMSProjectStartDate').datepicker("getDate");
+         var EndMinDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+         $('#PMSProjectEndDate').datepicker("option", "minDate", EndMinDate);
+     });
+        $('#PMSProjectEndDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker,
+            onSelect: function() {
+                if($('#PMSCustomerDD :selected').val() == "")
+                {
+                    $("#NoCustomerSelectedDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        closeOnEscape: false,
+                        buttons: {
+                            Ok: function () {
+                                $('#PMSProjectEndDate').val(oldProjectEndDate);
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if(new Date($('#PMSProjectEndDate').val()) < new Date($('#PMSProjectStartDate').val()) && $('#PMSProjectStartDate').val() != "")
+                {
+                    //alert("end cnt b less");
+                    $("#EndDateLesserDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        closeOnEscape: false,
+                        buttons: {
+                            Ok: function () {
+                                $('#PMSProjectEndDate').val(oldProjectEndDate);
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                if($('#PMSProjectStartDate').val() == '')
+                {
+                }
+                else
+                {
+                    CalculateBusinessDays();
+                }
+            }
+        });
+
+        if('@Model.CustomerStartDate' != '' && '@Model.CustomerEndDate' != '')
+        {
+            var customerStartDate = $.datepicker.parseDate("mm/dd/yy", '@Model.CustomerStartDate');
+            var customerEndDate = $.datepicker.parseDate("mm/dd/yy", '@Model.CustomerEndDate');
+            $("#PMSProjectStartDate").datepicker("option", "minDate", customerStartDate);
+            $("#PMSProjectStartDate").datepicker("option", "maxDate", customerEndDate);
+            $("#PMSProjectEndDate").datepicker("option", "minDate", customerStartDate);
+            $("#PMSProjectEndDate").datepicker("option", "maxDate", customerEndDate);
+        }
+
+        var projectStartDate = $.datepicker.parseDate("mm/dd/yy", $('#PMSProjectStartDate').val());
+        $('#PMSProjectEndDate').datepicker("option", "minDate", projectStartDate);
+
+
+        $('#btnShowHistory').click(function () {
+            jQuery("#jqShowRevisionHistoryTable").trigger("reloadGrid");
+            jQuery("#jqShowHistoryTable").trigger("reloadGrid");
+            $('#ShowHistoryDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                height:500,
+                width: 1100,
+                resizable: false,
+                title: "History"
+            });
+            $('#ShowHistoryDiv').dialog('open');
+        });
+        if ('@Model.ApprovalStatusID' == null || '@Model.ApprovalStatusID' == 0 || '@Model.ApprovalStatusID' == 1) {
+            //$('#btnSavePMSProjectDetails').hide();
+            if('@Model.ProjectID' != 0 && '@Model.ProjectID' != null)
+                $('#btnSendForApprovalPMSProjectDetails').show();
+            else
+                $('#btnSendForApprovalPMSProjectDetails').hide();
+            $('#RejectPMSProjectDetails').hide();
+            $('#ApprovedPMSProjectDetails').hide();
+            // $('.ui-datepicker-trigger').hide();
+            if ('@Model.ApprovalStatusID' == 1) {
+                $('#btnSendForApprovalPMSProjectDetails').hide();
+                $('.ui-datepicker-trigger').hide();
+                $('#btnSavePMSProjectDetails').hide();
+                $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').prop("disabled", true);
+                $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').attr("disabled", "disabled");
+            }
+        }
+        if ('@Model.ApprovalStatusID' == 2) {
+            $('#btnSavePMSProjectDetails').hide();
+            $('#btnSendForApprovalPMSProjectDetails').hide();
+            $('#btnSavePMSProjectDetailsForRivision').show();
+            $('#btnShowHistory').show();
+            $('#ApprovedPMSProjectDetails').hide();
+            $('#RejectPMSProjectDetails').hide();
+            $('#ShowForProjectReviewers').show();
+            $('#ShowForIRApprover').show();
+            $('#ShowForIRFinanceApprover').show();
+        }
+        else {
+            $('#ShowForProjectReviewers').hide();
+            $('#ShowForIRApprover').hide();
+            $('#ShowForIRFinanceApprover').hide();
+            $('#btnSavePMSProjectDetailsForRivision').hide();
+            $('#btnShowHistory').hide();
+        }
+
+        if ('@Model.IsProjectApprover' == 'True' ) {
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').prop("disabled", true);
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').attr("disabled", "disabled");
+            $('#RejectPMSProjectDetails').show();
+            $('#ApprovedPMSProjectDetails').show();
+            $('#btnSavePMSProjectDetails').hide();
+            $('.ui-datepicker-trigger').hide();
+            $('#btnSavePMSProjectDetailsForRivision').hide();
+            if ('@Model.ApprovalStatusID' == 2 || '@Model.ApprovalStatusID' == 3) {
+                $('#RejectPMSProjectDetails').hide();
+                $('#ApprovedPMSProjectDetails').hide();
+            }
+        }
+        if('@Model.IsProjectApprover' == 'True'  && '@Model.RevisionStaus' == 4 ) {
+            $('#btnApproveRivision').show();
+            $('#btnRejectRevision').show();
+            $('#AddProjectDetails').find('input,select,TextArea,checkbox').attr('disabled','disabled');
+            $('.ui-datepicker-trigger').hide();
+            $('#PMSProjectBillableStatus').attr('disabled','disabled');
+        }
+        else {
+            $('#btnApproveRivision').hide();
+            $('#btnRejectRevision').hide();
+        }
+        if('@Model.IsProjectApprover' == 'True'  && ('@Model.RevisionStaus' == 5 || '@Model.RevisionStaus' == 6)){
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').prop("disabled", "disabled");
+            $('.ui-datepicker-trigger').hide();
+            $('#btnSavePMSProjectDetailsForRivision').hide();
+        }
+        $('#btnSavePMSProjectDetails').click(function () {
+            SavePMSProjectDetails();
+        });
+
+        $('#btnSavePMSProjectDetailsForRivision').click(function () {
+            SavePMSProjectDetailsForRevision();
+        });
+
+        if('@Model.SearchedUserDetails.IsProjectReviewer' == 'True' && '@Model.IsProjectApprover' != 'True')
+        {
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').prop("disabled", "disabled");
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').attr("disabled", "disabled");
+            $('#btnSavePMSProjectDetails,#btnSavePMSProjectDetailsForRivision,#btnSendForApprovalPMSProjectDetails,#ApprovedPMSProjectDetails,#RejectPMSProjectDetails,#btnApproveRivision,#SelectAllReviewerBtn,#DeselectAllReviewerBtn,#DeleteReviewerBtn').hide();
+            $('#btnShowHistory').show();
+        }
+        if ('@Model.ApprovalStatusID' == 3)
+        {
+            $('#RejectPMSProjectDetails').hide();
+            $('#ApprovedPMSProjectDetails').hide();
+        }
+        if('@Model.IsProjectApprover' != 'True' && '@Model.ApprovalStatusID' == 3)
+            $('#btnSendForApprovalPMSProjectDetails').show();
+
+        $('#btnSendForApprovalPMSProjectDetails').click(function () {
+            if ('@Model.IsProjectApproverPresent' == 'True') {
+                var btnClick = "SendForApproval";
+                SendForApprovalPMSProjectDetails(btnClick);
+            }
+            else {
+                $("#ProjectApproverNotSetMessage").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 500,
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+        });
+
+        if ('@Model.ApprovalStatusID' == null || '@Model.ApprovalStatusID' == 0 || '@Model.ApprovalStatusID' == 2 || '@Model.ApprovalStatusID' == 3 )
+            $('#btnShowHistory').show();
+
+        if('@Model.IsProjectApprover' == 'True' )
+            $('#btnShowHistory').show();
+
+        $('#ApprovedPMSProjectDetails').click(function () {
+
+            OpenLoadingPopup();
+            var btnClick = "Approve";
+            ApproveRejectPMSProjectDetails(btnClick);
+        });
+        //        $('#RejectPMSProjectDetails').click(function () {
+        //            OpenLoadingPopup();
+        //            var btnClick = "Reject";
+        //            ApproveRejectPMSProjectDetails(btnClick);
+        //        });
+        var RejectedComments;
+        $('#RejectPMSProjectDetails').click(function () {
+            $('#RejectConfirmationMessageAppraover11').dialog(
+                {
+                    autoOpen: true,
+                    modal: true,
+                    width: 300,
+                    height: 'auto',
+                    resizable: false,
+                    title: "Reject Project Details",
+                    dialogClass: "noclose",
+                    buttons:
+                        {
+                            Ok: function () {
+                                $('#RejectConfirmationMessageAppraover11').dialog('close');
+                                $('#RejectConfirmationMessageAppraover11').dialog('destroy');
+                                //$('#RejectConfirmationMessageAppraover1').dialog("close");
+                                $('#RejectCommentDialogApprover1').dialog(
+                {
+                    autoOpen: true,
+                    modal: true,
+                    width: 325,
+                    height: 'auto',
+                    resizable: false,
+                    title: "Reject comment",
+                    dialogClass: "noclose",
+                    buttons:
+                        {
+                            Ok: function () {
+                                var comments = $("#txtCommentApprover1").val().trim();
+                                if (comments.length <= 0) {
+                                    $('#ErrorCommentApprover1').show();
+                                    return false;
+                                }
+                                else {
+                                    $('#ErrorCommentApprover1').hide();
+                                }
+                                RejectedComments = comments;
+                                OpenLoadingPopup();
+                                var btnClick = "Reject";
+                                ApproveRejectPMSProjectDetails(btnClick,RejectedComments);
+                            },
+                            Cancel: function () {
+                                $(this).dialog('close');
+                            }
+                        }
+                }
+                );
+                            },
+                            Cancel: function () {
+                                $(this).dialog('close');
+                            }
+
+                        }
+
+                });
+        });
+        if('@Model.ApprovalStatusID' == 2) {
+            $('#AbbreviatedName, #ProjectName, #PMSProjectDescription, #PMSProjectStartDate, #ProjectCode, #PMSProjectDurationDays, #PMSCustomerDD').prop("disabled", true);
+            $('#AbbreviatedName, #ProjectName, #PMSProjectDescription, #PMSProjectStartDate, #ProjectCode, #PMSProjectDurationDays, #PMSCustomerDD').attr('disabled','disabled');
+        }
+
+        //        if('@Model.RevisionStaus' == 0 || '@Model.RevisionStaus' == 5) {
+        //            $('#PMSProjectWorkHours, #PMSProjectEndDate').attr('enabled','enabled');
+        //            $('#PMSProjectWorkHours, #PMSProjectEndDate').removeAttr('disabled');
+        //        }
+        var fieldlabellist =  @(Html.Raw(Json.Encode(Model.fieldlabellist)));
+
+        var approvalMessageList = @(Html.Raw(Json.Encode(Model.approvalMessageList)));
+
+        SendForApproveMessage = "Field change pending approval";
+        ApprovedMessage = "Field change is Approved";
+        RejectedMessage = "Field change approval is Rejected";
+
+        $.each(fieldlabellist, function (l) {
+            $.each(approvalMessageList, function (i) {
+                if (fieldlabellist[l] == $("#lblPMSProjectWorkHours").text() && $("#PMSProjectWorkHours").val() != "") {
+                    if (approvalMessageList[l] == ApprovedMessage) {
+                        //$("#txtCurrentAddress").removeAttr("disabled");
+                        if ('@Model.IsProjectApprover' != 'True' && ('@Model.RevisionStaus' == 5 || '@Model.RevisionStaus' == 6) && '@Model.SearchedUserDetails.IsProjectReviewer' != 'True') {
+                            $('#PMSProjectWorkHours').removeAttr('disabled');
+                        }
+                        $("#spPMSProjectWorkHours").html('');
+                        $("#spPMSProjectWorkHours").append(approvalMessageList[l]);
+                        $("#spPMSProjectWorkHours").css("color", "green");
+                        $("#spPMSProjectWorkHours").show();
+                    }
+                    else if (approvalMessageList[l] == RejectedMessage) {
+                        if ('@Model.IsProjectApprover' != 'True' && ('@Model.RevisionStaus' == 5 || '@Model.RevisionStaus' == 6) && '@Model.SearchedUserDetails.IsProjectReviewer' != 'True') {
+                            $('#PMSProjectWorkHours').removeAttr('disabled');
+                        }
+                        $("#spPMSProjectWorkHours").html('');
+                        $("#spPMSProjectWorkHours").append(approvalMessageList[l]);
+                        $("#spPMSProjectWorkHours").css("color", "red");
+                        $("#spPMSProjectWorkHours").show();
+                    }
+                    else if (approvalMessageList[l] == SendForApproveMessage) {
+                        $('#PMSProjectWorkHours').attr('disabled','disabled');
+                        $("#spPMSProjectWorkHours").html('');
+                        $("#spPMSProjectWorkHours").append(approvalMessageList[l]);
+                        $("#spPMSProjectWorkHours").css("color", "red");
+                        $("#spPMSProjectWorkHours").show();
+                    }
+                    else {
+                        $("#spPMSProjectWorkHours").hide();
+                    }
+                    return false;
+                }
+                if (fieldlabellist[l] == $("#lblPMSProjectEndDate").text() && $("#PMSProjectEndDate").val() != "") {
+                    if (approvalMessageList[l] == ApprovedMessage) {
+                        if ('@Model.IsProjectApprover' != 'True' && ('@Model.RevisionStaus' == 5 || '@Model.RevisionStaus' == 6) && '@Model.SearchedUserDetails.IsProjectReviewer' != 'True') {
+                            $('#PMSProjectEndDate').removeAttr('disabled');
+                        }
+                        $("#spPMSProjectEndDate").html('');
+                        $("#spPMSProjectEndDate").append(approvalMessageList[l]);
+                        $("#spPMSProjectEndDate").css("color", "green");
+                        $("#spPMSProjectEndDate").show();
+                    }
+                    else if (approvalMessageList[l] == RejectedMessage) {
+                        if ('@Model.IsProjectApprover' != 'True' && ('@Model.RevisionStaus' == 5 || '@Model.RevisionStaus' == 6) && '@Model.SearchedUserDetails.IsProjectReviewer' != 'True') {
+                            $('#PMSProjectEndDate').removeAttr('disabled');
+                            $('#PMSProjectEndDate').siblings().show();
+                        }
+                        //$('#PMSProjectEndDate').siblings().hide();
+                        $("#spPMSProjectEndDate").html('');
+                        $("#spPMSProjectEndDate").append(approvalMessageList[l]);
+                        $("#spPMSProjectEndDate").css("color", "red");
+                        $("#spPMSProjectEndDate").show();
+                    }
+                    else if (approvalMessageList[l] == SendForApproveMessage) {
+                        $('#PMSProjectEndDate').attr('disabled','disabled');
+                        $('#PMSProjectEndDate').siblings().hide();
+                        $("#spPMSProjectEndDate").html('');
+                        $("#spPMSProjectEndDate").append(approvalMessageList[l]);
+                        $("#spPMSProjectEndDate").css("color", "red");
+                        $("#spPMSProjectEndDate").show();
+                    }
+                    else {
+                        $("#spPMSProjectEndDate").hide();
+                    }
+                    return false;
+                }
+            });
+        });
+        ISValuesChanged = false;
+        function SavePMSProjectDetailsForRevision() {
+            var count = jQuery("#jqAddProjectReviewersTable").jqGrid('getGridParam', 'records');
+            if(count == 0) {
+                $("#SelectProjectReviewer").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+
+                        }
+                    }
+                });
+                return false;
+            }
+            $('#AddProjectDetails').find('input,select,TextArea').removeAttr('disabled');
+            if ($('#AddProjectDetails').valid()) {
+                var postUrlnew = '@Url.Action("SavePMSProjectDetailsForRevision", "SEM")';
+                OpenLoadingPopup();
+                $.ajax({
+                    url: postUrlnew,
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: $('#AddProjectDetails').serialize(),
+                    success: function (results) {
+                        if (results.status == true) {
+                            CloseLoadingPopup();
+                            if(results.IsHoursChanges == true) {
+                                ISValuesChanged =true;
+                            }
+                            if(results.IsEndDateChanges == true) {
+                                ISValuesChanged =true;
+                            }
+                            var ProjectID = results.ProjectID;
+                            $('#AddProjectDetails #ProjectID').val(ProjectID);
+                            $("#AddPMSProjectDetailsSuccessMessage").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                closeOnEscape: false,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $('#btnSendForApprovalPMSProjectDetails').show();
+                                        $(this).dialog("close");
+                                        if(ISValuesChanged == true) {
+                                            var RevisionDetailsModel = {
+                                                ProjectID: '@Model.ProjectID',
+                                                WorkHours: $("#PMSProjectWorkHours").val(),
+                                                EndDate: $("#PMSProjectEndDate").val()
+                                            }
+                                            $.ajax({
+                                                url: '@Url.Action("GetRevisionDetails", "SEM")',
+                                                type: 'POST',
+                                                contentType: "application/json",
+                                                //dataType: 'json',
+                                                data: JSON.stringify(RevisionDetailsModel),
+                                                async: false,
+                                                modal: true,
+                                                success: function (results) {
+                                                    $("#sendForrevisionApproval").empty().append(results);
+                                                    $("#sendForrevisionApproval").dialog({
+                                                        closeOnEscape: false,
+                                                        resizable: false,
+                                                        height: 'auto',
+                                                        width: 700,
+                                                        modal:true,
+                                                        title: "Kindly fill in the below details",
+                                                        dialogClass: "noclose"
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        else{
+                                            location.reload();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        else if(results.status == "Error")
+                        {
+                            CloseLoadingPopup();
+                            DisplayErrorDialog();
+                        }
+                        else {
+                            if (results.status == true) {
+                                CloseLoadingPopup();
+                                var ProjectID = results.ProjectID;
+                                $('#AddProjectDetails #ProjectID').val(ProjectID);
+                                $("#AddPMSProjectDetailsSuccessMessage").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $('#btnSendForApprovalPMSProjectDetails').show();
+                                            $(this).dialog("close");
+                                            $.ajax({
+                                                url: '@Url.Action("GetPMSProjectDetails", "SEM")',
+                                                data: { ProjectIDs: ProjectID },
+                                                type: "GET",
+                                                success: function (results) {
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
+                            }
+                            if (results.status == false) {
+                                CloseLoadingPopup();
+                                $("#AddPMSProjectDetailsErrorMessage").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                    },
+                    error: function (results) {
+                        CloseLoadingPopup();
+                    }
+                });
+            }
+            else
+            {
+                CloseLoadingPopup();
+                return false;
+            }
+
+        }//end ready.
+        $("#PMSCustomerDD").change(function(){
+            var selectedCustomerID = $('#PMSCustomerDD :selected').val();
+            if(selectedCustomerID == ""){
+                selectedCustomerID=0;
+                $("#Error_PMSCustomerDD").show();
+            }
+            else{
+                $("#Error_PMSCustomerDD").hide();
+            }
+            $.ajax({
+                url: "/SEM/GetSelectedCustomerDetails",
+                type: 'POST',
+                async: false,
+                data: {CustomerID: selectedCustomerID},
+                success: function (results) {
+                    if(results.status == true)
+                    {
+                        if(results.CustomerStartDate != null && results.CustomerEndDate != null)
+                        {
+                            var startDate = eval(results.CustomerStartDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                            var endDate = eval(results.CustomerEndDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                            $("#PMSProjectStartDate").datepicker("option", "minDate", startDate);
+                            $("#PMSProjectStartDate").datepicker("option", "maxDate", endDate);
+                            $("#PMSProjectEndDate").datepicker("option", "minDate", startDate);
+                            $("#PMSProjectEndDate").datepicker("option", "maxDate", endDate);
+                        }
+                    }
+                }
+            });
+        });
+        //added from NIK
+        function SavePMSProjectDetails() {
+            $("#pMSProjectStatus").val($("#PMSProjectStatus").val());
+            $("#projectCode").val($("#ProjectCode").val());
+            if ($('#AddProjectDetails').valid()) {
+                var postUrlnew = '@Url.Action("SavePMSProjectDetails", "SEM")';
+                OpenLoadingPopup();
+                $.ajax({
+                    url: postUrlnew,
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: $('#AddProjectDetails').serialize(),
+                    success: function (results) {
+                        CloseLoadingPopup();
+                        if (results.ProjectNameExist == true) {
+                            $("#ProjectNameExistDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                closeOnEscape: false,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            if (results.status == true) {
+                                var ProjectID = results.ProjectID;
+                                var decryptedProjectId = results.DecryptedProjectID;
+                                $('#AddProjectDetails #ProjectID').val(decryptedProjectId);
+                                $("#AddPMSProjectDetailsSuccessMessage").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $('#btnSendForApprovalPMSProjectDetails').show();
+                                            $(this).dialog("close");
+                                            AllocatedCreatedResourceToCurProject(ProjectID);
+                                            @*window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs='+ ProjectID;*@
+                                        }
+                                    }
+                                });
+                            }
+                            else if (results.status == false) {
+                                $("#AddPMSProjectDetailsErrorMessage").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+
+                                        }
+                                    }
+                                });
+
+                            }
+                            else if (results.resetStatus == false)
+                            {
+                                $("#FailResourceAllocation").dialog({
+                                    resizable: false,
+                                    autoOpen: true,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+
+                                        }
+                                    }
+                                });
+                            }
+                            else if (results.status == "Error") {
+                                DisplayErrorDialog();
+                            }
+                        }
+                    },
+                    error: function (results) {
+                        CloseLoadingPopup();
+                    }
+                });
+            }
+            else {
+                CloseLoadingPopup();
+                return false;
+            }
+        }
+
+        $('#btnApproveRivision').click(function() {
+            $.ajax({
+                url:'@Url.Action("ApprooveRevisionProjectDetails", "SEM")',
+                data:{ProjectID:'@Model.ProjectID'},
+                type:'GET',
+                success:function(results) {
+                    if(results != null) {
+                        $("#popupforApproveandrejectRevision").empty().append(results);
+                        $("#popupforApproveandrejectRevision").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            modal:true,
+                            height: 500,
+                            width: 800,
+                            title: "Approve Revisions"
+                        });
+                    }
+                }
+            });
+        });
+
+        $('#backPMSProjectDetails').click(function(){
+            window.location.href = '@Url.Action("ProjectIndex", "SEM")';
+        });
+        //This code is used for sending project for approval
+        function SendForApprovalPMSProjectDetails(btnClick) {
+            if ($('#AddProjectDetails').valid()) {
+                var postUrlnew = '@Url.Action("SendForApprovalPMSProjectDetails", "SEM")';
+                OpenLoadingPopup();
+                $.ajax({
+                    url: postUrlnew,
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: $('#AddProjectDetails').serialize(),
+                    success: function (results) {
+                        if (results.saveStatus == true && results.approveStatus == true) {
+                            $('#btnSavePMSProjectDetails').hide();
+                            $('#btnSendForApprovalPMSProjectDetails').hide();
+                            CloseLoadingPopup();
+                            var ProjectID = results.ProjectID;
+                            var decryptedProjectID = results.DecryptedProjectID;
+                            $('#AddProjectDetails #ProjectID').val(decryptedProjectID);
+                            $("#SendForApprovalDetailsSuccessMessage").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        OpenLoadingPopup();
+                                        $(this).dialog("close");
+                                        $.ajax({
+                                            url: '@Url.Action("GetPMSProjectDetails", "SEM")',
+                                            data: { ProjectIDs: ProjectID },
+                                            type: "GET",
+                                            success: function (results) {
+                                                sendMailForProjectCreate(btnClick,decryptedProjectID);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            });
+                        }
+                       else if (results.saveStatus == false || results.approveStatus == false) {
+                            CloseLoadingPopup();
+                            $("#SendForApprovalPMSProjectDetailsErrorMessage").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+
+                                    }
+                                }
+                            });
+
+                       }
+                       else if (results.resetStatus == false)
+                       {
+                           $("#FailResourceAllocation").dialog({
+                               resizable: false,
+                               autoOpen: true,
+                               height: 'auto',
+                               width: 300,
+                               modal: true,
+                               dialogClass: "noclose",
+                               buttons: {
+                                   Ok: function () {
+                                       $(this).dialog("close");
+
+                                   }
+                               }
+                           });
+                       }
+                    },
+                    error: function (results) {
+                        CloseLoadingPopup();
+                    }
+                });
+            }
+            else
+                return false;
+        }
+        //This function used for either approve or reject Project by Approval login
+        function ApproveRejectPMSProjectDetails(btnClick,RejectedComments) {
+            if($("#RejectCommentDialogApprover1").is(":visible") == true) {
+                $('#RejectCommentDialogApprover1').dialog("close");
+            }
+            var postUrlnew = '@Url.Action("ApproveRejectPMSProjectDetails", "SEM")';
+            $.ajax({
+                url: postUrlnew,
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: { projectId: '@ViewBag.ProjectID', btnClick: btnClick, RejectedComments:RejectedComments },
+                success: function (results) {
+                    if (results.status == true) {
+                        CloseLoadingPopup();
+                        var ProjectID = results.ProjectID;
+                        var encryptedProjectID = results.encryptedProjectID;
+                        $('#AddProjectDetails #ProjectID').val(ProjectID);
+                        $('#RejectPMSProjectDetails').hide();
+                        $('#ApprovedPMSProjectDetails').hide();
+                        if (btnClick == "Approve") {
+                            $("#ApprovePMSProjectDetailsSuccessMessage").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        OpenLoadingPopup();
+                                        $(this).dialog("close");
+                                        //AllocatedCreatedResourceToCurProject(btnClick);
+                                        sendMailForProjectCreate(btnClick,'@ViewBag.ProjectID');
+                                    }
+                                }
+                            });
+                        }
+                        else {
+
+                            $("#RejectPMSProjectDetailsSuccessMessage").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        OpenLoadingPopup();
+                                        $(this).dialog("close");
+                                        $.ajax({
+                                            url: '@Url.Action("GetPMSProjectDetails", "SEM")',
+                                            data: { ProjectIDs: encryptedProjectID },
+                                            type: "GET",
+                                            success: function (results) {
+                                                sendMailForProjectCreate(btnClick,ProjectID);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    if (results.status == false) {
+                        CloseLoadingPopup();
+                        $("#RejectPMSProjectDetailsErrorMessage").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+
+                                }
+                            }
+                        });
+
+                    }
+                },
+                error: function (results) {
+                    CloseLoadingPopup();
+                }
+            });
+        }
+        function OpenLoadingPopup() {
+            $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+        }
+
+        function CloseLoadingPopup() {
+            $("#loading").dialog("close");
+            $("#loading").dialog("destroy");
+        }
+
+        $('#txt_PMSCommercialDetailsType').text($('#PMSCommercialDetailsType').find(":selected").text());
+        $('#txt_PMSBusinessGroup').text($('#PMSBusinessGroup').find(":selected").text());
+        $('#txt_PMSOrganizationUnit').text($('#PMSOrganizationUnit').find(":selected").text());
+        $('#txt_PMSDeliveryUnit').text($('#PMSDeliveryUnit').find(":selected").text());
+        $('#txt_PMSDeliveryTeam').text($('#PMSDeliveryTeam').find(":selected").text());
+        $('#txt_PMSProjectGroup').text($('#PMSProjectGroup').find(":selected").text());
+
+        $('#txt_PMSProjectStatus').text($('#PMSProjectStatus').find(":selected").text());
+        $('#txt_PMSProjectCurrency').text($('#PMSProjectCurrency').find(":selected").text());
+        $('#txt_PMSPractice').text($('#PMSPractice').find(":selected").text());
+
+        $('#txt_PMSCustomer').text($('#PMSCustomerDD').find(":selected").text());
+        $('#txt_PMSLifeCycle').text($('#PMSLifeCycle').find(":selected").text());
+
+        if('@ViewBag.user' == "RMG")
+        {
+            $("#AddProjectDetails").find('input, select,tr, textarea, dropdown,checkbox').removeAttr("disabled");
+            $('.ui-datepicker-trigger').show();
+            $('#btnSavePMSProjectDetails').show();
+            $('#btnShowHistory').show();
+            //$("#ProjectCode, #AbbreviatedName, #ProjectName").hide().next().show();
+            $("#ProjectCode").hide().next().show();
+        }
+
+        $.each($(".ClassDisabledFields"), function (l, val) {
+
+            if ($(val).is(':disabled')) {
+
+                if ($(val).hasClass("dropdownHideShow")) {
+                    //|| val.classList.contains("dropdownHideShow")
+
+                    $(this).hide().next().hide().next().show();
+                }
+                else if ($(val).hasClass("textAreaHideShow")) {
+                    // || val.classList.contains("textAreaHideShow")
+
+                    $(this).hide().next().show().children().show();
+                }
+                else if (val.id == "PMSProjectStartDate" || val.id == "PMSProjectEndDate") {
+                    $(this).hide().next().hide().next().show();
+                }
+                else {
+                    $(this).hide().next().show();
+                }
+            }
+        });
+
+
+
+        $('#PMSCommercialDetailsType').change(function(){
+            var PMSCommercialDetailsType = $('#PMSCommercialDetailsType :selected').val();
+            if(PMSCommercialDetailsType == ""){
+                $("#Error_PMSCommercialDetailsType").show();
+            }
+            else{
+                $("#Error_PMSCommercialDetailsType").hide();
+
+            }
+        });
+        $('#PMSBusinessGroup').change(function(){
+            var PMSBusinessGroup = $('#PMSBusinessGroup :selected').val();
+            if(PMSBusinessGroup == ""){
+                $("#Error_PMSBusinessGroup").show();
+            }
+            else{
+                $("#Error_PMSBusinessGroup").hide();
+            }
+        });
+        $('#PMSOrganizationUnit').change(function(){
+            var PMSOrganizationUnit = $('#PMSOrganizationUnit :selected').val();
+            if(PMSOrganizationUnit == ""){
+                $("#Error_PMSOrganizationUnit").show();
+            }
+            else{
+                $("#Error_PMSOrganizationUnit").hide();
+            }
+        });
+        $('#PMSDeliveryUnit').change(function(){
+            var PMSDeliveryUnit = $('#PMSDeliveryUnit :selected').val();
+            if(PMSDeliveryUnit == ""){
+                $("#Error_PMSDeliveryUnit").show();
+            }
+            else{
+                $("#Error_PMSDeliveryUnit").hide();
+            }
+        });
+
+        $('#PMSDeliveryTeam').change(function(){
+            var PMSDeliveryTeam = $('#PMSDeliveryTeam :selected').val();
+            if(PMSDeliveryTeam == ""){
+                $("#Error_PMSDeliveryTeam").show();
+            }
+            else{
+                $("#Error_PMSDeliveryTeam").hide();
+            }
+        });
+
+        //$('#PMSCustomerDD').change(function(){
+        //    var PMSCustomerDD = $('#PMSCustomerDD :selected').val();
+        //    if(PMSCustomerDD == "Select"){
+        //        $("#txt_PMSCustomerDD").show();
+        //    }
+        //    else{
+        //        $("#txt_PMSCustomerDD").hide();
+        //    }
+        //});
+
+        if (('@Model.ApprovalStatusID' == null || '@Model.ApprovalStatusID' == 0) && '@Model.IsProjectApprover' == 'True')
+        {
+            $('#RejectPMSProjectDetails').hide();
+            $('#ApprovedPMSProjectDetails').hide();
+        }
+    });
+
+    function CalculateBusinessDays() {
+        $("#AddProjectDetails #PMSProjectDurationDays").val('');
+        $('#ui-datepicker-div').hide();
+        var pmsStartDate = new Date($('#PMSProjectStartDate').val());
+        var pmsEndDate = new Date($('#PMSProjectEndDate').val());
+        var durationDays;
+        var postUrl = '@Url.Action("GetBusinessDays", "SEM")';
+        var WeekDays = CalculateWeekendDays(pmsStartDate, pmsEndDate);
+        var pmsStartDate1 = new Date($('#PMSProjectStartDate').val());
+        var pmsEndDate1 = new Date($('#PMSProjectEndDate').val());
+        var DaysCount = CalculateDateExist(pmsStartDate1, pmsEndDate1);
+
+        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var pmsStartDate2 = new Date($('#PMSProjectStartDate').val());
+        var pmsEndDate2 = new Date($('#PMSProjectEndDate').val());
+        var diffDays = Math.round(Math.abs((pmsEndDate2.getTime() - pmsStartDate2.getTime())/(oneDay)));
+
+        var TotalCounofDates = WeekDays+DaysCount;
+        var finalNoOfDays = diffDays - TotalCounofDates;
+        $("#AddProjectDetails #PMSProjectDurationDays").val(finalNoOfDays);
+        WeekDays = 0;
+        DaysCount =0;
+        TotalCounofDates = 0;
+        //        $.ajax({
+        //            url: postUrl,
+        //            type: 'POST',
+        //            async: false,
+        //            data: { pmsStartDate: pmsStartDate, pmsEndDate: pmsEndDate },
+        //            success: function (data) {
+        //                durationDays = data.days;
+        //                $("#AddProjectDetails #PMSProjectDurationDays").val(durationDays);
+        //            }
+        //        });
+
+    }
+
+    function CalculateWeekendDays(fromDate, toDate){
+        var weekendDayCount = 0;
+        while(fromDate < toDate){
+            fromDate.setDate(fromDate.getDate() + 1);
+            if(fromDate.getDay() === 0 || fromDate.getDay() == 6){
+                ++weekendDayCount ;
+            }
+        }
+        return weekendDayCount ;
+    }
+
+    function CalculateDateExist(fromDate1, toDate1) {
+        var DayPrsentCount = 0;
+        var unavailableDates = @(Html.Raw(Json.Encode(ViewBag.Holidaydates)));
+        var FinalDates = [];
+        $.each(unavailableDates,function(i){
+            var datets = new Date(parseInt( unavailableDates[i].substr(6)));
+            var ConvertD = datets.getDate() + "-" + (datets.getMonth() + 1) + "-" + datets.getFullYear();
+            FinalDates.push(ConvertD);
+        });
+
+        Strdate = fromDate1.getDate() + "-" + (fromDate1.getMonth() + 1) + "-" + fromDate1.getFullYear();
+        endDate = toDate1.getDate() + "-" + (toDate1.getMonth() + 1) + "-" + toDate1.getFullYear();
+        while(fromDate1 < toDate1)
+        {
+            fromDate1.setDate(fromDate1.getDate() + 1);
+            var sDate = fromDate1.getDate() + "-" + (fromDate1.getMonth() + 1) + "-" + fromDate1.getFullYear();
+            if ($.inArray(sDate, FinalDates) != -1) {
+                ++DayPrsentCount;
+            }
+        }
+        return DayPrsentCount;
+    }
+    function AllocatedCreatedResourceToCurProject(ProjectID) {
+        //var projectId = '@ViewBag.ProjectId';
+        //var projectId = ProjectID;
+        $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').removeAttr("disabled", true);
+        $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').removeAttr("disabled", "disabled");
+        if ($('#AddProjectDetails').valid()) {
+            var postUrlnew = '@Url.Action("AllocateResourceWhileProjectApprove", "SEM")';
+            OpenLoadingPopup();
+            $.ajax({
+                url: postUrlnew,
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: $('#AddProjectDetails').serialize(),
+                success: function (results) {
+                    //CloseLoadingPopup();
+                    if (results.status == true) {
+                        //CloseLoadingPopup();
+                        $("#AddProjectDetails").find('input, select,tr, textarea, dropdown').removeAttr("disabled", "disabled");
+                        //sendMailForProjectCreate(btnClick,projectId);
+                        window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs='+ ProjectID;
+                    }
+                    else if (results.status == false) {
+                            CloseLoadingPopup();
+                            $("#FailResourceAllocation").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs='+ ProjectID;
+                                    }
+                                }
+                            });
+
+                    }
+                    else if (results.status == "Error")
+                    {
+                        CloseLoadingPopup();
+                        DisplayErrorDialog();
+                        window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs='+ ProjectID;
+                    }
+                    
+                },
+                error: function (results) {
+                    CloseLoadingPopup();
+                    window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs='+ ProjectID;
+                }
+            });
+        }
+        else {
+            CloseLoadingPopup();
+            return false;
+        }
+    }
+
+    //to Send Mail
+    function sendMailForProjectCreate(btnClick,ProjectID) {
+        var empId = '@ViewBag.loginUserId';
+        var projectId = '@ViewBag.ProjectId';
+        var CustomerId = window.glob;
+        $.ajax({
+            url: '@Url.Action("ProjectSendMail", "SEM")',
+            type: 'POST',
+            data: { loggedinEmpID: empId, projectId: projectId, btnClick: btnClick },
+            datatype: "json",
+            success: function (data) {
+
+                CloseLoadingPopup();
+                if (data) {
+
+                    $("#ProjectMailDialog").html(data);
+                    $("#ProjectMailDialog").dialog({
+                        resizable: false,
+                        height: 520,
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            window.location.href = '@Url.Action("ProjectIndex", "SEM")';
+                            $(this).dialog('close');
+                        }
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendCustomerMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#CustMailDetails').valid()) {
+                            OpenLoadingPopup();
+                            var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                            $.ajax(
+                                {
+                                    url: sendMailUrl,
+                                    type: 'POST',
+                                    data: $('#CustMailDetails').serialize(),
+
+                                    success: function (serverData) {
+                                        CloseLoadingPopup();
+                                        if (serverData.validCcId == true && serverData.validtoId == true) {
+                                            if (serverData.status == true) {
+                                                $("#ProjectMailDialog").dialog('destroy');
+                                                window.location.href = '@Url.Action("ProjectIndex", "SEM")';
+                                            }
+                                        }
+                                        else if (serverData.status == "Error") {
+                                            $("#errorDialog").dialog({
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                title: 'Mail Error',
+                                                dialogClass: "noclose",
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                        window.location.href = '@Url.Action("ProjectIndex", "SEM")';
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                        else {
+                                            if (serverData.validCcId == false)
+                                                $("#CCErrorMessage").show();
+                                            if (serverData.validtoId == false)
+                                                $("#ToErrorMessage").show();
+                                            return false;
+                                        }
+                                    },
+                                    error: function () {
+                                        CloseLoadingPopup();
+                                        $("#errorDialog").dialog({
+                                            title: 'Mail Error',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            dialogClass: "noclose",
+                                            buttons:
+                                            {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                    window.location.href = '@Url.Action("ProjectIndex", "SEM")';
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+                                }); //end ajax
+                        }
+                    });
+                }
+            }
+        });   //end Mail
+    }
+
+</script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if ((HttpContext.Current.User.IsInRole("Account Owners")) || (HttpContext.Current.User.IsInRole("Manager")) || (HttpContext.Current.User.IsInRole("Delivery Manager")) || (HttpContext.Current.User.IsInRole("Group Head")) || (HttpContext.Current.User.IsInRole("RMG")) || (HttpContext.Current.User.IsInRole("Admin")) || (HttpContext.Current.User.IsInRole("PMO")))
+            {
+                <a href="@Url.Action("ProjectIndex", "SEM")" class="selected">Manage Project</a>
+                if (!HttpContext.Current.User.IsInRole("RMG"))
+                {
+                    <a href="@Url.Action("ManageMilestones", "SEM")">Manage Milestones</a>
+                }
+                <a href="@Url.Action("ManageDocuments", "SEM")">Manage Documents</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody Projectbody">
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "AddProjectDetails" }))
+        {
+            @Html.HiddenFor(x => x.ProjectID)
+            @Html.HiddenFor(x => x.userId)
+            @Html.HiddenFor(x => x.loggedInUserEmployeeCode)
+            @Html.HiddenFor(x => x.OriginalDateTime)
+            <div class="InnerContainer">
+                <div class="clearfix">
+                    <a class="LinkBrown floatL Expensewrap" href="#" id="backPMSProjectDetails">Back</a>
+                </div>
+                <div class="emp-details clearfix">
+                    <div class="clearfix">
+                        <div class="floatL">
+                            @Html.Label("Project:", new { @class = "prefix" })
+                            @Html.LabelFor(x => x.ProjectName, Model.ProjectName, new { @class = "suffix" })
+
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Approval Status:", new { @class = "prefix" })
+                            @if (Model.ApprovalStatusID == null)
+                            {
+                                @Html.Label("", new { @class = "suffix" })
+                            }
+                            else if (Model.ApprovalStatusID == 1)
+                            {
+                                @Html.Label("Sent for Approval", new { @class = "suffix" })
+                            }
+                            else if (Model.ApprovalStatusID == 2)
+                            {
+                                @Html.Label("Approved", new { @class = "suffix" })
+                            }
+                            else if (Model.ApprovalStatusID == 3)
+                            {
+                                @Html.Label("Rejected", new { @class = "suffix" })
+                            }
+
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Contract Validity Date:", new { @class = "prefix" })
+                            <label class="suffix">@ViewBag.EndDate</label>
+
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Revision Status: ", new { @class = "prefix" })
+                            @if (Model.RevisionStaus == null)
+                            {
+                                @Html.Label("", new { @class = "suffix" })
+                            }
+                            else if (Model.RevisionStaus == 4)
+                            {
+                                @Html.Label("Sent for Approval", new { @class = "suffix" })
+                            }
+                            else if (Model.RevisionStaus == 5)
+                            {
+                                @Html.Label("Approved", new { @class = "suffix" })
+                            }
+                            else if (Model.RevisionStaus == 6)
+                            {
+                                @Html.Label("Rejected", new { @class = "suffix" })
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="FormContainerBox clearfix AddProjectForm">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.AbbreviatedName):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.AbbreviatedName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.AbbreviatedName, Model.AbbreviatedName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AbbreviatedName)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.ProjectCode):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ProjectCode, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.ProjectCode, Model.ProjectCode, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.ProjectCode, new { @id = "projectCode" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.ProjectName):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ProjectName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.ProjectName, Model.ProjectName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ProjectName)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSCustomer):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSCustomer, new SelectList(Model.PMSCustomerList, "PMSCustomerID", "PMSCustomer", "Select"), "Select", new { @id = "PMSCustomerDD", @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSCustomer, new { @class = "ClassDisplayLabel", @id = "txt_PMSCustomer" })
+                            <p class="qualif-detail" id="Error_PMSCustomerDD">
+                                @Html.ValidationMessageFor(model => model.PMSCustomer)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSCustomer, new { id = "pMSCustomer" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectDescription):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(model => model.PMSProjectDescription, new { @class = "ClassDisabledFields textAreaHideShow" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(emp => emp.PMSProjectDescription, Model.PMSProjectDescription, new { @class = "ClassDisplayLabel" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSProjectStatus):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSProjectStatus, new SelectList(Model.PMSProjectStatusList, "PMSProjectStatusID", "PMSProjectStatus", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSProjectStatus, new { @class = "ClassDisplayLabel", @id = "txt_PMSProjectStatus" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.PMSProjectStatus)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSProjectStatus, new { id = "pMSProjectStatus" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectCurrency):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSProjectCurrency, new SelectList(Model.PMSProjectCurrencyList, "PMSProjectCurrencyID", "PMSProjectCurrency", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow" })
+                            @Html.LabelFor(emp => emp.PMSProjectCurrency, new { @class = "ClassDisplayLabel", @id = "txt_PMSProjectCurrency" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.PMSProjectCurrency)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSProjectCurrency, new { id = "pMSProjectCurrency" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSCommercialDetailsType):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSCommercialDetailsType, new SelectList(Model.PMSCommercialDetailsTypeList, "PMSCommercialDetailsTypeID", "PMSCommercialDetailsType", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSCommercialDetailsType, new { @class = "ClassDisplayLabel", @id = "txt_PMSCommercialDetailsType" })
+                            <p class="qualif-detail" id="Error_PMSCommercialDetailsType">
+                                @Html.ValidationMessageFor(model => model.PMSCommercialDetailsType)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSCommercialDetailsType, new { id = "pMSCommercialDetailsType" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSPractice):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSPractice, new SelectList(Model.PMSPracticeList, "PMSPracticeID", "PMSPractice", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow" })
+                            @Html.LabelFor(emp => emp.PMSPractice, new { @class = "ClassDisplayLabel", @id = "txt_PMSPractice" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.PMSPractice)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSPractice, new { id = "pMSPractice" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSProjectStartDate):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PMSProjectStartDate, String.Format("{0:MM/dd/yyyy}", Model.PMSProjectStartDate), new { @class = "ClassDisabledFields", @readonly = "readonly" })
+                            @Html.LabelFor(emp => emp.PMSProjectStartDate, String.Format("{0:MM/dd/yyyy}", Model.PMSProjectStartDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PMSProjectStartDate)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSProjectEndDate, new { id = "lblPMSProjectEndDate" }):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PMSProjectEndDate, String.Format("{0:MM/dd/yyyy}", Model.PMSProjectEndDate), new { id = "PMSProjectEndDate", @class = "ClassDisabledFields", @readonly = "readonly" })
+                            @Html.LabelFor(emp => emp.PMSProjectEndDate, String.Format("{0:MM/dd/yyyy}", Model.PMSProjectEndDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PMSProjectEndDate)</p>
+                            <span id="spPMSProjectEndDate" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectWorkHours, new { id = "lblPMSProjectWorkHours" }):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PMSProjectWorkHours, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.PMSProjectWorkHours, Model.PMSProjectWorkHours, new { @class = "ClassDisplayLabel" })
+                            <span id="spPMSProjectWorkHours" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectDurationDays):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PMSProjectDurationDays, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(emp => emp.PMSProjectDurationDays, Convert.ToString(Model.PMSProjectDurationDays), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSBusinessGroup):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSBusinessGroup, new SelectList(Model.PMSBusinessGroupList, "PMSBusinessGroupID", "PMSBusinessGroup", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSBusinessGroup, new { @class = "ClassDisplayLabel", @id = "txt_PMSBusinessGroup" })
+                            <p class="qualif-detail" id="Error_PMSBusinessGroup">
+                                @Html.ValidationMessageFor(model => model.PMSBusinessGroup)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSBusinessGroup, new { id = "pMSBusinessGroup" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectGroup):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSProjectGroup, new SelectList(Model.PMSProjectGroupList, "PMSProjectGroupID", "PMSProjectGroup", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow" })
+                            @Html.LabelFor(emp => emp.PMSProjectGroup, new { @class = "ClassDisplayLabel", @id = "txt_PMSProjectGroup" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.PMSProjectGroup)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSProjectGroup, new { id = "pMSProjectGroup" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSOrganizationUnit):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSOrganizationUnit, new SelectList(Model.PMSOrganizationUnitList, "PMSOrganizationUnitID", "PMSOrganizationUnit", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSOrganizationUnit, new { @class = "ClassDisplayLabel", @id = "txt_PMSOrganizationUnit" })
+                            <p class="qualif-detail" id="Error_PMSOrganizationUnit">
+                                @Html.ValidationMessageFor(model => model.PMSOrganizationUnit)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSOrganizationUnit, new { id = "pMSOrganizationUnit" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSLifeCycle):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSLifeCycle, new SelectList(Model.PMSLifeCycleList, "PMSLifeCycleID", "PMSLifeCycle", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow" })
+                            @Html.LabelFor(emp => emp.PMSLifeCycle, new { @class = "ClassDisplayLabel", @id = "txt_PMSLifeCycle" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.PMSLifeCycle)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSLifeCycle, new { id = "pMSLifeCycle" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSDeliveryUnit):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSDeliveryUnit, new SelectList(Model.PMSDeliveryUnitList, "PMSDeliveryUnitID", "PMSDeliveryUnit", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSDeliveryUnitList, new { @class = "ClassDisplayLabel", @id = "txt_PMSDeliveryUnit" })
+                            <p class="qualif-detail" id="Error_PMSDeliveryUnit">
+                                @Html.ValidationMessageFor(model => model.PMSDeliveryUnit)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSDeliveryUnit, new { id = "pMSDeliveryUnit" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span> @Html.LabelFor(model => model.PMSProjectBillableStatus):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.CheckBoxFor(model => model.PMSProjectBillableStatus)
+                            <label for="PMSProjectBillableStatus" class="LabelForCheckbox"></label>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PMSProjectBillableStatus)</p>
+                            @Html.HiddenFor(model => model.PMSProjectBillableStatus, new { id = "billableStatus" })
+                        </div>
+                    </div>
+                </div>
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.LabelFor(model => model.PMSDeliveryTeam):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.PMSDeliveryTeam, new SelectList(Model.PMSDeliveryTeamList, "PMSDeliveryTeamID", "PMSDeliveryTeam", "Select"), "Select", new { @class = "ClassDisabledFields dropdownHideShow ValidationDropDown" })
+                            @Html.LabelFor(emp => emp.PMSDeliveryTeam, new { @class = "ClassDisplayLabel", @id = "txt_PMSDeliveryTeam" })
+                            <p class="qualif-detail" id="Error_PMSDeliveryTeam">
+                                @Html.ValidationMessageFor(model => model.PMSDeliveryTeam)
+                            </p>
+                            @Html.HiddenFor(model => model.PMSDeliveryTeam, new { id = "pMSDeliveryTeam" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+        <div class="ProjectPartials">
+            <div class="clearfix mrgnT10 NoTitleGridsContainer" id="ShowForProjectReviewers">
+                @Html.Partial("_ProjectReviewers", Model)
+            </div>
+            <div class="clearfix mrgnT10 NoTitleGridsContainer " id="ShowForIRApprover">
+                @Html.Partial("_ProjectIRApprover", Model)
+            </div>
+            <div class="clearfix mrgnT10 NoTitleGridsContainer " id="ShowForIRFinanceApprover">
+                @Html.Partial("_ProjectIRFinanceApprover", Model)
+            </div>
+        </div>
+        <div class="ButtonContainer1 clearfix">
+            <input type="button" value="Save" class="ButtonGray mrgnR11" id="btnSavePMSProjectDetails" />
+            <input type="button" value="Save" class="ButtonGray mrgnR11" id="btnSavePMSProjectDetailsForRivision" />
+            <input type="button" value="Send For Approval" class="ButtonGray mrgnR11" style="display: none"
+                   id="btnSendForApprovalPMSProjectDetails" />
+            <input type="button" value="Approve" class="ButtonGray mrgnR11" id="ApprovedPMSProjectDetails" />
+            <input type="button" value="Reject" class="ButtonGray mrgnR11" id="RejectPMSProjectDetails" />
+            <input type="button" value="Approve Revisions" class="ButtonGray mrgnR11" id="btnApproveRivision" />
+            @*<input type="button" value="Reject Revisions" class="ButtonGray mrgnR11" id="btnRejectRevision"/>*@
+            @*<input type="button" value="Send For Revision" class="ButtonGray mrgnR11" style="display: none" />*@
+            <input type="button" value="Show History" class="ButtonGray mrgnR11" id="btnShowHistory" />
+            <input type="button" value="Submit" class="ButtonGray mrgnR11" style="display: none" />
+            <input type="button" value="Cancel" class="ButtonGray mrgnR11" style="display: none" />
+            <input type="button" value="Next" class="ButtonGray mrgnR11" style="display: none" />
+        </div>
+
+
+        <div id="RejectConfirmationMessageAppraover11" style="display: none">
+            Are you sure you want to reject this project?
+        </div>
+        <div id="RejectCommentDialogApprover1" style="display: none">
+            <div class="floatL">
+                <span class="mandatory">*</span> Enter Comment:
+            </div>
+            <div class="floatL">
+                <textarea rows="5" cols="20" id="txtCommentApprover1"></textarea>
+            </div>
+            <div style="display: none; color: red" id="ErrorCommentApprover1" class="floatL">
+                Please Enter comment
+            </div>
+            <div style="display: none; color: red" id="ErrorLengthCommentApprover1" class="floatL">
+                Enter commments upto 400 characters
+            </div>
+        </div>
+        <div id="AddPMSProjectDetailsSuccessMessage" title="Project Details" style="display: none;">
+            <p>
+                Project details have been saved successfully.
+            </p>
+        </div>
+        <div id="AddPMSProjectDetailsErrorMessage" title="Project Details" style="display: none;">
+            <p>
+                Project details not saved.
+            </p>
+        </div>
+        <div id="SendForApprovalDetailsSuccessMessage" title="Project Details" style="display: none;">
+            <p>
+                Project Details saved and sent for approval.
+            </p>
+        </div>
+        <div id="SendForApprovalPMSProjectDetailsErrorMessage" title="Project Details" style="display: none;">
+            <p>
+                Unable to send project for approval.
+            </p>
+        </div>
+        <div id="ApprovePMSProjectDetailsSuccessMessage" title="Project Details" style="display: none;">
+            <p>
+                Project details approved.
+            </p>
+        </div>
+        <div id="RejectPMSProjectDetailsSuccessMessage" title="Project Details" style="display: none;">
+            <p>
+                Project details rejected.
+            </p>
+        </div>
+        <div id="RejectPMSProjectDetailsErrorMessage" title="Project Details" style="display: none;">
+            <p>
+                Process cannot be completed.
+            </p>
+        </div>
+        <div id="ProjectNameExistDialog" title="Project Details" style="display: none;">
+            <p>
+                Project Name Already Exist.
+            </p>
+        </div>
+        <div id="SelectProjectReviewer" title="Please add Project Reviewer" style="display: none;">
+            <p>
+                Please add atleast one project Reviewer.
+            </p>
+        </div>
+        <div id="FailResourceAllocation" title="Project Allocation" style="display: none;">
+            <p>
+                Resource allocation failed.
+            </p>
+        </div>
+        <div id="sendForrevisionApproval" style="display: none;">
+        </div>
+        <div id="popupforApproveandrejectRevision" style="display: none">
+        </div>
+        <div id="ProjectApproverNotSetMessage" title="Project Details" style="display: none;">
+            <p>
+                Project Approver is not set. Please contact the System Admin:<br>
+                '@Model.HrAdminEMailIds'
+            </p>
+        </div>
+        <div id="NoCustomerSelectedDialog" title="Project Details" style="display: none;">
+            <p>
+                Please select Customer first.
+            </p>
+        </div>
+        <div id="StartDateGreaterDialog" title="Project Details" style="display: none;">
+            <p>
+                Project Start Date cannot be greater than Project End Date.
+            </p>
+        </div>
+        <div id="EndDateLesserDialog" title="Project Details" style="display: none;">
+            <p>
+                Project End Date cannot be lesser than Project Start Date.
+            </p>
+        </div>
+        <div id="ProjectMailDialog" style="display: none;">
+            @{Html.RenderPartial("_CustomerCreationEmail", Model.Mail);}
+        </div>
+        <div id="SendForRevisionDiv" style="display: none;">
+            @{Html.RenderPartial("_RevisionDetails", Model.RevisionDetails);}
+        </div>
+        <div id="ApproveRevisionDiv" style="display: none;">
+            @{Html.RenderPartial("_ApproveRevision", Model);}
+        </div>
+        <div id="ShowHistoryDiv" style="display: none;">
+            @{Html.RenderPartial("_ShowHistory", Model);}
+        </div>
+    </div>
+</section>

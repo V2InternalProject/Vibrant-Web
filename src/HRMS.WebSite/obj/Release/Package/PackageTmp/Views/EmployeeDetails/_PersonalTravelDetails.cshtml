@@ -1,0 +1,949 @@
+﻿@model HRMS.Models.TravelDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/TravelDetails.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="~/Scripts/EmployeeDetails/TravelDetails.js"></script>
+<div id="ownTravelDetailsMainContainer">
+    <div id="travelDetailsDialog" title="Travel details" style="display: none">
+        <p>
+            Passport Details have been Saved.
+        </p>
+    </div>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+
+        $(document).ready(function () {
+            $('select').selectBox({
+                hideOnWindowScroll: true,
+                keepInViewport: false
+            });
+
+            $('#employeeVisa').attr('title', 'No file selected');
+
+            $('#employeePassport').attr('title', "No file selected");
+            $('#employeePassport').bind("change", function () {
+                $('#employeePassport').attr('title', $(this).val());
+            });
+
+//         $(function () {
+//            $('select').selectbox();
+//            $('.sbOptions a').hover(function () {
+//                $(this).parent().toggleClass("hoveroption");
+//            });
+//        });
+
+         $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+
+            $("#frmAddOwnTravelDetails #EmployeeId").val('@Model.EmployeeId');
+            $('#addVisaDetailsDialog #hdnEmployeeId').val('@Model.EmployeeId');
+            $('#frmAddVisaDetails #EmployeeId').val('@Model.EmployeeId');
+
+            $("#employeePassport").bind("change", function (event) {
+             var path = $(this).val().replace("C:\\fakepath\\", "");
+                $("#FileOwnPassportField").val(path);
+            });
+
+            $("#employeeVisa").bind("change", function (event) {
+             var path = $(this).val().replace("C:\\fakepath\\", "");
+                $("#FileOwnVisaField").val(path);
+                $('#employeeVisa').attr('title', $(this).val());
+            });
+
+            $("#frmAddOwnTravelDetails #EmployeeId").val('@Model.VisaDetailsModel.EmployeeId');
+            $("#frmAddOwnTravelDetails #EmployeeId").val('@Model.EmployeeId');
+             $('#addVisaDetailsDialog #hdnEmployeeId').val('@Model.EmployeeId');
+               $("#frmAddVisaDetails #hdnPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Own');
+
+            //SetPageTitle('Own Travel Details');
+
+            if ('@Model.EmpStatusMasterID' == 2) {
+                jQuery('form#frmAddOwnTravelDetails').find('input,select').attr('disabled', true);
+            }
+            $('#txtDateofPassportIssue').datepicker({  dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+             .bind("change", function () {
+                 var minValue = $(this).val();
+                 minValue = $.datepicker.parseDate("mm/dd/yy", minValue);
+                 minValue.setDate(minValue.getDate() + 1);
+                 $("#txtDateofPassportExpiry").datepicker("option", "minDate", minValue);
+
+             })
+
+            $('#txtDateofPassportExpiry').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-20:+30", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+              .bind("change", function () {
+
+                  var TDateofPassportIssue = $('#txtDateofPassportIssue').datepicker('getDate');
+                  var TDateofPassportExpiry = $('#txtDateofPassportExpiry').datepicker('getDate');
+                  if(TDateofPassportIssue>TDateofPassportExpiry)
+                  {
+                      $('#txtDateofPassportExpiry').val('');
+
+                  }
+
+              })
+
+            $('#txtVisaValidTill').datepicker({
+                         dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: 1, maxDate: new Date(2030, 1, 1), showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+                buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker
+            });
+
+            $("#btnAddVisaDetails").click(function () {
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+                $('#addVisaDetailsDialog #chkIsValidVisa').removeAttr('checked');
+                $('#addVisaDetailsDialog #ddlCountryList').val('');
+                $('#addVisaDetailsDialog #txtVisaValidTill').val('');
+                $('#addVisaDetailsDialog #hdnEmployeeVisaId').val(0);
+                $("#addVisaDetailsDialog #hdnAddIsVisaValid").val(false);
+                $("#addVisaDetailsDialog #hdnAddSelectedCountryId").val('');
+                $("#addVisaDetailsDialog #hdnAddVisaValidTill").val('');
+                $("#addVisaDetailsDialog #Visa_VisaTypeID").val('');
+                $("#addVisaDetailsDialog #VisaTypeName").val('');
+                $("#addVisaDetailsDialog #hdnVisaDetailsPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Own');
+                $("#addVisaDetailsDialog").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    resizable: false,
+                    width: 500,
+                    title: "Add Own Visa Details"
+                }); // End of Add Visa Details Dialog
+                $("#addVisaDetailsDialog").dialog('open');
+            }); // End of Add Visa Details Click event
+
+            $("#EmployeePassportTable").jqGrid({
+                // Ajax related configurations
+                url: '@Url.Action("EmployeePassportLoadGrid", "EmployeeDetails")',
+                datatype: "json",
+                mtype: "POST",
+                postData: { EmployeeID: '@Model.EmployeeId' },
+                // Specify the column names
+                colNames: ["EmployeeId", "DocumentID", "Passport Copy", "Delete"],
+                // Configure the columns
+                colModel: [
+                  { name: "EmployeeId", index: "TravelID", hidden: true, width: 25, align: "left" },
+                  { name: "DocumentID", index: "DocumentID", hidden: true, width: 25, align: "left" },
+                 { name: "PassportFileName", index: "PassportFileName", width: 50, align: "left", formatter: formatlink },
+                { name: "Delete", index: "Delete", width: "10%", align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+                ],
+
+                width: 700,
+                jsonReader: { repeatitems: false },
+                toppager: false,
+                bottompager: false,
+                rowNum: 20,
+                rowList: [],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                autowidth: false,
+                pager: $("#EmployeePassportTablePager"),
+                //caption: "Passport Details",
+                gridComplete: function () {
+                    var grid = $(this).getRowData();
+                    //var count = jQuery("#EmployeePassportTable").jqGrid('getGridParam', 'records');
+                    //if (count == 0) {
+                    //    $('#gbox_EmployeePassportTable').hide();
+                    //}
+                    //else {
+                    //    $('#gbox_EmployeePassportTable').show();
+                    //    if (count > 20) {
+
+                    //        $('#EmployeePassportTablePager').show();
+                    //    }
+                    //    else {
+                    //        $('#EmployeePassportTablePager').hide();
+                    //    }
+                    //}
+
+                },
+                onCellSelect: function (rowid, iCol) {
+                    var rowData = $(this).getRowData(rowid);
+                    var DocumentID = rowData['DocumentID'];
+                    var cm = $(this).jqGrid("getGridParam", "colModel");
+                    var colName = cm[iCol];
+                    if (colName['index'] == "Delete") {
+                        if ('@ViewBag.UserRole' == '@HRMS.Models.UserRoles.HRAdmin' || '@Model.EmployeeId' == '@ViewBag.loggedInEmployeeId') {
+                            DeletePassportDocument(DocumentID, '@Model.PersonType');
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+            }).navGrid("#EmployeePassportTablePager",
+               { search: false, refresh: false, add: false, edit: false, del: false }
+          );
+
+            function formatlink(cellvalue, options, rowobject) {
+                return "<a href=# id=" + rowobject['DocumentID'] + " class=EmpLink onClick = LinkPassportClick(this," + rowobject['EmployeeId'] + ',"' + '@Model.PersonType' + '"' + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+            }
+
+            function formatVisalink(cellvalue, options, rowobject) {
+                if (cellvalue != null && cellvalue != "")
+                    return "<a href=# id=" + rowobject['EmployeeVisaId'] + " class=EmpLink onClick = LinkVisaClick(this," + rowobject['EmployeeId'] + ',"' + '@Model.PersonType' + '"' + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+                else
+                    return "";
+            }
+
+            //Start jQuery Grid View Binding for Visa Details
+            $("#jqPersonTravelTable").jqGrid({
+                // Ajax related configurations
+                url: '@Url.Action("GetVisaDetailsLoadGrid", "EmployeeDetails")',
+                postData: { employeeId: '@ViewBag.EmployeeId', type: '@Model.PersonType' },
+                datatype: "json",
+                mtype: "POST",
+
+                // Specify the column names
+                colNames: ["EmployeeVisaId", "EmployeeId", "Country", "CountryId", "IsValidVisa", "Visa Type", "IsVisaExpired", "Valid Till", "Visa Copy", "VisaTypeID", ""],
+
+                // Configure the columns
+                colModel: [
+                    { name: "EmployeeVisaId", index: "EmployeeVisaId", hidden: true, width: 100, align: "left" },
+                    { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                    { name: "Country", index: "Country", width: 100, align: "left" },
+                    { name: "SelectedCountryId", index: "SelectedCountryId", hidden: true, width: 100, align: "left" },
+                    { name: "IsValidVisa", index: "IsValidVisa", hidden: true, width: 100, align: "left" },
+                    { name: "VisaTypeName", index: "VisaTypeName", width: 100, align: "left" },
+                    { name: "IsVisaExpired", index: "IsVisaExpired", hidden: true, width: 100, align: "left" },
+                    { name: "ValidTill", index: "ValidTill", width: 100, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                     { name: "VisaFileName", index: "VisaFileName", width: 100, align: "left", formatter: formatVisalink },
+                    { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 100, align: "left" },
+                    {
+                        name: "Delete",
+                        index: "Delete",
+                        width: 10,
+                        align: "center",
+                        formatter: function () {
+                            if ($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' && $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' && ('@Model.EmpStatusMasterID' != 2)) {
+                                 return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                ],
+
+                width: 500,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqPersonTravelPager"),
+                rowNum: 20,
+                rowList: [],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                autowidth: false,
+                //caption: "Employee - Visa Details",
+                gridComplete: function () {
+                    var grid = $(this).getRowData();
+                    var count = jQuery("#jqPersonTravelTable").jqGrid('getGridParam', 'records');
+//                    if (count == 0) {
+//                        $('#gbox_jqPersonTravelTable').hide();
+//                    }
+//                    else {
+//                        $('#gbox_jqPersonTravelTable').show();
+//                        if (count > 20) {
+
+//                            $('#jqPersonTravelPager').show();
+//                        }
+//                        else {
+//                            $('#jqPersonTravelPager').hide();
+//                        }
+//                    }
+                    if ('@Model.EmpStatusMasterID' == 2) {
+                        $('#btnSaveTravelDetails').hide();
+                        $('#btnCancelTravelDetails').hide();
+                        jQuery('#btnAddVisaDetails').hide();
+                        $("#gbox_jqPersonTravelTable").find('input,select').attr("disabled", true);
+                    }
+                    var counter = 0;
+                    var rowIds = $('#jqPersonTravelTable').jqGrid('getDataIDs');
+                    for (i = 1; i <= rowIds.length; i++) {//iterate over each row
+                        rowData = $('#jqPersonTravelTable').jqGrid('getRowData', i);
+                        //set background style if ColumnValue == true
+                        if (rowData['IsVisaExpired'] == 'true') {
+                            $('#jqPersonTravelTable').setCell(i, 'ValidTill', rowData.ValidTill, { color: 'red' });
+                            counter = counter + 1;
+                        } //if
+                    } //for
+                    if (counter > 0) {
+                        $("#NoteforVisaExpired").show();
+                    }
+                    else {
+                        $("#NoteforVisaExpired").hide();
+                    }
+                },
+                onCellSelect: function (rowid, iCol) {
+
+                    var rowData = $(this).getRowData(rowid);
+                    var selectedVisaId = rowData['EmployeeVisaId'];
+                    if (iCol == 10 && ('@Model.EmpStatusMasterID' != 2)) {
+                        DeleteEmployeeVisaDetailDialog(selectedVisaId);
+                    } else {
+                        if ('@Model.EmpStatusMasterID' != 2) {
+                            EditEmployeeVisaDetails(rowData);
+                        }
+                    }
+                },
+            }).navGrid("#jqPersonTravelPager",
+                { search: false, refresh: false, add: false, edit: false, del: false },
+                {}, // settings for edit
+                {},
+                {}
+            );
+            //End jQuery Grid View Binding for Visa Details
+
+            $("#btnCancelTravelDetails").click(function () {
+                RestoreOwnPassportDetailsValues();
+            });
+
+            $("#frmAddOwnTravelDetails #EmployeeId").val('@Model.EmployeeId');
+              $("#frmAddVisaDetails #hdnPersonType").val('@HRMS.Models.Enums.TravelDetailsPerson.Own');
+
+        $("#btnCancelVisaTravelDetails").click(function () {
+            RestoreVisaDetailsValues();
+        });
+     });               // End of jQuery document.ready()
+
+        function SavePersonalTravelData() {
+            // if ($('#employeePassport').val() != "") {
+            if ($('#frmAddOwnTravelDetails').valid()) {
+                DisplayLoadingDialog();  //checked
+                $("#hdnOwnPassportNumber").val($("#txtOwnPassportNumber").val());
+                $("#hdnOwnSonOfWifeOfDaugherOf").val($("#txtOwnSonOfWifeOfDaughterOf").val());
+                $("#hdnOwnDateOfIssue").val($("#txtDateofPassportIssue").val());
+                $("#hdnOwnPlaceOfIssue").val($("#txtOwnPlaceOfIssue").val());
+                $("#hdnOwnDateOfExpiry").val($("#txtDateofPassportExpiry").val());
+                $("#hdnOwnNoOfPagesLeft").val($("#txtOwnNoOfPagesLeft").val());
+                $("#hdnOwnFullNameAsInPassport").val($("#txtOwnFullNameAsInPassport").val());
+                $("#frmAddOwnTravelDetails").ajaxForm({
+                    beforeSubmit: function () {
+                        if (ToSend == 1) {
+                            return false;
+                        };
+                    },
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        var st = $.parseJSON(results);
+                        if (st.status == true) {
+
+                            $("#employeePassport").replaceWith($("#employeePassport").clone(true));
+
+                            $('#EmployeePassportSuccess').dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    "OK": function () {
+                                        $(this).dialog("close");
+                                        //jQuery("#EmployeePassportTable").trigger("reloadGrid");
+                                        $('#employeePassport').val('');
+                                        $('#FileOwnPassportField').val('');
+                                        location.reload();
+                                    }
+                                }
+                            });
+                        }
+                        else if (st.status == "Error") {
+                            DisplayErrorDialog("Add Passport Details");
+                        }
+                        else {
+                            $('#errorUploadPassportDialog').dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                title: "Error",
+                                buttons: {
+                                    "OK": function () { $(this).dialog('close'); }
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $('#errorUploadPassportDialog').dialog({
+                            modal: true,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Error",
+                            buttons: {
+                                "OK": function () { $(this).dialog('close'); }
+                            }
+                        });
+                    }
+                });
+            }
+            return false;
+            //}
+            //else {
+            //    $("#PassportUploadErrorEmployee").text(" Please select File to upload");
+            //    //$("#frmAddOwnTravelDetails").find('input').attr("disabled", "disabled");
+            //    //$('#btnSaveTravelDetails').attr("disabled", "disabled");
+            //    return;
+            //}
+        }
+
+        function DeleteEmployeeVisaDetailDialog(selectedVisaId) {
+            $('#travelDetailsDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Delete Travel Details",
+                dialogClass: 'noclose',
+                buttons: {
+                    "Ok": function () { DeleteVisaDetailsCall(selectedVisaId); },
+                    "Cancel": function () { $(this).dialog('close'); }
+                }
+            });
+            $("#travelDetailsDialog").html("Are you sure you want to delete the record?").dialog('open');
+        }
+
+        function DeleteVisaDetailsCall(selectedVisaId) {
+            $("#DeleteEmpVisaDetailSuccessMessage").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Deleted",
+                dialogClass: "noclose",
+                buttons: {
+                    "Ok": function () {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("DeleteVisaDetails", "EmployeeDetails")',
+                data: { employeeVisaId: selectedVisaId },
+                success: function (data) {
+                    jQuery("#jqPersonTravelTable").trigger("reloadGrid");
+                    $("#travelDetailsDialog").dialog('close');
+                    $("#DeleteEmpVisaDetailSuccessMessage").dialog('open');
+                },
+                Error: function () { errorOccured(); }
+            });
+        }
+
+        function TaskCompletionShowDialog(dialogMessage) {
+            $("#travelDetailsDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                title: "Travel Details",
+                buttons: {
+                    "Ok": function () {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            $("#travelDetailsDialog").html(dialogMessage).dialog('open');
+        }
+
+        function EditEmployeeVisaDetails(rowDataObject) {
+            if (rowDataObject['IsValidVisa'] == 'true') {
+                $('#chkIsValidVisa').attr('checked', 'checked');
+            }
+            else {
+                $('#chkIsValidVisa').removeAttr('checked');
+            }
+
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#addVisaDetailsDialog #hdnEmployeeVisaId').val(rowDataObject['EmployeeVisaId']);
+
+            $('#addVisaDetailsDialog #ddlCountryList').val(rowDataObject['SelectedCountryId']);
+            $('#addVisaDetailsDialog #txtVisaValidTill').val(rowDataObject['ValidTill']);
+
+            $("#addVisaDetailsDialog #hdnDependantVisaDetailsId").val('0');
+            $("#addVisaDetailsDialog #hdnAddIsVisaValid").val(rowDataObject['IsValidVisa']);
+            $("#addVisaDetailsDialog #hdnAddSelectedCountryId").val(rowDataObject['SelectedCountryId']);
+            $("#addVisaDetailsDialog #hdnAddVisaValidTill").val(rowDataObject['ValidTill']);
+            $("#addVisaDetailsDialog #Visa_VisaTypeID").val(rowDataObject['VisaTypeID']);
+            $("#addVisaDetailsDialog #Visa_VisaTypeID option[value = " + rowDataObject['VisaTypeID'] + "] ").attr('selected', 'selected');
+            $("#addVisaDetailsDialog #VisaTypeName").val(rowDataObject['VisaTypeID']);
+            $("#addVisaDetailsDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 500,
+                title: "Edit Visa Details"
+            }); // End of Add Visa Details Dialog
+            $("#addVisaDetailsDialog").dialog('open');
+        }
+
+        function RestoreOwnPassportDetailsValues() {
+            if ($("#hdnOwnIsValidPassport").val() == 'true' || $("#hdnOwnIsValidPassport").val() == 'True') {
+                $('#chkOwnIsValidPassport').attr('checked', 'checked');
+            }
+            else {
+                $('#chkOwnIsValidPassport').removeAttr('checked');
+            }
+            $("#txtOwnPassportNumber").val($("#hdnOwnPassportNumber").val());
+            $("#txtOwnSonOfWifeOfDaughterOf").val($("#hdnOwnSonOfWifeOfDaugherOf").val());
+            $("#txtDateofPassportIssue").val($("#hdnOwnDateOfIssue").val());
+            $("#txtOwnPlaceOfIssue").val($("#hdnOwnPlaceOfIssue").val());
+            $("#txtDateofPassportExpiry").val($("#hdnOwnDateOfExpiry").val());
+            $("#txtOwnNoOfPagesLeft").val($("#hdnOwnNoOfPagesLeft").val());
+            $("#txtOwnFullNameAsInPassport").val($("#hdnOwnFullNameAsInPassport").val());
+        }
+
+        function RestoreVisaDetailsValues() {
+            if ($("#hdnAddIsVisaValid").val() == 'true' || $("#hdnAddIsVisaValid").val() == 'True') {
+                $('#chkIsValidVisa').attr('checked', 'checked');
+            }
+            else {
+                $('#chkIsValidVisa').removeAttr('checked');
+            }
+            $("#ddlCountryList").val($("#hdnAddSelectedCountryId").val());
+            $("#txtVisaValidTill").val($("#hdnAddVisaValidTill").val());
+            $("#Visa_VisaTypeID").val($("#VisaTypeName").val());
+        }
+
+        //$('#btnSaveVisaTravelDetails').click(function () {
+
+        //Use to remove the validation Error
+
+        // $("#CountryErrorEmployee").text(" Please select Country");
+        //  $("#VisaErrorEmployee").text(" Please select Visa Type");
+
+        function onCloseForDatePicker() {
+            if ($('#txtVisaValidTill').val() != "") {
+                $('#txtVisaValidTill').parent().find("span")[0].innerText="";
+            }
+        };
+        $('#txtVisaValidTill').blur(function () {
+            if ($('#ddlCountryList').val() != "" && $('#Visa_VisaTypeID').val() != "" && $('#txtVisaValidTill').val() != "")
+            {
+                $('.field-validation-error').hide();
+            }
+
+        });
+
+        var ToSend = 0;
+        function SaveVisaData() {
+            if ($('#ddlCountryList').val() == "") {
+                return false;
+            }
+            else if ($('#Visa_VisaTypeID').val() == "") {
+                return false;
+            }
+            else {
+                if ($('#employeeVisa').val() != "") {
+                    $('.field-validation-error').hide();
+                    DisplayLoadingDialog();
+                    $("#hdnAddSelectedCountryId").val($("#ddlCountryList").val());
+                    $("#VisaTypeName").val($("#Visa_VisaTypeID").val());
+                    $("#hdnAddVisaValidTill").val($("#txtVisaValidTill").val());
+                    var VisaGridData = jQuery("#jqPersonTravelTable").getRowData();
+
+                    for (var i = 0; i < VisaGridData.length; i++) {
+                        if (VisaGridData[i].SelectedCountryId == $('#ddlCountryList').val()) {
+                            $("#SingleVisaForCountry").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: "Visa",
+                                dialogClass: 'noclose',
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        return false;
+                                    }
+                                }
+                            });
+                            ToSend = 1;
+                        }
+                    }
+
+                        $("#frmAddVisaDetails").ajaxForm({
+                            beforeSubmit: function () {
+                                if (ToSend == 1) {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    return false;
+
+                                };
+                            },
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                var st = $.parseJSON(results);
+                                if (st.status == true) {
+                                    $("#addVisaDetailsDialog").dialog('close');
+                                    $("#employeeVisa").replaceWith($("#employeeVisa").clone(true));
+
+                                    $('#EmployeeVisaSuccess').dialog({
+                                        modal: true,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            "OK": function () {
+                                                $(this).dialog("close");
+                                                jQuery("#jqPersonTravelTable").trigger("reloadGrid");
+                                                $('#FileOwnVisaField').val('');
+                                            }
+                                        }
+                                    });
+                                }
+                                else if (st.status == "Error") {
+                                    DisplayErrorDialog("Add Visa Details");
+                                }
+                                else {
+                                    $('#errorUploadVisaDialog').dialog({
+                                        modal: true,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        title: "Error",
+                                        buttons: {
+                                            "OK": function () { $(this).dialog('close'); }
+                                        }
+                                    });
+                                }
+                            },
+                            error: function () {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $('#errorUploadVisaDialog').dialog({
+                                    modal: true,
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 300,
+                                    title: "Error",
+                                    buttons: {
+                                        "OK": function () { $(this).dialog('close'); }
+                                    }
+                                });
+                            }
+                        });
+
+                }
+                else {
+                    $("#VisaUploadErrorEmployee").text(" Please select File to upload");
+                    return;
+                }
+
+                }
+
+        }
+
+   // });
+    </script>
+    <section class="add-detailsdata out-of-ofc passVisa">
+        <h4 class="adjP">
+            Add Passport Details
+        </h4>
+        @using (@Html.BeginForm("TravelDetails", "EmployeeDetails", FormMethod.Post, new { @id = "frmAddOwnTravelDetails" }))
+        {
+            @Html.HiddenFor(m => m.UserRole)
+            @Html.HiddenFor(m => m.EmployeeId)
+            @Html.HiddenFor(m => m.PersonType)
+            @Html.ValidationSummary(true)
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.PassportNumber):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.PassportNumber, new { @id = "txtOwnPassportNumber" })<br />
+                        <p class="qualif-detail">@Html.ValidationMessageFor(m => m.PassportNumber)</p>
+                        @Html.HiddenFor(m => m.PassportNumber, new { @id = "hdnOwnPassportNumber" })
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.SonOfWifeOfDaugherOf):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.SonOfWifeOfDaugherOf, new { @id = "txtOwnSonOfWifeOfDaughterOf" })<br />
+                        <p class="qualif-detail">@Html.ValidationMessageFor(m => m.SonOfWifeOfDaugherOf)</p>
+                        @Html.HiddenFor(m => m.SonOfWifeOfDaugherOf, new { @id = "hdnOwnSonOfWifeOfDaugherOf" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.DateOfIssue):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.DateOfIssue, string.Format("{0:MM/dd/yyyy}", Model.DateOfIssue), new { @id = "txtDateofPassportIssue", @readonly = "readonly" })<br />
+                        <p class="qualif-detail">@Html.ValidationMessageFor(m => m.DateOfIssue)</p>
+                        @Html.Hidden("hdnDateOfIssue", String.Format("{0:MM/dd/yyyy}", Model.DateOfIssue), new { @id = "hdnOwnDateOfIssue" })
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.PlaceOfIssue):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.PlaceOfIssue, new { @id = "txtOwnPlaceOfIssue" })<br />
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(m => m.PlaceOfIssue)
+                        </p>
+                        @Html.HiddenFor(m => m.PlaceOfIssue, new { @id = "hdnOwnPlaceOfIssue" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.DateOfExpiry):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.DateOfExpiry, string.Format("{0:MM/dd/yyyy}", Model.DateOfExpiry), new { @id = "txtDateofPassportExpiry", @readonly = "readonly" })<br />
+                        <p class="qualif-detail">@Html.ValidationMessageFor(m => m.DateOfExpiry)</p>
+                        @Html.Hidden("hdnOwnPassportDateOfExpiry", String.Format("{0:MM/dd/yyyy}", Model.DateOfExpiry), new { @id = "hdnOwnDateOfExpiry" })
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        * @Html.LabelFor(m => m.NoOfPagesLeft):
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.NoOfPagesLeft, new { @id = "txtOwnNoOfPagesLeft" })<br />
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(m => m.NoOfPagesLeft)
+                        </p>
+                        @Html.HiddenFor(m => m.NoOfPagesLeft, new { @id = "hdnOwnNoOfPagesLeft" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>
+                            * Full Name As in Passport:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextBoxFor(m => m.FullNameAsInPassport, new { @id = "txtOwnFullNameAsInPassport" })<br />
+                        <p class="qualif-detail">
+                            @Html.ValidationMessageFor(m => m.FullNameAsInPassport)
+                        </p>
+                        @Html.HiddenFor(m => m.FullNameAsInPassport, new { @id = "hdnOwnFullNameAsInPassport" })
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                         @Html.Label("Upload Passport Copy:")@*<span class="mandatory">*</span>*@
+                    </div>
+                    @*For Customized upload button*@ @*        <div class="InputDiv FileUpload">
+                                <input type="file" name="doc" id="employeePassport" size="24" />
+                            <p class="qualif-detail">
+                                <span id="PassportUploadErrorEmployee" class="field-validation-error"></span>
+                            </p>
+                                </div>*@
+
+                    <div class="InputDiv positionR BrowseSpacingFix">
+                        <input type="file" name="doc" id="employeePassport" size="24" data-val="true" class="FileUploadBtn" style="width:100px"
+                               @*onchange="readImageForPassword(this)" />*@ />
+                        <div class="BrowserVisible">
+                            <input type="button" class="BtnForCustomUpload" value="Browse.." title="Browse" /><input type="text"
+                                                                                                                     id="FileOwnPassportField" class="FileField" value="No files selected" />
+                        </div>
+                        <p class="qualif-detail">
+                            <span id="PassportUploadErrorEmployee" class="field-validation-error"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="tablestyle3 mrgnT20" style="width: 100%;">
+                <table id="EmployeePassportTable"></table>
+            </div>
+            <div id="EmployeePassportTablePager">
+            </div>
+            <div class="ButtonContainer1">
+                @*<input type="button" value="Save" class="ButtonGray mrgnB18" />*@ @*<input type="submit" value="Save" id="45" class="ButtonGray mrgnB18" />*@
+                <input type="submit" class="ButtonGray" value="Save" id="btnSave" onclick="SavePersonalTravelData()" />
+            </div>
+
+        }
+        <div class="commondivider">
+        </div>
+        @*passport end*@
+        @using (@Html.BeginForm("AddUpdateVisaDetails", "EmployeeDetails", FormMethod.Post, new { @id = "frmAddVisaDetails" }))
+        {
+            @Html.HiddenFor(m => m.VisaDetailsModel.UserRole)
+            @Html.HiddenFor(m => m.VisaDetailsModel.EmployeeVisaId)
+            @Html.HiddenFor(m => m.VisaDetailsModel.EmployeeId)
+            @Html.HiddenFor(m => m.VisaDetailsModel.PersonType, new { @id = "hdnPersonType" })
+
+            <div class="fill-dtls clearfix VisaDetails">
+                <h4>
+                    Add Visa Details
+                </h4>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            * @Html.LabelFor(model => model.VisaDetailsModel.SelectedCountryId):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.VisaDetailsModel.SelectedCountryId, new SelectList(Model.VisaDetailsModel.CountryList, "key", "value", ""), "Select", new { @id = "ddlCountryList", @class = "ValidationDropDown" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.VisaDetailsModel.SelectedCountryId)</p>
+                            @Html.HiddenFor(m => m.VisaDetailsModel.SelectedCountryId, new { @id = "hdnAddSelectedCountryId" })
+                            <p class="qualif-detail">
+                                <span id="CountryErrorEmployee" class="field-validation-error"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            * @Html.LabelFor(model => model.VisaDetailsModel.ValidTill):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.VisaDetailsModel.ValidTill, String.Format("{0:MM/dd/yyyy}", Model.VisaDetailsModel.ValidTill), new { @id = "txtVisaValidTill", @readonly = "readonly" })<br />
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.VisaDetailsModel.ValidTill)
+                            </p>
+                            @Html.Hidden("hdnVisaValidTill", String.Format("{0:MM/dd/yyyy}", Model.VisaDetailsModel.ValidTill), new { @id = "hdnAddVisaValidTill" })
+                            <span id="spWeddingDate" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Visa Type"):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.VisaDetailsModel.VisaTypeID, new SelectList(Model.VisaDetailsModel.visatypeList, "VisaTypeID", "VisaTypeName", "Select"), "Select", new { @id = "Visa_VisaTypeID", @class = "ValidationDropDown" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.VisaDetailsModel.VisaTypeID)
+                                @Html.HiddenFor(model => model.VisaDetailsModel.VisaTypeID, new { id = "VisaTypeName" })
+                            </p>
+                            <p class="qualif-detail">
+                                <span id="VisaErrorEmployee" class="field-validation-error"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            * @Html.Label("Upload Visa Copy"):
+                        </div>
+                        @*    <div class="editor-field fieldwidth floatL">
+                <input type="file" name="doc" id="employeeVisa" size="24" data-val="true" data-val-required="please select a file to Upload" />
+                <p class="qualif-detail">
+                    <span id="VisaUploadErrorEmployee" class="field-validation-error"></span>
+                </p>
+                </div>*@
+                        <div class="BrowseSpacingFix InputDiv positionR">
+                            @*<input type="file" name="doc" id="employeeVisa" size="24" data-val="true" data-val-required="please select a file to Upload"
+                                   class="FileUploadBtn" onchange="readImage(this)" />*@
+                            <input type="file" name="doc" id="employeeVisa" size="24" data-val="true" data-val-required="please select a file to Upload"
+                                   class="FileUploadBtn" style="width:100px" />
+                            <div class="BrowserVisible">
+                                <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                                                                                                          id="FileOwnVisaField" class="FileField" value="No files selected" />
+                            </div>
+                            <p class="qualif-detail">
+                                <span id="VisaUploadErrorEmployee" class="field-validation-error"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1">
+                @*<input type="submit" value="Save" id ="btnSaveVisaTravelDetails" class="ButtonGray" />*@
+                <input type="submit" class="ButtonGray" value="Save" id="btnSaveVisaTravelDetails"
+                    onclick="SaveVisaData()" />
+                @*<input type="submit" value="Save" id="btnSaveTravelDetails123" class="ButtonGray mrgnB18" />*@
+            </div>
+        }
+        <div class="tablestyle3" style="width: 100%;">
+            <table id="jqPersonTravelTable"></table>
+        </div>
+        <div id="jqPersonTravelPager">
+        </div>
+        <p class="visarednote" id="NoteforVisaExpired">
+            Please enter the renewed date if you need to raise a travel request for the highlighted
+            country.
+        </p>
+        <div id="DeleteEmpVisaDetailSuccessMessage" style="display: none">
+            <p>
+                Record has been deleted
+            </p>
+        </div>
+        <div id="EmployeePassportSuccess" title="Save Passport Details" style="display: none">
+            <center>
+            Passport Details saved successfully.
+        </center>
+        </div>
+        <div id="errorUploadPassportDialog" style="display: none">
+            <center>
+            Some error occurred while uploading document.Please try again.
+        </center>
+        </div>
+        <div id="ShowEmployeePassportDetails">
+        </div>
+        <div id="ShowEmployeeVisaDetails">
+        </div>
+        <div id="ConfirmEmployeePassportDelete" title="Delete" style="display: none">
+            <p>
+                <center>
+                Are you sure you want to delete Passport this record?
+            </center>
+            </p>
+        </div>
+        <div id="DeleteEmployeePassportSuccess" title="Delete Successful" style="display: none">
+            <p>
+                <center>
+                The record is deleted Successfully.
+            </center>
+            </p>
+        </div>
+        <div id="SingleVisaForCountry" title="Delete Successful" style="display: none">
+            <p>
+                <center>
+                Only one visa allowed per country, to change an existing record, kindly edit or
+                delete it & add a new one.
+            </center>
+            </p>
+        </div>
+        <div id="errorUploadVisaDialog" style="display: none">
+            <center>
+    Some error occurred while uploading document.Please try again.
+    </center>
+        </div>
+        <div id="EmployeeVisaSuccess" title="Save Passport Details" style="display: none">
+            <center>
+    Visa Saved Successfully.
+    </center>
+        </div>
+        <div id="FileNotFoundVisa" style="display: none;">
+    File does not exist.
+</div>
+<div id="FileNotFoundPassport" style="display: none;">
+    File does not exist.
+</div>
+</div>
+</section> 

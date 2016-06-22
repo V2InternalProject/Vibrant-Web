@@ -1,0 +1,389 @@
+﻿@model HRMS.Models.CustomerContact
+<h4 class="SmallHead">
+    Customer Contacts</h4>
+<div class="tablestyle3">
+    <table id="jqAddCustomerContactTable">
+    </table>
+</div>
+<div id="jqAddCustomerContactTablePager">
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+     stringTypeOfContactList= @(Html.Raw(Json.Encode(ViewBag.TypeOfContacts)));
+        var a = [];
+        a.push("Select");
+        $.each(stringTypeOfContactList, function (index,value) {
+          a.push(value.ContactTypeName);
+         });
+
+        var DeomoTest;
+        var CustId = window.glob;
+
+        $("#jqAddCustomerContactTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadCustomerContactGrid", "SEM")',
+            postData: { CustomerID: function () { return $('#addCustomerContacts #CustomerIds').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Contact Person", "Type of Contact", "Email ID", "Mobile Number", "Phone Number", "Fax Number", "Online Contact", ""],            
+            // Configure the columns
+            colModel: [
+                { name: "CustomerIds", index: "CustomerIds", align: "left", width: 120, editable: true, hidden: true },
+                { name: "CustID", index: "CustID", align: "left", width: 120, editable: true, hidden: true },
+                { name: "ContactPerson", index: "ContactPerson", align: "left", width: 120, editable: true, editrules: { required: true }},
+                { name: "TypeofContact", index: "TypeofContact", align: "left", width: 90, editable: true, editrules: { required: true },edittype: "select", editoptions: { value: a}},
+                { name: "EmailID", index: "EmailID", align: "left", width: 120 , editable: true, editrules: { required: true, custom: true, custom_func: isValidEmailAddress}},
+                { name: "MobileNumber", index: "MobileNumber", align: "left", width: 90, editable: true, editrules: { required: true, custom: true, custom_func: isValidCustomerContactNumber }},
+                { name: "PhoneNumber", index: "PhoneNumber", align: "left", width: 90 , editable: true, editrules: { required: true, custom: true, custom_func: isValidCustomerContactNumber }},
+                { name: "FaxNumber", index: "FaxNumber", align: "left", width: 90 , editable: true, editrules: { custom: true, custom_func: isValidCustomerContactNumber } },
+                { name: "OnlineContact", index: "OnlineContact", align: "left", width: 90 , editable: true, editrules: { custom: true, custom_func: isValidCustomerContactNumber }},
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 35,
+                    align: "center",
+                    formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; }
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddCustomerContactTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Customer Contact",
+            editurl: '@Url.Action("SaveCustomerContactsDetails", "SEM")',
+              gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqAddCustomerContactTable").jqGrid('getGridParam', 'records');
+                
+                    if (count > 20) {
+                        $('#jqAddCustomerContactTablePager_center').show();
+                    }
+                    else {
+                        $('#jqAddCustomerContactTablePager_center').hide();
+                    }
+                DeomoTest = window.glob;
+                $('#addCustomerContacts #CustomerIds').val(DeomoTest);
+            },
+            onCellSelect: function(rowid, iCol) {
+            var rowData = jQuery("#jqAddCustomerContactTable").getRowData(rowid);
+            var cm = $(this).jqGrid("getGridParam", "colModel");
+            var colName = cm[iCol];
+                if (colName['index'] == "Delete" && rowid != "new_row") {
+                    DeleteCustomerDetail(rowData["CustomerIds"]);
+                }
+			},
+        }).navGrid("#jqAddCustomerContactTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        
+
+         $("#jqAddCustomerContactTable").jqGrid('inlineNav', "#jqAddCustomerContactTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false,
+                 addRowParams: {
+                    oneditfunc: function (rowid) {
+                        //$("#undefined").hide();
+                        $("#new_row_OnlineContact").parent().next().find('img').hide();
+                    }
+                 }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: null,
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    CustomerId: function () {
+                        return $('#addCustomerContacts #CustomerIds').val();
+                    }
+                },
+                aftersavefunc: function () {     
+                    $("#ContactAddressSucess").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqAddCustomerContactTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                    
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+      
+     
+     });
+     function isValidEmailAddress(value, Colname){
+       var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+
+       var valid = pattern.test(value);
+
+	if(!valid) {
+     $("#EmailValid").dialog({
+	      modal: true,
+	      resizable: false,
+	      height: 140,
+	      width: 300,
+	      title: "Deleted",
+          dialogClass: "noclose",
+	      buttons:
+	      {
+	          "Ok": function () {
+	              $(this).dialog("close");
+	          }
+	      }
+	  });
+        $.preventDefault();
+    } 
+    else
+    {
+    return [true,""];
+    }
+       
+     }
+
+     function DeleteCustomerDetail(CoustomerID) {
+        $('#deletecustomerConConfirmation').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+                dialogClass: "noclose",
+			    resizable: false,
+			    title: "Delete Customer Contact Detail",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: '@Url.Action("DeleteCustomerContactDetails", "SEM")',
+					            data: { CustomerID: CoustomerID },
+					            success: function (data) {
+					                if (data.status == true) {
+					                    $("#deletecustomerConConfirmation").dialog("close");
+					                    $("#deleteCustomConRecord").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Deleted",
+                                            dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddCustomerContactTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    $("#deletecustomerConConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Dependent Details',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddCustomerContactTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+					                    $("#deletecustomerConConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Journey Details',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqAddCustomerContactTable").trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			}
+			);
+	$('#deletecustomerConConfirmation').dialog('open');
+     }
+
+    // To check the Mobile Number, Phone Number, Fax Number and Online Contact is containing only numerics.
+    function isValidCustomerContactNumber(value, Colname) {
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+        var valid = pattern.test(value);
+
+        if (value != "" && !valid) {
+            if (Colname == "Mobile Number") {
+                $("#ValidCustomerMobileNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Phone Number") {
+                $("#ValidCustomerPhoneNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Fax Number") {
+                $("#ValidCustomerFaxNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+            if (Colname == "Online Contact") {
+                $("#ValidCustomerOnlineContactNumberDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Customer " + Colname,
+                    dialogClass: "noclose",
+                    buttons:
+	                {
+	                    "Ok": function () {
+	                        $(this).dialog("close");
+	                    }
+	                }
+                });
+                $.preventDefault();
+            }
+        }
+        else {
+            return [true, ""];
+        }
+    } //
+</script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addCustomerContacts" }))
+{
+    @Html.HiddenFor(x => x.CustomerIds)
+}
+<div id="ContactAddressSucess" title="Contact Details" style="display: none;">
+    <p>
+        Customer Contact Details saved Sucessfully.
+    </p>
+</div>
+<div id="deletecustomerConConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record?</p>
+</div>
+<div id="deleteCustomConRecord" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="EmailValid" style="display: none;">
+    <p>
+        Please Enter Valid Email Id.
+    </p>
+</div>
+<div id="ValidCustomerMobileNumberDialog" style="display: none;">
+    <p>
+        Customer Mobile Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerPhoneNumberDialog" style="display: none;">
+    <p>
+        Customer Phone Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerFaxNumberDialog" style="display: none;">
+    <p>
+        Customer Fax Number can not contain alphabets.
+    </p>
+</div>
+<div id="ValidCustomerOnlineContactNumberDialog" style="display: none;">
+    <p>
+        Customer Online Contact can not contain alphabets.
+    </p>
+</div>

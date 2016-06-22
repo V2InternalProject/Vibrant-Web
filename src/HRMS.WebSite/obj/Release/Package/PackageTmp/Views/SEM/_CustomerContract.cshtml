@@ -1,0 +1,248 @@
+﻿@model HRMS.Models.CustomerContract
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<h4 class="SmallHead">
+    Customer Contracts
+</h4>
+<div class="ButtonContainer1 clearfix">
+    <input type="button" value="Add Customer Contract" class="ButtonGray" id="btnAddContract" />
+</div>
+<div class="tablestyle3">
+    <table id="jqCustomerContractDetailTable"></table>
+</div>
+<div id="jqCustomerContractDetailsTablePager">
+</div>
+<div id="addContract" style="display: none">
+</div>
+<div id="DeleteCustomerContractDialog" style="display: none">
+    <p>
+        Are you sure you want to delete selected record?
+    </p>
+</div>
+<div id="DeleteSuccessContractDialog" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="AddContractDialog" style="display: none;">
+    <p>
+        Please add atleast one contract.
+    </p>
+</div>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addCustomerContracts" }))
+{
+    @Html.HiddenFor(x => x.CustomerID)
+}
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#jqCustomerContractDetailTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("CustomerContractDetailLoadGrid", "SEM")',
+            postData: { CustomerID: function () { return $("#addCustomerContracts #CustomerID").val(); } }, //hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "Contract Summary", "Contract Details", "Contract Type", "Commensement Date", "Contract Effective Date", "Contract Validity Date", ""],
+            // Configure the columns
+            colModel: [
+                { name: "CustomerID", index: "CustomerID", align: "left", width: 200, hidden: true },
+                { name: "ContractID", index: "ContractID", align: "left", width: 200, hidden: true },
+                { name: "ContractSummary", index: "ContractSummary", align: "left", width: 120 },
+                { name: "ContractDetails", index: "ContractDetails", align: "left", width: 130 },
+                { name: "ContractTypeName", index: "ContractTypeName", align: "left", width: 80 },
+                { name: "CommencementDate", index: "CommencementDate", align: "left", width: 120, sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "ContractSigningDate", index: "ContractSigningDate", align: "left", width: 120, sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "ContractValidityDate", index: "ContractValidityDate", align: "left", width: 120, sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 35,
+                    align: "center",
+                    formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; }
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqCustomerContractDetailsTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Customer Contract",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqCustomerContractDetailTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqCustomerContractDetailTable').hide();
+                }
+                else {
+                    $('#gbox_jqCustomerContractDetailTable').show();
+                    if (count > 20) {
+                        $('#jqCustomerContractDetailsTablePager').show();
+                    }
+                    else {
+                        $('#jqCustomerContractDetailsTablePager').hide();
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                var CustomerID = rowData['CustomerID'];
+                var ContractID = rowData['ContractID'];
+                if (colName['index'] != "Delete") {
+                    var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+                    //                if(stringNodeLevelAccessList==null)
+                    //                    window.location.href='@Url.Action("LogOn", "Account")';
+                    //                else{
+                    //                    if(stringNodeLevelAccessList.CanEdit==true){
+                    isRecordAdded = "ViewDetails";
+                    AddEditCustomerContractDetails(CustomerID, ContractID);
+                    //                    }
+                    //                    else
+                    //                    return false
+                    //                    }
+                }
+                else if (colName['index'] == "Delete" && rowid != "new_row") {
+                    DeleteCustomerContractDetails(rowData['ContractID']);
+                }
+            }
+        }).navGrid("#jqCustomerContractDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $('#btnAddContract').click(function () {
+            var CustomerID = $("#addCustomerContracts #CustomerID").val();
+            var ContractID = 0;
+            isRecordAdded = "AddNew";
+            AddEditCustomerContractDetails(CustomerID, ContractID);
+
+        }); //end click
+    });           //document ready
+    function AddEditCustomerContractDetails(CustomerID, ContractID) {
+        DisplayLoadingDialog();  //checked
+        $.ajax({
+            url: '@Url.Action("GetCustomerContractFormDetails", "SEM")',
+            data: {
+                CustomerID: CustomerID,
+                ContractID: ContractID
+            },
+            type: 'GET',
+            success: function (result) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#addContract").empty().append(result);
+                $("#addContract").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 1160,
+                    title: "Customer Contract",
+                    modal: true,
+                    beforeClose: function () {
+                        if ($('#jqAddCustomerContractFile').jqGrid('getGridParam', 'records') == 0  && (isRecordAdded == "true" || isRecordAdded == "ViewDetails")) {
+                            //if ($('#jqAddCustomerContractFile').jqGrid('getGridParam', 'records') == 0 && ContractID > 0) {
+                            $("#AddContractDialog").dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: "AddContract",
+                                dialogClass: "noclose",
+                                open: function () {
+                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                    $(this).parent().css('z-index', '27');
+                                },
+                                buttons: {
+                                    "Ok": function () {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    },
+                    open:function(){
+                        $('.jqgrow').find('select').selectBox("detach");
+                        $("#frmCustomerContract .ContractValidationDD").each(function () {
+                            $('#frmCustomerContract .ContractValidationDD').show();
+                            $('#frmCustomerContract .ContractValidationDD').css({ 'display': 'block !important', 'visibility': 'hidden' });
+                            $('#frmCustomerContract .ContractValidationDD').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible','top': '-28px'});
+                            $('#frmCustomerContract .ContractValidationDD').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-32px'});
+                        });
+                    },
+                    close: function (event, ui) {
+                        $('.jqgrow').find('select').selectBox("detach");
+                        $("#addContract").dialog("destroy");
+                    }
+                });
+            },
+            error: function (result) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                DisplayErrorDialog("Customer Contract");
+            }
+        });            //end ajax
+    }
+
+    function DeleteCustomerContractDetails(ContractID) {
+        $('#DeleteCustomerContractDialog').dialog({
+            modal: true,
+            width: 300,
+            height: 'auto',
+            resizable: false,
+            dialogClass: "noclose",
+            title: "Delete Customer Contract Details",
+            buttons: {
+                "Ok": function () {
+                    $.ajax({
+                        url: '@Url.Action("DeleteCustomerContractDetails", "SEM")',
+                        data: { ContractID: ContractID },
+                        datatype: "json",
+                        success: function (data) {
+                            if (data.status == true) {
+                                $("#DeleteCustomerContractDialog").dialog("close");
+                                $("#DeleteSuccessContractDialog").dialog({
+                                    modal: true,
+                                    resizable: false,
+                                    height: 140,
+                                    width: 300,
+                                    title: "Deleted",
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        "Ok": function () {
+                                            $(this).dialog('close');
+                                            $("#jqCustomerContractDetailTable").trigger("reloadGrid");
+                                        }
+                                    }
+                                });
+                            }
+                            else if (data.status == "Error") {
+                                DisplayErrorDialog("Customer Contract");
+                            }
+                            else {
+                                DisplayErrorDialog("Customer Contract");
+                            }
+                        } //end success
+                    });
+                },
+                Cancel: function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+    }
+</script>

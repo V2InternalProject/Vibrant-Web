@@ -1,0 +1,475 @@
+﻿@model HRMS.Models.UtilizationReportModel
+@{
+    ViewBag.Title = "Utilization Report";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" href="jquery.mousewheel-3.0.6.pack.js" ></script>
+ <script type="text/javascript">
+
+     $(document).ready(function () {
+         var target1 = $(".outer-container-1");
+         $("#table-body-1").scroll(function () {
+
+             $("#table-header-1").offset({ left: (-1 * this.scrollLeft) + target1.offset().left });
+
+         });
+
+     });
+    </script>
+
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Resource Allocation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ResourceIndex", "Resource")?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID +">My Allocation</a>
+            <a href="@Url.Action("RMGViewPost", "Resource")?EmpCode=" + LoginEmpCode + "&PageID=" + val.NodeID +">Manage Resource</a>
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+        <div class="FormContainerBox clearfix ProjectIndexFliter">
+            <div class="CandidateLeftcol utiReport clearfix">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Month:")
+                        </div>
+                        <div class="InputDiv">
+                             <select>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Year:")
+                        </div>
+                        <div class="InputDiv">
+                             <select>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                                <option>abcd</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="InnerContainer mrgnT42">
+        <div class="outer-container outer-container-1">
+            <div class="inner-container">
+                <div class="table-header" id="table-header-1">
+                    <table id="headertable1" class="" border="0" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <td align="left" class="tableHeaders" Width="250px">
+                                    Employee Name
+                                </td>
+                                <td align="left" class="tableHeaders" Width="133px">
+                                    Employee Code
+                                </td>
+                                <td align="left" class="tableHeaders" Width="250px">
+                                    Reporting to
+                                </td>
+                                <td align="left" class="tableHeaders" Width="130px">
+                                    Month
+                                </td>
+                                <td align="left" class="tableHeaders" Width="120px">
+                                    Year
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Business Group
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Organization Unit
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Delivery Unit
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Delivery Team
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Project Name
+                                </td>
+                                <td align="left" class="tableHeaders" Width="200px">
+                                    Project Role
+                                </td>
+                                <td align="left" class="tableHeaders" Width="150px">
+                                    Install Capacity(hrs)
+                                </td>
+                                <td align="left" class="tableHeaders" Width="175px">
+                                    Available Capacity(hrs)
+                                </td>
+                                <td align="left" class="tableHeaders" Width="130px">
+                                    Planned(hrs)
+                                </td>
+                                <td align="left" class="tableHeaders" Width="130px">
+                                    Actual(hrs)
+                                </td>
+                                <td align="left" class="tableHeaders" Width="130px">
+                                    Billable(hrs)
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody id="foundDataForSorce1">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-body" id="table-body-1">
+                    <table class=""  border="0" cellpadding="0" cellspacing="0">
+                        <tbody id="foundData1">
+                            <tr class="tableRows">
+                                <td align="left" Width="250px">
+                                </td>
+                                <td align="left" Width="133px">
+                                </td>
+                                <td align="left" Width="250px">
+                                </td>
+                                <td align="left" Width="130px">
+                                </td>
+                                <td align="left" Width="120px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="200px">
+                                </td>
+                                <td align="left" Width="150px">
+                                </td>
+                                <td align="left" Width="175px">
+                                </td>
+                                <td align="left" Width="130px">
+                                </td>
+                                <td align="left" Width="130px">
+                                </td>
+                                <td align="left" Width="130px">
+                                </td>
+                            </tr>
+                             <tr class="tableRows">
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                            </tr>
+                             <tr class="tableRows">
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                            </tr>
+                             <tr class="tableRows">
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                            </tr>
+                             <tr class="tableRows">
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                                <td align="left">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*    <div class="InnerContainer mrgnT42">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable" class="TableJqgrid">
+                <thead>
+                    <tr>
+                        <td align="left" class="tableHeaders">
+                            Employee Name
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Employee Code
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Reporting to
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Month
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Year
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Business Group
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Organization Unit
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Delivery Unit
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Delivery Team
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Project Name
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Project Role
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Install Capacity(hrs)
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Available Capacity(hrs)
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Planned(hrs)
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Actual(hrs)
+                        </td>
+                        <td align="left" class="tableHeaders">
+                            Billable(hrs)
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="tablescrollbody">
+                    <tr class="tableRows">
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                        <td align="left">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>*@
+</div>
+</section>

@@ -1,0 +1,121 @@
+﻿@model HRMS.Models.FinanceClearance
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	$.ajaxSetup({
+		// Disable caching of AJAX responses
+		cache: false
+	});
+
+	$(document).ready(function () {
+	    $("#dialog1_Finance").show();
+	    var finance = '@ViewBag.Finance';
+	    $("#Respondent").val(finance);
+	    $("#dialog1_IT").hide();
+	    $("#dialog1_HR").hide();
+	    $("#dialog1_ADMIN").hide();
+	    $("#dialog1_Project").hide();
+	    $("#dialog1_Asset").hide();
+
+	    $("#Respondent").change(function () {
+	        if ($('#Respondent').val() == '@ViewBag.IT') {
+	            $("#dialog1_Finance").hide();
+	            $("#dialog1_IT").show();
+	            $("#dialog1_HR").hide();
+	            $("#dialog1_ADMIN").hide();
+	            $("#dialog1_Project").hide();
+	            $("#dialog1_Asset").hide();
+	        }
+	        else if ($('#Respondent').val() == '@ViewBag.HR') {
+	            $("#roleHR").hide();
+	            $("#buttonsHR").hide();
+	            $("#dialog1_IT").hide();
+	            $("#dialog1_Finance").hide();
+	            $("#dialog1_HR").show();
+	            $("#dialog1_ADMIN").hide();
+	            $("#dialog1_Project").hide();
+	            $("#dialog1_Asset").hide();
+	        }
+	        else if ($('#Respondent').val() == '@ViewBag.Finance') {
+	            $("#dialog1_HR").hide();
+	            $("#dialog1_IT").hide();
+	            $("#dialog1_Finance").show();
+	            $("#dialog1_ADMIN").hide();
+	            $("#dialog1_Project").hide();
+	            $("#dialog1_Asset").hide();
+	        }
+	        else if ($('#Respondent').val() == '@ViewBag.Admin') {
+	            $("#dialog1_ADMIN").show();
+	            $("#dialog1_IT").hide();
+	            $("#dialog1_HR").hide();
+	            $("#dialog1_Finance").hide();
+	            $("#dialog1_Project").hide();
+	            $("#dialog1_Asset").hide();
+	        }
+	        else if ($('#Respondent').val() == '@ViewBag.Project') {
+	            $("#dialog1_Finance").hide();
+	            $("#dialog1_IT").hide();
+	            $("#dialog1_HR").hide();
+	            $("#dialog1_ADMIN").hide();
+	            $("#dialog1_Project").show();
+	            $("#dialog1_Asset").hide();
+	        }
+	        else if ($('#Respondent').val() == '@ViewBag.Asset') {
+	            $("#dialog1_Finance").hide();
+	            $("#dialog1_IT").hide();
+	            $("#dialog1_HR").hide();
+	            $("#dialog1_ADMIN").hide();
+	            $("#dialog1_Project").hide();
+	            $("#dialog1_Asset").show();
+	        }
+	    });
+
+//	    $(function () {
+//	        $('select').selectbox();
+//	        $('.sbOptions a').hover(function () {
+//	            $(this).parent().toggleClass("hoveroption");
+//	        });
+//	    });
+	});
+</script>
+@* <table border="0" width="100%">
+
+        <tr>
+			<td class="title-bgcolor">     *@
+             <div class="">
+                        @Html.DropDownListFor(model => model.Respondent, new SelectList(Model.Approvers, "ApproverID", "ApproverName"))
+                       @Html.HiddenFor(c => Model.ResponceList)
+                       </div>
+           @* </td>
+		</tr>
+</table>*@
+
+<div id="dialog1_Finance" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationFinanceClearanceForm", Model);}
+</div>
+<div id="dialog1_IT" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationITClearanceForm", Model);}
+</div>
+<div id="dialog1_HR" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationHRClearanceForm", Model);}
+</div>
+<div id="dialog1_ADMIN" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationADMINClearanceForm", Model);}
+</div>
+<div id="dialog1_Project" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationProjectClearanceForm", Model);}
+</div>
+<div id="dialog1_Asset" style="display: none; height: 600px">
+    @{Html.RenderPartial("_SeparationAssetClearanceForm", Model);}
+</div>
+<div id="initiateSuccessDialog" title="Initiate Details" style="display: none">
+	<p>	Discipline Details have been saved.</p>
+</div>
+<div id="initiateDetailsErrorDialog" title="Error" style="display: none">
+	<p>	There are some errors.</p>
+</div>

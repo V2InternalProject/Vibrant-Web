@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html ng-app="AppraisalEmp">
+<head lang="en">
+    <meta charset="utf-8">
+    <title>Appraisal</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="~/Scripts/AppraisalSection/angular.min.js"></script>
+    <script src="~/Scripts/AppraisalSection/Service.js"></script>
+    <script src="~/Scripts/AppraisalSection/AppraisalEmployee.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Scripts/AppraisalSection/CSS.css" rel="stylesheet" />
+</head>
+<body>
+    <section class="EmployeeContainer Container">
+        <div class="FixedHeader">
+            <div class="clearfix">
+                <h2 class="MainHeading">
+                    Appraisal
+                </h2>
+            </div>
+        </div>
+        <div class="main appraisal-page">
+            <div ng-controller="employeeController" class="mainemployee">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th width="10%">Employee Code</th>
+                            <th width="30%">Employee Name</th>
+                            <th width="20%">Appraisal Role</th>
+                            <th width="20%">Review</th>
+                            <th width="20%">Stage Complete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in EmployeesList">
+                            <td ng-switch="data.IsLinkActive">
+
+                                <a ng-switch-when="1" href="" ng-click="cellclick(data.EmployeeId)" ng-bind="data.EmployeeCode" style="color: #337ab7;"></a>
+                                <span  ng-switch-when="0">{{data.EmployeeCode}}</span>
+                            </td>
+                            <td ng-switch="data.IsLinkActive">
+
+                                <a ng-switch-when="1" href="" ng-click="cellclick(data.EmployeeId)" ng-bind="data.EmployeeName" style="color: #337ab7;"></a>
+                                <span ng-switch-when="0">{{data.EmployeeName}}</span>
+                            </td>
+                            <td>
+                                <span ng-bind="data.RelationShip"></span>
+                            </td>
+                            <td>
+                                <a ng-show="data.IsLinkActive==1" href="" ng-click="reviewclick(data.reviewlink)" style="color: #337ab7;">Show Detail</a>
+                                <span ng-show="data.IsLinkActive==0">Show Detail</span>
+                            </td>
+                            <td>
+                                <ul class="list-unstyled stage-complate-blocks">
+                                    <li title="{{a.key}}" ng-repeat="a in data.StageComplete track by $index" class="{{a.val?'blue':'white'}}">
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

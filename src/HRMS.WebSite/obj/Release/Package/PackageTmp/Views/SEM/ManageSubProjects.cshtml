@@ -1,0 +1,760 @@
+﻿@model HRMS.Models.ManageSubProjectsModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Manage Sub-Projects";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "manageSubProjects" }))
+{
+    @Html.HiddenFor(x => x.loggedInUserEmployeeCode)
+    @Html.HiddenFor(x => x.ResponsiblePerson)
+    @Html.HiddenFor(x => x.WorkHours)
+    @Html.HiddenFor(x => x.ProjectID)
+}
+
+
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="FormContainerBox clearfix">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                         @Html.Label("Select Project:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.Prj, new SelectList(Model.ProjectList, "Projectids", "ProjectName", "Select"), "Select")
+                        <p class="qualif-detail">
+                         @Html.ValidationMessageFor(model => model.Prj)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" value="Select All" class="ButtonGray mrgnR8" id="btnSelectAll" />
+            <input type="button" value="Deselect All" class="ButtonGray mrgnR8" id="btnDeselectAll" />
+            <input type="button" value="Delete" class="ButtonGray mrgnR8" id="btnDelete" />
+        </div>
+      
+        <div class="tablestyle3">
+            <table id="jqManageSubProjectsTable"></table>
+        </div>
+        <div id="jqManageSubProjectsTablePager">
+        </div>
+
+        <div class="TotalRecordsDiv">
+             <div class="bluebgtable1" id="totalcount">
+            </div>
+        </div>
+
+        
+        <div style="display: none;" id="ErrorGridLength">
+            No Records Found
+        </div>
+        <div id="SubProjectDetailsSuccess" title="SubProject Details" style="display: none;">
+            <p>
+                Record has been saved successfully.
+            </p>
+        </div>
+        <div id="deleteSubProjectConfirmation" style="display: none">
+            <p>
+                Are you sure you want to delete the selected record?
+            </p>
+        </div>
+        <div id="deleteSubProjectSuccess" style="display: none;">
+            <p>
+                Record has been deleted successfully.
+            </p>
+        </div>
+        <div id="SubProjectNameExistDialog" title="SubProject Details" style="display: none;">
+            <p>
+                SubProject Name already exists.
+            </p>
+        </div>
+        <div id="SubProjectSaveError" title="SubProject Details" style="display: none">
+            <p>
+                SubProject details could not be saved.
+            </p>
+        </div>
+        <div id="SubProjectStartDateGreaterDialog" title="SubProject details" style="display: none">
+            <p>
+                Start Date cannot be greater then End Date.
+            </p>
+        </div>
+        <div id="SubProjectEndDateLesserDialog" title="SubProject details" style="display: none">
+            <p>
+                End Date cannot be lesser then Start Date.
+            </p>
+        </div>
+        <div id="ValidSubProjectWorkHoursDialog" title="SubProject details" style="display: none">
+            <p>
+                Please enter only positive numeric value for Work Hours.
+            </p>
+        </div>
+        
+        <div id="RequiredResponsiblePrsn" style="display: none;" title="Required Feild">
+            <p>
+                Please select Responsible Person.
+            </p>
+        </div>
+        <div id="NoSubProjectRecordSelected" title="Delete SubProject details" style="display: none">
+            <p>
+                Please select atleast one record to delete.
+            </p>
+        </div>
+
+        
+    </div>
+</section>
+
+
+
+
+
+<script type="text/javascript">
+
+//respPersonList = @(Html.Raw(Json.Encode(ViewBag.EmployeeLists)));
+
+    $(document).ready(function () {
+        oldStartDate = "";
+        oldEndDate = "";
+        subProjectResponsiblePerson = "";
+        $('#manageSubProjects #ResponsiblePerson').val('');
+
+        var persponList = [];
+        var respPersonList2 = [];
+
+        //        persponList.push("Select");
+        //        $.each(respPersonList, function (index,value) {
+        //        
+        //          persponList.push(value.EmployeeName);
+        //         });
+        var projectID = 0;
+
+        $("#jqManageSubProjectsTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ManageSubProjectLoadGrid", "SEM")',
+            postData: { ProjectID: function () { return $('#Prj option:selected').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "", "", "Sub-Project Name", "Sub-Project Description", "Start Date", "End Date", "Responsible Person", "Work Hours", "Delete"],
+            // Configure the columns
+            colModel: [
+             { name: "loggedInUserEmployeeCode", index: "loggedInUserEmployeeCode", align: "left", width: 20, editable: true, hidden: true },
+                { name: "SubProjectId", index: "SubProjectId", align: "left", width: 20, editable: true, hidden: true },
+                 { name: "HiddenResponsiblePerson", index: "HiddenResponsiblePerson", align: "left", width: 120, editable: true, hidden: true },
+                 { name: "ProjectId", index: "ProjectId", align: "left", width: 120, editable: true, hidden: true },
+                { name: "SubProjectName", index: "SubProjectName", align: "left", width: 120, editable: true, editrules: { required: true }, editoptions: { maxlength: 100} },
+                 { name: "Description", index: "Description", align: "left", width: 90, editable: true, editrules: { required: true }, editoptions: { maxlength: 4000} },
+                { name: "StartDate", index: "StartDate", width: 100, align: "left", editable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                    readonly: true,
+                    dataEvents: [{ type: 'change', fn: function (e) { ChangeSubProjectStartDate(e); } }],
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true,
+                            beforeShow: BeforeShowForDatePicker,
+                            onClose: onCloseForDatePicker
+                        }).bind("mouseover", function () {
+                            $(this).datepicker("option", "minDate", ProjectStartDate);
+                            $(this).datepicker("option", "maxDate", ProjectEndDate);
+                            var selectedDateID = this.id;
+                            var rowID = selectedDateID.split("_");
+                            var selectedStartDate = this.value;
+                            if (rowID[0] == "new")
+                                var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_EndDate").val();
+                            else
+                                var endDateValue = $("#" + rowID[0] + "_EndDate").val();
+                            //var endDateValue = $("#"+rowID[0]+"_EndDate").val();
+                            if (selectedStartDate > endDateValue && selectedStartDate != "" && endDateValue != "") {
+                                $(this).val(oldStartDate);
+                            }
+                        });
+                    }
+                }
+                },
+                 { name: "EndDate", index: "EndDate", width: 100, align: "left", editable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                     readonly: true,
+                     dataEvents: [{ type: 'change', fn: function (e) { ChangeSubProjectEndDate(e); } }],
+                     dataInit: function (element) {
+                         $(element).datepicker({
+                             dateFormat: 'mm/dd/yy',
+                             changeMonth: true,
+                             changeYear: true,
+                             beforeShow: BeforeShowForDatePicker,
+                             onClose: onCloseForDatePicker
+                         }).bind("mouseover", function () {
+
+                             $(this).datepicker("option", "minDate", ProjectStartDate);
+                             $(this).datepicker("option", "maxDate", ProjectEndDate);
+                             var selectedDateID = this.id;
+                             var rowID = selectedDateID.split("_");
+                             var selectedEndDate = this.value;
+                             if (rowID[0] == "new")
+                                 var startDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_StartDate").val();
+                             else
+                                 var startDateValue = $("#" + rowID[0] + "_StartDate").val();
+                             //var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+                             if (selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "") {
+                                 $(this).val(oldEndDate);
+                             }
+                         });
+                     }
+                 }
+                 },
+                  { name: "ResponsiblePerson", index: "ResponsiblePerson", align: "left", width: 107, editable: true, editrules: { required: true, custom: true, custom_func: IsResonsiblePrsnSelected }, edittype: "select", editoptions: { value: persponList, dataEvents: [{ type: 'change', fn: function (e) { getResponsiblePerson(e); } }]} },
+                  { name: "WorkHours", index: "WorkHours", align: "left", width: 107, editable: true, editrules: { required: true, custom: true, custom_func: isValidWorkHours }, sortable: false },
+                  { name: "Delete", index: "Delete", width: 80, align: "center", formatter: ForAppendID }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqManageSubProjectsTablePager"),
+            //rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "SubProject",
+            editurl: '@Url.Action("SaveManageSubProjectDetails", "SEM")',
+            gridComplete: function () {
+
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqManageSubProjectsTable").jqGrid('getGridParam', 'records');
+                if (count > 20) {
+
+                    $('#jqManageSubProjectsTablePager_center').show();
+                }
+                else {
+                    $('#jqManageSubProjectsTablePager_center').hide();
+                }
+
+                var gridData;
+                gridData = $("#jqManageSubProjectsTable").getRowData();
+                if ($('#Prj option:selected').text() != 'Select') {
+                    //             if (gridData.length <= 0) {
+                    //            $("#ErrorGridLength").dialog({
+                    //                            resizable: false,
+                    //                            height: 120,
+                    //                            width: 250,
+                    //                            modal: true,
+                    //                            title:'SubProjects',
+                    //                            buttons: {
+                    //                                Ok: function () {
+                    //                                    $(this).dialog("close");
+                    //                                }
+                    //                            }
+                    //                        });
+                    //                    }           
+                }
+                var count = jQuery("#jqManageSubProjectsTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('.TotalRecordsDiv').hide();
+                }
+                else {
+                    $('.TotalRecordsDiv').show();
+                    $('#totalcount').text("Total Records : " + count);
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] == "Delete") {
+                    var rowData = $(this).getRowData(rowid);
+                }
+                var rowData = $(this).getRowData(rowid);
+                $('#manageSubProjects #ResponsiblePerson').val(rowData["HiddenResponsiblePerson"]);
+                subProjectResponsiblePerson = rowData["ResponsiblePerson"];
+                oldStartDate = rowData["StartDate"];
+                oldEndDate = rowData["EndDate"];
+            }
+        }).navGrid("#jqManageSubProjectsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+
+        $("#jqManageSubProjectsTable").jqGrid('inlineNav', "#jqManageSubProjectsTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        $("label[for='undefined']").hide();
+                        $.each(persponList, function (index, value) {
+                            $('#new_row_ResponsiblePerson')
+                             .append($("<option></option>")
+                              .attr("value", index)
+                              .text(value));
+                        });
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function (rowid) {
+                    $.each(persponList, function (index, value) {
+                        if (subProjectResponsiblePerson == value) {
+                            $('#' + rowid + '_ResponsiblePerson')
+                             .append($("<option></option>")
+                              .attr("value", index)
+                              .attr("selected", "selected")
+                              .text(value));
+                        }
+                        else {
+                            $('#' + rowid + '_ResponsiblePerson')
+                             .append($("<option></option>")
+                              .attr("value", index)
+                              .text(value));
+                        }
+                    });
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    ProjectId: function () {
+                        return $("#manageSubProjects #ProjectID").val();
+                    },
+                    ResponsiblePerson: function () {
+                        return $('#manageSubProjects #ResponsiblePerson').val();
+                    },
+                    loggedInUserEmployeeCode: function () {
+                        return $('#manageSubProjects #loggedInUserEmployeeCode').val();
+                    }
+
+                },
+                aftersavefunc: function (resultMessage, status) {
+
+                    var json = $.parseJSON(status.responseText);
+                    var isSubProjectNameExist = json.isSubProjectNameExist;
+                    var status = json.status;
+                    if (isSubProjectNameExist == true) {
+                        $("#SubProjectNameExistDialog").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            closeOnEscape: false,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                    else if (isSubProjectNameExist == false && status == true) {
+                        $("#SubProjectDetailsSuccess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                    $('#manageSubProjects #WorkHours').val('');
+                                    $('#manageSubProjects #ResponsiblePerson').val('');
+                                }
+                            }
+                        });
+                    }
+                    else if (status == false) {
+                        $("#SubProjectSaveError").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                    else if (status == "Error") {
+                        DisplayErrorDialog("Save SubProject Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Save SubProject Details");
+                    }
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+
+        $("#Prj").change(function () {
+            GetSelectedProjectDetails();
+        });
+
+
+        function GetSelectedProjectDetails() {
+            var gridData;
+            projectID = $("#Prj option:selected").val();
+            $.ajax({
+                url: "GetSelectedProjectDetails/SEM",
+                type: 'POST',
+                async: false,
+                data: { ProjectID: projectID },
+                success: function (results) {
+
+                    if (results != null) {
+                        if (results.ResponsilePersnList != null) {
+                            persponList.length = 0;
+                            respPersonList2.length = 0;
+                            persponList.push("Select");
+                            $.each(results.ResponsilePersnList, function (index, value) {
+                                respPersonList2 = results.ResponsilePersnList;
+                                persponList.push(value.EmployeeName);
+                                $('#new_row_ResponsiblePerson')
+                             .append($("<option></option>")
+                              .attr("value", index)
+                              .text(value.EmployeeName));
+                            });
+                            // jQuery("#jqAddMilestoneTable").trigger("reloadGrid");
+                            $("#jqAddMilestoneTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                        }
+
+                        var startDate;
+                        var endDate;
+                        if (results.ProjectStartDate != null) {
+                            startDate = eval(results.ProjectStartDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        }
+                        if (results.ProjectEndDate != null) {
+                            endDate = eval(results.ProjectEndDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        }
+                        ProjectStartDate = startDate;
+                        ProjectEndDate = endDate;
+                    }
+                }
+            });
+
+            if ($("#Prj").val() != "" || $('#Prj :selected').val() != null) {
+                $("#manageSubProjects #ProjectID").val(projectID);
+                jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                $("#jqManageSubProjectsTablePager_left").css("visibility", "visible");
+            } else {
+                jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                $('#manageSubProjects #ResponsiblePerson').val('');
+                $('#jqManageSubProjectsTablePager_left').css("visibility", "hidden");
+            }
+        }
+
+
+        function getResponsiblePerson(e) {
+            var Name = e.target[e.target.selectedIndex].text;
+            var ID;
+            $.each(respPersonList2, function (index, value) {
+
+                var empName = value.EmployeeName.replace('  ', ' ');
+
+                if (empName == Name) {
+                    ID = value.EmployeeId;
+                }
+            });
+            $('#manageSubProjects #ResponsiblePerson').val(ID);
+        }
+        if ($('#Prj :selected').val() == "" || $('#Prj :selected').val() == null) {
+            $('#jqManageSubProjectsTablePager_left').css("visibility", "hidden");
+        }
+    });         // ready end
+
+    function ChangeSubProjectStartDate(e) {
+   
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedStartDate = e.target.value;
+        if (rowID[0] == "new")
+            var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_EndDate").val();
+        else
+            var endDateValue = $("#" + rowID[0] + "_EndDate").val();
+        if (selectedStartDate > endDateValue && selectedStartDate != "" && endDateValue != "") {
+       $("#SubProjectStartDateGreaterDialog").dialog({
+	           modal: true,
+	           resizable: false,
+	           height: 'auto',
+	           width: 300,
+               dialogClass: "noclose",
+	           buttons:
+	           {
+	               "Ok": function () {
+	                   $(this).dialog("close");
+                        if (rowID[0] == "new")
+                            var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_StartDate").val(oldStartDate);
+                       else
+                            var endDateValue = $("#" + rowID[0] + "_StartDate").val(oldStartDate);
+                       //$("#"+rowID[0]+"_StartDate").val(oldStartDate);
+	               }
+	           }
+	       });
+        }
+    }
+    function ChangeSubProjectEndDate(e) {
+  
+        var selectedDateID = e.target.id;
+        var rowID = selectedDateID.split("_");
+        var selectedEndDate = e.target.value;
+        if (rowID[0] == "new")
+            var startDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_StartDate").val();
+        else
+            var startDateValue = $("#" + rowID[0] + "_StartDate").val();
+        //var startDateValue = $("#"+rowID[0]+"_StartDate").val();
+        if (selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "") {
+        $("#SubProjectEndDateLesserDialog").dialog({
+	           modal: true,
+	           resizable: false,
+	           height: 'auto',
+	           width: 300,
+               dialogClass: "noclose",
+	           buttons:
+	           {
+	               "Ok": function () {
+	                   $(this).dialog("close");
+                        if (rowID[0] == "new")
+                            var endDateValue = $("#" + rowID[0] + "_" + rowID[1] + "_EndDate").val(oldEndDate);
+                       else
+                            var endDateValue = $("#" + rowID[0] + "_EndDate").val(oldEndDate);
+                       //$("#"+rowID[0]+"_EndDate").val(oldEndDate);
+	               }
+	           }
+	       });
+        }
+    }
+
+    function ForAppendID(cellValue, options, rowdata, action) {
+        var delChkbox = '<input type="checkbox" class="chkForDelete" id=' + rowdata["SubProjectId"] + '>';
+        var delLabel = '<label for=' + rowdata["SubProjectId"] + ' class="LabelForCheckbox"></label>';
+        return delChkbox + delLabel;
+    }
+             
+    function isValidWorkHours(value, Colname) {
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+        value = $.trim(value);
+       var valid = pattern.test(value);
+
+        if (!valid) {
+                 $("#ValidSubProjectWorkHoursDialog").dialog({
+	                  modal: true,
+	                  resizable: false,
+	                  height: 'auto',
+	                  width: 300,
+	                  title: "SubProject Details",
+	                  dialogClass: "noclose",
+	                  buttons:
+	                  {
+	                      "Ok": function () {
+	                          $(this).dialog("close");
+	                      }
+	                  }
+	              });
+                    $.preventDefault();
+             } 
+        else {
+            return [true, ""];
+            }       
+     }
+
+    function IsResonsiblePrsnSelected(value, colname) {
+        if (value == "0") {
+              $("#RequiredResponsiblePrsn").dialog({
+	          modal: true,
+	          resizable: false,
+	          height: 140,
+	          width: 300,
+              dialogClass: "noclose",
+	          buttons:
+	          {
+	              "Ok": function () {
+	                  $(this).dialog("close");
+	              }
+	          }
+	      });
+            $.preventDefault();
+            }
+        else {
+            return [true, ""];
+            }
+         }   
+        var SelectedSubProjectId = [];
+    
+    function GetSelectedCheckbox() {
+    SelectedSubProjectId = [];
+    $("#jqManageSubProjectsTable :checked").each(function (i, val) {       
+        SelectedSubProjectId.push($(this).prop("id"));
+    });
+}
+
+$('#btnSelectAll').on('click', function () {
+    SelectedSubProjectId = [];
+    $(".chkForDelete").each(function (i, val) {
+        $(".chkForDelete").attr("checked", true);     
+        SelectedSubProjectId.push($(this).prop("id"));
+    });
+});
+$('#btnDeselectAll').on('click', function () {
+    SelectedSubProjectId = [];
+    $(".chkForDelete").each(function (i, val) {
+        $(".chkForDelete").attr("checked", false);       
+    });
+});
+
+$('#btnDelete').on('click', function () {
+    GetSelectedCheckbox();  
+    DeleteSubProjectDetail(SelectedSubProjectId);
+});
+
+
+     function DeleteSubProjectDetail(SubProjectId) {
+        if (SubProjectId.length == 0) {
+            $("#NoSubProjectRecordSelected").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+			{
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $('#deleteSubProjectConfirmation').dialog({
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+                dialogClass: "noclose",
+			    title: "Delete SubProject Detail",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: '@Url.Action("DeleteManageSubProjectDetails", "SEM")',
+					           data: JSON.stringify(SelectedSubProjectId),
+                                contentType: "application/json",
+                                type: 'POST',      
+                                success: function (data) {
+					                if (data.status == true) {
+					                    $("#deleteSubProjectConfirmation").dialog("close");
+					                    $("#deleteSubProjectSuccess").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Deleted",
+                                            dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                                    $('#manageSubProjects #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    $("#deleteSubProjectConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'SubProject Details',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                                    $('#manageSubProjects #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+					                    $("#deleteSubProjectConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'SubProject',
+                                            dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                jQuery("#jqManageSubProjectsTable").trigger("reloadGrid");
+                                                    $('#manageSubProjects #ResponsiblePerson').val('');
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			});
+	$('#deleteSubProjectConfirmation').dialog('open');
+    }
+    }
+</script>

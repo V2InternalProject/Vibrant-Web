@@ -1,0 +1,207 @@
+﻿@model List<HRMS.Models.UploadEmployeeDocumentsViewModel>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	$.ajaxSetup({
+		// Disable caching of AJAX responses
+		cache: false
+	});
+	$(document).ready(function () {
+		$("#deleteEmpHistory").click(function () {
+			a = 0;
+			selectedDocuments = new Array();
+			if ($('input.chk').is(':checked') == true) {
+				$("input.chk:checked").each(function () {
+					selectedDocuments[a] = $(this).attr("id");
+					a++;
+				})
+				DeleteEmpUploadDocsHistroyDetails(selectedDocuments);
+			}
+			else {
+				$('#WarningToSelectDeleteEmpFile').dialog({
+					autoOpen: false,
+					modal: true,
+					resizable: false,
+					height: 140,
+					width: 300,
+					title: " Delete Confirmation",
+					buttons: {
+						"Ok": function () { $('#WarningToSelectDeleteEmpFile').dialog('close'); }
+					}
+				});
+				$("#WarningToSelectDeleteEmpFile").dialog('open');
+			}
+		});
+	});
+
+	function DeleteEmpUploadDocsHistroyDetails(selectedDocuments) {
+		$('#deleteEmpDocHistoryconfirmation').dialog({
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			height: 140,
+			width: 300,
+			title: "History Delete",
+			buttons: {
+				"Ok": function () {
+				    DisplayLoadingDialog();  //checked
+
+					DeletionEmpDocHistroy(selectedDocuments);
+				},
+
+				"Cancel": function () { $('#deleteEmpDocHistoryconfirmation').dialog('close'); }
+			}
+		});
+		$("#deleteEmpDocHistoryconfirmation").dialog('open');
+	}
+
+	function DeletionEmpDocHistroy(selectedDocuments) {
+		$("#DeleteEmpDocs").dialog({
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			height: 140,
+			width: 300,
+			title: "Deleted",
+			buttons: {
+				"Ok": function () {
+					$('#DeleteEmpDocs').dialog('close');
+				}
+			}
+		});
+		//
+		var postData = { filenames: selectedDocuments };
+		$.ajax({
+			url: '@Url.Action("DeleteEmpDocsSelected", "EmployeeDetails")',
+			data: postData,
+			cache:false,
+			traditional: true,
+			dataType: "json",
+			success: function (data) {
+
+				$("#loading").dialog("close");
+				$("#loading").dialog("destroy");
+
+				if (data == true) {
+					$("#deleteEmpDocHistoryconfirmation").dialog('close').remove();
+					$("#ShowEmpDocUploadHistory").dialog('close');
+					jQuery("#jqTableEmpUploadDoc").trigger("reloadGrid");
+					$("#DeleteEmpDocs").dialog('open');
+				}
+				else {
+					$("#deleteEmpDocHistoryconfirmation").dialog('close').remove();
+					errorOccured();
+				}
+			},
+			Error: function () { errorOccured(); }
+		});
+	}
+
+	if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+		$("#deleteEmpHistory").attr("disabled", true);
+	}
+</script>
+@{var i = 1;}
+<div class="tablestyle3 mrgnT15">
+	<table border="0" cellpadding="0" cellspacing="0" class="TableJqgrid" width="100%">
+		@foreach (var item in Model)
+  {
+			<tr align="center" class="tableRows">
+				<td align="right" class="" width="30%">
+					<div class="display-label">
+						<b>File Name </b>
+					</div>
+				</td>
+				<td align="left">
+					<div class="display-field">
+						@Html.ActionLink(item.FileName, "DownloadEmployeeFile", "EmployeeDetails", new { @item.FileName, @item.EmployeeId }, null)
+					</div>
+				</td>
+			</tr>
+
+			<tr align="center"  class="tableRows">
+				<td align="right" class="">
+					<div class="display-label">
+						<b>Upload Date </b>
+					</div>
+				</td>
+				<td align="left">
+					<div class="display-field">
+						@item.UploadedDate
+					</div>
+				</td>
+			</tr>
+
+			<tr align="center"  class="tableRows">
+				<td align="right" class="">
+					<div class="display-label">
+						<b>Description </b>
+					</div>
+				</td>
+				<td align="left">
+					<div class="display-field">
+						@item.FileDescription
+					</div>
+				</td>
+			</tr>
+
+			<tr align="center"  class="tableRows">
+				<td align="right" class="">
+					<div class="display-label">
+						<b>Uploaded By </b>
+					</div>
+				</td>
+				<td align="left">
+					<div class="display-field">
+						@item.UploadedBy
+					</div>
+				</td>
+			</tr>
+
+	  if (i != Model.Count)
+	  {
+			<tr align="center">
+				<td align="right">
+					<div class="display-label">
+						<b>Delete </b>
+					</div>
+				</td>
+				<td align="left">
+					<div class="display-field">
+						@Html.CheckBox("EmpCheck", item.isChecked, new { @class = "chk", @id = @item.FileName })
+					</div>
+				</td>
+			</tr>
+
+	  }
+
+	  if (i > 1 && i == Model.Count)
+	  {
+			<tr>
+				<td style="border: 0px none;" colspan="2">
+					<input id="deleteEmpHistory" type="button" value="Delete" />
+				</td>
+			</tr>
+
+	  }
+
+	  i++;
+  }
+	</table>
+</div>
+<div class="popup_button">
+	&nbsp;</div>
+<div id="deleteEmpDocHistoryconfirmation" style="display: none">
+	<p>
+		Are you sure you want to delete selected Documents ?</p>
+</div>
+<div id="DeleteEmpDocs" style="display: none">
+	<p>
+		Documents has been Deleted</p>
+</div>
+<div id="WarningToSelectDeleteEmpFile" style="display: none">
+	<p>
+		You have not selected the file to Delete</p>
+	<p>
+		Mark the file, to Delete</p>
+</div>

@@ -1,0 +1,235 @@
+﻿@model HRMS.Models.DesignationDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+        if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+            $("#addNewDesignation :input").attr("disabled", true);
+        }
+    });
+</script>
+@using (Html.BeginForm("DesignationDetails", "EmployeeDetails", FormMethod.Post, new { id = "addNewDesignation" }))
+{
+    @Html.HiddenFor(x => x.EmployeeId)
+    @Html.HiddenFor(x => x.UniqueId)
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25 NoNegMrgnContainer">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.Year):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @* @Html.EditorFor(x => x.Year)*@
+                @Html.DropDownListFor(x => x.Year, new SelectList(ViewBag.ListOfYears), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.Year)</p>
+                @Html.HiddenFor(x => x.Year, new { @id = "year" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.LabelFor(x => x.Month):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.Month, new SelectList(Model.JoiningMonth, "Text", "Text", "Select"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.Month)</p>
+                @Html.HiddenFor(x => x.Month, new { @id = "month" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               @Html.LabelFor(x => x.Grade):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.Grade, (SelectList)ViewBag.GradeList, "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.Grade)</p>
+                @Html.HiddenFor(x => x.Grade, new { @id = "grade" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.LabelFor(x => x.Level):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(x => x.Level, (SelectList)ViewBag.LevelList, "Select")
+               <p class="qualif-detail"> @Html.ValidationMessageFor(x => x.Level)</p>
+                @Html.HiddenFor(x => x.Year, new { @id = "level" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.Designation):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.Designation, new { @id = "NewDesignation" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.Designation)</p>
+                @Html.HiddenFor(x => x.Designation, new { @id = "designation" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+              @Html.LabelFor(x => x.RoleDescription):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.RoleDescription)
+                @Html.HiddenFor(x => x.RoleDescription, new { @id = "roleDescription" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.JoiningDesignation):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(x => x.JoiningDesignation, new { @id = "JoiningDesignation" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.JoiningDesignation)</p>
+                @Html.HiddenFor(x => x.JoiningDesignation, new { @id = "joiningDesignation" })
+            </div>
+        </div>
+    </div>
+
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="saveDesignation" type="submit" value="Save" class="button mrgnR5" />
+            <input id="cancel" type="button" value="Reset" onclick="resetDiaglog()" class="button" />
+        </div>
+    </div>
+
+}
+<div id="successDesignationDialog" title="Designation Details" style="display: none">
+    <p>
+        Designation Details have been saved.</p>
+</div>
+<div id="invalidMonth" title="Designation Details" style="display: none">
+    <p>
+        Month selected should be in between Joining Date Month and Current Date Month.</p>
+</div>
+<div id="invalidEntry" title="Designation Details" style="display: none">
+    <p>
+      More than one designation cannot be added for same year and month.</p>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var postUrl = '@Url.Action("DesignationDetails", "EmployeeDetails")';
+
+        $('#saveDesignation').click(function () {
+            if ($('#addNewDesignation').valid()) {
+                DisplayLoadingDialog();  //checked
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#addNewDesignation').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results.status == true) {
+                            $('#newdesignationdialog').dialog("close");
+                            jQuery("#jqDesignationTable").trigger("reloadGrid");
+
+                            $("#successDesignationDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: 'Designation Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.isValidEntry == false) {
+                            $("#invalidEntry").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: 'Invalid Entry',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.isValidMonth == false && results.status == false) {
+                            $("#invalidMonth").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: 'Designation Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: 'Designation Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+    });
+
+    $(document).ready(function () {
+        $("#NewDesignation").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        return {
+                            label: el.DesignationName,
+                            value: el.DesignationName
+                        };
+                    }));
+                });
+            }
+        });
+
+        $("#JoiningDesignation").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        return {
+                            label: el.DesignationName,
+                            value: el.DesignationName
+                        };
+                    }));
+                });
+            }
+        });
+    });
+
+    var resetDiaglog = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+
+        $('#Year').val($('#year').val());
+        $('#Month').val($('#month').val());
+        //$('#Grade option:contains(' + $('#grade').val() + ')').attr("selected", "selected");
+        $('#Grade').val($('#grade').val());
+        $('#Level').val($('#level').val());
+        $('#NewDesignation').val($('#designation').val());
+        $('#RoleDescription').val($('#roleDescription').val());
+        $('#JoiningDesignation').val($('#joiningDesignation').val());
+        $('#IsEdit').val('false');
+    }
+</script>

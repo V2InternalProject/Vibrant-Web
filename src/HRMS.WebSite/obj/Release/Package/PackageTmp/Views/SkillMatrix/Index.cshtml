@@ -1,0 +1,95 @@
+﻿@model HRMS.Models.SkillMatrix.SkillMatrixSearchAll
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/rmg.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="~/Scripts/New%20Design/jquery.selectBox.js"></script>
+<link href="~/Content/New%20Design/jquery.selectBox%20(2).css" rel="stylesheet" />
+<section class="RMGContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Skill Matrix</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="#" class="selected" id="Skill">Search By Skill</a>
+            <a href="#" id="EmployeeName">Search By Employee</a>
+            @*<a href="#" id="Upload" style="display:none">Upload Feature</a>*@
+            <a href="#" id="Upload" >Upload Feature</a>
+        </nav>
+    </div> 
+    <div class="MainBody SkillBody">
+        <div id="InitialDivSearchBySkill">
+            @Html.Partial("_SkillMatrix", Model)
+        </div>
+        <div id="DivSearchBySkill" style="display:none">
+            @Html.Partial("_SkillMatrix", Model)
+        </div>
+        <div id="DivSearchByUpload" style="display:none">
+            @Html.Partial("_SkillMatrix_Upload", Model)
+        </div>
+        <div id="DivSearchByEmployee" style="display:none">
+            @Html.Partial("_EmployeeSearchName", Model.NewSearchEmp)
+        </div>
+    </div>
+</section>
+
+@*<style type="text/css">
+    .ui-dialog-titlebar-close {
+        display: none;
+    }
+</style>*@
+<script type="text/javascript">
+    $(function () {
+        $('select').selectBox({
+            hideOnWindowScroll: true,
+            keepInViewport: false
+        });
+    });
+    $('#Skill').click(function () {
+        location.reload();
+
+        //removed radio buttons need to check
+        //$("#ResourcePoolName").val($("#SkillName option:first").val());
+        //$("#SkillName").val($("#SkillName option:first").val());
+        $('#InitialDivSearchBySkill').hide();
+        $('#DivSearchByUpload').hide();
+        $('#DivSearchByEmployee').hide();
+        $('#DivSearchBySkill').show();
+
+        $(this).addClass('selected');
+        $('a').not(this).removeClass('selected');
+    });
+
+    $('#Upload').click(function () {
+        $('#InitialDivSearchBySkill').hide();
+        $('#DivSearchBySkill').hide();
+        $('#DivSearchByEmployee').hide();
+        $('#DivSearchByUpload').show();
+
+        $(this).addClass('selected');
+        $('a').not(this).removeClass('selected');
+    });
+
+    $('#EmployeeName').click(function () {
+        $('#pager').hide();
+        $('#jqSearchByEmployeeName').jqGrid('clearGridData');
+        document.getElementById("txtSearchEmployee").value = "";
+        document.getElementById('Employeename').innerHTML = "";
+        document.getElementById('EmployeeId').innerHTML = "";
+        $('#InitialDivSearchBySkill').hide();
+        $('#DivSearchBySkill').hide();
+        $('#DivSearchByUpload').hide();
+        $('#DivSearchByEmployee').show();
+
+        $(this).addClass('selected');
+        $('a').not(this).removeClass('selected');
+    });
+</script>
+
+
+

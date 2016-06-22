@@ -1,0 +1,309 @@
+﻿@model HRMS.Models.EmployeeExperienceDetails
+@{
+    ViewBag.Title = "Experience Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+</script>
+@*<div id="TotalExperienceDetailsMain">
+    @Html.Partial("_TotalExperienceDetails", Model)
+</div>
+<br />
+<br />
+<h3>
+    Past Experience Details</h3>
+<fieldset class="NoTitleGridsContainer">
+    @Html.HiddenFor(m => m.UserRole)
+    <div id="pastExpDetails">
+        @Html.Partial("_PastExperienceDetails", Model.PastExperienceDetails)
+    </div>
+</fieldset>
+<br />
+<br />
+<h3>
+    Experience Gap Details</h3>
+<fieldset class="NoTitleGridsContainer">
+    @Html.HiddenFor(m => m.UserRole)
+    <div id="gapExpDetails">
+        @Html.Partial("_GapExperienceDetails", Model)
+    </div>
+</fieldset>*@
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Employee Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+            <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+            <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+            <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+            <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+            <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Experience</a>
+            <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+            <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bonds</a>*@
+
+            @if (ViewBag.EmployeeId != null)
+            {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Experience</a>
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })"class="selected">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })"class="selected">Experience</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Bond Details</a>
+                }
+            }
+        </nav>
+    </div>
+    <div class="MainBody ExperienceMainbody">
+            <table cellpadding="0" cellspacing="0" border="0" width="96%" class="TableJqgrid ExperienceTable" style="display:none">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="19%"></th>
+                        <th class="tableHeaders" width="18%">Years</th>
+                        <th class="tableHeaders" width="62%">Months</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tableRows">
+                        <td>
+                            V2 Experience
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                            Past Experience
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                            Total Experience
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                            Relevant Experience
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="ButtonContainer1" style="display:none">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>
+
+        @*<h4>Add Past Experience: </h4>*@
+            <div class="FormContainerBox Experience addpast clearfix" style="display:none">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* organization Name:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Type:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Location:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Last Designation:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Worked From:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" placeholder="Datepicker" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>Reporting Manager:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Worked Till:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" placeholder="Datepicker" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>Last Salary Drawn(LPA):</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1" style="display:none">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>
+
+        @*<h4>Add Gap Experience:</h4>*@
+            <div class="FormContainerBox Experience addgap clearfix" style="display:none">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Reason:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* TO Date:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" placeholder="datepicker" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* From Date:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" placeholder="datepicker" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Gap Duration:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>Duration:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <textarea></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1" style=" display:none">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>
+
+            <div id="TotalExperienceDetailsMain">
+                @Html.Partial("_TotalExperienceDetails", Model)
+            </div>
+
+            <h4>Past Experience Details</h4>
+
+            @Html.HiddenFor(m => m.UserRole)
+            <div id="pastExpDetails">
+                @Html.Partial("_PastExperienceDetails", Model.PastExperienceDetails)
+            </div>
+
+            <h4 class="gapE">Gap Experience Details</h4>
+
+            @Html.HiddenFor(m => m.UserRole)
+        <div id="gapExpDetails">
+            @Html.Partial("_GapExperienceDetails", Model)
+        </div>
+        </div>
+</section>

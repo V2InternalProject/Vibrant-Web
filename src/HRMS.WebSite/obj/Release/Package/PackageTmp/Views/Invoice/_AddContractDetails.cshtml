@@ -1,0 +1,96 @@
+﻿@model HRMS.Models.ContractDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<link href="../../Content/New Design/jquery.selectbox.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../../Scripts/New Design/jquery.selectbox-0.2.min.js"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "ContractDetailsForm" }))
+{
+    @Html.HiddenFor(x => x.CustomerID)
+    <div class="formcol clearfix">
+        <div class="editor-label labelwidth floatL">
+            @Html.Label("Contract Type:")
+        </div>
+        <div class="editor-field fieldwidth floatL ">
+            @Html.DropDownListFor(x => x.ContractType, new SelectList(Model.ContractTypeList, "ContractTypeID", "ContractTypeName"), "Select", new { @id = "ContractTypeList" })
+        </div>
+    </div>
+}
+<h3>
+    Contract Details</h3>
+<div class="tablestyle3">
+    <table id="jqAddContractTable">
+    </table>
+</div>
+<div id="jqAddContractTablePager">
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ContractTypeList').selectbox();
+            //$('.sbOptions a').hover(function () {
+            //    //$(this).parent().toggleClass("hoveroption");
+            //});
+    var ContractTypeId;
+    $('#ContractTypeList').change(function() {
+       ContractTypeId = $(this).val();
+       $("#jqAddContractTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+    });
+        $("#jqAddContractTable").jqGrid({
+                    url: '@Url.Action("LoadContractGridGrid", "Invoice")',
+                    postData: { CustomerID: $('#CustomerID').val() , ContractTypeID: function () { return ContractTypeId } },//hardcoded for testing
+                    datatype: "json",
+                    mtype: "POST",
+                    // Specify the column names
+                    colNames: ["","customer Name", "Contract Summary","","Contract Type Name", "Commencement Date", "Contract Signing Date","Contract Expiry Date" ],
+                    // Configure the columns
+                    colModel: [
+                        { name: "ContractID", index: "ContractID", align: "left", width: 60, hidden:true  },
+                        { name: "customerName", index: "customerName", align: "left", width: 60 },
+                        { name: "ContractSummary", index: "ContractSummary", align: "left", width: 60, formatter : addHiperLink  },
+                        { name: "ContractSummary", index: "ContractSummary", align: "left", width: 60, hidden:true  },
+                        { name: "ContractTypeName", index: "ContractTypeName", align: "left", width: 60 },
+                        { name: "CommencementDate", index: "CommencementDate", align: "left", width: 70,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} },
+                        { name: "ContractSigningDate", index: "ContractSigningDate", align: "left", width: 60,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} },
+                        { name: "ContractExpiryDate", index: "ContractExpiryDate", align: "left", width: 60,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} }
+                    ],
+                    // Grid total width and height
+                    width: 700,
+                    // Paging
+                    toppager: false,
+                    jsonReader: { repeatitems: false },
+                    pager: $("#jqAddContractTablePager"),
+                    rowNum: 20,
+                    rowList: [],
+                    viewrecords: true, // Specify if "total number of records" is displayed
+                    height: 'auto',
+                    autowidth: false,
+                    // Default sorting
+                    sortname: "",
+                    sortorder: "asc",
+                    editurl: '@Url.Action("SaveReallocationForResource", "Resource")',
+                    // Grid caption
+                    //caption: "Add Contract Details",
+                    gridComplete: function () {
+                    },
+                    onCellSelect: function(rowid, iCol) {
+        			},
+        }).navGrid("#jqAddContractTablePager",
+                    { search: false, refresh: false, add: false, edit: false, del: false },
+                    {}, // settings for edit
+                    {},
+                    {}
+                );
+    });
+
+    function addHiperLink(cellValue, options, rowdata, action) {
+        return "<a href= '#' onclick=retreiveDatetoCotractFeild('"+options.rowId+"') >" + cellValue + "</a>";
+    }
+    function retreiveDatetoCotractFeild(value) {
+        var rowData = $("#jqAddContractTable").getRowData(value);
+        $('#txtAddContractDetails').val(rowData["ContractSummary"]);
+        $('#ContractID').val(rowData["ContractID"]);
+        $("#ContractDetails").dialog("destroy");
+    }
+</script>

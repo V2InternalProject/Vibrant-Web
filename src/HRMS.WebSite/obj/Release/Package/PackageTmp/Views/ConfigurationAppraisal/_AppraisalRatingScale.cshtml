@@ -1,0 +1,229 @@
+﻿@model HRMS.Models.AppraisalRatingModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")" class="selected">Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")">Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+
+<div class="MainBody ProjectIndexbody ">
+    <div class="ButtonContainer3" id="table">
+    <input type="button" class="ButtonGray mrgnR8 ratingHide" id="AddAppraisalRating" value="Add" onclick="AddRatingScale()" />
+    <input type="button" class="ButtonGray mrgnR8 ratingHide" id="DeleteRating" value="Delete" onclick="Delete()" />
+    <input type="button" class="ButtonGray mrgnR8 ratingHide" id="selectAllRating" value="Select All" onclick="SelectAll()" />
+    <input type="button" class="ButtonGray mrgnR8 ratingHide" id="DeselectAllRating" value="Deselect All" onclick="DeselectAll()" />
+    <input type="button" class="ButtonGray mrgnR8" id="Back_configRatingScale" value="Back" />
+    <input type="button" value="Next" class="ButtonGray mrgnR8" id="NextAppraisal" />
+</div>
+    <div class="tablestyle3 SmartT">
+        <table cellpadding="0" cellspacing="0" border="0" class="TableJqgrid">
+            <thead>
+                <tr>
+                    <td width="4%" class="tableHeaders">
+                        Rating Scale
+                    </td>
+                    <td style="width: 13%" class="tableHeaders">
+                        Rating
+                    </td>
+                    <td width="60%" class="anchorhyperlink tableHeaders">
+                        Description
+                    </td>
+                    <td width="7%" class="anchorhyperlink tableHeaders">
+                        Delete
+                    </td>
+                </tr>
+            </thead>
+            <div id="RatingScales">
+                @Html.HiddenFor(x => x.AppraisalYearID)
+                @foreach (var item in Model.AppraisalRatingScale.ToList())
+                {
+                    <tr class="tableRows">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Percentage, new { @readonly = "readonly", style = "width:1300px" })
+                        </td>
+                        <td id="anchorhyperlink">
+                            <a href="@Url.Action("AddAppraisalRatingScales", "ConfigurationAppraisal", new { RatingID = item.RatingID, AppraisalYearID = item.AppraisalYearID })" id="editRecord" class="tableLink">@item.Rating</a>
+                        </td>
+                        <td id="Description_type">
+                            @Html.DisplayFor(modelItem => item.Description, new { @readonly = "readonly", style = "width:1300px" })
+                        </td>
+                        <td id="Deletecategory">
+                            @Html.CheckBoxFor(x => item.Checked, new { @class = "selectAllRating", @data = item.RatingID })
+                        </td>
+                    </tr>
+                }
+            </div>
+        </table>
+               <div class="recordDivPopup">
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(x => x.RecordsCount)
+                            @Html.DisplayFor(x => x.RecordsCount)
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+       <div id="DeleteAppraisalRatingSuccess" style="display: none" title="Record Deleted">
+            <center class="LoadingWrap">
+            The selected record is successfully deleted.
+        </center>
+        </div>
+        <div id="ErrorRating" style="display: none" title="Error">
+            <center class="LoadingWrap">
+            There is some error.
+        </center>
+        </div>
+        <div id="DeleteAppraisalRatingConfirm" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Are you sure, you want to delete selected record ?
+        </center>
+        </div>
+        <div id="NoRatingSelected" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Please select Atleast one record to delete.
+        </center>
+        </div>
+    </div>
+</div>
+</section>
+<script type="text/javascript">
+    $(".Title").hide();
+    $(document).ready(function () {
+       if ('@ViewBag.IsInitiated' == "True") {
+            $('.selectAllRating').attr('disabled', 'disabled');
+            $('.ratingHide').hide();
+        }
+    });
+    $("#NextAppraisal").click(function () {
+        window.location.href = '@Url.Action("AppraisalStrengthImprove", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.AppraisalYearID';
+
+    });
+
+    $("#Back_configRatingScale").click(function () {
+        window.location.href = '@Url.Action("AppraisalParameters", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.AppraisalYearID';
+
+    });
+
+    function AddRatingScale() {
+        window.location.href = '@Url.Action("AddAppraisalRatingScales", "ConfigurationAppraisal")?RatingID=' + null + '&AppraisalYearID=' + '@Model.AppraisalYearID';
+    }
+
+    function SelectAll() {
+        $(".selectAllRating").prop("checked", true);
+    }
+    function DeselectAll() {
+        $(".selectAllRating").prop("checked", false);
+    }
+
+    function Delete() {
+        var collection = [];
+        $.each($("input:checked"), function (i, val) {
+            collection.push($(val).attr("data"));
+        });
+        if (collection.length == 0) {
+            $("#NoRatingSelected").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteAppraisalRatingConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                            {
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose"
+                            });
+                        $.ajax({
+                            url: '@Url.Action("DeleteAppraisalRatingScales", "ConfigurationAppraisal")',
+                            data: JSON.stringify(collection),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status) {
+                                    $("#DeleteAppraisalRatingConfirm").dialog("close");
+                                    $("#DeleteAppraisalRatingSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                location.reload();
+                                                $(".selectAllRating").prop("checked", false);
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteAppraisalRatingConfirm").dialog("close");
+                                    $("#ErrorRating").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $("#DeleteAppraisalRatingConfirm").dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    }
+</script>

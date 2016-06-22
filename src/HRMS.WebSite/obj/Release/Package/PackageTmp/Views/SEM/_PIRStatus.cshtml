@@ -1,0 +1,53 @@
+﻿<div class="tablestyle3">
+    <table id="jqPIRStatusTable">
+    </table>
+</div>
+<div id="jqPIRStatusTablePager">
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+        $("#jqPIRStatusTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Changed To Status", "Changed By", "Changed On", "Comments"],            
+            // Configure the columns
+            colModel: [
+                { name: "ChangedTo", index: "ChangedTo", align: "left", width: 175},
+                { name: "ChangedBy", index: "ChangedBy", align: "left", width: 175 },
+                { name: "ChangedOn", index: "ChangedOn", align: "left", width: 175 },
+                { name: "Comments", index: "Comments", align: "left", width: 175 },       
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqPIRStatusTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "PIR Status Report",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqPIRStatusTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+     
+     
+     });
+</script>

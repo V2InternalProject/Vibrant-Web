@@ -1,0 +1,2885 @@
+﻿@model HRMS.Models.TravelViewModel
+@{
+    ViewBag.Title = "Travel";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/travel.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Travel/TravelOtherRequirement.js")" type="text/javascript"></script>
+<script src="../../Scripts/jQuery.print.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<div id="PrintContentAppTravel" style="display: none">
+</div>
+<script type="text/javascript">
+    $(".Title").hide();
+    function SettravelExtensionFromDate() {
+        var endDate = new Date('@Model.TravelEndDate');
+
+        endDate.setDate(endDate.getDate() + 1);
+        $('#TravelExtensionEndDate').datepicker("option", "minDate", endDate);
+        $('#TravelImmigrationDateDate').datepicker("option", "minDate", endDate);
+    }
+
+    $(document).ready(function () {
+        $('#reportView').hide();
+        if ('@ViewBag.Extension' == "Ext") {
+            $('#newReqLink').removeClass('selected');
+            $('#extensionReqLink').addClass('selected');
+        }
+        else if ('@ViewBag.viewDetailClick' == 'yes') {
+            $('#newReqLink').removeClass('selected');
+            $('#SavedReqLink').addClass('selected');
+        }
+        else if ('@Model.StageID' == '0') {
+            $('#newReqLink').removeClass('selected');
+            $('#SavedReqLink').addClass('selected');
+        }
+        else if ('@ViewBag.viewDetailClick' == 'Ext') {
+            $('#newReqLink').removeClass('selected');
+            $('#extensionReqLink').addClass('selected');
+        }
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px !important' });
+        });
+
+        // $('.ClassDisplayLabel').hide();
+        $(".ClassDisplayLabel, .ClassTextareaDiv,.ClassDisplayLabelDD").hide();
+        if ($('#ProjectManagerApprover option:selected').text() != "Select") {
+            $('#replaceDDProjectManagerApprover').append($('#ProjectManagerApprover option:selected').text());
+        }
+
+        if ($('#TravelType option:selected').text() != "Select") {
+            $('#replaceDDTravelType').append($('#TravelType option:selected').text());
+        }
+
+        if ($('#ProjectName option:selected').text() != "Select") {
+            $('#replaceDDProjectName').append($('#ProjectName option:selected').text());
+        }
+
+
+        if ($('#AdminApprover option:selected').text() != "Select") {
+            $('#replaceDDAdminApprover').append($('#AdminApprover option:selected').text());
+        }
+
+        if ($('#TravelToCountry option:selected').text() != "Select") {
+            $('#replaceDDTravelToCountry').append($('#TravelToCountry option:selected').text());
+        }
+
+        if ($('#ExpenseReimbursedByClient option:selected').text() != "Select") {
+            $('#replaceDDExpenseReimbursedByClient').append($('#ExpenseReimbursedByClient option:selected').text());
+        }
+
+        checkWhetherCountryVisaIsValid();
+        $('#ddlCurrentCountry').bind('change', function () {
+            checkWhetherCountryVisaIsValid();
+        });
+        function checkWhetherCountryVisaIsValid() {
+            if ($('#ddlCurrentCountry').val() != "0") {
+                $.ajax({
+                    url: '@Url.Action("checkValidEmployeeVisaDetails", "Travel")',
+                    data: { employeeId: '@Model.TravelEmployeeId', countryId: $('#ddlCurrentCountry').val() },
+                    type: "POST",
+                    success: function (results) {
+                        if (results.IsVisaValid == true && results.IsVisaExist == true && results.IsVisaRequired == true) {
+                            jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            $('#hideddlCurrentCountry').hide();
+                        }
+                        else if (results.IsVisaValid == false && results.IsVisaExist == false && results.IsVisaRequired == false) {
+                            jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            $('#hideddlCurrentCountry').hide();
+                        }
+                        else {
+                            jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            $('#hideddlCurrentCountry').show();
+                        }
+                    }
+                });
+            }
+            else {
+                $('#hideddlCurrentCountry').hide();
+                isNoteShown = false;
+            }
+        }
+
+        $("#SelfApproverErrorMessage").hide();
+        $('#btnRejectTravelRequestForm').hide();
+        $('#btnCancelTravelRequestForm').hide();
+        $('#btnSubmitTravelRequestForm').hide();
+        $('#ApproveTravelByAdmin').hide();
+        $('#RejectByAdmin').hide();
+        $('#TravelStartDate').removeAttr('disabled');
+        $('#TravelStartDate').removeAttr('readonly');
+        $('#TravelStartDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", minDate: 0, showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker, onSelect: function (date) {
+                var ValidationStartDate = $('#TravelStartDate').datepicker('getDate');
+                var date2 = $('#TravelStartDate').datepicker('getDate');
+                var endDate = $('#TravelStartDate').datepicker('getDate');
+                endDate.setDate(endDate.getDate());
+                $('#TravelEndDate').datepicker("option", "minDate", endDate);
+                date2.setDate(date2.getDate() + 1);
+                //$('#TravelExtexsionStartDate').datepicker('setDate', date2);
+                $('#TravelExtexsionStartDate').datepicker("option", "minDate", date2);
+                $('#BookingFromDate').datepicker("option", "minDate", ValidationStartDate);
+                $('#BookingToDate').datepicker("option", "minDate", ValidationStartDate);
+                $('#conveyancefromdate').datepicker("option", "minDate", ValidationStartDate);
+            }
+        });
+
+        if (('@ViewBag.UserRole' == 'TravelApprover' && '@Model.StageID' == 1) || ('@ViewBag.UserRole' == 'GroupHead' && '@Model.StageID' == 2)) {
+            $('#btnRejectTravelRequestForm').show();
+            $('#btnSubmitTravelRequestForm').show();
+        }
+
+        $('#TravelEndDate').removeAttr('disabled');
+        $('#TravelEndDate').removeAttr('readonly');
+        var minStartDate = $('#TravelStartDate').val();
+        var minEndDate;
+        if (minStartDate == "") {
+            minEndDate = 0;
+        }
+        else {
+            minEndDate = minStartDate;
+        }
+        $('#TravelEndDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", minDate: minEndDate, showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker,
+            onSelect: function (date) {
+                var ValidationEndDate = $('#TravelEndDate').datepicker('getDate');
+                var date2 = $('#TravelEndDate').datepicker('getDate');
+                date2.setDate(date2.getDate() + 1);
+
+                $('#TravelExtexsionStartDate').datepicker("option", "minDate", date2);
+                $('#BookingFromDate').datepicker("option", "maxDate", ValidationEndDate);
+                $('#BookingToDate').datepicker("option", "maxDate", ValidationEndDate);
+                $('#conveyancefromdate').datepicker("option", "maxDate", ValidationEndDate);
+            }
+        });
+
+        $('#TravelExtexsionStartDate').removeAttr('disabled');
+        $('#TravelExtexsionStartDate').removeAttr('readonly');
+        $('#TravelExtexsionStartDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker,
+            onSelect: function (date) {
+                var date3 = $('#TravelExtexsionStartDate').datepicker('getDate');
+                date3.setDate(date3.getDate() + 1);
+                $('#TravelExtensionEndDate').datepicker("option", "minDate", date3);
+            }
+        });
+
+        $('#TravelExtensionEndDate').removeAttr('disabled');
+        $('#TravelExtensionEndDate').removeAttr('readonly');
+        $('#TravelExtensionEndDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true,
+            beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker, onSelect: function (date) {
+                var ValidationExtensionEndDate = $('#TravelExtensionEndDate').datepicker('getDate');
+
+                $('#BookingFromDate').datepicker("option", "maxDate", ValidationExtensionEndDate);
+                $('#BookingToDate').datepicker("option", "maxDate", ValidationExtensionEndDate);
+                $('#conveyancefromdate').datepicker("option", "maxDate", ValidationExtensionEndDate);
+
+            }
+        });
+
+
+        $('#TravelImmigrationDateDate').removeAttr('disabled');
+        $('#TravelImmigrationDateDate').removeAttr('readonly');
+        $('#TravelImmigrationDateDate').datepicker({
+            dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png",
+            buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker,
+        });
+
+
+        $('#Extensiondiv').hide();
+        $('#SendReminderMail').hide();
+        SettravelExtensionFromDate();
+        var counter = '@ViewBag.Counter';
+        if (counter == 1) {
+            counter = counter + 1;
+        }
+        else {
+        }
+        var viewstatus = '@ViewBag.Viewstats';
+
+        if ('@ViewBag.IsNewForm' == "False" && '@ViewBag.Viewstats' == "No") {
+            $('#btnCancelTravelRequestForm').show();
+            $('#btnSubmitTravelRequestForm').show();
+
+        }
+
+        if ('@Model.GroupheadApprover' == '@ViewBag.loginUserId' || '@Model.AdminApprover' == '@ViewBag.loginUserId') {
+
+        } else {
+            if ('@ViewBag.UserRole' == "" && '@Model.StageID' == 0) {
+                $('#BtnSaveTraveRequestForm').show();
+            } else {
+                if ('@ViewBag.UserRole' == 'Delivery Manager' || '@ViewBag.UserRole' == 'Account Owners') {
+                    $('#BtnSaveTraveRequestForm').show();
+                } else {
+                    $('#BtnSaveTraveRequestForm').hide();
+                }
+            }
+        }
+        if ('@Model.StageID' == 1 || '@Model.StageID' == 2 || '@Model.StageID' == 3 || '@Model.StageID' == 4) {
+
+            $('#NewFormDiv').find('input, textarea, button, select').attr('disabled', 'disabled');
+            $('#BtnSaveTraveRequestForm').hide();
+
+            $('#AccomodationDiv').find('input, textarea, button, select').attr('disabled', 'disabled');
+            $('.ui-datepicker-trigger').hide();
+
+            $('#btnAddJourneyDetail').hide();
+            $('#addClientDetails').hide();
+
+            $("#gbox_PassportTable").find('input,select').attr("disabled", true);
+            $("#gbox_VisaTravelDetailsTable").find('input,select').attr("disabled", true);
+            $("#gbox_JourneyTable").find('input,select').attr("disabled", true);
+            $("#gbox_clientTable").find('input,select').attr("disabled", true);
+
+        }
+
+
+        if ('@ViewBag.IsNewForm' == "False" && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' == "Ext") {
+
+
+            $('#Extensiondiv').show();
+            $('#BtnSaveTraveRequestForm').show();
+            $('#btnCancelTravelRequestForm').show();
+            $('#btnSubmitTravelRequestForm').show();
+            $('.ui-datepicker-trigger').show();
+        }
+        if (('@ViewBag.UserRole' == 'TravelApprover' && '@Model.StageID' >= 1) || ('@ViewBag.UserRole' == 'GroupHead' && '@Model.StageID' >= 2) || '@Model.StageID' == 1 || '@Model.StageID' == 2) {
+            $('#btnCancelTravelRequestForm').hide();
+            $('#BtnSaveTraveRequestForm').hide();
+            $('#btnRejectTravelRequestForm').show();
+            $('#btnAddTravelVisaDetails').hide();
+            $('#addClientDetails').hide();
+        }
+        if ('@ViewBag.Viewstats' == "NoExt" && '@ViewBag.GetExtStatus' == 'True' && '@ViewBag.Extension' == "Ext") {
+
+            $('#NewFormDiv').find('input, textarea, button, select').attr('disabled', 'disabled');
+            $('#Extensiondiv').show();
+            $('#BtnSaveTraveRequestForm').show();
+            $('.ui-datepicker-trigger').show();
+
+        }
+
+        if ('@Model.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin") {
+            $('#BtnSaveTraveRequestForm').hide();
+            $('#btnRejectTravelRequestForm').hide();
+            $('#ApproveTravelByAdmin').show();
+            $('#RejectByAdmin').show();
+            $('#btnCancelTravelRequestForm').hide();
+            $('#btnSubmitTravelRequestForm').hide();
+            $('#btnAddTravelVisaDetails').show();
+            $('#btnAddTravelOtherDetails').show();
+        }
+        else {
+            $('#btnAddTravelVisaDetails').hide();
+            $('#btnAddTravelOtherDetails').hide();
+        }
+        if ('@ViewBag.IsNewForm' == "False" && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' == "Ext") {
+
+            $('#Extensiondiv').show();
+            $('#BtnSaveTraveRequestForm').show();
+            $('.ui-datepicker-trigger').show();
+        }
+        if ('@ViewBag.Viewstats' == "NoExt" && '@ViewBag.GetExtStatus' == 'True' && '@Model.StageID' >= 1 && '@ViewBag.Extension' == "Ext") {
+
+            $('#Extensiondiv').find('input, textarea, button, select').attr('disabled', 'disabled');
+            $('#Extensiondiv').show();
+            $('#BtnSaveTraveRequestForm').hide();
+            $('.ui-datepicker-trigger').hide();
+        }
+        if ('@Model.StageID' == 0 || '@ViewBag.loginUserId' == '@Model.TravelEmployeeId') {
+            $('#btnRejectExpenseReimursementForm').hide();
+            $('#btnAddTravelVisaDetails').hide();
+        }
+
+        function showTravelTypeFields() {
+            $('#travelToCountryDiv').show();
+            $('#validVisaDiv').show();
+            $('#topMarginForExtraField').css('margin-top', '-30px');
+            $('#travelToCountryDiv').css('margin-top', '18px');
+
+        }
+
+        function hideTravelTypeFields() {
+            $('#travelToCountryDiv').hide();
+            $('#validVisaDiv').hide();
+            $('#topMarginForExtraField').css('margin-top', '0px');
+            $('#travelToCountryDiv').css('margin-top', '0px');
+            $("#VisaTravelDetailsTable").jqGrid('setGridParam', { rowNum: 10 });
+            $("#VisaTravelDetailsTable").jqGrid("clearGridData", true);
+
+        }
+
+        hideTravelTypeFields();
+        $('#pocDetailsDiv').hide();
+
+        if ($('#TravelType').val() == 2) {
+            showTravelTypeFields();
+        }
+
+
+
+        $('#TravelType').change(function () {
+            if ($('#TravelType').val() == 2) {
+                showTravelTypeFields();
+                $('#ddlCurrentCountry').val("");
+            }
+            else {
+                hideTravelTypeFields();
+            }
+        });
+
+
+        if ('@Model.StageID' == '') {
+            $('#BtnSaveTraveRequestForm').show();
+        }
+
+        if ('@Model.StageID' == 4) {
+            $('#BtnSaveTraveRequestForm').hide();
+            $('#btnCancelTravelRequestForm').hide();
+            $('#btnSubmitTravelRequestForm').hide();
+        }
+
+
+        if ('@ViewBag.UserRole' == 'Travel_Admin' && '@Model.StageID' <= 2) {
+            $('#BtnSaveTraveRequestForm').hide();
+        }
+        if ('@ViewBag.UserRole' == "GroupHead" && '@Model.StageID' >= 1 && '@Model.StageID' >= 3) {
+            $('#BtnSaveTraveRequestForm').hide();
+        }
+        if ('@ViewBag.UserRole' == "GroupHead" && '@Model.StageID' == 0) {
+            $('#BtnSaveTraveRequestForm').show();
+        }
+
+        if ('@Model.StageID' == 0) {
+            $('#BtnSaveTraveRequestForm').show();
+        }
+        if ('@ViewBag.UserRole' == 'Travel_Admin' && ('@Model.StageID' == '' || '@Model.StageID' <= 2)) {
+            $('#BtnSaveTraveRequestForm').show();
+        }
+        if ('@Model.StageID' == 4 && '@ViewBag.IsLoggedInUser' != false && '@ViewBag.Viewstats' != "NoExt") {
+            $('#BtnSaveTraveRequestForm').show();
+            $('#btnRejectTravelRequestForm').hide();
+        }
+
+        if ('@Model.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+            $('#Extensiondiv').find('input, textarea, button, select').attr("disabled", "disabled");
+            $('#NewFormDiv').find('input, textarea, button, select').attr("disabled", "disabled");
+            $('#BtnSaveTraveRequestForm').hide();
+            $('#btnCancelTravelRequestForm').hide();
+            $('#btnSubmitTravelRequestForm').hide();
+        }
+        if ('@Model.StageID' == 0 && '@ViewBag.Extension' == "Ext") {
+            $('#BtnSaveTraveRequestForm').show();
+            $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
+            $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
+
+            $('#Extensiondiv').show();
+            $('#TravelStartDate').attr("disabled", true);
+            $('#TravelEndDate').attr("disabled", true);
+            $('#TravelStartDate').attr("readonly", true);
+            $('#TravelEndDate').attr("readonly", true);
+
+        }
+
+        if ('@Model.StageID' == 0 && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' == "Ext") {
+            $('#BtnSaveTraveRequestForm').show();
+            $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
+            $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
+
+            $('#Extensiondiv').show();
+        }
+        if ('@Model.StageID' == 0 && '@ViewBag.Viewstats' == "NoExt" && '@ViewBag.Extension' != "Ext") {
+
+            $('#BtnSaveTraveRequestForm').show();
+            $('#btnCancelTravelRequestForm').show();
+            $('#btnSubmitTravelRequestForm').show();
+            $('#Extensiondiv').find('input, textarea, button, select').removeAttr("disabled");
+            $('#NewFormDiv').find('input, textarea, button, select').removeAttr("disabled");
+
+            $('#Extensiondiv').show();
+            $('#TravelStartDate').attr("disabled", true);
+            $('#TravelEndDate').attr("disabled", true);
+            $('#TravelStartDate').attr("readonly", true);
+            $('#TravelEndDate').attr("readonly", true);
+
+        }
+        if ('@Model.StageID' == 4 && '@ViewBag.UserRole' == 'Travel_Admin') {
+            $('#Extensiondiv').find('input, textarea, button, select').attr("disabled", true);
+            $('#NewFormDiv').find('input, textarea, button, select').attr("disabled", true);
+            $('#btnCancelTravelRequestForm').hide();
+            $('#btnSubmitTravelRequestForm').hide();
+            $('#BtnSaveTraveRequestForm').hide();
+        }
+
+        if ('@ViewBag.UserRole' == "Travel_Admin" && '@Model.StageID' == 4) {
+            $('#SendReminderMail').show();
+        }
+
+        if ('@ViewBag.UserRole' == 'Management') {
+
+            $('#ProjectManagerApprover').attr("disabled", true);
+        }
+        if ('@ViewBag.UserRole' == 'Management' && '@Model.StageID' == 0) {
+            $('#BtnSaveTraveRequestForm').show();
+        }
+        if ('@Model.StageID' == 3 && '@ViewBag.UserRole' == 'Travel_Admin') {
+            $('#BtnSaveTraveRequestForm').show();
+            $('#TravelStartDate').removeAttr("disabled");
+            $('#TravelEndDate').removeAttr("disabled");
+            $('#ContactNoAbroad').removeAttr("disabled");
+            $("#ContactNoAbroad").removeClass("bg-gray");
+            $('.ui-datepicker-trigger').show();
+        }
+        if ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) {
+            $("#ContactNoAbroad").prop("disabled", true).addClass("bg-gray");
+            $("#TraveRequestForm #TravelEndDate").prop("disabled", true);
+            $("#TraveRequestForm #TravelStartDate").prop("disabled", true);
+            $('.ui-datepicker-trigger').hide();
+        }
+        if ('@Model.StageID' < 4 && '@Model.StageID' != '') {
+            $('#btnCancelTravelRequestForm').show();
+        }
+        if ('@Model.StageID' == 4) {
+            $('#btnCancelTravelRequestForm').hide();
+        }
+        if ('@ViewBag.viewDetailClick' == 'yes') {
+            $('#btnPrintTravelFrm').show();
+            $('#btnCancelTravelRequestForm').hide();
+            $('#btnSubmitTravelRequestForm').hide();
+            $('#btnRejectTravelRequestForm').hide();
+            $('#BtnSaveTraveRequestForm').hide();
+            $('#btnAddTravelVisaDetails').hide();
+            if ('@Model.StageID' != 4) {
+                $('#btnAddEmergencyContactDetails').hide();
+                $('#btnAddJourneyDetail').hide();
+                $('#addClientDetails').hide();
+                $('#AccomodationDiv').find('input, select, textarea').attr('disabled', 'disabled');
+                $('#TravelTab').find('input, select, textarea').attr('disabled', 'disabled');
+                $('.ui-datepicker-trigger').hide();
+            }
+        }
+        if ('@Model.StageID' > 3 && '@ViewBag.UserRole' == 'Travel_Admin') {
+            $('#ContactNoAbroad').removeAttr("disabled").removeClass("bg-gray");
+            $('#BtnSaveTraveRequestForm').show();
+        }
+        if ('@ViewBag.Extension' == "Ext") {
+            $('.travelExtensionHide').hide();
+            $('#TravelStartDate').attr("disabled", "disabled");
+            $('#TravelEndDate').attr("disabled", "disabled");
+            $("#TravelStartDateCollection .ui-datepicker-trigger").hide();
+            $("#TravelEndDateCollection .ui-datepicker-trigger").hide();
+        }
+        if ('@ViewBag.Extension' == "Ext" && ('@Model.StageID' == 0 || '@Model.StageID' == 3) && '@ViewBag.viewDetailClick' == "Ext") {
+            $("#TravelExtensionEndDate").removeAttr("disabled");
+            $("#TravelExtDetails").removeAttr("disabled");
+        }
+        else {
+            $("#TravelExtensionEndDate").attr("disabled", "disabled");
+            $("#TravelExtDetails").attr("disabled", "disabled");
+        }
+
+        // -- Issue-1191: This is to allow the datepicker to get the date manually from keypad.
+        //$("#TravelStartDate, #TravelEndDate, #TravelExtensionEndDate, #TravelImmigrationDateDate").keypress(function () {
+        //    return false;
+        //});
+
+        if ('@Model.StageID' == 4 && '@ViewBag.UserRole' == 'Travel_Admin') {
+            $('#btnCancelTravelRequestForm').show();
+        }
+        if ('@Model.StageID' == 3 && ('@ViewBag.UserRole' == 'Travel_Admin' || '@ViewBag.UserRole' == 'GroupHead' || '@ViewBag.UserRole' == 'Delivery Manager' || '@ViewBag.UserRole' == 'Account Owners' || '@ViewBag.UserRole' == 'Management')) {
+            if ($('#TravelType').val() == "2") {
+                $('#TravelImmigrationDateDate').removeAttr("disabled");
+                $('#TravelImmigrationDateDateCollection .ui-datepicker-trigger').show();
+                $('#TravelExtensionEndDateCollection .ui-datepicker-trigger').show();
+            }
+            else {
+                $('#TravelImmigrationDateDateCollection .ui-datepicker-trigger').hide();
+                $('#TravelExtensionEndDateCollection .ui-datepicker-trigger').show();
+            }
+        }
+        //for converting disables fields to lables
+        //assign Selected Dropdown Value to its respective Label.
+        $("#ddlCurrentCountry").next().next().text($("#ddlCurrentCountry :selected").text());
+        $("#ProjectName").next().next().text($("#ProjectName :selected").text());
+        if ('@ViewBag.UserRole' == 'Management')
+            $("#ProjectManagerApprover").next().next().text("N/A");
+        else
+            $("#ProjectManagerApprover").next().next().text($("#ProjectManagerApprover :selected").text());
+        $("#ExpenseReimbursedByClient").next().next().text($("#ExpenseReimbursedByClient :selected").text());
+        $("#TravelType").next().next().text($("#TravelType :selected").text());
+        DisplayLabel();
+        function DisplayLabel() {
+            $.each($(".ClassDisabledFields"), function (l, val) {
+                if ($(val).is(':disabled')) {
+                    if (val.id == "ProjectName" || val.id == "ProjectManagerApprover" || val.id == "ExpenseReimbursedByClient" || val.id == "TravelType" || val.id == "ddlCurrentCountry") {
+                        $(this).next().hide().next().show().append("</br>");
+                    }
+                    else if (val.id == "TravelExtDetails" || val.id == "AdditionalInfo") {
+                        $(this).hide().next().show().children().show();
+                    }
+                    else if (val.id == "TravelStartDate" || val.id == "TravelEndDate" || val.id == "TravelExtexsionStartDate" || val.id == "TravelExtensionEndDate" || val.id == "TravelImmigrationDateDate") {
+                        $(this).hide().next().next().show();
+                        if ('@ViewBag.Extension' == "Ext")
+                            $(this).next().hide();
+                    }
+                    else
+                        $(this).hide().next().show();
+                }
+            });
+        }
+    });
+
+
+</script>
+<section class="TravelContainer Container">
+    <div id="printTravelDetails">
+        <div class="FixedHeader">
+            <div class="clearfix">
+                <h2 class="MainHeading">
+                    Travel
+                </h2>
+            </div>
+            <nav class="sub-menu-colored">
+                <a id="newReqLink" href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = true, encryptedTravelId = "", viewDetails = "NoExt" })" class="selected">
+                    New Request
+                </a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })">
+                    Extension Request
+                </a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")">
+                    Saved/Submitted Request
+                </a>
+            </nav>
+        </div>
+        <div class="MainBody TravelMainbody">
+            <span id="guide">
+                <a id="btnTravelBack" class="LinkBrown floatL Expensewrap mrgnL30"
+                   href="#">Back</a> <a class="LinkBlue floatR expenseG" id="btnPrintTravelFrm" href="#" onclick="PrintTravelForm()" style="display:none">
+                    Print
+                </a>
+            </span>
+            <div id="TravelTab" class="mrgnT58">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "TraveRequestForm" }))
+                {
+                    @Html.ValidationSummary(true)
+
+                    @Html.HiddenFor(x => x.TravelEmployeeId)
+                    @Html.HiddenFor(x => x.TravelId)
+                    @Html.HiddenFor(x => x.IsNewForm)
+                    @Html.HiddenFor(x => x.TravelTRFNo)
+                    <div class="FormContainerBox  Travel clearfix ContainerOfPages" id="NewFormDiv">
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    @Html.Label("TRF No:")
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.LabelFor(model => model.TravelTRFNo, Model.TravelTRFNo)
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Request Date:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.LabelFor(model => model.RequestDate, String.Format("{0:MM/dd/yyyy}", Model.RequestDate))
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Requestor Name:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.LabelFor(model => model.TravelEmployeeName, Model.TravelEmployeeName)
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Requestor Employee Code:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    <label>@Html.DisplayFor(model => model.TravelEmployeeCode, Model.TravelEmployeeCode)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Organization Unit:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.LabelFor(model => model.OrganizationUnit, Model.OrganizationUnit)
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Client Name:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(model => model.ProjectName, new SelectList(Model.ProjectNameList, "ProjectNameID", "ProjectName", "Select"), "Select", new { @class = "DDtoReplace ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ProjectName, new { @id = "lblProjectName", @class = "ClassDisplayLabelDD" })
+                                    @*<span class="replaceDD" id="replaceDDProjectName"></span>*@
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ProjectName)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Delivery Team:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.LabelFor(model => model.DeliveryTeam, Model.DeliveryTeam)
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Contact Number(Local):
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.ContactNoIndia, new { disabled = "disabled", @class = "bg-gray ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ContactNoIndia, Model.ContactNoIndia, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContactNoIndia)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">*</span>
+                                    <label>
+                                        Personal Email Id:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.userPersonalEmailId, new { disabled = "disabled", @class = "bg-gray ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.userPersonalEmailId, Model.userPersonalEmailId, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.userPersonalEmailId)</p>
+                                </div>
+                            </div>
+                            @if (Model.StageID > 1)
+                            {
+                                <div class="rightcol">
+                                    <div class="LabelDiv">
+                                        <label>
+                                            Contact Number(Travelling Destination):
+                                        </label>
+                                    </div>
+                                    <div class="InputDiv">
+                                        @Html.TextBoxFor(model => model.ContactNoAbroad, new { disabled = "disabled", @class = "bg-gray ClassDisabledFields" })
+                                        @Html.LabelFor(model => model.ContactNoAbroad, Model.ContactNoAbroad, new { @class = "ClassDisplayLabel" })
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Primary Approver:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(model => model.ProjectManagerApprover, (SelectList)ViewBag.ProjectManagerApprovers, "Select", new { @class = "DDtoReplace ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ProjectManagerApprover, new { @id = "lblProjectManagerApprover", @class = "ClassDisplayLabel" })
+                                    @*<span
+                                        class="replaceDD" id="replaceDDProjectManagerApprover"> </span>*@
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ProjectManagerApprover)</p>
+                                    <span id="PrimaryApproverErrorMessage" style="display: none; color: red">
+                                        This Field
+                                        cannot be same as Group Head approver.
+                                    </span><span id="SelfApproverErrorMessage"
+                                                 style="display: none; color: red">
+                                        You cannot select yourself as an approver.
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Travel Start Date:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(x => x.TravelStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelStartDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelStartDate", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.TravelStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelStartDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelStartDate)</p>
+                                    @Html.HiddenFor(x => x.TravelStartDate, new { id = "travelstartdate" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Expense Reimbursed By Client?:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(model => model.ExpenseReimbursedByClient, new SelectList(Model.ClientReimbursementList, "ClientTravelsId", "ClientTravelsValue", "Select"), "Select", new { @class = "DDtoReplace ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.ExpenseReimbursedByClient, new { @id = "lblExpenseReimbursedByClient", @class = "ClassDisplayLabel" })
+                                    @*<span class="replaceDD" id="replaceDDExpenseReimbursedByClient"></span>*@
+                                    <p class="qualif-detail">
+                                        @* @Html.ValidationMessageFor(x => x.ExpenseReimbursedByClient)*@
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="rightcol">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Travel End Date:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(x => x.TravelEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelEndDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelEndDate", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.TravelEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelEndDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelEndDate)</p>
+                                    @Html.HiddenFor(x => x.TravelEndDate, new { id = "travelenddate" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formrow clearfix">
+                            <div class="leftcol clearfix">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Travel Type:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(x => x.TravelType, new SelectList(Model.TravelTypeList, "TravelTypeId", "TravelTypes", "Select"), "Select", new { @class = "DDtoReplace ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.TravelType, new { @id = "lblTravelType", @class = "ClassDisplayLabel" })
+                                    @*<span class="replaceDD" id="replaceDDTravelType"></span>*@
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelType)</p>
+                                </div>
+                            </div>
+                            <div id="travelToCountryDiv" class="clearL leftcol">
+                                <div class="LabelDiv">
+                                    <label>
+                                        *Travel to Country:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.DropDownListFor(x => x.TravelToCountry, new SelectList(Model.CurrentCountryList, "CountryId", "CountryName", "Select"), new { @id = "ddlCurrentCountry", @class = "DDtoReplace ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.TravelToCountry, new { @id = "lblTravelToCountry", @class = "ClassDisplayLabel" })
+                                    @* <span class="replaceDD" id="replaceDDTravelToCountry"></span>*@
+                                    <div class="clearL field-validation-error width290" style="display: none" id="hideddlCurrentCountry">
+                                        You do not have a valid visa for the 'Travel to Country' selected. Kindly add/update
+                                        the Employee Details > Passport/Visa Details tab.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rightcol" id="topMarginForExtraField">
+                                <div class="LabelDiv">
+                                    <label>
+                                        * Additional Information:
+                                    </label>
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextAreaFor(model => model.AdditionalInfo, new { @class = "ClassDisabledFields" })
+                                    <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
+                                        @Html.LabelFor(model => model.AdditionalInfo, Model.AdditionalInfo, new { @class = "ClassDisplayLabel" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    if (Model.IsNewForm == false)
+                    {
+                        <div id="Extensiondiv">
+                            <h4 class="SmallHead">
+                                Travel Extension (To be filled if current travel duration needs to be extended)
+                            </h4>
+                            <div class="FormContainerBox  Travel clearfix">
+                                <div class="formrow clearfix">
+                                    <div class="leftcol clearfix">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                From Date:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtexsionStartDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.TravelExtexsionStartDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtexsionStartDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtexsionStartDate)</p>
+                                        </div>
+                                    </div>
+                                    <div class="rightcol clearfix" id="TravelExtensionEndDateCollection">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Extend to:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelExtensionEndDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.TravelExtensionEndDate, String.Format("{0:MM/dd/yyyy}", Model.TravelExtensionEndDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.TravelExtensionEndDate)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="formrow clearfix">
+                                    <div class="leftcol" id="TravelImmigrationDateDateCollection">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Immigration Date:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextBoxFor(x => x.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @readonly = "readonly", @disabled = "disabled", @Id = "TravelImmigrationDateDate", @class = "ClassDisabledFields" })
+                                            @Html.LabelFor(model => model.ImmigrationDate, String.Format("{0:MM/dd/yyyy}", Model.ImmigrationDate), new { @class = "ClassDisplayLabel" })
+                                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ImmigrationDate)</p>
+                                        </div>
+                                    </div>
+                                    <div class="rightcol">
+                                        <div class="LabelDiv">
+                                            <label>
+                                                Travel Extension Details:
+                                            </label>
+                                        </div>
+                                        <div class="InputDiv">
+                                            @Html.TextAreaFor(model => model.TravelExtDetails, new { @class = "ClassDisabledFields" })
+                                            <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
+                                                @Html.LabelFor(model => model.TravelExtDetails, Model.TravelExtDetails, new { @class = "ClassDisplayLabel" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix blueBorder">
+                                <div class="leftcol">
+                                    <div class="formcol clearfix" style="display: none">
+                                    </div>
+                                    <div class="formcol clearfix">
+                                    </div>
+                                    <div class="formcol clearfix">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            @if (Model.TravelId != 0)
+            {
+                <div>
+                    @Html.Partial("_ContactDetailsForm", Model.ContactDeatails)
+                </div>
+                <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+                </div>
+                <div>
+                    @Html.Partial("_PassportDetailsForm", Model.PassportDetails)
+                </div>
+                <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+                </div>
+                <div>
+                    @Html.Partial("_VisaDetailsForm", Model.VisaDetails)
+                </div>
+                <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+                </div>
+                <div>
+                    @Html.Partial("_JourneyDetailsForm", Model.JourneyDetails)
+                </div>
+                <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+                </div>
+                <div>
+                    @Html.Partial("_ClientDetailsForm", Model.ClientDetails)
+                </div>
+                <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+                </div>
+                <div>
+                    @Html.Partial("_AccomodationDetailsForm", Model.AccomodationDetails)
+                </div>
+            }
+            @if ((Model.StageID >= 3 && ViewBag.UserRole == "Travel_Admin" && ViewBag.IsLoggedInUser != true) || (Model.SearchedUserDetails.EmployeeId == ViewBag.RequestorID) || (Model.StageID == 4 && (ViewBag.Viewstats != "NoExt" || (ViewBag.viewDetailClick == "yes" && Model.StageID == 4)) && (ViewBag.Extension != "Ext" || (ViewBag.viewDetailClick == "yes" && Model.StageID == 4))))
+            {
+                <div>
+                    @Html.Partial("_AccomodationAdminDetailsForm", Model.AccomodationAdminDetails)
+                </div>
+                <div>
+                    @Html.Partial("_ConveyanceDetailsForm", Model.ConveyanceDetails)
+                </div>
+                <div>
+                    @Html.Partial("_OtherAdminDetailsForm", Model.OtherAdminDetails)
+                </div>
+            }
+            <div class="ButtonContainer1">
+                <input id="SendReminderMail" type="button" value="Send Reminder Mail" class="ButtonGray mrgnR11" />
+                <input id="BtnSaveTraveRequestForm" type="button" value="Save" class="ButtonGray mrgnR11" />
+                <input id="btnSubmitTravelRequestForm" type="button" value="Submit" class="ButtonGray mrgnR11" />
+                <input id="btnRejectTravelRequestForm" type="button" value="Reject" class="ButtonGray mrgnR11" />
+                <input id="btnCancelTravelRequestForm" type="button" value="Cancel" title="Cancel Travel Request"
+                       class="ButtonGray mrgnR11" />
+                <input type="button" class="ButtonGray mrgnR11" value="Approved" id="ApproveTravelByAdmin" />
+                <input type="button" class="ButtonGray mrgnR11" value="Reject" id="RejectByAdmin" />
+            </div>
+        </div>
+    </div>
+</section>
+<div id="TravelFormRecordSuccess" style="display: none;" title="Travel Details">
+    @if (Model.StageID >= 0 && Model.StageID <= 4)
+    {
+        <p>
+            Travel Form Details have been saved successfully.
+        </p>
+    }
+    else
+    {
+        <p>
+            Travel Form Details have been saved successfully. Please fill the below sections
+            to complete the request.
+        </p>
+    }
+</div>
+<div id="DateValidatedialog" style="display: none;">
+    <p>
+        Start Date should not be less than End Date
+    </p>
+</div>
+<div id="ExtDateValidatedialog" style="display: none;">
+    <p>
+        Extension Start Date should be greater than Travel End Date.
+    </p>
+</div>
+<div id="ExtensionDateValidatedialog" style="display: none;">
+    <p>
+        Extension Start Date should not be less than Extension End Date.
+    </p>
+</div>
+<div id="SumitExtConfirmationDialog" style="display: none;">
+    <p>
+        Travel Extension Details form submitted successfully.
+    </p>
+</div>
+<div id="TravelSubmitFormRecordSuccess" style="display: none;" title="Travel Details">
+    <p>
+        Travel Details form submitted successfully.
+    </p>
+</div>
+<div id="DateValidateforEmptydialog" style="display: none;">
+    <p>
+        Please select Travel Extension Dates and fill Travel Extension Details.
+    </p>
+</div>
+<div id="DateValidateforImmigrationDetails" style="display: none;">
+    <p>
+        Immigration Details Should be less than or equal to Travel Extended To Date.
+    </p>
+</div>
+@*//div added*@
+<div id="ShowPassportDetailsTravel">
+</div>
+<div id="accomodationRecordSuccess" style="display: none;">
+    <p>
+        Travel Requirement Details has been saved successfully.
+    </p>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div class="reportClass" id="iframesrc">
+    <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
+</div>
+<div id="ApproveAdmindialog" style="display: none;">
+    <p>
+        Travel request approved successfully.
+    </p>
+</div>
+<div id="RejectConfirmationMessageAdmin" style="display: none">
+    Are you sure you want to move the process back to the requestor?
+</div>
+<div id="RejectConfirmationMessageAppraover" style="display: none">
+    Are you sure you want to move the process back to the requestor?
+</div>
+<div id="RejectCommentDialogAdmin" style="display: none">
+    <div class="floatL">
+        <span class="mandatory">*</span>Enter Comment:
+    </div>
+    <div class="floatL">
+        <textarea rows="2" cols="20" id="txtCommentAdmin"></textarea>
+    </div>
+    <div style="display: none; color: red" id="ErrorCommentAdmin" class="floatL">
+        Please Enter commment
+    </div>
+    <div style="display: none; color: red" id="ErrorLengthCommentAdmin" class="floatL">
+        Enter commments upto 400 characters
+    </div>
+</div>
+<div id="RejectCommentDialogApprover" style="display: none">
+    <div class="floatL">
+        <span class="mandatory">*</span>Enter Comment:
+    </div>
+    <div class="floatL">
+        <textarea rows="5" cols="20" id="txtCommentApprover"></textarea>
+    </div>
+    <div style="display: none; color: red" id="ErrorCommentApprover" class="floatL">
+        Please Enter commment
+    </div>
+    <div style="display: none; color: red" id="ErrorLengthCommentApprover" class="floatL">
+        Enter commments upto 400 characters
+    </div>
+</div>
+<div id="RejectSuccessMessage" style="display: none">
+    Travel process has been moved back to the requestor.
+</div>
+<div id="ErrorConvaeyAdmin" style="display: none">
+    Please add Journey Mode Details and Ticket Name in Journey Tab.
+</div>
+<div id="ErrorTravelAdmin" style="display: none">
+    Please select Is Eligible for Car Hire Details from Travel Tab and Save Details.
+</div>
+<div id="AccomadationGriDError" style="display: none">
+    Please add atleast one record in Accommodation Tab.
+</div>
+<div id="LocalCoGridError" style="display: none">
+    Please add atleast one record in Local Conveyance Tab.
+</div>
+<div id="MisceleGridError" style="display: none">
+    Please add atleast one record in Miscellaneous Tab.
+</div>
+<div id="ErrorForselfAdminApprove" style="display: none">
+    Admin cannot Apporve self Request.
+</div>
+<div id="ErrorForselfAdminSave" style="display: none">
+    Admin cannot save self Request.
+</div>
+<div id="ErrorForselfAdminReject" style="display: none">
+    Admin cannot Reject self Request.
+</div>
+<div id="ErrorForselfAdminCancel" style="display: none">
+    Admin cannot cancel self Request.
+</div>
+<div id="NoApproverSelected" style="display: none">
+    Please select Approvers.
+</div>
+<div id="dateCompareMessage" style="display: none">
+    Journey Date should not be less than Start Date.
+</div>
+<div id="dateAccommodationFromCompareMessage" style="display: none">
+    Hotel booking from date should be between travel start date and travel end date.
+</div>
+<div id="dateAccommodationToCompareMessage" style="display: none">
+    Hotel booking to date should be between travel start date and travel end date.
+</div>
+<div id="dateLocalConveyanceCompareMessage" style="display: none">
+    Local Conveyance date should be between travel start date and travel end date.
+</div>
+@*
+    //end div*@
+<div id="PrintContentTravel" style="display: none">
+</div>
+<div id="TravelMailDialog" style="display: none;">
+    @{Html.RenderPartial("_TravelSendEmail", Model.Mail);}
+</div>
+<script type="text/javascript">
+    controls = [];
+    var SelectedGuid = "";
+    var selectedReportID = 23;
+    function PrintTravelForm() {
+        controls.push({ id: 'travelId', value: '@ViewBag.Travelid', TypeId: selectedReportID });
+
+        $.ajax({
+            url: "/Reports/SaveFormData",
+            type: 'POST',
+            async: false,
+            contentType: "application/json",
+            dataType: 'json',
+            data: JSON.stringify(controls),
+            success: function (data) {
+                if (data.IsUpdated == true) {
+                    newGuid = data.newGuid;
+                    SelectedGuid = newGuid;
+                }
+            },
+            error: function () {
+            }
+        });
+        var url = "../ReportViewer.aspx?selectedGuid=" + SelectedGuid + "&reportID=" + selectedReportID;
+
+        $("#iframesrc").dialog({
+            autoOpen: false,
+            modal: true,
+            height: 500,
+            width: 1140,
+            open: function (ev, ui) {
+                $('#reportView').attr('src', url);
+            },
+            close: function (event, ui) {
+                $('#reportView').attr('src', "about:blank");
+            }
+        });
+        $("#iframesrc").dialog("open");
+        $('#reportView').show();
+
+    }
+
+
+
+
+    $("#goToTopTravel").click(function () {
+        $('html, body').animate({ scrollTop: 0 }, 'slow');
+    });
+    $('#btnTravelBack').click(function () {
+        window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+    });
+
+    // Delete all Travel Details
+    $('#btnCancelTravelRequestForm').click(function () {
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+        if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
+            $("#ErrorForselfAdminCancel").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+
+            });
+            $.preventDefault();
+        }
+        else {
+            $('#CancelAllTravelDelDialog').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+			    title: "Cancel Travel Request",
+			    dialogClass: 'noclose',
+			    buttons:
+					{
+					    Ok: function () {
+					        $('#CancelAllTravelDelDialog').dialog("close");
+					        $('#CancelCommentDialog').dialog(
+			    {
+			        autoOpen: false,
+			        modal: true,
+			        width: 300,
+			        height: 'auto',
+			        resizable: false,
+			        title: "Cancel Comment",
+			        dialogClass: 'noclose',
+			        buttons:
+					{
+					    Ok: function () {
+					        var comments = $("#txtCancelComment").val();
+					        if (comments.length <= 0) {
+					            $('#ErrorCancelComment').show();
+					            return false;
+					        }
+					        else {
+					            $('#ErrorComment').hide();
+					        }
+					        var commenttype = "canceled";
+					        travelId = '@Model.TravelId';
+					        $.ajax({
+					            url: "SaveComments/Travel",
+					            type: "POST",
+					            Async: false,
+					            cache: false,
+					            data: { travelId: travelId, comments: comments, commenttype: commenttype },
+					            success: function (data) {
+
+					                $("#CancelCommentDialog").dialog("close");
+					                if (resul.status == "Error") {
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Travel Details',
+					                        dialogClass: 'noclose',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+
+					        DisplayLoadingDialog(); // Checked global.js
+
+					        $.ajax({
+					            url: "DeleteAllTravelDetailsByTravelId/Travel",
+					            data: { travelId: travelId, TravelEmployeeId: '@Model.TravelEmployeeId', comments: comments },
+					            async: false,
+					            success: function (res) {
+					                if (res.status == true) {
+					                    //callTravelMail(res.travelID, false, false, true, res.employeeID, res.stageID, res.ProjectManagerApprover, res.GroupHeadApprover, res.AdminApprover, res.TRFNo, res.comments);
+					                    //					                    $("#loading").dialog("close");
+					                    //					                    $("#loading").dialog("destroy");
+					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //					                    $("#CancelAllTravelDelDialog").dialog("close");
+					                    //					                    $("#CancelMessage").dialog({
+					                    //					                        resizable: false,
+					                    //					                        height: 140,
+					                    //					                        width: 300,
+					                    //					                        title: "Cancelled",
+					                    //					                        dialogClass: 'noclose',
+					                    //					                        modal: true,
+					                    //					                        buttons: {
+					                    //					                            Ok: function () {
+					                    //					                                $(this).dialog("close");
+					                    //					                                //window.location.href = "Index/Travel";
+					                    //					                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //					                            }
+					                    //					                        }
+					                    //					                    });
+					                }
+					                else if (res.status == "Error") {
+
+					                    $("#loading").dialog("close");
+					                    $("#loading").dialog("destroy");
+					                    $("#CancelAllTravelDelDialog").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Travel Details',
+					                        dialogClass: 'noclose',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+
+					                    $("#loading").dialog("close");
+					                    $("#loading").dialog("destroy");
+					                    $("#CancelAllTravelDelDialog").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Travel Details',
+					                        dialogClass: 'noclose',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			    });
+					        $('#CancelCommentDialog').dialog('open');
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			});
+            $('#CancelAllTravelDelDialog').dialog('open');
+        }
+    });
+
+    $('#RejectByAdmin').click(function () {
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+        if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
+            $("#ErrorForselfAdminReject").dialog({
+                resizable: false,
+                height: "auto",
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+
+            });
+            $.preventDefault();
+        }
+        else {
+            var stageid = '@ViewBag.StageID';
+            $('#RejectConfirmationMessageAdmin').dialog(
+    			{
+    			    autoOpen: true,
+    			    modal: true,
+    			    width: 300,
+    			    height: "auto",
+    			    resizable: false,
+    			    title: "Reject Travel Detail",
+    			    dialogClass: "noclose",
+    			    buttons: {
+    			        Ok: function () {
+    			            $("#txtCommentAdmin").val('');
+    			            $('#ErrorCommentAdmin').hide();
+    			            $('#ErrorLengthCommentAdmin').hide();
+    			            $('#RejectConfirmationMessageAdmin').dialog("close");
+    			            $('#RejectCommentDialogAdmin').dialog({
+    			                autoOpen: true,
+    			                modal: true,
+    			                width: 325,
+    			                height: "auto",
+    			                resizable: false,
+    			                title: "Reject comment",
+    			                dialogClass: "noclose",
+    			                buttons: {
+    			                    Ok: function () {
+    			                        DisableFields();
+    			                        var comments = $("#txtCommentAdmin").val().trim();
+    			                        if (comments.length <= 0) {
+    			                            $('#ErrorCommentAdmin').show();
+    			                            return false;
+    			                        }
+    			                        else {
+    			                            $('#ErrorCommentAdmin').hide();
+    			                        }
+    			                        if (comments.length > 400) {
+    			                            $('#ErrorLengthCommentAdmin').show();
+    			                            return false;
+    			                        }
+    			                        else {
+    			                            $('#ErrorLengthCommentAdmin').hide();
+    			                        }
+    			                        var TravelId = '@ViewBag.Travelid';
+    			                        var commenttype = "rejected";
+
+    			                        $('#TravelIdUser').val(TravelId);
+    			                        $('#TravelIdUser').val('@ViewBag.Travelid');
+    			                        $('#StageID').val(stageid);
+
+    			                        DisplayLoadingDialog(); // Checked global.js
+
+    			                        //$("#AccomodationDetailsForm").find('input, tr,select, textarea, dropdown').attr("enabled", "enabled");
+
+    			                        var postUrlReject = '@Url.Action("RejectTravelDetailsAdmin", "Travel")';
+    			                        $('#OtherAdminForm #StageID').val(stageid);
+    			                        $('#OtherAdminForm #TravelId').val(TravelId);
+    			                        $('#AccomodationDetailsForm #Comments').val($("#txtCommentAdmin").val());
+    			                        $.ajax({
+    			                            url: postUrlReject,
+    			                            type: 'POST',
+    			                            async: false,
+    			                            data: $('#AccomodationDetailsForm').serialize(),
+    			                            success: function (data) {
+    			                                EnableFields();
+    			                                //$("#AccomodationDetailsForm").find('input, tr,select, textarea, dropdown').attr("disabled", "disabled");
+    			                                if (data.status == true) {
+    			                                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+    			                                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
+    			                                    //    			                                    $("#loading").dialog("close");
+    			                                    //    			                                    $("#loading").dialog("destroy");
+    			                                    //    			                                    $("#RejectCommentDialogAdmin").dialog("destroy");
+    			                                    //    			                                    $("#RejectSuccessMessage").dialog({
+    			                                    //    			                                        resizable: false,
+    			                                    //    			                                        height: 140,
+    			                                    //    			                                        width: 300,
+    			                                    //    			                                        title: "Rejected",
+    			                                    //    			                                        dialogClass: 'noclose',
+    			                                    //    			                                        modal: true,
+    			                                    //    			                                        buttons: {
+    			                                    //    			                                            Ok: function () {
+    			                                    //    			                                                $(this).dialog("close");
+    			                                    //    			                                                //					                                window.location.href = "Index/Travel";
+    			                                    //    			                                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+    			                                    //    			                                            }
+    			                                    //    			                                        }
+    			                                    //    			                                    });
+    			                                }
+    			                                else if (data.status == "Error") {
+
+    			                                    $("#loading").dialog("close");
+    			                                    $("#loading").dialog("destroy");
+    			                                    $("#RejectConfirmationMessageAdmin").dialog("close");
+    			                                    $("#errorDialog").dialog({
+    			                                        resizable: false,
+    			                                        height: 'auto',
+    			                                        width: 'auto',
+    			                                        modal: true,
+    			                                        title: 'Travel Details',
+    			                                        buttons: {
+    			                                            Ok: function () {
+    			                                                $(this).dialog("close");
+    			                                            }
+    			                                        }
+    			                                    }); //end dialog
+    			                                }
+    			                                else {
+
+    			                                    $("#loading").dialog("close");
+    			                                    $("#loading").dialog("destroy");
+    			                                    $("#RejectConfirmationMessageAdmin").dialog("close");
+    			                                    $("#errorDialog").dialog({
+    			                                        resizable: false,
+    			                                        height: 'auto',
+    			                                        width: 'auto',
+    			                                        modal: true,
+    			                                        title: 'Travel Details',
+    			                                        buttons: {
+    			                                            Ok: function () {
+    			                                                $(this).dialog("close");
+    			                                            }
+    			                                        }
+    			                                    }); //end dialog
+    			                                }
+    			                            }
+    			                        });
+    			                    },
+    			                    Cancel: function () {
+    			                        $(this).dialog('close');
+    			                    }
+    			                }
+    			            }
+    			);
+    			            //    					        $('#RejectCommentDialog').dialog('open');
+    			        },
+    			        Cancel: function () {
+    			            $(this).dialog('close');
+    			        }
+    			    }
+    			});
+            //        $('#RejectConfirmationMessage').dialog('open');
+        }
+    });
+
+    $('#ApproveTravelByAdmin').click(function () {
+        var startDate = $('#TravelStartDate').val();
+        var TravelJourneyEndDate = $('#TravelEndDate').val();
+        var ValidationExtensionStartDate = $('#TravelEndDate').datepicker('getDate');
+        ValidationExtensionStartDate.setDate(ValidationExtensionStartDate.getDate() + 1);
+        var TravelExtStartDate = ValidationExtensionStartDate;
+        var TravelExtEndDate = new Date($('#TravelExtensionEndDate').val());
+        var JourneyGridData = jQuery("#JourneyTable").getRowData();
+        var AccommodationGridData = jQuery("#jqAccomodationAdminTabel").getRowData();
+        var ConveyanceGridData = jQuery("#ConveyanceDetailsTable").getRowData();
+
+        for (var i = 0; i < JourneyGridData.length; i++) {
+            if (JourneyGridData[i].JourneyDate < startDate) {
+                $("#dateCompareMessage").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Travel Process",
+                    dialogClass: 'noclose',
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+        }
+        if (TravelExtEndDate == 'Invalid Date') {
+            if (startDate != 'Invalid Date' && TravelJourneyEndDate != 'Invalid Date') {
+                for (var i = 0; i < AccommodationGridData.length; i++) {
+                    var BookingFrmDate = new Date(AccommodationGridData[i].BookingFromDate)
+                    var BookingToDate = new Date(AccommodationGridData[i].BookingToDate)
+
+                    if (BookingFrmDate < new Date(startDate) || BookingFrmDate > new Date(TravelJourneyEndDate)) {
+                        $("#dateAccommodationFromCompareMessage").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Travel Process",
+                            dialogClass: 'noclose',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    return false;
+                                }
+                            }
+                        });
+                        $.preventDefault();
+                    }
+
+                    if (BookingToDate < new Date(startDate) || BookingToDate > new Date(TravelJourneyEndDate)) {
+                        $("#dateAccommodationToCompareMessage").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Travel Process",
+                            dialogClass: 'noclose',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    return false;
+                                }
+                            }
+                        });
+                        $.preventDefault();
+                    }
+                }
+            }
+        } else {
+            for (var i = 0; i < AccommodationGridData.length; i++) {
+                var BookingFrmDate = new Date(AccommodationGridData[i].BookingFromDate)
+                var BookingToDate = new Date(AccommodationGridData[i].BookingToDate)
+
+                if (BookingFrmDate < new Date(TravelExtStartDate) || BookingFrmDate > new Date(TravelExtEndDate)) {
+                    $("#dateAccommodationFromCompareMessage").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Travel Process",
+                        dialogClass: 'noclose',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+                if (BookingToDate < new Date(TravelExtStartDate) || BookingToDate > new Date(TravelExtEndDate)) {
+                    $("#dateAccommodationToCompareMessage").dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Travel Process",
+                        dialogClass: 'noclose',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+            }
+        }
+
+        if (TravelExtEndDate == 'Invalid Date') {
+            if (startDate != 'Invalid Date' && TravelJourneyEndDate != 'Invalid Date') {
+                for (var i = 0; i < ConveyanceGridData.length; i++) {
+                    var LocalConvDate = new Date(ConveyanceGridData[i].FromDate)
+                    if (LocalConvDate < new Date(startDate) || LocalConvDate > new Date(TravelJourneyEndDate)) {
+                        $("#dateLocalConveyanceCompareMessage").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            title: "Travel Process",
+                            dialogClass: 'noclose',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    return false;
+                                }
+                            }
+                        });
+                        $.preventDefault();
+                    }
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < ConveyanceGridData.length; i++) {
+                var LocalConvDate = new Date(ConveyanceGridData[i].FromDate)
+                if (LocalConvDate < new Date(TravelExtStartDate) || LocalConvDate > new Date(TravelExtEndDate)) {
+                    $("#dateLocalConveyanceCompareMessage").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "Travel Process",
+                        dialogClass: 'noclose',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+            }
+        }
+
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+        if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
+            $("#ErrorForselfAdminApprove").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+
+            });
+            $.preventDefault();
+        }
+        else {
+            var TravelID = '@Model.OtherAdminDetails.RequirementID';
+            var url = '@Url.Action("ChkAllStatusForAdminGrids", "Travel")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                data: { TravelID: TravelID },
+                success: function (data) {
+                    switch (true) {
+                        case (data.AccmG == true):
+                            $("#AccomadationGriDError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
+                                }
+
+                            });
+                            $.preventDefault();
+                            break;
+                        case data.LocalConG == true:
+                            $("#LocalCoGridError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
+                                }
+
+                            });
+                            $.preventDefault();
+                            break;
+                        case data.MisceG == true:
+                            $("#MisceleGridError").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        var selected = $("#tabs").tabs("option", "selected");
+                                        $("#tabs").tabs("option", "selected", selected - 0);
+                                        $(this).dialog("close");
+                                    }
+                                }
+
+                            });
+                            $.preventDefault();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+
+            var TravelID = 0;
+            var postUrl = '@Url.Action("FinalApproveValidationAdmin", "Travel")';
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                async: false,
+                data: { TravelID: TravelID },
+                success: function (data) {
+
+                    if (data.status == true) {
+                        $("#ErrorConvaeyAdmin").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    var selected = $("#tabs").tabs("option", "selected");
+                                    $("#tabs").tabs("option", "selected", selected - 5);
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        $.preventDefault();
+                    }
+                }
+            });
+            var buttonidClicked = this.id;
+            saveTravelForm(buttonidClicked);
+        }
+    });
+    // Reject Travel Details
+    $('#btnRejectTravelRequestForm').click(function () {
+        $("#StageID").val('@Model.StageID');
+        $('#RejectConfirmationMessageAppraover').dialog(
+			{
+			    autoOpen: true,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+			    title: "Reject Travel Detail",
+			    dialogClass: "noclose",
+			    buttons:
+					{
+					    Ok: function () {
+					        $('#RejectConfirmationMessageAppraover').dialog("close");
+					        $('#RejectCommentDialogApprover').dialog({
+					            autoOpen: true,
+					            modal: true,
+					            width: 325,
+					            height: 'auto',
+					            resizable: false,
+					            title: "Reject comment",
+					            buttons:
+					{
+					    Ok: function () {
+					        var comments = $("#txtCommentApprover").val().trim();
+					        if (comments.length <= 0) {
+					            $('#ErrorCommentApprover').show();
+					            return false;
+					        }
+					        else {
+					            $('#ErrorCommentApprover').hide();
+					        }
+					        var travelId = '@Model.TravelId';
+					        var commenttype = "rejected";
+
+
+					        $('#Comments').val(comments);
+
+					        DisplayLoadingDialog(); // Checked global.js
+
+					        var postUrlReject = '@Url.Action("RejectTravelDetails", "Travel")';
+					        $('#AccomodationDetailsForm #StageID').val('@Model.StageID');
+					        $('#AccomodationDetailsForm #Comments').val(comments);
+					        $.ajax({
+					            url: postUrlReject,
+					            type: 'POST',
+					            async: false,
+					            data: $('#AccomodationDetailsForm').serialize(),
+					            success: function (data) {
+					                if (data.status == true) {
+					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
+					                    //					                    $("#loading").dialog("close");
+					                    //					                    $("#loading").dialog("destroy");
+					                    //					                    $("#RejectSuccessMessage").dialog({
+					                    //					                        resizable: false,
+					                    //					                        height: 140,
+					                    //					                        width: 300,
+					                    //					                        title: "Rejected",
+					                    //					                        dialogClass: 'noclose',
+					                    //					                        modal: true,
+					                    //					                        buttons: {
+					                    //					                            Ok: function () {
+					                    //					                                $(this).dialog("close");
+					                    //					                                // window.location.href = "Index/Travel";
+					                    //					                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //					                            }
+					                    //					                        }
+					                    //					                    });
+					                }
+					                else if (data.status == "Error") {
+
+					                    $("#loading").dialog("close");
+					                    $("#loading").dialog("destroy");
+					                    $("#RejectConfirmationMessageAppraover").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Travel Details',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+
+					                    $("#loading").dialog("close");
+					                    $("#loading").dialog("destroy");
+					                    $("#RejectConfirmationMessageAppraover").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Travel Details',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+					        }
+			);
+					        //					        $('#RejectCommentDialog').dialog('open');
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			});
+        //        $('#RejectConfirmationMessage').dialog('open');
+    });
+
+    $('#ProjectManagerApprover').change(function () {
+        if ('@ViewBag.loginUserId' == $('#ProjectManagerApprover').val()) {
+            $("#SelfApproverErrorMessage").show();
+            return false;
+        }
+        else {
+            $("#SelfApproverErrorMessage").hide();
+        }
+    });
+
+    $("#BtnSaveTraveRequestForm").click(function () {
+        if ('@ViewBag.loginUserId' == $('#ProjectManagerApprover').val() && '@Model.StageID' == 1) {
+            return false;
+        }
+        //        //$("#TraveRequestForm").find('input, tr, textarea,select, dropdown').attr("disabled", false);
+        //        $("#TraveRequestForm").find('input, tr, textarea,select, dropdown').prop("disabled", false);
+        //        //$("#AccomodationDetailsForm").find('input, tr,select, textarea, dropdown').attr("disabled", false);
+        //        $("#AccomodationDetailsForm").find('input, tr, textarea,select, dropdown').prop("disabled", false);
+        //        //$("#TraveContactForm").find('input, tr,select, textarea, dropdown').attr("disabled", false);
+        //        $("#TraveContactForm").find('input, tr,select, textarea, dropdown').prop("disabled", false);
+        saveTravelForm();
+
+    });
+    $('#btnSubmitTravelRequestForm').click(function () {
+        var userLoggedIn = '@ViewBag.loginUserId';
+        var submiteduerId = '@ViewBag.SumitedUserEmpId';
+
+        var testval = '@ViewBag.IsExt';
+
+        var ExtstartDate = $('#TravelExtexsionStartDate').val();
+        var ExtendDate = $('#TravelExtensionEndDate').val();
+
+        if (testval == "Ext") {
+            if (new Date($('#TravelImmigrationDateDate').val()) > new Date($('#TravelExtensionEndDate').val())) {
+                $("#DateValidateforImmigrationDetails").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+        if (testval == "Ext") {
+            if ($('#TravelExtensionEndDate').val() == "" || $('#TravelExtDetails').val().trim() == "") {
+                $("#DateValidateforEmptydialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+
+        if (userLoggedIn == submiteduerId) {
+            // remove condition : || $('#AdminApprover option:selected').val() == ""
+            if ($('#ProjectName').val() == "" || ($('#ProjectManagerApprover option:selected').val() == "" && '@ViewBag.UserRole' != 'Management') || $('#TravelStartDate').val() == "" || $('#TravelEndDate').val() == "" || $('#ExpenseReimbursedByClient option:selected').val() == "") {
+                $("#TraveRequestFormError").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Travel Details',
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var selected = $("#tabs").tabs("option", "selected");
+                            $("#tabs").tabs("option", "selected", selected - 6);
+                            $(this).dialog("close");
+
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+        }
+        else if (userLoggedIn != submiteduerId) {
+            // remove condition : || $('#AdminApprover option:selected').val() == ""
+            if ($('#ProjectName').val() == "" || ($('#ProjectManagerApprover option:selected').val() == "" && '@ViewBag.UserRole' != 'Management') || $('#TravelStartDate').val() == "" || $('#TravelEndDate').val() == "" || $('#ExpenseReimbursedByClient option:selected').val() == "") {
+                $("#TraveRequestFormError").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Travel Details',
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var selected = $("#tabs").tabs("option", "selected");
+                            $("#tabs").tabs("option", "selected", selected - 6);
+                            $(this).dialog("close");
+
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+        }
+        else {
+            // remove condition : || $('#AdminApprover option:selected').val() == ""
+            if ($('#ProjectName').val() == "" || /*$('#GroupheadApprover option:selected').val() == "" ||*/($('#ProjectManagerApprover option:selected').val() == "" && '@ViewBag.UserRole' != 'Management') || $('#TravelStartDate').val() == "" || $('#TravelEndDate').val() == "" || $('#ExpenseReimbursedByClient option:selected').val() == "") {
+                $("#TraveRequestFormError").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Travel Details',
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var selected = $("#tabs").tabs("option", "selected");
+                            $("#tabs").tabs("option", "selected", selected - 6);
+                            $(this).dialog("close");
+
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+
+        }
+
+        if ($('#TravelType option:selected').val() == "2" || $('#TravelType option:selected').val() == "") {
+            //if ($('#TravelToCountry').val() == "" || $('#IsValidVisa option:selected').val() == "" || $('#TravellingAbroadForFirstTime option:selected').val() == "" || $('#TravelReadyOnly option:selected').val() == "") {
+            if ($('#TravelToCountry').val() == "") {
+                $("#TraveRequestFormError").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Travel Details',
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var selected = $("#tabs").tabs("option", "selected");
+                            $("#tabs").tabs("option", "selected", selected - 6);
+                            $(this).dialog("close");
+
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+        }
+
+        if ($('#IsPointOfContact option:selected').val() == "1" || $('#IsPointOfContact option:selected').val() == "") {
+            if ($('#POCDetail').val() == "") {
+                $("#PocDetailsError").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Travel Details',
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var selected = $("#tabs").tabs("option", "selected");
+                            $("#tabs").tabs("option", "selected", selected - 6);
+                            $(this).dialog("close");
+
+                        }
+                    }
+                }); //end dialog
+                return false;
+
+            }
+
+        }
+        var TravelID = '@Model.TravelId';
+        var url = '@Url.Action("ChkAllGridStatus", "Travel")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            async: false,
+            data: { TravelID: TravelID, CountryId: $('#ddlCurrentCountry').val(), TravelType: $('#TravelType').val(), TravelTRFNo: $('#TravelTRFNo').val() },
+            success: function (data) {
+                if (data.Contact1G == true) {
+                    $("#GridEmptyErrorContact").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 5);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+
+                if (data.ContactG == true) {
+                    $("#GridEmptyErrorContact1").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 500,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 5);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+                if (data.PassG == true && $('#TravelType option:selected').val() == "2") {
+                    $("#GridEmptyErrorPass").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 4);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+                if (data.VisaG == true && $('#TravelType option:selected').val() == "2") {
+
+                    $("#GridEmptyErrorVisa").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 3);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+                if (data.JourneyG == true) {
+                    $("#GridEmptyErrorJourney").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 2);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+                if (data.ClientG == true) {
+                    $("#GridEmptyErrorClient").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                var selected = $("#tabs").tabs("option", "selected");
+                                $("#tabs").tabs("option", "selected", selected - 1);
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    });
+                    $.preventDefault();
+                }
+            }
+        });
+        if (!$('#AccomodationDetailsForm').valid()) {
+            $('#accomodationRecordSuccess').dialog("close");
+            $("#AccomodationDetailsFormError").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+
+                        $('#accomodationRecordSuccess').dialog("close");
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+
+        var buttonidClicked = this.id;
+        if ('@Model.StageID' != 1 && '@Model.StageID' != 2) {
+            saveTravelForm(buttonidClicked);
+        }
+
+        if ('@Model.StageID' != 0 && '@Model.StageID' != 3) {
+            var statusval = "PmnGhSubmit";
+            submitaccform(statusval);
+        }
+
+    });
+
+
+
+    $("#BtnSaveExtTraveReqForm").click(function () {
+        var startDate = new Date($('#TravelExtexsionStartDate').val());
+        var endDate = new Date($('#TravelExtensionEndDate').val());
+
+        var Startdate = $('#TravelExtexsionStartDate').val();
+        var enddate = $('#TravelExtensionEndDate').val();
+
+        if (Startdate == "" || enddate == "") {
+
+            $("#DateValidateforEmptydialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+            return false;
+
+        }
+
+        if (startDate > endDate) {
+            $("#DateValidatedialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+            return false;
+        }
+
+        var Startdate = $('#TravelExtexsionStartDate').val();
+        var enddate = $('#TravelExtensionEndDate').val();
+        var AddInfo = $('#TravelExtDetails').val().trim();
+
+
+        var postUrl = '@Url.Action("SaveExtensionFormDetails", "Travel")';
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            Async: false,
+            cache: false,
+            //data: { NewTRFNo: NewTRFNo, Travelid: Travelid, Startdate: Startdate, enddate: enddate, AddInfo: AddInfo },
+            data: $("#TraveExtensionRequestForm").serialize(),
+            success: function (result) {
+                if (result.status == true) {
+                    $("#TravelFormRecordSuccess").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+                else if (result.status == "Error") {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Expense Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.reload();
+                            }
+                        }
+                    }); //end dialog
+                }
+            }
+        });
+    });
+
+    $("#SendReminderMail").click(function () {
+        sendcallmailforTravel();
+    });
+
+
+
+    function submitaccform(statusval) {
+        if (statusval == 'EmployeenAdminSubmit' && $('#TravelFormRecordSuccess').is(':visible')) {
+            $('#TravelFormRecordSuccess').dialog("close");
+            $("#TravelFormRecordSuccess").dialog("destroy");
+        }
+
+        var postUrl = '@Url.Action("SubmitTravelApprovalForm", "Travel")';
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            async: false,
+            data: $('#AccomodationDetailsForm').serialize(),
+            success: function (results) {
+                if (results.status == true) {
+                    $("#TravelSubmitFormRecordSuccess").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                            }
+                        }
+                    });
+                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                    //callTravelMail(results.travelId, results.isApproved, false, false, null, null, null, null, null, null);
+                    //var Sucessmsg = "Travel request approved successfully."
+                    //                    if ('@Model.StageID' == 3) {
+                    //                        $('#SubmitSuccessMessage center').html("");
+                    //                        $('#SubmitSuccessMessage center').append(Sucessmsg);
+                    //                    }
+                    //                    $("#SubmitSuccessMessage").dialog({
+                    //                        resizable: false,
+                    //                        height: 140,
+                    //                        width: 300,
+                    //                        title: "Submitted",
+                    //                        dialogClass: 'noclose',
+                    //                        modal: true,
+                    //                        buttons: {
+                    //                            Ok: function () {
+                    //                                $(this).dialog("close");
+                    //                                //window.location.href = "Index/Travel";
+                    //                                //window.location.href = history.back();
+                    //                                jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                    //                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                    //                            }
+                    //                        }
+                    //                    });
+                }
+                else if (results.status == "Error") {
+
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Travel Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                }
+                else {
+
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#TravelErrorMessege").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function saveTravelForm(buttonidClicked) {
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+        if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
+            $("#ErrorForselfAdminSave").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+
+            });
+            $.preventDefault();
+            return false;
+        }
+        //        //need to discuss
+        //        if (($('#ProjectManagerApprover').is(":enabled") && $('#GroupheadApprover').is(":enabled"))) {
+        //            if ($('#ProjectManagerApprover').attr('selected', 'selected').val() == $('#GroupheadApprover').attr('selected', 'selected').val() && '@ViewBag.UserRole' != 'Management') {
+        //                $("#NoApproverSelected").dialog({
+        //                    resizable: false,
+        //                    height: 140,
+        //                    width: 300,
+        //                    modal: true,
+        //                    title: "Error",
+        //                    dialogClass: 'noclose',
+        //                    buttons: {
+        //                        Ok: function () {
+        //                            $(this).dialog("close");
+        //                            return false;
+        //                        }
+        //                    }
+        //                });
+        //                return false;
+        //            }
+        //        }
+        if ('@ViewBag.Extension' == "Ext") {
+            $('#TravelStartDate').val($("#travelstartdate").val());
+            $('#TravelEndDate').val($("#travelenddate").val());
+        }
+        var startDate = new Date($('#TravelStartDate').val());
+        var endDate = new Date($('#TravelEndDate').val());
+
+        if (startDate > endDate) {
+            $("#DateValidatedialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+            return false;
+        }
+
+        var testval = '@ViewBag.Viewstats';
+
+        var ExtstartDate = new Date($('#TravelExtexsionStartDate').val());
+        var ExtendDate = new Date($('#TravelExtensionEndDate').val());
+
+        if (testval == "Ext") {
+            if ($('#TravelExtensionEndDate').val() == "" || $('#TravelExtDetails').val().trim() == "") {
+                $("#DateValidateforEmptydialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+
+        if (ExtstartDate > ExtendDate) {
+            $("#ExtensionDateValidatedialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                }
+            });
+            return false;
+        }
+
+        if (ExtstartDate != "" && ExtendDate != "") {
+            if (endDate > ExtstartDate) {
+                $("#ExtDateValidatedialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            return false;
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+
+        DisableFields();
+
+
+        //if ($(this).valid()) {
+        DisplayLoadingDialog(); // Checked global.js
+
+        var postUrl = '@Url.Action("SaveTravelRequestForm", "Travel")';
+        //var contactUrl = '@Url.Action("SaveTravelContact", "Travel")';
+        var clientUrl = '@Url.Action("SaveClientForm", "Travel")';
+        var accomodationUrl = '@Url.Action("SaveAccomodationFormDetails", "Travel")';
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            data: $('#TraveRequestForm').serialize(),
+            success: function (results) {
+                if (results.status == true) {
+                    if ('@Model.StageID' != '') {
+                        if ('@Model.StageID' != 4) {
+                            //                        $.ajax({
+                            //                            url: contactUrl,
+                            //                            type: 'POST',
+                            //                            data: $('#TraveContactForm').serialize(),
+                            //                            success: function (results) {
+                            //                                if (results.status == true) {
+                            $.ajax({
+                                url: clientUrl,
+                                type: 'POST',
+                                data: $('#ClientForm').serialize(),
+                                success: function (results) {
+                                    if (results.status == true) {
+                                        $.ajax({
+                                            url: accomodationUrl,
+                                            type: 'POST',
+                                            data: $('#AccomodationDetailsForm').serialize(),
+                                            success: function (results) {
+                                                if (results.status == true) {
+                                                    EnableFields();
+                                                    $("#loading").dialog("close");
+                                                    $("#loading").dialog("destroy");
+                                                    if ($("#DateValidatedialog").hasClass('ui-dialog-content')) {
+                                                        $("#DateValidatedialog").dialog("close");
+                                                        $("#DateValidatedialog").dialog("destroy");
+                                                    }
+                                                    var oldTrf = '@Model.TravelTRFNo';
+                                                    var newTrf = results.trfno;
+                                                    if (newTrf > oldTrf) {
+                                                        alert("TRF No. " + oldTrf + " Already taken by other user so changed to new TRF No. :" + results.trfno);
+                                                    }
+                                                    if (buttonidClicked == "btnSubmitTravelRequestForm" || buttonidClicked == 'ApproveTravelByAdmin') {
+                                                        if (('@Model.StageID' == 0 || '@Model.StageID' == 3) && (buttonidClicked == 'btnSubmitTravelRequestForm' || buttonidClicked == 'ApproveTravelByAdmin')) {
+                                                            var statusval = "EmployeenAdminSubmit";
+                                                            submitaccform(statusval);
+                                                        }
+                                                    }
+                                                    else {
+                                                        $("#TravelFormRecordSuccess").dialog({
+                                                            resizable: false,
+                                                            height: 'auto',
+                                                            width: 300,
+                                                            modal: true,
+                                                            dialogClass: 'noclose',
+                                                            buttons: {
+                                                                Ok: function () {
+                                                                    if ('@ViewBag.Extension' == "Ext") {
+                                                                        $('#TravelStartDate').attr("disabled", "disabled");
+                                                                        $('#TravelEndDate').attr("disabled", "disabled");
+                                                                    }
+                                                                    $(this).dialog("close");
+                                                                    //$('#VisaTravelDetailsTable').reload
+                                                                    jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                                                                }
+
+                                                            }
+                                                        }); //Travel Success End
+                                                    }
+                                                }
+                                            }
+                                        }); //ajax end accomodation
+                                    }
+                                }
+                            }); //ajax end client
+                            //                                }
+                            //                            }
+                            //                        }); //ajax end travel
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#TraveRequestForm #ContactNoAbroad").prop("disabled", false);
+                            EnableFields();
+                            $("#TravelFormRecordSuccess").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        $.preventDefault();
+                                    }
+
+                                }
+                            }); //Travel Success End
+                        }
+                    } else {
+                        EnableFields();
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $("#TravelFormRecordSuccess").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    if ('@Model.StageID' == "") {
+                                        DisplayLoadingDialog(); // Checked global.js
+                                    }
+                                    $(this).dialog("close");
+                                    jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                                    window.location.href = '@Url.Action("GetTravelFormDetails", "Travel")?IsNewForm=' + false + '&encryptedTravelId=' + results.TravelID + '&viewDetails=' + 'NoExt';
+                                }
+
+                            }
+                        }); //Travel Success End
+                    }
+
+                }
+
+                else if (results.status == "Error") {
+                    EnableFields();
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Expense Details',
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.reload();
+                            }
+                        }
+                    }); //end dialog
+                }
+
+                else {
+                    EnableFields()
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#addExpenseErrorMessege").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+            }
+        });                         //Main ajax end
+        //}
+        // return false;
+    }
+    function sendcallmailforTravel() {
+        var empId = '@ViewBag.loginUserId';
+        var EmployeeID = '@ViewBag.TravelEmp';
+        $.ajax({
+            url: '@Url.Action("TravelSendMail", "Travel")',
+            type: 'POST',
+            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID },
+            datatype: "json",
+            success: function (data) {
+                //                $("#loading").dialog("close");
+                //                $("#loading").dialog("destroy");
+                if (data) {
+                    $("#TravelMailDialog").html(data);
+                    $("#TravelMailDialog").dialog({
+                        resizable: false,
+                        height: 520,
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            $(this).dialog('close');
+                        }
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendSeparationMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#MailDetails').valid()) {
+
+                            $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose"
+                                    });
+
+                            var sendMailUrl = '@Url.Action("SendEmail", "Travel")';
+                            $.ajax(
+                                    {
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#MailDetails').serialize(),
+
+                                        success: function (serverData) {
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    $("#TravelMailDialog").dialog('destroy');
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+                                                $("#errorDialog").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    dialogClass: 'noclose',
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+
+                                            $("#errorDialog").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                buttons:
+                                                {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                        }
+                    });
+                }
+            }
+        });    //end Mail
+    }
+
+    function DisableFields() {
+
+        if ('@ViewBag.UserRole' == "Travel_Admin" && '@Model.StageID' != 0) {
+            $("#TraveRequestForm").find('input, tr, textarea,select, dropdown').prop("disabled", false);
+            $("#AccomodationDetailsForm").find('input, tr, textarea,select, dropdown').prop("disabled", false);
+            $("#TraveContactForm").find('input, tr,select, textarea, dropdown').prop("disabled", false);
+        }
+        else {
+            $("#TraveRequestForm #TravelTRFNo").prop("disabled", false);
+            $("#TraveRequestForm #RequestDate").prop("disabled", false);
+            $("#TraveRequestForm #TravelEmployeeName").prop("disabled", false);
+            $("#TraveRequestForm #TravelEmployeeCode").prop("disabled", false);
+            $("#TraveRequestForm #OrganizationUnit").prop("disabled", false);
+            $("#TraveRequestForm #DeliveryTeam").prop("disabled", false);
+            $("#TraveContactForm #ContactNoIndia").prop("disabled", false);
+            if ('@ViewBag.Extension' == "Ext") {
+                $("#AccomodationDetailsForm").find('input, tr, textarea,select, dropdown').prop("disabled", false);
+            }
+            if ('@ViewBag.Viewstats' == "No" && '@Model.StageID' == 0) {
+                //$('#GroupheadApprover').prop("disabled", false);
+                $('#ProjectManagerApprover').prop("disabled", false);
+            }
+        }
+    }
+
+    function EnableFields() {
+        if ('@ViewBag.UserRole' == "Travel_Admin" && '@Model.StageID' != 0) {
+            $("#TraveRequestForm").find('input, tr, textarea,select, dropdown').prop("disabled", true);
+            $("#AccomodationDetailsForm").find('input, tr, textarea,select, dropdown').prop("disabled", true);
+            $("#TraveContactForm").find('input, tr,select, textarea, dropdown').prop("disabled", true);
+            $("#TraveRequestForm #TravelStartDate").prop("disabled", false);
+            $("#TraveRequestForm #TravelEndDate").prop("disabled", false);
+            $("#TraveRequestForm #ContactNoAbroad").prop("disabled", false);
+            if ('@Model.StageID' == 4) {
+                $("#TraveRequestForm #TravelStartDate").prop("disabled", true);
+                $("#TraveRequestForm #TravelEndDate").prop("disabled", true);
+            }
+        }
+        else {
+            $("#TraveRequestForm #TravelTRFNo").prop("disabled", true);
+            $("#TraveRequestForm #RequestDate").prop("disabled", true);
+            $("#TraveRequestForm #TravelEmployeeName").prop("disabled", true);
+            $("#TraveRequestForm #TravelEmployeeCode").prop("disabled", true);
+            $("#TraveRequestForm #OrganizationUnit").prop("disabled", true);
+            $("#TraveRequestForm #DeliveryTeam").prop("disabled", true);
+            $("#TraveContactForm #ContactNoIndia").prop("disabled", true);
+
+            if ('@ViewBag.Viewstats' == "No" && '@Model.StageID' == 0) {
+                //$('#GroupheadApprover').prop("disabled", true);
+                $('#ProjectManagerApprover').prop("disabled", true);
+            }
+            if ('@ViewBag.Extension' == "Ext") {
+                $("#AccomodationDetailsForm").find('input, tr, textarea,select, dropdown').prop("disabled", true);
+                //$('#GroupheadApprover').prop("disabled", false);
+                $('#ProjectManagerApprover').prop("disabled", false);
+            }
+        }
+    }
+</script>

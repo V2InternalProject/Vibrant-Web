@@ -1,0 +1,1024 @@
+﻿@model HRMS.Models.OrganizationStructure
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<h2 class="title-bgcolor">
+    Configure Business Group</h2>
+<div class="stackhold-right">
+    <input class="button" type="button" id="SaveEditBusinessGroup" value="Save" />
+    <input class="button" type="button" id="DeleteBusinessGroup" value="Delete" />
+    <input class="button" type="button" id="AddExistingOU" value="Add Existing OU" />
+</div>
+<h3 class="Configure-title">
+    Master</h3>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "ConfigBusinessGroup" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.BusinessGroupID)
+    <div style="float: inherit">
+        <div class="conf-pop">
+            @Html.LabelFor(x => Model.businessgroup)<span class="mandatory">*</span>
+            @Html.TextBoxFor(x => Model.businessgroup)
+            @Html.ValidationMessageFor(x => Model.businessgroup)
+        </div>
+        <div class="conf-pop">
+            @Html.LabelFor(x => Model.BusinessGroupCode)<span class="mandatory">*</span>
+            @Html.ValidationMessageFor(x => Model.BusinessGroupCode)
+            @Html.TextBoxFor(x => Model.BusinessGroupCode, new { @disabled = "disabled" })
+        </div>
+        <div class="conf-pop" style="width: 285px">
+            @Html.LabelFor(x => Model.Active)
+            @Html.CheckBoxFor(x => Model.Active)
+        </div>
+    </div>
+}
+<h3 class="Configure-title">
+    Details</h3>
+<table align="right" class="sub-link">
+    <tr>
+        <td>
+            <a href="#" onclick="OrganizationUnits()">Organization Units</a><span class="conf-div">|</span>
+        </td>
+        <td>
+            <a href="#" onclick="BusinessGroupManagers()">Business Group Managers</a><span class="conf-div">|</span>
+        </td>
+        <td>
+            <a href="#" onclick="MiddleLevelResources()">Middle Level Resources </a>
+        </td>
+    </tr>
+</table>
+<div id="organizationunitsdiv">
+    <br />
+    <div class="stackhold-right">
+        <input class="button" type="button" id="AddOrganizationUnits" value="Add" />
+        <input class="button" type="button" id="DeleteOrganizationUnits" value="Delete" />
+        <input class="button" type="button" id="SelectAllOrganizationUnits" value="Select All"
+            onclick="SelectOrganizationUnits()" />
+        <input class="button" type="button" id="DeselectAllOrganizationUnits" value="Deselect All"
+            onclick="DeselectOrganizationUnits()" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Organization Units</h3>
+    <table cellpadding="0" cellspacing="0" border="0" id="tbl_OrganizationUnits">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Organization Unit
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Organization Unit Code
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete
+                </td>
+            </tr>
+        </thead>
+        <div id="OrganizationUnit">
+            @foreach (var item in Model.OrganizationUnits)
+            {
+                <tr>
+                    <td id="Location">
+                        @Html.DisplayFor(modelItem => item.Location, new { @readonly = "readonly" })
+                    </td>
+                    <td id="LocationCode">
+                        @Html.DisplayFor(modelItem => item.LocationCode, new { @readonly = "readonly" })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(x => item.Checked, new { @id = item.LocationID, @class = "OrgUnits" })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebutton1">
+            <tr>
+                <td class="bluebgtable1">
+                    @Html.LabelFor(x => x.TotalOrganizationUnits)
+                    @Html.DisplayFor(x => x.TotalOrganizationUnits)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<div id="BusinessGroupManagersdiv">
+    <div class="stackhold-right">
+        <input class="button" type="button" id="AddBusinessGroupManagers" value="Add" />
+        <input class="button" type="button" id="DeleteBusinessGroupManager" value="Delete" />
+        <input class="button" type="button" id="SelectAllBusinessGroupManagers" value="Select All"
+            onclick="SelectAllBusinessManager()" />
+        <input class="button" type="button" id="DeselectAllBusinessGroupManagers" value="Deselect All"
+            onclick="DeselectAllBusinessManager()" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Business Group Managers</h3>
+    <table cellpadding="0" cellspacing="0" border="0" id="tbl_BusinessGroupManagers">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Manager
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Is Primary Responsible
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete
+                </td>
+            </tr>
+        </thead>
+        <div id="BusinessGroupManagersList">
+            @foreach (var item in Model.BusinessGroups)
+            {
+                for (int i = 0; i < item.EmployeeList.Count; i++)
+                {
+                <tr>
+                    <td id="EmployeeName">
+                        <a href="#" id="@item.EmployeeList[i].EmployeeID" class="userName" onclick="EditBusinessGroupManagers(this.id)">
+                            <u>@item.EmployeeList[i].UserName</u></a>
+                    </td>
+                    <td align="center" id="IsPrimaryresponsible">
+                        @Html.Label(item.EmployeeList[i].IsPrimaryResponsible ? "Yes" : "No")
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "selectAllBusinessgroupManagers", @data = item.BusinessGroupID, @for = item.EmployeeList[i].EmployeeID })
+                    </td>
+                </tr>
+                }
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebgtable1">
+            <tr>
+                <td>
+                    @Html.LabelFor(x => x.TotalBusinessGroupManagers)
+                    @Html.DisplayFor(x => x.TotalBusinessGroupManagers)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="MiddleLevelResourcesdiv">
+    <div class="stackhold-right">
+        <input class="button" type="button" id="DeleteMiddleLevelResources" value="Delete" />
+        <input class="button" type="button" id="SelectResourcesMiddleLevelResources" value="Select Resources" />
+        <input class="button" type="button" id="SelectAllMiddleLevelResources" value="Select All" />
+        <input class="button" type="button" id="DeselectAllMiddleLevelResources" value="Deselect All" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Middle Level Resources
+    </h3>
+    <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Employee Name
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Role
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Email ID
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Delete
+                </td>
+            </tr>
+        </thead>
+        <div id="MiddleLevelResourcesList">
+            @foreach (var item in Model.MiddleLevelResourcesList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailID, new { @readonly = "readonly" })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "selectAllMiddleLevelResources", @data = item.EmpoloyeeID, @for = item.BusinessGroupID })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebgtable1">
+            <tr>
+                <td>
+                    @Html.LabelFor(x => x.TotalMiddleLevelResources)
+                    @Html.DisplayFor(x => x.TotalMiddleLevelResources)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<div id="NoItemSelectedManagers" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+          Please select atleast one record to delete.
+    </center>
+</div>
+<div id="DeleteManagerConfirm" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+          Are you sure, you want to delete selected record ?
+    </center>
+</div>
+<div id="DeleteManagerSuccess" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+          The selected record is successfully deleted.
+    </center>
+</div>
+<div id="ErrorManager" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          There is some error.
+    </center>
+</div>
+<div id="NoItemSelectedMiddleLevelResource" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+          Please select atleast one record to delete.
+    </center>
+</div>
+<div id="DeleteMiddleLeverResourceConfirm" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+          Are you sure, you want to delete selected record ?
+    </center>
+</div>
+<div id="DeleteMiddleLeverResourceSuccess" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+          The selected record is successfully deleted.
+    </center>
+</div>
+<div id="ErrorSaveBusinessGroup" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+          This Business Group can't be inactive as having child underneath of it.
+    </center>
+</div>
+<div id="ErrorDeleteOrganizationUnit" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+          This Organization can't be inactive as having child underneath of it.
+    </center>
+</div>
+<div id="addbusinessManagerList">
+</div>
+<div id="EditbusinessManagerList">
+</div>
+<div id="addorganizationUnitnew" style="display: none">
+    @Html.Partial("_AddOrganizationUnit", Model)
+</div>
+<div id="addexistingorganizationUnit" style="display: none">
+</div>
+<div id="SelectResourcefromList">
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $("#BusinessGroupManagersdiv").hide();
+        $("#MiddleLevelResourcesdiv").hide();
+        $("#addexistingorganizationUnit").hide();
+    });
+
+    function OrganizationUnits() {
+        $("#BusinessGroupManagersdiv").hide();
+        $("#MiddleLevelResourcesdiv").hide();
+        $("#organizationunitsdiv").show();
+    }
+
+    function BusinessGroupManagers() {
+        $("#organizationunitsdiv").hide();
+        $("#MiddleLevelResourcesdiv").hide();
+        $("#BusinessGroupManagersdiv").show();
+    }
+
+    function MiddleLevelResources() {
+        $("#BusinessGroupManagersdiv").hide();
+        $("#organizationunitsdiv").hide();
+        $("#MiddleLevelResourcesdiv").show();
+    }
+
+    function SelectAllBusinessManager() {
+        $(".selectAllBusinessgroupManagers").attr("checked", true);
+    }
+
+    function DeselectAllBusinessManager() {
+        $(".selectAllBusinessgroupManagers").attr("checked", false);
+    }
+
+    $("#SelectAllMiddleLevelResources").click(function () {
+        $(".selectAllMiddleLevelResources").attr("checked", true);
+    });
+
+    $("#DeselectAllMiddleLevelResources").click(function () {
+        $(".selectAllMiddleLevelResources").attr("checked", false);
+    });
+
+    $("#DeleteBusinessGroupManager").click(function () {
+        var collection = [];
+        $.each($("input:checked"), function (i, val) {
+            if ($(val).attr("for") != undefined) {
+                collection.push($(val).attr("for"));
+            }
+        });
+        var BusinessGroupID = $(".selectAllBusinessgroupManagers").attr("data");
+        if (collection.length == 0) {
+            $("#NoItemSelectedMiddleLevelResource").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteManagerConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteBusinessGroupManagers", "OrganizationStructure")',
+                            data: JSON.stringify({ collection: collection,
+                                BusinessGroupID: BusinessGroupID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteManagerConfirm").dialog("close");
+                                    $("#DeleteManagerSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".selectAllBusinessgroupManagers").prop("checked", false);
+                                                $("#ConfigureBusinessGroup").dialog("close");
+                                                $("#ConfigureBusinessGroup").dialog("destroy");
+                                                $("#ConfigureBusinessGroup").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Business Group",
+                                                    open: function (event, ui) {
+                                                        $('#ConfigureBusinessGroup').load("/OrganizationStructure/ConfigureBusinessGroups", { BusinessGroupID: '@Model.BusinessGroupID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteManagerConfirm").dialog("close");
+                                    $("#ErrorManager").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+
+    $("#DeleteMiddleLevelResources").click(function () {
+        var collection = [];
+        $.each($('input[class=selectAllMiddleLevelResources]:checked'), function (i, val) {
+            if ($(val).attr("data") != undefined) {
+                collection.push($(val).attr("data"));
+            }
+        });
+        var BusinessGroupID = $(".selectAllMiddleLevelResources").attr("for");
+        if (collection.length == 0) {
+            $("#NoItemSelectedManagers").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteMiddleLeverResourceConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteMiddleLevelResources", "OrganizationStructure")',
+                            data: JSON.stringify({ collection: collection,
+                                BusinessGroupID: BusinessGroupID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                    $("#DeleteMiddleLeverResourceConfirm").dialog("destroy").remove()
+                                    $("#DeleteMiddleLeverResourceSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".selectAllMiddleLevelResources").prop("checked", false);
+                                                $("#ConfigureBusinessGroup").dialog("close");
+                                                $("#ConfigureBusinessGroup").dialog("destroy");
+                                                $("#ConfigureBusinessGroup").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Business Group",
+                                                    open: function (event, ui) {
+                                                        $('#ConfigureBusinessGroup').load("/OrganizationStructure/ConfigureBusinessGroups", { BusinessGroupID: '@Model.BusinessGroupID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                    $("#ErrorManager").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+    $.validator.unobtrusive.parse($("#ConfigBusinessGroup"));
+    $("#SaveEditBusinessGroup").click(function () {
+        if ($("#ConfigBusinessGroup").valid()) {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+            $("#BusinessGroupID").val('@Model.BusinessGroupID');
+            $("#ConfigBusinessGroup #BusinessGroupCode").prop("disabled", false);
+            $.ajax({
+                url: '@Url.Action("SaveBusinessGroup", "OrganizationStructure")',
+                data: $("#ConfigBusinessGroup").serialize(),
+                type: 'POST',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ConfigBusinessGroup #BusinessGroupCode").attr("disabled", "disabled");
+                    if (results.isAdded == true) {
+                        $("#ConfigureBusinessGroup").dialog("close");
+                        location.reload();
+                    }
+                    else {
+                        $("#ErrorSaveBusinessGroup").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $("#Active").attr("checked", true);
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ConfigBusinessGroup #BusinessGroupCode").attr("disabled", "disabled");
+                    $("#ErrorManager").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    $("#AddBusinessGroupManagers").click(function () {
+        $("#loading").dialog(
+         {
+             closeOnEscape: false,
+             resizable: false,
+             height: 140,
+             width: 300,
+             modal: true,
+             dialogClass: "noclose"
+         });
+        var EmployeeID = "";
+        $.each($(".userName"), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("id") + (',');
+        });
+
+        $.ajax({
+            url: '@Url.Action("AddBusinessGroupManager", "OrganizationStructure")',
+            type: 'GET',
+            data: { EmployeeID: EmployeeID,
+                BusinessGroupID: '@Model.BusinessGroupID',
+                empID: 0
+            },
+            async: true,
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#addbusinessManagerList").empty().append(results);
+                $("#addbusinessManagerList").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 425,
+                    title: "Business Group Managers",
+                    close: function (event, ui) {
+                        $("#addbusinessManagerList").empty();
+                        $("#addbusinessManagerList").dialog("destroy");
+                        $(".field-validation-error").empty();
+                        $('input').removeClass("input-validation-error");
+                    }
+                });
+            }
+        });
+
+    });
+
+    function EditBusinessGroupManagers(id) {
+        $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+        var EmployeeID = "";
+        $.each($(".userName"), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("id") + (',');
+        });
+        $.ajax({
+            url: '@Url.Action("AddBusinessGroupManager", "OrganizationStructure")',
+            type: 'GET',
+            data: { EmployeeID: EmployeeID,
+                BusinessGroupID: '@Model.BusinessGroupID',
+                empID: id
+            },
+            async: true,
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#EditbusinessManagerList").empty().append(results);
+                $("#EditbusinessManagerList").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 425,
+                    title: "Business Group Managers",
+                    close: function (event, ui) {
+                        $("#EditbusinessManagerList").empty();
+                        $("#EditbusinessManagerList").dialog("destroy");
+                        $(".field-validation-error").empty();
+                        $('input').removeClass("input-validation-error");
+                    }
+                });
+            }
+        });
+    }
+
+    $("#AddOrganizationUnits").click(function () {
+        $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+        $("#addorganizationUnitnew #LocationCode").val('');
+        $("#addorganizationUnitnew #Location").val('');
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#BusinessGroupID").val('@Model.BusinessGroupID');
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+        $('#addorganizationUnitnew').dialog({
+            autoOpen: false,
+            modal: true,
+            width: 500,
+            resizable: false,
+            title: "Associated Organization Unit",
+            close: function () {
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+            }
+        });
+        $('#addorganizationUnitnew').dialog('open');
+    });
+
+    $("#DeleteOrganizationUnits").click(function () {
+        var LocationID = "";
+        $.each($('input[class=OrgUnits]:checked'), function (i, val) {
+            LocationID = LocationID + $(val).attr("id") + (',');
+        });
+        var BusinessGroupID = '@Model.BusinessGroupID';
+        if (LocationID == "") {
+            $("#NoItemSelectedManagers").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteMiddleLeverResourceConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteOrganizationUnit", "OrganizationStructure")',
+                            data: JSON.stringify({ LocationID: LocationID,
+                                BusinessGroupID: BusinessGroupID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status == true) {
+                                    $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                    $("#DeleteMiddleLeverResourceSuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                $(".OrgUnits").prop("checked", false);
+                                                $("#ConfigureBusinessGroup").dialog("close");
+                                                $("#ConfigureBusinessGroup").dialog("destroy");
+                                                $("#ConfigureBusinessGroup").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 650,
+                                                    width: 1100,
+                                                    modal: true,
+                                                    title: "Configure Business Group",
+                                                    open: function (event, ui) {
+                                                        $('#ConfigureBusinessGroup').load("/OrganizationStructure/ConfigureBusinessGroups", { BusinessGroupID: '@Model.BusinessGroupID' }).dialog('open');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                    $("#ErrorDeleteOrganizationUnit").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    });
+
+    function SelectOrganizationUnits() {
+        $(".OrgUnits").attr("checked", true);
+    }
+    function DeselectOrganizationUnits() {
+        $(".OrgUnits").attr("checked", false);
+    }
+
+    $("#SelectResourcesMiddleLevelResources").click(function () {
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        var EmployeeID = "";
+        $.each($(".selectAllMiddleLevelResources"), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("data") + (',');
+        });
+        $.ajax({
+            url: '@Url.Action("SelectResourcesForBusinessGroup", "OrganizationStructure")',
+            type: 'GET',
+            async: true,
+            cache: false,
+            data: { EmployeeID: EmployeeID,
+                BusinessGroupID: '@Model.BusinessGroupID'
+            },
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#SelectResourcefromList").empty().append(results);
+                $("#SelectResourcefromList").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 550,
+                    width: 1100,
+                    title: "Select Resources For Business Group",
+                    close: function (event, ui) {
+                        $("#SelectResourcefromList").dialog("destroy");
+                    }
+                });
+            }
+        });
+    });
+
+    $("#AddExistingOU").click(function () {
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $.ajax({
+            url: '@Url.Action("LoadExistingOU", "OrganizationStructure")',
+            data: { BusinessGroupID: '@Model.BusinessGroupID' },
+            type: 'GET',
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (results != null) {
+                    $('#addexistingorganizationUnit').html(results);
+                    $("#addexistingorganizationUnit").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 450,
+                        title: "Add Existing OU",
+                        close: function (event, ui) {
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+                else {
+                    $("#ErrorManager").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog('close');
+                                $(this).dialog('destroy');
+                            }
+                        }
+                    });
+                }
+            },
+            Error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#ErrorManager").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog('close');
+                            $(this).dialog('destroy');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $("#DeleteBusinessGroup").click(function () {
+        $("#DeleteMiddleLeverResourceConfirm").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 'auto',
+            width: 300,
+            modal: true,
+            dialogClass: 'noclose',
+            buttons: {
+                Ok: function () {
+                    $("#loading").dialog(
+                    {
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose"
+                    });
+                    $.ajax({
+                        url: '@Url.Action("DeleteBusinessGroup", "OrganizationStructure")',
+                        data: { BusinessGroupID: '@Model.BusinessGroupID' },
+                        type: 'post',
+                        success: function (results) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            if (results.status == true) {
+                                $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                location.reload();
+                            }
+                            else {
+                                $("#DeleteMiddleLeverResourceConfirm").dialog("close");
+                                $("#ErrorSaveBusinessGroup").dialog({
+                                    closeOnEscape: false,
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: 'noclose',
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }); // ajax End
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                }
+            }
+        });
+
+    });
+</script>

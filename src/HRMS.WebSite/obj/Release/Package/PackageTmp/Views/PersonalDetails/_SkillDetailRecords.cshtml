@@ -1,0 +1,162 @@
+﻿@model HRMS.Models.SkillDetailsViewModel
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#frmAddSkillDetails #SkillDetails_EmployeeID").val('@Model.NewSkillDetail.EmployeeID');
+        $("#skillDetailsRecordsMainContainer tr").each(function () {
+            var SatusOfRow = $(this).find('#status').val();
+            var ActionTypeOfRow = $(this).find('#actionType').val();
+            var approvalStatusFlag = $(this).find("#ApprovalStatusFlag").val();
+
+            if (approvalStatusFlag == "0") {
+                $(this).find(".statusClass").empty();
+            }
+
+            if (
+			(((SatusOfRow != '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' && SatusOfRow != "") && (SatusOfRow != '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3' && SatusOfRow != "")) ||
+		     ((SatusOfRow != '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' && SatusOfRow != "") && (SatusOfRow != '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3' && SatusOfRow != "")))) {
+                $(this).find('a').hide();
+            }
+            if ('@Model.UserRole' == "HR Admin")
+                $(this).find('a').hide();
+        });
+    });
+</script>
+<div id="confirmDelete" style="display: none;">
+    Are you sure you want to delete this record?
+    <br />
+    <br />
+</div>
+<div id="SuccessMessege" style="display: none;">
+    Record has been Successfully Deleted
+    <br />
+    <br />
+</div>
+<div id="SkillAddSuccessMessege" style="display: none;">
+    Skill Added Successfully
+    <br />
+    <br />
+</div>
+<div id="xyz">
+    <table cellpadding="0" cellspacing="0" border="0" width="96%" class="TableJqgrid SkillsTable">
+        <thead>
+            <tr>
+                <th class="tableHeaders" width="25%">
+                    Skill
+                </th>
+                <th class="tableHeaders" width="20%">
+                    Skill Level
+                </th>
+                <th class="tableHeaders" width="15%">
+                    Edit
+                </th>
+                <th class="tableHeaders" width="15%">
+                    Delete
+                </th>
+                <th class="tableHeaders" width="25%">
+                    Status
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="tableRows">
+                <td>C, C++</td>
+                <td>Basic</td>
+                <td><a href="#">Edit</a></td>
+                <td><a href="#">Delete</a></td>
+                <td></td>
+            </tr>
+            <tr class="tableRows">
+                <td>IT-SYSTEMS</td>
+                <td>Basic</td>
+                <td><a href="#">Edit</a></td>
+                <td><a href="#">Delete</a></td>
+                <td></td>
+            </tr>
+            <tr class="tableRows">
+                <td>MICROSOFT</td>
+                <td>Advance</td>
+                <td><a href="#">Edit</a></td>
+                <td><a href="#">Delete</a></td>
+                <td></td>
+            </tr>
+            <tr class="tableRows">
+                <td>QA-AUTO</td>
+                <td>Intermediate</td>
+                <td><a href="#">Edit</a></td>
+                <td><a href="#">Delete</a></td>
+                <td></td>
+            </tr>
+            <tr class="tableRows">
+                <td>QA-MANUAL</td>
+                <td>Basic</td>
+                <td><a href="#">Edit</a></td>
+                <td><a href="#">Delete</a></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    @*@if (Model.EmployeeSkillDetails.Count() > 0)
+        {
+
+            <table cellpadding="0" cellspacing="0" width="100%" border="0" id="skillDetailsRecordsMainContainer">
+                <thead>
+                    <tr class="bluebgtable1">
+                        <td width="25%">
+                            Skill
+                        </td>
+                        <td width="20%">
+                            Skill Level
+                        </td>
+                        <td width="15%" class="anchorhyperlink">
+                            Edit
+                        </td>
+                        <td width="15%" class="anchorhyperlink">
+                            Delete
+                        </td>
+                        <td width="25%">
+                            Status
+                        </td>
+                    </tr>
+                </thead>
+                <div>
+                    @foreach (var item in Model.EmployeeSkillDetails)
+                    {
+                        <tr>
+                            <td id="skill_name">
+                                @Html.TextBoxFor(modelItem => item.Skill, new { @readonly = "readonly" })
+                            </td>
+                            <td align="center" id="skill_level">
+                                @Html.TextBoxFor(modelItem => item.SkillLevelText, new { @readonly = "readonly" })
+                            </td>
+                            <td align="center" class="anchorhyperlink">
+                                <a href="#" id="editRecord" onclick="editSkillRecord(this,@item.EmployeeSkillID)">Edit</a>
+                            </td>
+                            <td align="center" class="anchorhyperlink">
+                                <a href="#" id="deleteRecord" onclick="deleteRecord('@item.EmployeeSkillID','@ViewBag.skillEmployeeId')">
+                                    Delete</a>
+                            </td>
+                            <td align="center" class="skill-page">
+                                @Html.TextAreaFor(modelItem => item.Status, new { @id = "status", @readonly = "readonly", @class = "statusClass" })
+                            </td>
+                            <td align="center" class="skill-page" style="display: none">
+                                @Html.TextAreaFor(modelItem => item.ActionType, new { @id = "actionType", @class = "actionTypeClass" })
+                            </td>
+                            <td id="skill_Id" align="center" class="skill-page" style="display: none">
+                                @Html.TextBoxFor(modelItem => item.SkillId, new { @id = "skillId" })
+                            </td>
+                            <td id="skill_LevelId" align="center" class="skill-page" style="display: none">
+                                @Html.TextBoxFor(modelItem => item.SkillLevel, new { @id = "skillLevelId" })
+                            </td>
+                            <td id="ApprovalStatus_Flag" align="center" class="skill-page" style="display: none">
+                                @Html.TextBoxFor(modelItem => item.ApprovalStatusFlag, new { @id = "ApprovalStatusFlag" })
+                            </td>
+                        </tr>
+                    }
+                </div>
+            </table>
+        }
+        else
+        {
+            @Html.Label("Skill Detail not found", new { @class = "mandatory" })
+        }*@
+</div>

@@ -1,0 +1,183 @@
+﻿@model HRMS.Models.OrganizationStructure
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<br />
+<div id="selectnewResourceForDeleveryTeam">
+    <div class="stackhold-right">
+        <input class="button" type="button" id="savenewresourceForDeleveryTeam" value="Save and Close" />
+        <input class="button" type="button" id="SelectnewResource" value="Select All" />
+        <input class="button" type="button" id="DeselectnewResource" value="Deselect All" />
+    </div>
+    <br />
+    <h3 class="Configure-title">
+        Select Resources
+    </h3>
+    <table cellpadding="0" cellspacing="0" border="0" id="tbl_middlelevel">
+        <thead>
+            <tr class="bluebgtable1">
+                <td width="10%">
+                    Employee Name
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Role
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Email ID
+                </td>
+                <td class="bluebgtable1" width="15%">
+                    Save
+                </td>
+            </tr>
+        </thead>
+        <div>
+            @foreach (var item in Model.MiddleLevelResourcesList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role, new { @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailID, new { @readonly = "readonly" })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "selectnewResourcesdeleveryTeam", @data = item.EmpoloyeeID, @for = item.BusinessGroupID })
+                    </td>
+                </tr>
+            }
+        </div>
+    </table>
+    <br />
+    <table align="right">
+        <thead class="bluebgtable1">
+            <tr>
+                <td>
+                    @Html.LabelFor(x => x.TotalMiddleLevelResources)
+                    @Html.DisplayFor(x => x.TotalMiddleLevelResources)
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="Noitemforsave_resource" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+          Please select atleast one record to save.
+    </center>
+</div>
+<div id="ErrorSaveresource_deleveryTeam" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          There is some error.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $("#SelectnewResource").click(function () {
+        $(".selectnewResourcesdeleveryTeam").attr("checked", true);
+    });
+
+    $("#DeselectnewResource").click(function () {
+        $(".selectnewResourcesdeleveryTeam").attr("checked", false);
+    });
+
+    $("#savenewresourceForDeleveryTeam").click(function () {
+        var EmployeeID = "";
+        $.each($('input[class=selectnewResourcesdeleveryTeam]:checked'), function (i, val) {
+            EmployeeID = EmployeeID + $(val).attr("data") + (',');
+        });
+        var GroupID = '@Model.GroupID';
+        if (EmployeeID == "") {
+            $("#Noitemforsave_resource").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+            $.ajax({
+                url: '@Url.Action("SaveNewResouceForMiddleLevelForDeleveryTeam", "OrganizationStructure")',
+                data: JSON.stringify({ EmployeeID: EmployeeID,
+                    GroupID: GroupID
+                }),
+                type: 'post',
+                datatype: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status == true) {
+                        $('.selectnewResourcesdeleveryTeam').attr("checked", false);
+                        $("#SelectResourceforDel_Team").dialog("destroy").remove()
+                        $("#configureDeleveryTeam").dialog("close");
+                        $("#configureDeleveryTeam").dialog("destroy");
+                        $("#configureDeleveryTeam").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 650,
+                            width: 1100,
+                            modal: true,
+                            title: "Configure Delivery Team",
+                            open: function (event, ui) {
+                                $('#configureDeleveryTeam').load("/OrganizationStructure/ConfigureDeleveryTeams", { BusinessGroupID: '@Model.BusinessGroupID', GroupID: '@Model.GroupID' }).dialog('open');
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorSaveresource_deleveryTeam").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                Error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveresource_deleveryTeam").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }); // ajax End
+        }
+    });
+</script>

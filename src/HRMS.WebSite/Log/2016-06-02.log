@@ -1,0 +1,17 @@
+
+2016-06-02 @ 13:12:59  Informational , App start Global.asax App_Start  
+2016-06-02 @ 13:13:03  Informational , App start finished Global.asax App_Start  
+
+2016-06-02 @ 16:30:55  Informational , App start Global.asax App_Start  
+2016-06-02 @ 16:30:58  Informational , App start finished Global.asax App_Start  
+
+2016-06-02 @ 16:35:32  Informational , App start Global.asax App_Start  
+2016-06-02 @ 16:35:33  Informational , App start finished Global.asax App_Start  
+2016-06-02 @ 16:35:42  FATAL ERROR   , Thread was being aborted. BulkEntries.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in e:\Vibrant-Web Project\Vibrant-Web\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 40
+   at HRMS.Orbitweb.BulkEntries.Page_Load(Object sender, EventArgs e) in e:\Vibrant-Web Project\Vibrant-Web\src\HRMS.WebSite\Orbitweb\BulkEntries.aspx.cs:line 49

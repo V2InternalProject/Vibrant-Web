@@ -1,0 +1,219 @@
+﻿@model HRMS.Models.ConveyanceAdminViewModel
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Travel/ConveynaceDetails.js" type="text/javascript"></script>
+
+@using (Html.BeginForm("", "", FormMethod.Get, new { @id = "addConveynanceDetailsadmin" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        @Html.HiddenFor(x => x.LocalConveyanceID)
+        @Html.HiddenFor(x => x.TravelID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Conveyance Type")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.ConveyanceType, new SelectList(Model.ConavaytypeList, "ConvayListID", "ConvayListName", "Select"), "Select", new { @id = "ddlConvayanaceType" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ConveyanceType)
+                    @Html.HiddenFor(model => model.ConveyanceType, new { id = "hdnCoveyanceType" })</p>
+            </div>
+        </div>
+         <div class="formcol clearfix" id="ReservationNum">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Reservation Number")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.ReservationNumber)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ReservationNumber)
+                    @Html.HiddenFor(model => model.ReservationNumber, new { id = "hdnReservationNumber" })</p>
+            </div>
+        </div>
+           <div class="formcol clearfix" >
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Date of Travel")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.FromDate, String.Format("{0:dd-MMM-yyyy}", Model.FromDate), new { @readonly = "readonly", @id = "conveyancefromdate"})
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.FromDate)</p>
+                @Html.HiddenFor(x => x.FromDate, new { @id = "fromDate" })
+            </div>
+        </div>
+          <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Travelling From")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                <div class="mrgnR20 floatL">
+                    @Html.RadioButtonFor(model => model.HoteltoAirport, "true", new { id = "txtAirporttoHotel" })  @Html.Label("Airport to Hotel")
+                    @Html.ValidationMessageFor(model => model.HoteltoAirport)
+                    @Html.HiddenFor(model => model.HoteltoAirport, new { id = "hdnHoteltoAirport" })
+                </div>
+                <div class="floatL">
+                    @Html.RadioButtonFor(model => model.HoteltoAirport, "false", new { id = "txtHoteltoAirport" }) @Html.Label("Hotel to Airport")
+                    @Html.ValidationMessageFor(model => model.HoteltoAirport)
+                    @Html.HiddenFor(model => model.HoteltoAirport, new { id = "hdnAirporttoHotel" })
+                </div>
+            </div> 
+        </div>
+          <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Airport Name")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.AirportName)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AirportName)
+                    @Html.HiddenFor(model => model.AirportName, new { id = "hdnAirportName" })</p>
+            </div>
+        </div>
+         <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Hotel Name")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.HotelName)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.HotelName)
+                    @Html.HiddenFor(model => model.HotelName, new { id = "hdnHotelName" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("City")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+               
+                @Html.TextBoxFor(model => model.City, new { @id = "ddlCity" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.City)
+                    @Html.HiddenFor(model => model.City, new { id = "hdnCity" })</p>
+            </div>
+        </div>
+          <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Travel Details")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.TravelDetails)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.TravelDetails)
+                    @Html.HiddenFor(model => model.TravelDetails, new { id = "hdnTraveldetails" })</p>
+            </div>
+        </div>
+         <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("From Address")*
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.FromAddress)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.FromAddress)
+                    @Html.HiddenFor(model => model.FromAddress, new { id = "hdnFromAddress" })</p>
+            </div>
+        </div>
+         <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("To Address")*
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.ToAddress)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ToAddress)
+                    @Html.HiddenFor(model => model.ToAddress, new { id = "hdnToAddress" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("End Date")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.ToDate, String.Format("{0:dd-MMM-yyyy}", Model.ToDate), new { @readonly = "readonly", @id = "todate" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ToDate)</p>
+                @Html.HiddenFor(x => x.ToDate, new { @id = "toDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix" style="display:none">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Insurance Details (In case of car hire)")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.InsuranceDetails)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.InsuranceDetails)
+                    @Html.HiddenFor(model => model.InsuranceDetails, new { id = "hdninsurencedeatails" })</p>
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="saveConveynancedetails" type="button" value="Save" class="button" />
+            <input id="cancel" type="button" value="Reset" onclick="ResetConveynacedetails()"
+                class="button " />
+        </div>
+    </div>        	
+}
+@*<div id="AddTravelConveyanceDetailsSuccessMessege" title="Local Conveyance details" style="display: none;">
+    <p>
+        Local Conveyance details have been saved.
+    </p>
+</div>*@
+<div id="AddTravelVisaDetailsErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DateValidatedialog" style="display: none;">
+    <p>
+      From date should be Less than to date
+    </p>
+</div>
+<div id="ReservationNumError" style="display: none;">
+    <p>
+     Please Enter Reservation Number.
+    </p>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {        
+        $("#ReservationNum").hide();
+        //save dependent details
+        $('#saveConveynancedetails').off("click").on('click', function () {
+            SaveConveynanceDetails();
+        });
+
+        $("#addConveynanceDetailsadmin .ui-datepicker-trigger").show();
+        var startDate = new Date($('#TravelStartDate').val());
+        var endDate = new Date($('#TravelEndDate').val());
+        var ValidationExtensionStartDate = $('#TravelEndDate').datepicker('getDate');
+        ValidationExtensionStartDate.setDate(ValidationExtensionStartDate.getDate() + 1);
+        var ExtensionStartDate = ValidationExtensionStartDate;
+        var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+        if (ExtensionEndDate == 'Invalid Date') {
+            if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                var startDate11 = new Date($('#TravelStartDate').val());
+                var endDate11 = new Date($('#TravelEndDate').val());               
+                $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: startDate11, maxDate: endDate11, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+               
+            }
+            else {
+                $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+            }
+        }
+        else {
+            $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: ExtensionStartDate, maxDate: ExtensionEndDate, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+        }
+
+        //$('#fromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+       $('#todate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+    });
+    $('#ddlConvayanaceType').change(function () {
+        var ddlVal = $('#ddlConvayanaceType option:selected').text();
+        if (ddlVal == 'Shuttle') {
+            $('#ReservationNum').show();
+        }
+        else {
+            $('#ReservationNum').hide();
+        }
+
+    });
+
+</script>

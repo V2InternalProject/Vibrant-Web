@@ -1,0 +1,562 @@
+﻿@model HRMS.Models.EmployeeQualificationsViewModel
+@{
+    ViewBag.Title = "Education Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="~/Scripts/Global.min.js"></script>
+<script src="../../Scripts/PersonalDetails/_EmployeeQualifications.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        isEducationRowInAddEditMode = false;
+        $("#QualificationDetailsForm #EmployeeID").val('@Model.EmployeeID');
+
+        var deletionIdSelected = 0;
+        SelectedEducationRowId = "";
+        stringQualificationList = @(Html.Raw(Json.Encode(Model.QualificationList)));
+        var qualification = [];
+        qualification.push("Select");
+        $.each(stringQualificationList, function (index,value) {
+            qualification.push(value.Qualification);
+        });
+
+        stringDegreeList = @(Html.Raw(Json.Encode(Model.DegreeList)));
+        var degree = [];
+        degree.push("Select");
+        $.each(stringDegreeList, function (index,value) {
+            degree.push(value.Degree);
+        });
+
+        stringYearList = @(Html.Raw(Json.Encode(Model.YearList)));
+        var year = [];
+        year.push("Select");
+        $.each(stringYearList, function (index,value) {
+            year.push(value.Year);
+        });
+
+        stringTypeList = @(Html.Raw(Json.Encode(Model.TypeList)));
+        var type = [];
+        type.push("Select");
+        $.each(stringTypeList, function (index,value) {
+            type.push(value.Type);
+        });
+        // Set up the jquery grid
+        $("#employeeTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("EmployeeQualificationsLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.qualificationEmployeeID' },
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["Employee ID", "Qualification", "QualificationID", "Employee Qualification Id", "Degree", "DegreeID", "Specialization", "Institute", "University", "Year", "Type", "TypeID", "Percentage/ Grade", "Status", "ActionType", "ApprovalStatusFlag", ""],
+
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 100, align: "left" },
+                { name: "Qualification", index: "Qualification", editable: true, width: 120, align: "left", editrules: { custom: true, custom_func: isQualificationSelected}, edittype: "select", editoptions: { value: qualification, dataEvents: [{ type: 'change', fn: function(e) {ChangeQualification(e); } }]} },
+                { name: "QualificationID", index: "QualificationID", hidden: true, width: 150, align: "left" },
+                { name: "EmployeeQualificationID", index: "EmployeeQualificationID", editable: true, hidden: true, width: 100, align: "left" },
+                { name: "Degree", index: "Degree", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isDegreeSelected}, edittype: "select", editoptions: { value: degree, dataEvents: [{ type: 'change', fn: function(e) {ChangeDegree(e); } }]} },
+                { name: "DegreeID", index: "DegreeID", width: 70, align: "left", hidden: true },
+                { name: "Specialization", index: "Specialization", editable: true, editoptions: { maxlength: 200}, width: 110, align: "left" },
+                { name: "Institute", index: "Institute", editable: true, editrules: { required: true }, editoptions: { maxlength: 100}, width: 120, align: "left" },
+                { name: "University", index: "University", editable: true, editrules: { required: true }, editoptions: { maxlength: 200}, width: 120, align: "left" },
+            //                { name: "Course", index: "Course", width: 100, align: "left" },
+                { name: "Year", index: "Year", width: 50, editable: true, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
+                { name: "Type", index: "Type", width: 80, editable: true, align: "left", editrules: { custom: true, custom_func: isTypeSelected}, edittype: "select", editoptions: { value: type, dataEvents: [{ type: 'change', fn: function(e) {ChangeType(e); } }]} },
+                { name: "TypeID", index: "TypeID", width: 60, align: "left", hidden: true },
+                { name: "Percentage", index: "Percentage", editable: true, editrules: { required: true, custom: true, custom_func: isValidPercentage }, editoptions: { maxlength: 50},width: 100, align: "left" },
+
+                { name: "ApprovalOrRejectionStatus", index: "ApprovalOrRejectionStatus", formatter: ShowHideMessage, width: 80, align: "left" },
+                { name: "ActionType", index: "ActionType", hidden: true, width: 100, align: "left" },
+                { name: "ApprovalStatusFlag", index: "ApprovalStatusFlag", hidden: true, width: 100, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 30,
+                    align: "center",
+                    formatter: function () {
+                        if ((($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2)) {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            ],
+
+            width: 800,
+            height: 'auto',
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#employeeTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            editurl: '@Url.Action("SaveEmployeeQualifications", "PersonalDetails")',
+            //caption: "Employee - Educational Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#employeeTable").jqGrid('getGridParam', 'records');
+                //if (count == 0) {
+                //    $('#gbox_employeeTable').hide();
+                //}
+                //else {
+                //    $('#gbox_employeeTable').show();
+                //    if (count > 20) {
+
+                //        $('#employeeTablePager').show();
+                //    }
+                //    else {
+                //        $('#employeeTablePager').hide();
+                //    }
+                //}
+                if ('@Model.EmpStatusMasterID' == 2) {
+                    //jQuery('#btnAddEmployeeQualifications').hide();
+                    $("#gbox_employeeTable").find('input,select').attr("disabled", true);
+                }
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectedEducationRowId = rowid;
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                if(isEducationRowInAddEditMode == false){
+                    var selectedQualId = rowData['EmployeeQualificationID'];
+                    $('#QualificationDetailsForm #QualificationID').val(rowData['QualificationID']);
+                    $('#QualificationDetailsForm #DegreeID').val(rowData['DegreeID']);
+                    $('#QualificationDetailsForm #YearID').val(rowData['Year']);
+                    $('#QualificationDetailsForm #TypeID').val(rowData['TypeID']);
+                    var colName = cm[iCol];
+                    if (colName['index'] == "Delete" && ('@Model.EmpStatusMasterID' != 2) && rowid != "new_row") {
+                        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') {
+                            return false;
+                        } else {
+                            if ((rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
+                                (rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
+                                (rowData['ActionType'] == "" && rowData['ApprovalOrRejectionStatus'] == "")) {
+                                DeleteQualificationDetail(selectedQualId, '@ViewBag.qualificationEmployeeID');
+                            }
+                        }
+                    } else {
+                        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') {
+                            return false;
+                        } else {
+                            if ('@Model.EmpStatusMasterID' != 2) {
+                                if ((rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
+                                    (rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
+                                    (rowData['ActionType'] == "" && rowData['ApprovalOrRejectionStatus'] == "")) {
+                                    //EditQualificationDetails(rowData);
+                                    $("#employeeTable_iledit").css("visibility","visible");
+                                }
+                                else
+                                    $("#employeeTable_iledit").css("visibility","hidden");
+                            }
+                        }
+                    }
+                }
+            }
+        }).navGrid("#employeeTablePager",
+    { search: false, refresh: false, add: false, edit: false, del: false },
+    {},
+    {},
+    {}
+    );
+        $("#employeeTable").jqGrid('inlineNav', "#employeeTablePager",
+    {
+        edit: true,
+        editicon: "ui-icon-pencil",
+        edittext: "Edit",
+        add: true,
+        addicon: "ui-icon-plus",
+        addtext: "Add",
+        save: true,
+        saveicon: "ui-icon-disk",
+        savetext: "Save",
+        cancle: true,
+        cancelicon: "ui-icon-cancel",
+        canceltext: "Cancel",
+        addParams: {
+            useFormatter: false,
+            addRowParams: {
+                oneditfunc: function (rowid) {
+                    isEducationRowInAddEditMode = true;
+                    SelectedEducationRowId = rowid;
+                    //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
+                }
+            }
+        },
+        editParams: {
+            keys: false,
+            oneditfunc: function (rowid) {
+                isEducationRowInAddEditMode = true;
+                //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
+            },
+            sucessfunc: function (data) {
+            },
+            url: null,
+            extraparam: {
+                SelectedQualificationID: function () {
+                    return $('#QualificationDetailsForm #QualificationID').val();
+                },
+                SelectedDegreeID: function () {
+                    return $('#QualificationDetailsForm #DegreeID').val();
+                },
+                SelectedYearID: function () {
+                    return $('#QualificationDetailsForm #YearID').val();
+                },
+                SelectedTypeID: function () {
+                    return  $('#QualificationDetailsForm #TypeID').val();
+                },
+                EmployeeId: function () {
+                    return $('#QualificationDetailsForm #EmployeeID').val();
+                }
+            },
+            aftersavefunc: function (data, response) {
+                isEducationRowInAddEditMode = false;
+                var results = $.parseJSON(response.responseText);
+                $("#employeeTable").trigger("reloadGrid");
+                if (results.status == true) {
+                    $($('#btnEmpSendEmail')).removeAttr('disabled');
+                    $("#AddQualificationSuccessMessege").dialog({
+                        title: 'Qualification Details',
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if (results.status == "Error") {
+                    DisplayErrorDialog('Qualification Details');
+                }
+                else {
+                    $("#AddQualificationErrorMessege").dialog({
+                        title: 'Qualification Details',
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+
+            },
+            errorfunc: null,
+            afterrestorefunc: function(){
+                isEducationRowInAddEditMode = false;
+            },
+            restoreAfterError: true,
+            mtype: "POST"
+        }
+    });
+
+        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') || '@Model.EmpStatusMasterID' == 2) {
+            //$("#btnAddEmployeeQualifications").hide();
+            $("#employeeTablePager_left").css("visibility","hidden");
+        }
+    });//end document ready
+
+    if ('@ViewBag.SendMail' == 'CanSend') {
+        $('#btnEmpSendEmail').removeAttr('disabled');
+    }
+
+    function filldropdownlist() {
+        var currentDate = new Date();
+        var date = currentDate.getFullYear();
+        $("#NewEmployeeQualification_Year").append($('<option />', { value: 0, text: "Select" }));
+
+        for (var i = '@Model.bithDate'; i <= date; i++) {
+            $("#NewEmployeeQualification_Year").append(
+                                    $('<option />', {
+                                        value: i,
+                                        text: i
+                                    })
+                                );
+        }
+    }
+
+    function ShowHideMessage(cellvalue, options, rowObject) {
+        if (cellvalue != null) {
+            if (rowObject["ApprovalStatusFlag"] == "0") {
+                var hideMessage = rowObject["ApprovalOrRejectionStatus"] = "";
+                var hideActionType = rowObject["ActionType"] = "";
+                return hideMessage + hideActionType;
+            }
+            else {
+                return rowObject["ApprovalOrRejectionStatus"] = cellvalue;
+            }
+        }
+        else {
+            return cellvalue = "";
+        }
+    }
+
+    function sendMail() {
+        CallSendMailforQualification('@ViewBag.qualificationEmployeeID');
+        $('#btnEmpSendEmail').attr('disabled', 'disabled');
+    }
+</script>
+@*<h3 class="mrgnT15">
+        Educational Details</h3>
+    <div class="clearfix">
+        <fieldset class="NoTitleGridsContainer">
+            <div id="addQualificationsDialog" style="display: none">
+                @Html.Partial("_AddEmployeeQualifications", Model)
+            </div>
+            <div class="clear">
+                @Html.HiddenFor(m => m.UserRole)
+                @Html.HiddenFor(x => x.EmployeeID)
+                <input type="button" value="Add Educational Detail" id="btnAddEmployeeQualifications"
+                    class="button" />
+            </div>
+            <div class="tablestyle3">
+                <table id="employeeTable" class="scroll">
+                </table>
+                <div id="employeeTablePager" />
+            </div>
+            <div class="clear">
+            <input type="button" value="Send Approval Mail" id="btnEmpSendEmail" disabled="disabled" class="button" onclick=" sendMail()" />
+            </div>
+        </fieldset>
+    </div>
+    <div id="deleteQualificationDialogConfirmation" style="display: none">
+        <p>
+            Are you sure you want to delete the selected record ?</p>
+    </div>
+    <div id="deleteQualificationRecord" style="display: none;">
+        <p>
+            Record has been deleted successfully.
+        </p>
+    </div>*@
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && Model.EmployeeID != ViewBag.loggedinEmployeeID)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })" class="selected">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })" class="selected">Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })">Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.QualificationEmployeeID })"> Medical History</a>
+            }
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody EducationMainbody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "QualificationDetailsForm" }))
+        {
+            @Html.HiddenFor(x => x.QualificationID)
+            @Html.HiddenFor(x => x.DegreeID)
+            @Html.HiddenFor(x => x.YearID)
+            @Html.HiddenFor(x => x.TypeID)
+            @Html.HiddenFor(x => x.EmployeeID)
+            @Html.HiddenFor(x => x.UserRole)
+        }
+        @*<div class="FormContainerBox  education clearfix">*@
+
+        @*<div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Qualification:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>Specialization:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>*@
+
+        @*<div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Degree:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Institute:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>*@
+
+        @*<div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* University:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Type:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+            </div>*@
+        @*<div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Year:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <select>
+                                <option>abc</option>
+                                <option>abc</option>
+                                <option>abc</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Percentage/Grade:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fill-dtls clearfix">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>*@
+
+        @*</div>*@
+        <div class="mrgnT33">
+            <div class="tablestyle3">
+                <table id="employeeTable" class="scroll"></table>
+                <div id="employeeTablePager" />
+            </div>
+        </div>
+        <div class="ButtonContainer1">
+            <input type="button" value="Send Approval Mail" id="btnEmpSendEmail" disabled="disabled" class="ButtonGray" onclick=" sendMail()" />
+        </div>
+    </div>
+</section>
+<div id="QualificationRequiredDialog" title="Certification Details" style="display: none">
+    <p>
+        Please select value of Qualification.
+    </p>
+</div>
+<div id="DegreeRequiredDialog" title="Certification Details" style="display: none">
+    <p>
+        Please select value of Degree.
+    </p>
+</div>
+<div id="YearRequiredDialog" title="Certification Details" style="display: none">
+    <p>
+        Please select value of Year.
+    </p>
+</div>
+<div id="TypeRequiredDialog" title="Certification Details" style="display: none">
+    <p>
+        Please select value of Type.
+    </p>
+</div>
+<div id="ValidPercentageDialog" title="Certification Details" style="display: none">
+    <p>
+        Please enter valid percentage.
+    </p>
+</div>
+<div id="AddQualificationSuccessMessege" style="display: none;">
+    <p>
+        Qualification Details have been saved.
+    </p>
+</div>
+<div id="AddQualificationErrorMessege" style="display: none;">
+    <p>
+        There are some errors.
+    </p>
+</div>
+<div id="mailError" title="Mail Error" style="display: none">
+    <p>
+        Mail Sending Failed.
+    </p>
+</div>
+<div id="failedRecipient" title="Sending Failed" style="display: none">
+    <center>
+        <span>Could not send mail to </span><span id="span_failedRecipient"></span>
+    </center>
+</div>
+<div id="deleteQualificationDialogConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?
+    </p>
+</div>
+<div id="deleteQualificationRecord" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="mailSendSuccess" style="display: none">
+    <center>
+        Mail Sent successfully.
+    </center>
+</div>

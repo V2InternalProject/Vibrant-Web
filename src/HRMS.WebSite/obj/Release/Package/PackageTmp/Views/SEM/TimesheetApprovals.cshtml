@@ -1,0 +1,252 @@
+﻿@model HRMS.Models.TimesheetApprovalsModel
+@{
+    ViewBag.Title = "Approval";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix">
+    <h2 class="title-bgcolor">
+        Timesheet Approval</h2>
+    <div class="clearfix">
+        <div class="colOneThird clearfix">
+            @* <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Status:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Period:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>*@
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("From Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif"
+                        alt="..." title="...">
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Employee Name:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("To Date:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif"
+                        alt="..." title="...">
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Project:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+            @*<div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Employee:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Records:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>*@
+        </div>
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Status:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <select>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                        <option>abc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tablestyle3">
+        <table id="jqApprovalIBTable">
+        </table>
+    </div>
+    <div id="jqApprovalIBTablePager">
+    </div>
+    <div class="tablestyle3">
+        <table id="jqApprovalWLTable">
+        </table>
+    </div>
+    <div id="jqApprovalWLTablePager">
+    </div>
+    @*<div class="bluebutton1 clearB floatR width150">
+        <div class="bluebgtable1">
+            Total Records : 3
+        </div>
+    </div>*@
+</div>
+<script type="text/javascript">
+     $(document).ready(function () {
+        $("#jqApprovalIBTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: mydata,//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: [ "Employee Name","Project Name", "From Date", "To Date", "Actual Work (hrs)", "Status"],            
+            // Configure the columns
+            colModel: [
+                
+                { name: "EmployeeName", index: "EmployeeName", align: "center", width: 140 },
+                { name: "ProjectName", index: "ProjectName", align: "center", width: 140 },
+                { name: "FromDate", index: "FromDate", align: "center", width:105  },
+                { name: "ToDate", index: "ToDate", align: "center", width:105  },
+                { name: "ActualWork", index: "ActualWork", align: "center", width: 70 },
+                { name: "Status", index: "Status", align: "center", width: 140},
+                
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqApprovalIBTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "Inbox",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqApprovalIBTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+
+         $("#jqApprovalWLTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: [ "Employee Name","Project Name", "From Date", "To Date", "Actual Work (hrs)", "Status"],            
+            // Configure the columns
+            colModel: [
+                
+                { name: "EmployeeName", index: "EmployeeName", align: "center", width: 140 },
+                { name: "ProjectName", index: "ProjectName", align: "center", width: 140 },
+                { name: "FromDate", index: "FromDate", align: "center", width:105  },
+                { name: "ToDate", index: "ToDate", align: "center", width:105  },
+                { name: "ActualWork", index: "ActualWork", align: "center", width: 70 },
+                { name: "Status", index: "Status", align: "center", width: 140},
+                
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqApprovalWLTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "Watchlist",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqApprovalWLTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        
+        var mydata = [ {FromDate : "<a href='/SEM/ApproveTimesheet' class='clearB'>3/24/2014</a>" }];
+
+
+     for(var i=0;i<=mydata.length;i++)
+     {
+            jQuery("#jqApprovalIBTable").addRowData(i, mydata[i]);              
+            }//function
+
+     
+     });
+</script>

@@ -1,0 +1,675 @@
+﻿@model HRMS.Models.FinancePaymentTrackingModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Finance Payments Tracking";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "formFinanceTracking" }))
+{
+    @Html.HiddenFor(x => x.DeliveryUnit)
+    @Html.HiddenFor(x => x.EmployeeId)
+    @Html.HiddenFor(x => x.ClientNameID)
+    @Html.HiddenFor(x => x.DeliveryUnitID)
+    @Html.HiddenFor(x => x.ReportDate)
+    @Html.HiddenFor(x => x.ExpectedPaymentDate)
+    @Html.HiddenFor(x => x.Days)
+    @Html.HiddenFor(x => x.PendingAmount)
+    @Html.HiddenFor(x => x.RFIID)
+}
+
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Invoicing</h2>
+        </div>
+        <nav class="sub-menu-colored">
+           @* @if ((HttpContext.Current.User.IsInRole("Account Owners")) || (HttpContext.Current.User.IsInRole("Delivery Manager")))
+            {
+                <a href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRGenerator">Generate Invoice</a>
+            }Invoice/GenerateInvoice
+            @if (ViewBag.IsIRApprover == true)
+            {
+                <a href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRApproval">Invoice Approvals</a>
+            }
+            @if (ViewBag.IsIRFinanceApprover == true || HttpContext.Current.User.IsInRole("Expense_Admin"))
+            {
+                <a href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=FinanceApproval">Invoice (Finance)</a>
+            }
+            @if ((HttpContext.Current.User.IsInRole("Expense_Admin")))
+            {
+                <a href="@Url.Action("FinancePaymentTracking", "Invoice")" class="selected">Payment Data</a>
+                <a href="@Url.Action("FinanceTrackingSummary", "Invoice")">Outstanding Data</a>
+            }*@
+             @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+        <div class="FormContainerBox clearfix ProjectIndexFliter">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Client Name:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.ClientNameID, new SelectList(Model.ClientListdata, "ClientId", "ClientName", "Select"), "Select", new { @id = "ClientListDataID" })
+                    </div>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Delivery Unit:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.DeliveryUnitID, new SelectList(Model.DeliveryUnitListdata, "DeliveryUnitId", "DeliveryUnitName", "Select"), "Select", new { @id = "DeliveryUnitListDataID" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" value="Export to Excel" id="BtnExportToexcelFinancePayTracking" />
+        </div>
+
+        <div class="tablestyle3" id="FPTContainer">
+            @*FPT: Finance Payment Tracking*@
+            <table id="jqFinancePaymentTrackingTable"></table>
+        </div>
+        <div id="jqFinancePaymentTrackingTablePager">
+        </div>
+
+        <div id="FinanceDetailsSuccess" title="Finance Payment Details" style="display: none;">
+            <p>
+                Finance Payment details saved Successfully.
+            </p>
+        </div>
+        <div id="FinanceSaveError" title="Finance Payment Details" style="display: none">
+            <p>
+                Finance Payment details could not be saved.
+            </p>
+        </div>
+        <div id="FinancePaymentShowHistoryDialog" style="display: none;">
+        </div>
+        <div id="TableGridError" style="display: none">
+            <center>
+                There is no entry in the Grid.
+            </center>
+        </div>
+        <div id="FinancePaymentPendingAmountValidateDialog" title="Finance Payment Details"
+             style="display: none">
+            <p>
+                Collected Amount should not be greater than Amount.
+            </p>
+        </div>
+        <div id="AddIntegerOnly" title="Invalid Input" style="display: none;">
+            <p>
+                Please insert Numeric value only.
+            </p>
+        </div>
+        <div style="display: none;" id="NoRecordsFound">
+            No Records Found
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        hdnCollectedAmountValue = "";
+
+        hdnPendingAmount="";
+        hdnDays="";
+        hdnExpectedPaymentDate="";
+        hdnDeliveryUnit="";
+
+        deliveryUnitList = @(Html.Raw(Json.Encode(ViewBag.DeliveryUnitListdata)));
+        var dUnitList = [];
+        dUnitList.push("Select");
+        $.each(deliveryUnitList, function (index, value) {
+
+            dUnitList.push(value.DeliveryUnitName);
+        });
+
+        $("#jqFinancePaymentTrackingTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("FinancePaymentTrackingLoadGrid", "Invoice")',
+            postData: { selectedClientID: function () { return $('#ClientListDataID :selected').val(); }, selectedDeliveryUnitID: function () { return $('#DeliveryUnitListDataID :selected').val();} },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Client","", "Delivery Unit", "System Invoice Number", "Quick books Invoice Number", "Invoice Month & Date","", "Invoice Sent Date", "Expected Payment Date","","", "Report Date", "Payment Term","", "Days","", "Amount","", "Status","", "Collection Date", "Collected Amount","", "Pending Amount","", "History","","","",""],
+            // Configure the columns
+            colModel: [
+                { name: "RFIItemID", index: "RFIItemID", align: "left", width: 10,hidden:true,editable: true },
+                { name: "RFIID", index: "RFIID", align: "left", width: 10,hidden:true,editable: true},
+                { name: "ClientName", index: "ClientName", align: "left", width: 44 },
+                { name: "ClientName", index: "ClientName", align: "left", width: 44, editable: true, hidden:true },
+                { name: "DeliveryUnit", index: "DeliveryUnit", align: "left", width: 44, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: dUnitList, dataEvents: [{ type: 'change', fn: function(e) {getDeliveryUnit(e); } }]} },
+                { name: "SystemInvoiceNumber", index: "SystemInvoiceNumber", align: "left", width: 44},
+                { name: "QuickBooksInvoiceNumber", index: "QuickBooksInvoiceNumber", align: "left", width: 44, editable: true },
+                { name: "InvoiceMonthDate", index: "InvoiceMonthDate", align: "left", width: 44, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "InvoiceMonthDate", index: "InvoiceMonthDate", align: "left", width: 44, formatter: 'date', formatoptions: { newformat: 'm/d/Y'}, editable: true, hidden:true },
+                { name: "InvoiceSentDate", index: "InvoiceSentDate", align: "left", width: 44,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} ,editable: true, editoptions:{required:true,
+                    readonly:true,
+                    dataEvents: [{ type: 'change', fn: function(e) {ChangeInvoiceSentDate(e); } }],
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        });
+                    }
+                }
+                },
+
+                { name: "ExpectedPaymentDate", index: "ExpectedPaymentDate", align: "left", width: 44, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "ExpectedPaymentDate", index: "ExpectedPaymentDate", align: "left", width: 44, formatter: 'date', formatoptions: { newformat: 'm/d/Y'}, editable: true, hidden:true },
+//                 { name: "ExpectedPaymentDate", index: "ExpectedPaymentDate", align: "center", width: 60,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} ,editable: true, editoptions:{
+//                    readonly:true,
+//                    dataInit: function(element) {
+//                        $(element).datepicker({
+//                            dateFormat: 'mm/dd/yy',
+//                            changeMonth: true,
+//                            changeYear: true
+//                        });
+//                    }
+//                }
+//                },
+                { name: "ReportDate", index: "ReportDate", align: "left", width: 44,formatter: 'date',formatoptions: { newformat: 'm/d/Y'},hidden:true,editable: true },
+                { name: "ReportDate", index: "ReportDate", align: "left", width: 44,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} , editoptions:{
+                    readonly:true,
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        });
+                    }
+                }
+                },
+                { name: "PaymentTerm", index: "PaymentTerm", align: "left", width: 44 },
+                { name: "PaymentTerm", index: "PaymentTerm", align: "left", width: 44 , editable: true, hidden:true },
+                { name: "Days", index: "Days", align: "left", width: 44 },
+                { name: "Days", index: "Days", align: "left", width: 44 , editable: true, hidden:true},
+                { name: "Amount", index: "Amount", align: "left", width: 44 },
+                { name: "Amount", index: "Amount", align: "left", width: 44 , editable: true, hidden:true},
+                { name: "Status", index: "Status", align: "left", width: 44 },
+                 { name: "Status", index: "Status", align: "left", width: 44, editable: true, hidden:true },
+                 { name: "CollectionDate", index: "CollectionDate", align: "left", width: 44,formatter: 'date',formatoptions: { newformat: 'm/d/Y'} ,editable: true, editoptions:{
+                     readonly:true,
+                     dataInit: function(element) {
+                         $(element).datepicker({
+                             dateFormat: 'mm/dd/yy',
+                             changeMonth: true,
+                             changeYear: true
+                         });
+                     }
+                 }
+                 },
+                { name: "CollectedAmount", index: "CollectedAmount", align: "left", width: 44, editable:true, editrules: { required: true }, editoptions: {
+                    dataEvents: [{ type: 'change', fn: function(e) {ChangeCollectedAmount(e); } }] }
+                },
+                { name: "hdnCollectedAmount", index: "hdnCollectedAmount", align: "left", width: 44, hidden: true},
+                { name: "PendingAmount", index: "PendingAmount", align: "left", width: 44 },
+                { name: "PendingAmount", index: "PendingAmount", align: "left", width: 44, editable: true, hidden:true },
+                { name: "History", index: "History", align: "left", width: 100, formatter: returnHistoryLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                { name: "hdnDeliveryUnit", index: "hdnDeliveryUnit", align: "left", width: 44, hidden: true},
+                { name: "hdnExpectedPaymentDate", index: "hdnExpectedPaymentDate", align: "left", width: 44,  hidden:true, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "hdnDays", index: "hdnDays", align: "left", width: 44, hidden:true },
+                { name: "hdnPendingAmount", index: "hdnPendingAmount", align: "left", width: 44,  hidden:true }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqFinancePaymentTrackingTablePager"),
+            //loadonce: true,
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            scrollbar:true,
+            rowNum: 0,
+            autowidth: true,
+            //rowList:['ALL',30,50,100,200],
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            editurl: '@Url.Action("SaveFinanceTrackingDetails", "Invoice")',
+            gridComplete: function () {
+
+                $("#FPTContainer").find('p').text("");
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqFinancePaymentTrackingTable").jqGrid('getGridParam', 'records');
+                $(this).jqGrid('setGridParam', 'rowNum', count);
+                $('#gbox_jqFinancePaymentTrackingTable').show();
+                $('#jqFinancePaymentTrackingTablePager').show();
+
+                var  gridData;
+                gridData = $("#jqFinancePaymentTrackingTable").getRowData();
+
+                //                if (gridData.length <= 0) {
+                //                    $("#NoRecordsFound").dialog({
+                //                        resizable: false,
+                //                        height: 120,
+                //                        width: 250,
+                //                        modal: true,
+                //                        title:'Finance Payment Details',
+                //                        buttons: {
+                //                            Ok: function () {
+                //                                $(this).dialog("close");
+                //                            }
+                //                        }
+                //                    });
+                //                }
+
+            },
+            loadComplete :function () {
+
+                for(var i = 0; i < 1 ; i++) {
+                    $("#jqFinancePaymentTrackingTable").jqGrid("addRowData", "new_row", { Id: "new_row"});
+                    $("td","#new_row","#jqFinancePaymentTrackingTable").css({'font-weight': 'bold'});
+                }
+                var CollectedAmountInitial = 0;
+                var PendingAmountInitial=0;
+
+                var ids = $("#jqFinancePaymentTrackingTable").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+
+                    var itemId = ids[i];
+                    var rowData = $("#jqFinancePaymentTrackingTable").getRowData(itemId);
+                    var CollectedCurrentAmount = rowData["CollectedAmount"];
+                    if(CollectedCurrentAmount != "") {
+                        CollectedAmountInitial = parseInt(CollectedAmountInitial) + parseInt(CollectedCurrentAmount);
+                    }
+                    var PendingCurrentAmount=rowData["PendingAmount"];
+                    if(PendingCurrentAmount != "") {
+                        PendingAmountInitial = parseInt(PendingAmountInitial) + parseInt(PendingCurrentAmount);
+                    }
+
+                }
+
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', "new_row", 'ClientName', "Total Outstanding as on Date.");
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', "new_row", 'CollectedAmount', CollectedAmountInitial);
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', "new_row", 'PendingAmount', PendingAmountInitial);
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', "new_row", 'History', '');
+                $('#jqFinancePaymentTrackingTable').find('#undefined').hide();
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                hdnCollectedAmountValue = rowData['hdnCollectedAmount'];
+                hdnPendingAmount=rowData['hdnPendingAmount'];
+                hdnDays=rowData['hdnDays'];
+                hdnExpectedPaymentDate=rowData['hdnExpectedPaymentDate'];
+                hdnDeliveryUnit=rowData['hdnDeliveryUnit'];
+            }
+        }).navGrid("#jqFinancePaymentTrackingTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqFinancePaymentTrackingTablePager_center").css("visibility","hidden");
+
+        $("#jqFinancePaymentTrackingTable").jqGrid('inlineNav', "#jqFinancePaymentTrackingTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: false,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancel: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: null,
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    ExpectedPaymentDate: function () {
+                        if($('#formFinanceTracking #ExpectedPaymentDate').val()==""){
+                            $('#formFinanceTracking #ExpectedPaymentDate').val(hdnExpectedPaymentDate);
+                            return  $('#formFinanceTracking #ExpectedPaymentDate').val();
+                        }
+                        else{
+                            return  $('#formFinanceTracking #ExpectedPaymentDate').val();
+                        }
+                    },
+                    Days: function () {
+                        if( $('#formFinanceTracking #Days').val()==""){
+                             $('#formFinanceTracking #Days').val(hdnDays);
+                            return $('#formFinanceTracking #Days').val();
+                        }
+                        else{
+                            return $('#formFinanceTracking #Days').val();
+                        }
+
+                    },
+                    PendingAmount: function () {
+                        if($('#formFinanceTracking #PendingAmount').val()==""){
+                             $('#formFinanceTracking #PendingAmount').val(hdnPendingAmount);
+                            return $('#formFinanceTracking #PendingAmount').val();
+                        }
+                        else{
+                            return $('#formFinanceTracking #PendingAmount').val();
+                        }
+
+                    },
+                    DeliveryUnit: function () {
+                        if( $('#formFinanceTracking #DeliveryUnit').val()==""){
+                              $('#formFinanceTracking #DeliveryUnit').val(hdnDeliveryUnit);
+                            return  $('#formFinanceTracking #DeliveryUnit').val();
+                        }
+                        else{
+                            return  $('#formFinanceTracking #DeliveryUnit').val();
+                        }
+
+                    }
+
+                },
+                aftersavefunc: function (resultMessage, status) {
+                    var json = $.parseJSON(status.responseText);
+                    var status = json.status;
+
+                    if (status == true)
+                    {
+                        $("#FinanceDetailsSuccess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    //jQuery("#jqFinancePaymentTrackingTable").trigger("reloadGrid");
+                                    window.location.href = '@Url.Action("FinancePaymentTracking", "Invoice")';
+                                }
+                            }
+                        });
+                    }
+                    else if(status ==false)
+                    {
+                        $("#FinanceSaveError").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#jqFinancePaymentTrackingTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                    else if(status == "Error")
+                    {
+                        DisplayErrorDialog("Finance Payment Details");
+                    }
+                    else
+                    {
+                        DisplayErrorDialog("Finance Payment Details");
+                    }
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        $('#BtnExportToexcelFinancePayTracking').click(function () {
+            var Currentcount = jQuery("#jqFinancePaymentTrackingTable").jqGrid('getGridParam', 'records');
+            var ClientID=$('#ClientListDataID :selected').val();
+            var DeliveryUnitID=$('#DeliveryUnitListDataID :selected').val();
+
+            if (Currentcount == 0) {
+                $("#TableGridError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            window.location.href = '@Url.Action("ExportToExcelFinancePaymentData", "Invoice")?ClientID=' + ClientID + "&DeliveryUnitID=" + DeliveryUnitID;
+        });
+
+    });
+    $("#ClientListDataID").change(function () {
+
+        selectedClientID = $('#ClientListDataID :selected').val();
+        selectedDeliveryUnitID = $('#DeliveryUnitListDataID :selected').val();
+        jQuery("#jqFinancePaymentTrackingTable").trigger("reloadGrid");
+
+    });
+
+    $("#DeliveryUnitListDataID").change(function () {
+
+        selectedDeliveryUnitID = $('#DeliveryUnitListDataID :selected').val();
+        selectedClientID = $('#ClientListDataID :selected').val();
+        jQuery("#jqFinancePaymentTrackingTable").trigger("reloadGrid");
+
+    });
+    // $("#jqFinancePaymentTrackingTablePager_left").css("visibility","visible");
+
+    function getDeliveryUnit(e) {
+
+        var Name = e.target[e.target.selectedIndex].text;
+        var ID;
+        $.each(deliveryUnitList, function(index, value){
+
+            var dName=value.DeliveryUnitName.replace('  ',' ');
+
+            if(dName  == Name)
+            {
+                ID=value.DeliveryUnitId;
+            }
+        });
+
+        $('#formFinanceTracking #DeliveryUnit').val(ID);
+    }
+
+    function ChangeInvoiceSentDate(e)
+    {
+        var selectedDateID = e.target.id;
+        var rowID = e.target.parentNode.parentNode.id;
+        var data=$("#jqFinancePaymentTrackingTable").getRowData(rowID);
+        var reportDate=data["ReportDate"];
+        //var reportDate=e.target.parentNode.nextSibling.nextSibling.nextSibling.childNodes[0].data;
+        var collectionDate=data["CollectionDate"];
+        var date = new Date(e.target.value);
+        var newdate = new Date(date);
+        var PayTerm=e.target.parentNode.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[0].data;
+        newdate.setDate(newdate.getDate() + parseInt(PayTerm));
+        var nd = new Date(newdate);
+        var ConvertedDate = $.datepicker.formatDate("mm/dd/yy",new Date(nd));
+        $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'ExpectedPaymentDate', ConvertedDate);
+        var statusval=e.target.parentNode.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[0].data;
+        if(statusval=="Pending"){
+            var days=Math.abs((new Date(new Date(reportDate)))-new Date(date));
+            days= parseInt(days/ 86400000);
+            $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Days', days);
+        }
+        if(statusval=="Paid"){
+            var days=Math.abs((new Date(new Date(collectionDate)))-new Date(date));
+            days= parseInt(days/ 86400000);
+            $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Days', days);
+        }
+        $('#formFinanceTracking #ExpectedPaymentDate').val(ConvertedDate);
+        $('#formFinanceTracking #Days').val(days);
+    }
+
+    function ChangeCollectedAmount(e)
+    {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else
+        {
+            var rowID = e.target.parentNode.parentNode.id;
+            var data=$("#jqFinancePaymentTrackingTable").getRowData(rowID);
+            //var amount=data["Amount"];
+            //var amount = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.childNodes[0].data;
+            var amount = e.target.parentNode.nextSibling.nextSibling.childNodes[0].data;
+            if(hdnCollectedAmountValue != "")
+                var totalCollectedAmount = parseInt(hdnCollectedAmountValue) + parseInt($(e.target).val());
+            else
+                var totalCollectedAmount = parseInt($(e.target).val());
+            var pendingamount=parseInt(amount)-parseInt($(e.target).val());
+            if(pendingamount > 0)
+            {
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'PendingAmount', pendingamount);
+                $('#formFinanceTracking #PendingAmount').val(pendingamount);
+                $('#'+rowID+'_CollectedAmount').val(totalCollectedAmount);
+            }
+            else if(pendingamount==0)
+            {
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'PendingAmount', pendingamount);
+                $('#formFinanceTracking #PendingAmount').val(pendingamount);
+                $('#'+rowID+'_CollectedAmount').val(totalCollectedAmount);
+
+                $('#jqFinancePaymentTrackingTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Status', 'Paid');
+                $('#formFinanceTracking #Status').val('Paid');
+            }
+            else if(pendingamount < 0)
+            {
+                $("#FinancePaymentPendingAmountValidateDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            jQuery("#jqFinancePaymentTrackingTable").trigger("reloadGrid");
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function returnHistoryLink(cellValue, options, rowdata, action) {
+        var historyID=options.rowId;
+        //historyID = parseInt(historyID);
+        if(historyID!="new_row")
+        {
+            return "<a href='#' onclick=OpenFinancePaymentTrackingViewHistory("+ historyID +") >Show</a>";
+        }else
+        {
+            return "";
+        }
+    }
+    function OpenFinancePaymentTrackingViewHistory(historyID)
+    {
+        DisplayLoadingDialog();
+        var data=$("#jqFinancePaymentTrackingTable").getRowData(historyID);
+        //     var FinancePaymentTrackingModel = {
+        //                    RFIItemID: data.RFIItemID,
+        //                    CollectionDate: data.CollectionDate,
+        //                    CollectedAmount: data.CollectedAmount,
+        //                    PendingAmount: data.PendingAmount,
+        //                    Status: data.Status
+        //                }
+        var RFIItemID = data.SystemInvoiceNumber;
+        $.ajax({
+            url:'@Url.Action("FinancePaymentTrackingDataViewHistory", "Invoice")',
+            type: 'GET',
+            data: {RFIItemID:RFIItemID},
+            async: true,
+            success:function(results) {
+
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#FinancePaymentShowHistoryDialog").empty().append(results);
+                $("#FinancePaymentShowHistoryDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 1200,
+                    title: "Show History",
+                    modal: true,
+                    close: function (event, ui) {
+                        $("#FinancePaymentShowHistoryDialog").dialog("destroy");
+                    }
+                });
+            },
+            error: function (results) {
+
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                DisplayErrorDialog();
+            }
+        });
+
+    }
+    //Invoice/FinancePaymentTrackingViewHistory
+
+    //    function getDeliveryUnit(e) {
+
+    //        var Name = e.target[e.target.selectedIndex].text;
+    //        var ID;
+    //        $.each(deliveryUnitList, function (index, value) {
+
+    //            var dunitName = value.DeliveryUnitName.replace('  ', ' ');
+
+    //            if (dunitName == Name) {
+    //                ID = value.DeliveryUnitId;
+    //            }
+    //        });
+    //        $('#formFinanceTracking #DeliveryUnit').val(ID);
+    //    }
+</script>
+
+<script>
+
+$(
+
+)(jquery)
+</script>

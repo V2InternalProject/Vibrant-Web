@@ -1,0 +1,401 @@
+﻿@model HRMS.Models.ExitInterviewViewModel
+
+<script src="../../Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Exit/ExitInterviewForm.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $("input[type=radio]").click(function () {
+        var radioid = $(this).attr('id');
+        var value = $(this).val();
+        $("#hdRadio_" + radioid).val(value);
+
+    });
+
+    var ExitInterviewItemsCount = '@Model.ListExitInterviewItems.Count';
+    $(document).ready(function () {
+        if ('@Model.HiddenStageId' == 7) {
+            $("#btnExitInterviewSave").hide();
+            $("#btnExitInterviewApprove").hide();
+            $("#btnWorkFlowInfo").hide();
+            $("#btnPushBack").hide();
+            $("#btnCompleteExitProcess").hide();
+            $("#ExitInterviewForm").find('input,textarea').attr("disabled", "disabled");
+        }
+
+        $.validator.unobtrusive.parse($("#ExitInterviewForm"));
+        $("#btnExitInterviewSave").click(ExitInterviewSave);
+
+        $("#btnExitInterviewApprove").click(ExitInterViewApprove);
+
+        //added by nikhil
+        $("#btnCompleteExitProcess").click(CompleteExitProcess);
+
+        $("#btnPushBack").click(ExitPushBackStage);
+
+        $("#btnWorkFlowInfo").click(Workflow);
+
+        var Array = [];
+        for (var i = 0; i < '@Model.ListExitInterviewItems.Count'; i++) {
+            //if ($("#" + (i + 100)).is(':checked') == true) {
+            if ($("#Response_" + i).val() != null) {
+                //Array.push($("#Response_" + (i + 100)).val());
+                Array.push($("#Response_" + i).val());
+                //$("#hdRadio_" + (i + 100)).val($("#Response_" + i).val())
+            }
+            $("#hdRadio_" + (i + 100)).val($("#Response_" + i).val());
+            //$("#" + (i + 100)).val($("#" + (i + 100)).val());
+            // }
+        }
+
+        if (Array.length > 0) {
+            $("input[type=radio]").each(function () {
+                for (var j = 0; j < Array.length; j++) {
+                    if ($(this).val() == Array[j]) {
+                        $(this).attr('checked', 'checked');
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ExitInterviewForm" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.EmployeeId)
+    @Html.HiddenFor(m => m.HiddenStageId)
+    <div class="SepContainer">
+        <div class="emp-details borderFieldsBottom">
+            <form class="clearfix">
+                <label class="prefix" for="Employee Name">
+                    @Html.Label("Employee :")
+                </label>
+                <label class="suffix" for="Namrata Chandrakant Shetkar">
+                    @Html.DisplayFor(x => x.EmployeeDetails.EmployeeName)
+                </label>
+                <label class="prefix" for="Tentative Release Date">
+                    @Html.Label("Tentative Release Date - ")
+                </label>
+                <label class="suffix" for="Date">
+                    @Html.DisplayFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate))
+                </label>
+                <label class="prefix" for="Location">
+                    @Html.Label("Location - ")
+                </label>
+                <label class="suffix" for="Location1">
+                    @Html.DisplayFor(x => x.EmployeeDetails.OfficeLocation)
+                </label>
+                <label class="prefix" for="Employee Code">
+                    @Html.Label("EmployeeCode - ")
+                </label>
+                <label class="suffix" for="3449">
+                    @Html.DisplayFor(x => x.EmployeeDetails.EmployeeCode)
+                </label>
+            </form>
+        </div>
+        <div class="Finance-heading clearfix">
+            <h3 class="HRHeadingGreen">Separation Interview Feedback</h3>
+        </div>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="TableJqgrid mrgnB18" id="DialogForExitInterView">
+            <thead>
+                <tr>
+                    <th class="tableHeaders" width="35%">
+                        @Html.Label("Question")
+                    </th>
+                    <th class="tableHeaders" width="31%">
+                        @Html.Label("Options")
+                    </th>
+                    <th class="tableHeaders" width="31%">
+                        @Html.Label("Comments")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+    string[] SectionArray = new string[10];
+    int i = 0;
+    if (Model.ListExitInterviewItems.Count > 0)
+    {
+
+        foreach (var item in Model.ListExitInterviewItems)
+        {
+            if (i == 0)
+            {
+                SectionArray[i] = item.SectionName;
+                i++;
+            }
+            else
+            {
+                if (SectionArray[i - 1] != item.SectionName)
+                {
+
+                    SectionArray[i] = item.SectionName;
+                    i++;
+                }
+            }
+        }
+        int counter = 0;
+        int counter2 = 100;
+        for (int j = 0; j < SectionArray.Length; j++)
+        {
+            if (SectionArray[j] != null)
+            {
+                <tr class="TopRow">
+                    <td colspan="3" class="feed-td1-bg">
+                        <b>@Html.Label(SectionArray[j])</b>
+                    </td>
+                </tr>
+
+                foreach (var item in Model.ListExitInterviewItems)
+                {
+                    if (item.SectionName == SectionArray[j])
+                    {
+                        <tr class="tableRows">
+                            <td class="feed-td1-bg">
+                                @Html.Label("", item.ItemName)
+                            </td>
+                            <td class="feed-td1-bg">
+                                @foreach (var option in item.OptionList)
+                                {
+
+                                    @Html.RadioButton("Radio_" + item.ItemId.ToString(), option.QuestionaryOptionId, false, new { @id = counter2, @class = "RadioSelect" })
+                                    @Html.Label(option.OptionDescription, new { @class = "LabelForRadio", @for = counter2 })
+                                    @Html.HiddenFor(x => x.HiddenRadioId, new { @id = "hdRadio_" + counter2 })
+                                    counter2++;
+                                }
+                            </td>
+                            <td class="feed-td1-bg">
+                                @Html.TextArea(item.ItemName + "_Comments", item.Comments, new { @id = "Comments_" + counter })
+                                <div style="display: none">
+                                    @Html.Hidden("Item", item.ItemId, new { @id = "ItemId_" + counter })
+                                    @Html.Hidden("ExitInstance", item.ExitInstanceId, new { @id = "ExitInstanceId_" + counter })
+                                    @Html.Hidden("Revision", item.RevisionId, new { @id = "Revision_" + counter })
+                                    @Html.Hidden("Response", item.ResponseId, new { @id = "Response_" + counter })
+                                </div>
+                            </td>
+                        </tr>
+                                counter++;
+
+                    }
+                }
+            }
+        }
+    }
+
+    if (Model.HiddenStageId >= 6)
+    {
+        <tr class="tableRows">
+            <td class="feed-td1-bg">
+                @Html.Label("HR Comments")
+            </td>
+            <td class="feed-td1-bg" colspan="2">
+                @Html.TextAreaFor(x => x.HRClosureComments)
+                @Html.ValidationMessageFor(x => x.HRClosureComments)
+            </td>
+        </tr>
+    }
+                }
+            </tbody>
+        </table>
+
+        <div class="mrgnB18 mrgnT15 mrgnL46">
+            @if (Model.HiddenStageId >= 6)
+            {
+                <input id="btnCompleteExitProcess" type="button" value="Complete Separation Process" class="ButtonGray mrgnR11" />
+                <input id="btnPushBack" type="button" value="Push Back" class="ButtonGray mrgnR11" />
+                <input id="btnWorkFlowInfo" type="button" value="Workflow Information" class="ButtonGray mrgnR11" />
+            }
+            else
+            {
+                <input id="btnExitInterviewApprove" type="button" value="Approve" class="ButtonGray mrgnR11" />
+            }
+            <input id="btnExitInterviewSave" type="button" value="Save" class="ButtonGray mrgnR11" />
+        </div>
+    </div>
+}
+@*@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ExitInterviewForm" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.EmployeeId)
+        @Html.HiddenFor(m => m.HiddenStageId)
+        <table width="100%" border="0">
+            <tr>
+                <td>
+                    <div align="left">
+                        <br />
+                        <h2 class="title-bgcolor">
+                            Fill Separation Form(Resign)
+                        </h2>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="title-bgcolor">
+                    <div class="confiremation-left">
+                        <b class="feed-color-txt1">@Html.Label("Details :") </b><b class="feed-color-txt1">@Html.Label("EmployeeId - ")
+                        </b><b class="feed-color-txt">@Html.DisplayFor(x => x.EmployeeDetails.EmployeeCode),</b>
+                        <b class="feed-color-txt1">@Html.Label("Tentative Release Date - ") </b><b class="feed-color-txt">@Html.DisplayFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate)),</b>
+                        <b class="feed-color-txt1">@Html.Label("Location - ") </b><b class="feed-color-txt">@Html.DisplayFor(x => x.EmployeeDetails.OfficeLocation),
+                        </b>
+                    </div>
+                    <div class="confiremation-but">
+                        <b class="feed-color-txt1">@Html.Label("Employee :")</b> <b class="feed-color-txt">
+                            @Html.DisplayFor(x => x.EmployeeDetails.EmployeeName)
+                        </b>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="feedba">
+            @Html.Label("Separation Interview Feedback Form")
+        </div>
+
+        <table width="100%" class="feed-table-bg" border="0">
+            <thead>
+                <tr>
+                    <th class="feed-td-bg">
+                        @Html.Label("Question")
+                    </th>
+                    <th width="240" class="feed-td-bg">
+                        @Html.Label("Options")
+                    </th>
+                    <th class="feed-td-bg">
+                        @Html.Label("Comments")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+        string[] SectionArray = new string[10];
+        int i = 0;
+        if (Model.ListExitInterviewItems.Count > 0)
+        {
+
+            foreach (var item in Model.ListExitInterviewItems)
+            {
+                if (i == 0)
+                {
+                    SectionArray[i] = item.SectionName;
+                    i++;
+                }
+                else
+                {
+                    if (SectionArray[i - 1] != item.SectionName)
+                    {
+
+                        SectionArray[i] = item.SectionName;
+                        i++;
+                    }
+                }
+            }
+            int counter = 0;
+            for (int j = 0; j < SectionArray.Length; j++)
+            {
+                if (SectionArray[j] != null)
+                {
+                    <tr>
+                        <td colspan="3" class="feed-td1-bg">
+                            <b>@Html.Label(SectionArray[j])</b>
+                        </td>
+                    </tr>
+
+                    foreach (var item in Model.ListExitInterviewItems)
+                    {
+                        if (item.SectionName == SectionArray[j])
+                        {
+                    <tr>
+                        <td class="feed-td1-bg">
+                            @Html.Label("",item.ItemName)
+                        </td>
+                        <td class="feed-td1-bg">
+                            @foreach (var option in item.OptionList)
+          {
+                                @Html.RadioButton("Radio_" + item.ItemId.ToString(), option.QuestionaryOptionId, false, new { @id = counter })
+                                @Html.Label(option.OptionDescription)
+                                @Html.HiddenFor(x => x.HiddenRadioId, new { @id = "hdRadio_" + counter })
+          }
+                        </td>
+                        <td class="feed-td1-bg">
+                            @Html.TextArea(item.ItemName + "_Comments", item.Comments, new { @id = "Comments_" + counter })
+                            <div style="display: none">
+                                @Html.Hidden("Item", item.ItemId, new { @id = "ItemId_" + counter })
+                                @Html.Hidden("ExitInstance", item.ExitInstanceId, new { @id = "ExitInstanceId_" + counter })
+                                @Html.Hidden("Revision", item.RevisionId, new { @id = "Revision_" + counter })
+                                @Html.Hidden("Response", item.ResponseId, new { @id = "Response_" + counter })
+                            </div>
+                        </td>
+                    </tr>
+          counter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Model.HiddenStageId >= 6)
+        {
+                    <tr>
+                        <td class="feed-td1-bg">
+                            @Html.Label("HR Comments")
+                        </td>
+                        <td class="feed-td1-bg" colspan="2">
+                            @Html.TextAreaFor(x => x.HRClosureComments)
+                            @Html.ValidationMessageFor(x => x.HRClosureComments, "HR Comments are required")
+                        </td>
+                    </tr>
+        }
+                }
+                <tr>
+                    <td colspan="3" style="border: none">
+                        <div class="floatR" style="padding: 8px;">
+                            @if (Model.HiddenStageId >= 6)
+          {
+                                <input id="btnCompleteExitProcess" type="submit" value="Complete Separation Process" class="button" />
+                                <input id="btnPushBack" type="submit" value="Push Back" class="button" />
+                                <input id="btnWorkFlowInfo" type="submit" value="Workflow Information" class="button" />
+          }
+          else
+          {
+                                <input id="btnExitInterviewApprove" type="submit" value="Approve" class="button" />
+          }
+                            <input id="btnExitInterviewSave" type="submit" value="Save" class="button" />
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    }*@
+<div id="ExitInterviewSaveSuccessPopUp" style="display: none">
+    Details saved successfully.
+</div>
+<div id="ExitInterviewApproveSuccess" style="display: none">
+    Separation process has been moved to next stage.
+</div>
+<div id="ExitInterviewRejectSuccess" style="display: none">
+    Separation process has been moved to previous stage.
+</div>
+<div id="ExitInterviewConfirmmessage" style="display: none">
+    Are you sure, you want to move the Separation Process to next stage ?
+</div>
+<div id="HRClosureConfirmation" style="display: none">
+    <p>
+        The Agreed Release Date of this Resource is @String.Format("{0:MM/dd/yyyy}", @Model.SeparationFormDetails.AgreedReleaseDate).
+        <br />
+        Do you want to release the resource?
+    </p>
+</div>
+<div id="PushBackStageConfirmation" style="display: none">
+    Are you sure, you want to Push Back the Separation Process to previous stage?
+</div>
+<div id="HRClosureSuccess" style="display: none">
+    Separation process has been completed successfully.
+</div>

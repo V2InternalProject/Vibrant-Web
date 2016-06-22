@@ -1,0 +1,651 @@
+﻿@model HRMS.Models.DesignationDetailsViewModel
+@{
+    ViewBag.Title = "Designation Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src=@Url.Content("../../Scripts/EmployeeDetails/DesignationDetails.js") type="text/javascript"></script>
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "DesignationDtls" }))
+{
+    @*@Html.HiddenFor(x => x.ProjectReviewerId)*@
+    @Html.HiddenFor(x => x.Year)
+    @Html.HiddenFor(x => x.Month)
+    @Html.HiddenFor(x => x.Level)
+    @Html.HiddenFor(x => x.GradeId)
+    @Html.HiddenFor(m => m.UserRole)
+    @Html.HiddenFor(m => m.UniqueId)
+}
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var employeeId = '@Model.EmployeeId';
+    var deleteRecordConfirmationUrl = '@Url.Action("DeleteDesignationDetails", "EmployeeDetails")';
+
+    $(document).ready(function () {
+        isDesignationRowInAddEditMode = false;
+        yearList = @(Html.Raw(Json.Encode(ViewBag.ListOfYears)));
+        var YearsList = [];
+        YearsList.push("Select");
+        $.each(yearList, function (index,value) {
+            YearsList.push(value);
+        });
+
+        monthList = @(Html.Raw(Json.Encode(ViewBag.ListofMonths)));
+        var MonthsList = [];
+        MonthsList.push("Select");
+        $.each(monthList, function (index,value) {
+            MonthsList.push(value.Text);
+        });
+        gradeList = @(Html.Raw(Json.Encode(ViewBag.GradeList)));
+        var GradesList = [];
+        GradesList.push("Select");
+        $.each(gradeList, function (index,value) {
+            GradesList.push(value.Text);
+        });
+
+        levelList = @(Html.Raw(Json.Encode(ViewBag.LevelList)));
+        var LevelsList = [];
+        LevelsList.push("Select");
+        $.each(levelList, function (index,value) {
+            LevelsList.push(value.Text);
+        });
+
+        //$("#newdesignationdialog #EmployeeId").val('@Model.EmployeeId');
+
+        // Set up the jquery grid
+        $("#jqDesignationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadDesignationDetails", "EmployeeDetails")',
+            postData: { employeeId: '@ViewBag.designationEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Year", "Month", "Grade", "GradeId", "Level", "Designation", "Role Description", "Joining Designation", "Unique Id", "isDefaultRecord", ""],
+
+            // Configure the columns
+            colModel: [
+
+                { name: "Year", index: "Year", align: "left", width: 60, editable: true, editrules: { required: true ,custom:true ,custom_func: IsYearSelected }, edittype: "select", editoptions: { value: YearsList, dataEvents: [{ type: 'change', fn: function(e) {getYearsList(e); } }]} },
+                { name: "Month", index: "Month", align: "left", width: 80, editable: true, editrules: { required: true ,custom:true, custom_func: IsMonthSelected }, edittype: "select", editoptions: { value: MonthsList, dataEvents: [{ type: 'change', fn: function(e) {getMonthsList(e); } }]} },
+                { name: "Grade", index: "Grade", align: "left", width: 45, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: GradesList, dataEvents: [{ type: 'change', fn: function(e) {getGradesList(e); } }]} },
+                { name: "GradeId", index: "GradeId", hidden: true, width: 100, align: "left", editable: true },
+                { name: "Level", index: "Level", align: "left", width: 60, editable: true, editrules: {}, edittype: "select", editoptions: { value: LevelsList, dataEvents: [{ type: 'change', fn: function(e) {getLevelsList(e); } }]} },
+                { name: "Designation", index: "Designation", width: 150, align: "left", editable: true ,editrules: {required:true } , editoptions: { dataEvents: [{type: 'change' , fn: function(e) {CheckJoiningDesignation(e); } }]} },
+                { name: "RoleDescription", index: "RoleDescription", width: 150, align: "left", editable: true,editrules: {} },
+                { name: "JoiningDesignation", index: "JoiningDesignation", width: 200, align: "left", editable: true ,editrules: {required: true } ,editoptions: { dataEvents: [{type: 'change' , fn: function(e) { CheckJoiningDesignation(e); } }] }},
+                { name: "UniqueId", index: "UniqueId", hidden: true, width: 100, align: "left",editable: true },
+                { name: "isDefaultRecord", index: "isDefaultRecord", hidden: true, width: 100, align: "left" },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 40,
+                    align: "center",
+                    formatter: function () {
+                        if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' && ('@Model.EmpStatusMasterID' != 2)) {
+                            return '<img id ="imgdelete"  src="../../Images/New Design/delete-icon.png" width="15px" height="15px">';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            ],
+
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqTableDesignationPager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            shrinkToFit: true,
+            pager: $("#jqTableDesignationPager"),
+            //caption: "Designation Details",
+            editurl: '@Url.Action("DesignationDetails", "EmployeeDetails")',
+
+            // Grid caption
+            //caption: "Employee - Designation Details",
+
+            gridComplete: function () {
+                if ('@Model.EmpStatusMasterID' == 2) {
+
+                    //$('#btnAddDesignationDetail').hide();
+                    $("#jqTableDesignationPager_left").css("visibility","hidden");
+                    $("#load_jqDesignationTable").css("visibility","hidden");
+                    $("#gbox_jqDesignationTable").find('input,select').attr("disabled", true);
+                    $("#gbox_jqDesignationTable").jqGrid('hideCol', 'Delete');
+
+                }
+
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqDesignationTable").jqGrid('getGridParam', 'records');
+
+                //if (count == 0) {
+                //    $('#gbox_jqDesignationTable').hide();
+                //    $("#DesignationDetailsContainer").append("<p>No records found</p>")
+                //}
+
+                //if (count == 0) {
+                //    $('#gbox_jqDesignationTable').hide();
+                //}
+                //else {
+                //    $('#gbox_jqDesignationTable').show();
+                //    if (count > 20) {
+
+                //        $('#jqTableDesignationPager').show();
+                //    }
+                //    else {
+                //        $('#jqTableDesignationPager').hide();
+                //    }
+                //}
+            },
+            onCellSelect: function (rowid, iCol) {
+                if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+                    return false;
+                }
+                var rowData = $(this).getRowData(rowid);
+                if(isDesignationRowInAddEditMode == false){
+                    var selectedDesignationId = rowData['UniqueId'];
+                    var isDefaultRecord = rowData['isDefaultRecord'];
+                    var selectedEmployeeId = employeeId;
+                    $('#Month').val(rowData['Month']);
+                    if (iCol == 10 && ('@Model.EmpStatusMasterID' != 2)  && rowid != "new_row") {
+                        DeleteDesignationDetail(selectedDesignationId, isDefaultRecord, selectedEmployeeId);
+                    } else {
+                        if ('@Model.EmpStatusMasterID' != 2) {
+                            EditDesignationDetails(rowData);
+                        }
+                    }
+                }
+            }
+        }).navGrid("#jqTableDesignationPager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqDesignationTable").jqGrid('inlineNav', "#jqTableDesignationPager",
+       {
+           edit: true,
+           editicon: "ui-icon-pencil",
+           add: true,
+           addicon: "ui-icon-plus",
+           save: true,
+           saveicon: "ui-icon-disk",
+           cancle: true,
+           cancelicon: "ui-icon-cancel",
+           addtext: "Add",
+           savetext: "Save",
+           edittext: "Edit",
+           canceltext: "Cancel",
+           addParams: {
+               // position: "last",
+               addRowParams: {
+                   // the parameters of editRow used to edit new row
+                   keys: true,
+                   oneditfunc: function (rowid) {
+                       isDesignationRowInAddEditMode = true;
+                       $('#undefined').hide();
+                       $('#new_row_Designation').bind('keypress',function(){
+                           AutoCompleteDesignation(rowid);
+                       });
+
+                       $('#new_row_Designation').bind('keypress',function(){
+                           AutoCompleteJoiningDesignation(rowid);
+                       });
+                   }
+               }
+           },
+           editParams: {
+               keys: true,
+               oneditfunc: function (data, value) {
+                   isDesignationRowInAddEditMode = true;
+                   $('#undefined').hide();
+                   $('#'+data +'_Designation').bind('keypress',function(){
+                       AutoCompleteDesignation(data);
+                   });
+
+                   $('#'+data+'_Designation').bind('keypress',function(){
+                       AutoCompleteJoiningDesignation(data);
+                   });
+               },
+               sucessfunc: function (data) {
+               },
+               url: null,
+               extraparam: {
+                   EmployeeId: function(){
+                       return '@Model.EmployeeId'},
+
+                   YearId: function(){
+                       return  $('#Year').val();
+                   },
+                   Month: function(){
+                       return $('#Month').val();
+                   },
+                   Level:function(){
+                       return  $('#Level').val();
+                   },
+                   GradeId: function(){
+                       return $('#GradeId').val();
+                   }
+               },
+               aftersavefunc: function (data, response) {
+                   isDesignationRowInAddEditMode = false;
+                   var result = $.parseJSON(response.responseText);
+                   jQuery("#jqDesignationTable").trigger("reloadGrid");
+                   //$("#jqDesignationTable").jqGrid('showCol', 'VisaFileName');
+                   //$("#jqDesignationTable").jqGrid('hideCol', 'VisaFileNameUpload');
+
+                   if (result.status == true) {
+                       $("#successDesignationDialog").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+                   else if (result.isValidEntry == false) {
+                       $("#invalidEntry").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           title: 'Invalid Entry',
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+                   else if (result.isValidMonth == false && result.status == false) {
+                       $("#invalidMonth").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           title: 'Designation Details',
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+                   else if (result.status == false) {
+                       $("#AddDesignationDetailsErrorMessege").dialog({
+                           resizable: false,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       });
+                   }
+                   else if (result.status == "Error") {
+                       DisplayErrorDialog("Designation Details");
+                   }
+                   else {
+                       DisplayErrorDialog("Designation Details");
+                   }
+
+               },
+               errorfunc: null,
+               afterrestorefunc: function(){
+                   isDesignationRowInAddEditMode = false;
+               },
+               restoreAfterError: true,
+               mtype: "POST"
+           }
+       });
+
+        function AutoCompleteDesignation(rowid)
+        {
+            $("#"+rowid+"_Designation").autocomplete({
+                source: function (request, response) {
+
+                    $.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data) {
+                        response($.map(data, function (d) {
+
+                            return {
+                                label: d.DesignationName,
+                                value: d.DesignationName
+                            };
+                        }));
+                    });
+                }
+            });
+        }
+
+        function AutoCompleteJoiningDesignation(rowid)
+        {
+            $("#"+rowid+"_JoiningDesignation").autocomplete({
+                source: function (request, response) {
+                    $.getJSON('@Url.Action("SearchDesignation", "EmployeeDetails")', { term: request.term }, function (data) {
+                        response($.map(data, function (el) {
+                            return {
+                                label: el.DesignationName,
+                                value: el.DesignationName
+                            };
+                        }));
+                    });
+                }
+            });
+        }
+
+        if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+            //$("#btnAddDesignationDetail").attr("disabled", true);
+            //$("#btnAddDesignationDetail").hide();
+            $("#jqTableDesignationPager_left").css("visibility","hidden");
+            $("#jqDesignationTable").jqGrid('hideCol', 'Delete');
+        }
+    });//ready end
+
+    function getYearsList(e) {
+        var Year = e.target[e.target.selectedIndex].text;
+        $('#Year').val(Year);
+    }
+
+    function getMonthsList(e) {
+        var month = e.target[e.target.selectedIndex].text;
+        $('#Month').val(month);
+    }
+    function getLevelsList(e) {
+        var status = e.target[e.target.selectedIndex].text;
+        if(status == "Select")
+            status ="";
+
+        $('#Level').val(status);
+    }
+
+    function getGradesList(e) {
+        var Grade = e.target[e.target.selectedIndex].text;
+        var ID;
+        var gradename;
+        $.each(gradeList, function(index, value){
+            //gradename =value.Text.replace('  ',' ');
+            gradename =value.Text;
+            if(gradename  == Grade)
+            {
+                ID=value.Value;
+            }
+        });
+        $('#GradeId').val(ID);
+    }
+
+    function IsYearSelected(value, colname) {
+        if (value == "0") {
+            $("#RequiredFeildForYear").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function IsMonthSelected(value, colname) {
+        if (value == "0") {
+            $("#RequiredFeildForMonth").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function CheckJoiningDesignation(e)
+    {
+        var Jdesignation = e.target.value;
+        var postUrl = '@Url.Action("CheckJoiningDesignation", "EmployeeDetails")';
+        $.ajax({
+            url:postUrl,
+            type: 'POST',
+            data: {'JoiningDesignation': Jdesignation },
+            success: function (results) {
+                if (results.isExists == false) {
+                    $("#NotValidDesigntion").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                // location.reload();
+                                $("#"+e.currentTarget.id).val('');
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            //location.reload();
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+                else if(results.isExists == true) {
+                }
+                else {
+                    $("#errorDialog").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                //location.reload();
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Employee Details
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.EmployeeId != null)
+            {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })" class="selected">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Upload Documents
+                    </a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })" class="selected">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Experience
+                    </a>
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })" class="selected">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Upload Documents
+                    </a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Bond Details
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Employee
+                    </a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })" class="selected">
+                        Designation
+                    </a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Passport / Visa
+                    </a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Disciplinary
+                    </a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Project
+                    </a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Experience
+                    </a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.designationEmployeeId })">
+                        Bond Details
+                    </a>
+                }
+            }
+        </nav>
+    </div>
+    <div class="MainBody">
+        <div class="mrgnT33">
+            <div class="tablestyle3" id="DesignationDetailsContainer">
+                <table id="jqDesignationTable" class="scroll"></table>
+                <div id="jqTableDesignationPager" />
+            </div>
+        </div>
+    </div>
+    <div id="successDesignationDialog" title="Designation Details" style="display: none">
+        <p>
+            Designation Details have been saved.
+        </p>
+    </div>
+    <div id="invalidMonth" title="Designation Details" style="display: none">
+        <p>
+            Month selected should be in between Joining Date Month and Current Date Month.
+        </p>
+    </div>
+    <div id="invalidEntry" title="Designation Details" style="display: none">
+        <p>
+            More than one designation cannot be added for same year and month.
+        </p>
+    </div>
+    <div id="AddDesignationDetailsErrorMessege" title="Employee details" style="display: none;">
+        <p>
+            Unable to add record.
+        </p>
+    </div>
+    <div id="RequiredFeildForYear" style="display: none;" title="Required Feild">
+        <p>
+            Please select Year.
+        </p>
+    </div>
+    <div id="RequiredFeildForMonth" style="display: none;" title="Required Feild">
+        <p>
+            Please select Month.
+        </p>
+    </div>
+    <div id="deleteRecordConfirmation" style="display: none">
+        <p>
+            Are you sure you want to delete this records?
+        </p>
+    </div>
+    <div id="DeleteRecord" style="display: none">
+        <p>
+            Record has been Deleted
+        </p>
+    </div>
+    <div id="NotValidDesigntion" style="display: none">
+        <p>
+            Please enter correct designation.
+        </p>
+    </div>
+</section>

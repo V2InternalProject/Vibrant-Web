@@ -1,0 +1,998 @@
+﻿@model HRMS.Models.EligibilityCriteriaModel
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript" href="jquery.mousewheel-3.0.6.pack.js" ></script>
+ <script type="text/javascript">
+
+     $(document).ready(function () {
+         var target1 = $(".outer-container-1");
+         $("#table-body-1").scroll(function () {
+
+             $("#table-header-1").offset({ left: (-1 * this.scrollLeft) + target1.offset().left });
+
+         });
+
+     });
+    </script>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")" class="selected">Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")">Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+
+<div class="MainBody ProjectIndexbody clearfix">
+<div class="InnerContainer">
+    <div class="clearfix"><a onclick="BackEligibiltyCriteria()" class="BackLink">Back</a></div>
+    <h3 class="mainHead padBot">Eligibility Criteria</h3>
+    <div class="clearfix">
+        <input type="radio" name="radio" value="Yes" id="RadioAllEmp">
+       <label for="" class="LabelForRadio">All Employees</label>
+        <input type="radio" name="radio" value="Yes" id="RadioDesignation">
+        <label for="" class="LabelForRadio">Designation</label>
+        <input type="radio" name="radio" value="Yes" id="RadioConfirmDate">
+        <label for="" class="LabelForRadio">Probation Review Date</label>
+
+        <div id="AllEmployeeDiv" class="mrgnT15">
+            <div id="allIneligibileNote" class="italicNote">
+                <div  class="italicNote">(Note 1: Only employees with Employment Status as Active and Employee Status as
+                either Confirmed / Work from Home / On Leave are visible in the below grid.)</div>
+
+                <div  class="italicNote">(Note 2: The Appraisal Process for Employee/s highlighted in Red
+                cannot be Initated as their Appraiser / Reviewer / Group Head or Designation is
+                not set for current Appraisal Year.)</div>
+             </div>
+
+            <div class="stackhold-right">
+                <input class="button" type="button" id="SelectAllEmp" value="Select All" />
+                <input class="button" type="button" id="DeselectAllEmp" value="Deselect All" />
+            </div>
+
+            <div class="outer-container outer-container-1">
+                <div class="inner-container">
+                    <div class="table-header" id="table-header-1">
+                        <table cellpadding="0" cellspacing="0" border="0" id="tbl_allEmployees">
+                            <tr>
+                                    <th width="250px" class="tableHeaders">
+                                        Employee Code
+                                    </th>
+                                    <th class="tableHeaders" width="350px">
+                                        Employee Name
+                                    </th>
+                                    <th class="tableHeaders" width="250px">
+                                        Delivery Team
+                                    </th>
+                                    <th class="tableHeaders" width="350px">
+                                        Designation
+                                    </th>
+                                    <th class="tableHeaders" width="250px">
+                                        Probation Review Date
+                                    </th>
+                                    <th class="tableHeaders" width="250px">
+                                        Select
+                                    </th>
+                                </tr>
+                            </table>
+                         </div>
+                                    <div class="table-body"  id="table-body-1">
+                                        <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders">
+                                            @foreach (var item in Model.allEmployeeList)
+                                            {
+
+                                                <tr id="@item.EmployeeID" class="tableRows">
+                                                    <td align="center" width="250px">
+                                                        @Html.DisplayFor(modelItem => item.EmployeeCode, new { @readonly = "readonly" })
+                                                    </td>
+                                                    <td width="350px">
+                                                        @Html.DisplayFor(modelItem => item.EmployeeName, new { @readonly = "readonly" })
+                                                    </td>
+                                                    <td width="250px">
+                                                        @Html.DisplayFor(modelItem => item.DeliveryTeam, new { @readonly = "readonly" })
+                                                    </td>
+                                                    <td width="350px">
+                                                        @Html.DisplayFor(modelItem => item.Designation, new { @readonly = "readonly" })
+                                                    </td>
+                                                    <td width="250px">
+                                                        @Html.DisplayFor(modelItem => item.ProbationReviewDate, new { @readonly = "readonly" })
+                                                    </td>
+                                                    <td  width="250px">
+                                                        @Html.CheckBoxFor(modelItem => item.Checked, new { @class = "chkAllEmployees", @id = item.EmployeeID, @for = item.AppraisalYearID })
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </table>
+                                    </div>
+                </div>
+            </div>
+            <div class="clearL floatL mrgnT30" style="width: 100%">
+                <table align="right" width="100%">
+                    <thead>
+                        <tr>
+                            <td width="69%">
+                                <input type="button" value="Initiate Appraisal Process" class="button" id="InitiateAppBtn" />
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Currently Selected Employee/s :</label>
+                                <b id="CurrentlySel"></b>
+                            </td>
+                            <td width="1%">
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Total number of Employee/s :
+                                </label>
+                                <b>@Model.allEmployeeListCount</b>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="DesignationDiv" class="mrgnT15">
+            <div id="designationIneligibileNote" style="font-style: italic; font-size: 12px;
+                color: #000;">
+                (Note 1: Only employees with Employment Status as Active and Employee Status as
+                either Confirmed / Work from Home / On Leave are visible in the below grid.)
+                <br />
+                (Note 2: The Appraisal Process for Employee/s highlighted in <i style="color: Red">Red</i>
+                cannot be Initated as their Appraiser / Reviewer / Group Head or Designation is
+                not set for current Appraisal Year.)</div>
+            <br />
+            <div class="stackhold-right">
+                <input class="button" type="button" id="btnSelectAllEmp" value="Select All" />
+                <input class="button" type="button" id="btnDeSelectAllEmp" value="Deselect All" />
+            </div>
+            <div class="clearfix">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_Emp" class="mrgnT5">
+                    <tr>
+                        <td>
+                            <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders" width="99%">
+                                <tr>
+                                    <th width="25%" class="bluebgtable1">
+                                        Designation
+                                    </th>
+                                    <th class="bluebgtable1" width="15%">
+                                        Employee Code
+                                    </th>
+                                    <th class="bluebgtable1" width="15%">
+                                        Delivery Team
+                                    </th>
+                                    <th class="bluebgtable1" width="15%">
+                                        Probation Review Date
+                                    </th>
+                                    <th class="bluebgtable1" width="15%">
+                                        Count
+                                    </th>
+                                    <th class="bluebgtable1" width="15%">
+                                        Select
+                                    </th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="width: 100%; height: 500px; overflow: auto;">
+                                <table cellspacing="0" cellpadding="0" border="0" width="100%" class="TablesBlueHeaders">
+                                    @foreach (var item in Model.DesignationList)
+                                    {
+                                        var designationId = @item.DesignationID;
+                                        <tr>
+                                            <th class="title" onclick="DisplayValues('@item.DesignationID')" colspan="4" style="text-align:left;margin-left:15px;cursor:pointer" width="70%">
+                                                @Html.DisplayFor(modelItem => item.DesignationDesc)
+                                                <img alt="v" src="../../Images/dropdown_arrow.png" />
+                                            </th>
+                                            <td style="display: none">@Html.HiddenFor(modelItem => item.DesignationID)
+                                            </td>
+                                            <td width="15%">@Model.allEmployeeList.Where(x => x.DesignationID == designationId).Select(e => e.EmployeeName).Count()
+                                            </td>
+                                            <td width="15%">
+                                                <input type="checkbox"  class="@item.DesignationID-ParentCheck parentChkbox" onclick="SelectEmployee('@item.DesignationID')" />
+                                            </td>
+                                        </tr>
+
+                                        foreach (var emp in Model.allEmployeeList.Where(x => x.DesignationID == designationId))
+                                        {
+                                        <tr id="@emp.EmployeeID" class="highlightDesignation">
+                                            <td class="@item.DesignationID" style="display:none" width="25%">
+                                                @Html.DisplayFor(modelItem => emp.EmployeeName)
+                                            </td>
+                                            <td class="@item.DesignationID"  style="display:none" width="15%">
+                                                @Html.DisplayFor(modelItem => emp.EmployeeCode)
+                                            </td>
+                                            <td class="@item.DesignationID"  style="display:none" width="15%">
+                                                @Html.DisplayFor(modelItem => emp.DeliveryTeam)
+                                            </td>
+                                            <td class="@item.DesignationID"  style="display:none" colspan="2" width="30%">
+                                                @Html.DisplayFor(modelItem => emp.ProbationReviewDate)
+                                            </td>
+                                            <td class="@item.DesignationID"  style="display:none" width="15%">
+                                                <input type="checkbox"  class="check-@item.DesignationID designationChkbox" onclick="ChildSelected('@item.DesignationID')" id="@emp.EmployeeID" />
+                                            </td>
+                                        </tr>
+                                        }
+                                    }
+                                    @foreach (var emp in Model.allEmployeeList.Where(x => x.Designation == null))
+                                    {
+                                        <tr>
+                                            <th class="title" onclick="DisplayValues(@emp.DesignationID)" colspan="4" style="text-align:left;margin-left:15px;cursor:pointer" width="70%">
+                                                Employee without Designation
+                                                <img alt="v" src="../../Images/dropdown_arrow.png" />
+                                            </th>
+                                            <td style="display: none">@Html.HiddenFor(modelItem => emp.DesignationID)
+                                            </td>
+                                            <td width="15%">@Model.allEmployeeList.Where(x => x.Designation == null).Select(e => e.EmployeeName).Count()
+                                            </td>
+                                            <td width="15%">
+                                                <input type="checkbox"  class="@emp.DesignationID-ParentCheck parentChkbox" onclick="SelectEmployee('@emp.DesignationID')" />
+                                            </td>
+                                        </tr>
+                                        <tr id="@emp.EmployeeID" class="highlightDesignation">
+                                            <td class="@emp.DesignationID" style="display:none" width="25%">
+                                                @Html.DisplayFor(modelItem => emp.EmployeeName)
+                                            </td>
+                                            <td class="@emp.DesignationID"  style="display:none"width="15%">
+                                                @Html.DisplayFor(modelItem => emp.EmployeeCode)
+                                            </td>
+                                            <td class="@emp.DesignationID" style="display:none" width="15%">
+                                                @Html.DisplayFor(modelItem => emp.DeliveryTeam)
+                                            </td>
+                                            <td class="@emp.DesignationID" style="display:none" colspan="2" width="30%">
+                                                @Html.DisplayFor(modelItem => emp.ProbationReviewDate)
+                                            </td>
+                                            <td class="@emp.DesignationID" style="display:none" width="15%">
+                                                <input type="checkbox"  class="check-@emp.DesignationID designationChkbox" onclick="ChildSelected('@emp.DesignationID')" id="@emp.EmployeeID" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="clearL floatL mrgnT30" style="width: 100%">
+                <table align="right" width="100%">
+                    <thead>
+                        <tr>
+                            <td width="69%">
+                                <input type="button" value="Initiate Appraisal Process" class="button" id="InitiateAppProcress" />
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Currently Selected Employee/s :</label>
+                                <b id="SelectedEmp"></b>
+                            </td>
+                            <td width="1%">
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Total number of Employee/s :
+                                </label>
+                                <b>@Model.allEmployeeListCount</b>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="ConfirmDateDiv" class="mrgnT10">
+            <div class="ProbReviewDate">
+                <div class="formcol clearfix">
+                    <div class="labelwidth floatL">
+                        @Html.Label("Probation Review Date on or before")
+                    </div>
+                    <div class="editor-field fieldwidth floatL">
+                        @Html.TextBoxFor(model => model.ConfirmationDate, String.Format("{0:MM/dd/yyyy}", Model.ConfirmationDate))
+                    </div>
+                    <div class="floatL">
+                        <input type="button" value="Search" class="button" id="btnSearchConfirmEmployee" />
+                    </div>
+                </div>
+            </div>
+            <div class="clearL mrgnT15" id="allIneligibileConfDate" style="font-style: italic;
+                font-size: 12px; color: #000;">
+                (Note 1: Only employees with Employment Status as Active and Employee Status as
+                either Confirmed / Work from Home / On Leave are visible in the below grid.)
+                <br />
+                (Note 2: The Appraisal Process for Employee/s highlighted in <i style="color: Red">Red</i>
+                cannot be Initated as their Appraiser / Reviewer / Group Head or Designation is
+                not set for current Appraisal Year.)</div>
+            <br />
+            <div class="clearfix">
+                <table align="right" width="100%">
+                    <tr>
+                        <td>
+                            <div class="stackhold-right">
+                                <input class="button" type="button" id="ConfDateSelectAllEmp" value="Select All" />
+                                <input class="button" type="button" id="ConfDateDeselectAllEmp" value="Deselect All" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="AllConfirmDateEmployeesDiv" class="clearL mrgnT15">
+                @{Html.RenderPartial("_AllConfirmDateEmployees", Model);}
+            </div>
+            <div class="clearL floatL mrgnT30" style="width: 100%">
+                <table align="right" width="100%">
+                    <thead>
+                        <tr>
+                            <td width="69%">
+                                <input type="button" value="Initiate Appraisal Process" class="button" id="ConfDateInitiateAppBtn" />
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Currently Selected Employee/s :</label>
+                                <b id="ConfDateCurrentlySel"></b>
+                            </td>
+                            <td width="1%">
+                            </td>
+                            <td class="bluebgtable1" width="15%">
+                                <label>
+                                    Total number of Employee/s :
+                                </label>
+                                <b id="ConfDateEmpCount"></b>@*<b>@Model.allEmployeeListCount</b>*@
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="NoEmpSelected" style="display: none" title="Initiate Appraisal">
+    <center class="LoadingWrap">
+        Please select atleast one Employee to initiate the Appraisal Process.
+    </center>
+</div>
+<div id="selectConfirmationDate" style="display: none" title="Initiate Appraisal">
+    Please select Probation Review Date.
+</div>
+<div id="IniAllEmpAppConfirm" style="display: none" title="Initiate Appraisal">
+    <center class="LoadingWrap">
+        Are you sure you want to initiate the Appraisal Process for the <b></b> employee/s
+        selected?
+    </center>
+</div>
+<div id="ConfDateIniAllEmpAppConfirm" style="display: none" title="Initiate Appraisal">
+    <center class="LoadingWrap">
+        Are you sure you want to initiate the Appraisal Process for the <b></b>employee/s
+        selected?
+    </center>
+</div>
+<div id="allFailedEmpDialog" style="display: none" title="Initiate Appraisal">
+    <center class="LoadingWrap">
+        The Appraisal Process for the Employees<br />
+        Highlighted in Red cannot be Initiated.
+    </center>
+</div>
+<div id="allEmpSuccessDialog" style="display: none">
+    @{Html.RenderPartial("_AllSuccesfulIniEmployee", Model);}
+</div>
+<div id="approvalMailDialog" style="display: none">
+    @{Html.RenderPartial("_MailTemplateConfigureAppraisalProcess", Model.Mail);}
+</div>
+</section>
+<script type="text/javascript">
+
+    function BackEligibiltyCriteria() {
+        window.location.href = '@Url.Action("AppraiserReviewerMapping", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.ApprasialYearID';
+    }
+    function DisplayValues(value) {
+        var id = value;
+        $("." + value).toggle('show');
+    }
+
+    function SelectEmployee(valueOfDesg) {
+        var desgId = "check-" + valueOfDesg;
+        var parentID = valueOfDesg + "-ParentCheck";
+        $.each($("." + desgId), function (l, val) {
+            if ($("." + parentID).is(":checked")) {
+                if ($("#" + $(val).attr("id") + ".designationChkbox").is(':disabled'))
+                    $("#" + $(val).attr("id") + ".designationChkbox").attr("checked", false);
+                else
+                    $("#" + $(val).attr("id") + ".designationChkbox").attr("checked", true);
+            }
+            else {
+                $("#" + $(val).attr("id") + ".designationChkbox").attr("checked", false);
+            }
+        });
+        var check1 = checkCount();
+    }
+
+    function ChildSelected(valOfChild) {
+        var chId = "check-" + valOfChild;
+        var pid = valOfChild + "-ParentCheck";
+        if ($("." + chId).not(":checked"))
+            $("." + pid).attr("checked", false);
+        var check = checkCount();
+    }
+
+    function checkCount() {
+        var countcheck = 0;
+        countcheck = $('.designationChkbox:checkbox:checked').length;
+        $('#SelectedEmp').html(countcheck);
+        return countcheck;
+    }
+
+    $('#InitiateAppProcress').click(function () {
+        var employId = "";
+        $('.designationChkbox:checkbox:checked').each(function (i, val) {
+            var empId = $(val).attr("id");
+            if (empId != null)
+                employId = employId + empId + (',');
+        });
+        var check2 = checkCount();
+        var appraisalYearID = '@Model.ApprasialYearID';
+        AppProcress(employId, appraisalYearID, check2);
+    });
+
+    var InitiateAppraisalButton = "";
+    $(document).ready(function () {
+        $(".Title").hide();
+        if ('@ViewBag.IsPerformanceYearFrozen' == "True") {
+            $("#InitiateAppBtn").hide();
+            $("#SelectAllEmp").hide();
+            $("#DeselectAllEmp").hide();
+            $(".chkAllEmployees").attr("disabled", "disabled");
+
+            $("#InitiateAppProcress").hide();
+            $("#btnSelectAllEmp").hide();
+            $("#btnDeSelectAllEmp").hide();
+            $(".parentChkbox").attr("disabled", "disabled");
+            $(".designationChkbox").attr("disabled", "disabled");
+
+            $("#ConfDateInitiateAppBtn").hide();
+            $("#ConfDateSelectAllEmp").hide();
+            $("#ConfDateDeselectAllEmp").hide();
+            $("#AllConfirmDateEmployeesDiv #ConfirmationDateEmpListCount .chkAllConfDateEmployees").attr("disabled", "disabled");
+
+        }
+        var isConfirmationDataSuccess;
+        $('#ConfirmationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-100:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+        $("#AllEmployeeDiv").show();
+        $("#DesignationDiv").hide();
+        $("#ConfirmDateDiv").hide();
+        $("#RadioAllEmp").attr('checked', 'checked');
+        InitiateAppraisalButton = "";
+        currentSelectedEmp = 0;
+        //to highlight in red all ineligibile employees on page load
+        GetIneligibileEmployees();
+    });
+
+    function GetIneligibileEmployees() {
+        DisplayLoadingDialog();  //checked
+        var employeeId = [];
+        var appraisalYearID = '@Model.ApprasialYearID';
+        $.each($('.highlightRed'), function (i, val) {
+            employeeId.push($(val).attr("id"));
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetIneligibileEmployees", "ConfigurationAppraisal")',
+            data: JSON.stringify({ AppraisalEmployeeId: employeeId,
+                AppraisalYearID: appraisalYearID
+            }),
+            type: 'POST',
+            datatype: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (results.failedEmployeeID.length > 0) {
+                    highlightFailedEmployee(results.failedEmployeeID, "pageLoadFailedEmp");
+                }
+            },
+            error: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+            }
+        });
+    }
+
+    $("#RadioAllEmp").click(function () {
+        $("#AllEmployeeDiv").show();
+        $("#DesignationDiv").hide();
+        $("#ConfirmDateDiv").hide();
+        InitiateAppraisalButton = "";
+    });
+
+    $("#RadioDesignation").click(function () {
+        $("#AllEmployeeDiv").hide();
+        $("#DesignationDiv").show();
+        $("#ConfirmDateDiv").hide();
+        InitiateAppraisalButton = "";
+    });
+
+    $("#RadioConfirmDate").click(function () {
+        $("#AllEmployeeDiv").hide();
+        $("#DesignationDiv").hide();
+        $("#ConfirmDateDiv").show();
+        InitiateAppraisalButton = "";
+        if ($('#ConfirmationDate').val() == '01/01/0001') {
+            $('#ConfirmationDate').val("");
+        }
+    });
+
+    $("#SelectAllEmp").click(function () {
+        $(".chkAllEmployees:enabled").attr("checked", true);
+        currentSelectedEmp = $(".chkAllEmployees:checked").length;
+        $("#CurrentlySel").html("");
+        $("#CurrentlySel").append(currentSelectedEmp);
+    });
+
+    $("#btnSelectAllEmp").click(function () {
+        $(".designationChkbox:enabled").attr("checked", true);
+        currentSelectedEmp = $(".designationChkbox:checked").length;
+        $("#SelectedEmp").html("");
+        $("#SelectedEmp").append(currentSelectedEmp);
+    });
+
+    $("#DeselectAllEmp").click(function () {
+        $(".chkAllEmployees").attr("checked", false);
+        currentSelectedEmp = $(".chkAllEmployees:checked").length;
+        $("#CurrentlySel").html("");
+        $("#CurrentlySel").append(currentSelectedEmp);
+    });
+
+    $("#btnDeSelectAllEmp").click(function () {
+        $(".designationChkbox").attr("checked", false);
+        currentSelectedEmp = $(".designationChkbox:checked").length;
+        $("#SelectedEmp").html("");
+        $("#SelectedEmp").append(currentSelectedEmp);
+    });
+    $("#ConfDateSelectAllEmp").click(function () {
+        $(".chkAllConfDateEmployees").attr("checked", true);
+        $("#ConfDateCurrentlySel").html("");
+        $("#ConfDateCurrentlySel").append($("#AllConfirmDateEmployeesDiv input:checked").length);
+    });
+
+    $("#ConfDateDeselectAllEmp").click(function () {
+        $(".chkAllConfDateEmployees").attr("checked", false);
+        $("#ConfDateCurrentlySel").html("");
+        $("#ConfDateCurrentlySel").append($("#AllConfirmDateEmployeesDiv input:checked").length);
+    });
+
+    $("input:checkbox").change(function (i, val) {
+        if ($(this).is(":checked")) {
+            currentSelectedEmp = currentSelectedEmp + 1;
+        }
+        else {
+            currentSelectedEmp = currentSelectedEmp - 1;
+        }
+
+        $("#CurrentlySel").html("");
+        $("#CurrentlySel").append(currentSelectedEmp);
+    });
+
+    $("#InitiateAppBtn,#ConfDateInitiateAppBtn").click(function () {
+        var employeeId = "";
+        countEmpSelected = 0;
+
+        if ($(this).attr("id") != 'ConfDateInitiateAppBtn') {
+            InitiateAppraisalButton = "InitiateAppBtn";
+            $.each($('input[class=chkAllEmployees]:checked'), function (i, val) {
+                employeeId = employeeId + $(val).attr("id") + (',');
+                countEmpSelected = countEmpSelected + 1;
+            });
+        }
+        else {
+            $.each($('input[class=chkAllConfDateEmployees]:checked'), function (i, val) {
+                employeeId = employeeId + $(val).attr("id") + (',');
+                countEmpSelected = countEmpSelected + 1;
+            });
+        }
+        var appraisalYearID = '@Model.ApprasialYearID';
+
+        AppProcress(employeeId, appraisalYearID, countEmpSelected);
+    });
+
+    function AppProcress(employeeId, appraisalYearID, countEmpSelected) {
+        if (employeeId == "") {
+            $("#NoEmpSelected").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        } //end if
+        else {
+            $("#IniAllEmpAppConfirm b").html("");
+            $("#IniAllEmpAppConfirm b").append(countEmpSelected);
+            $("#IniAllEmpAppConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 320,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        DisplayLoadingDialog();  //checked
+                        $.ajax({
+                            url: '@Url.Action("InitiateAllEmpApp", "ConfigurationAppraisal")',
+                            data: JSON.stringify({ EmployeeId: employeeId,
+                                AppraisalYearID: appraisalYearID
+                            }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $("#IniAllEmpAppConfirm").dialog("close");
+                                if (results) {
+                                    if (results.failedEmployeeID.length > 0)
+                                        highlightFailedEmployee(results.failedEmployeeID, results.successEmployeeID);
+                                    else if (results.successEmployeeID.length > 0)
+                                        showInitiatedEmployeeSuccess(results.successEmployeeID);
+                                }
+                                else if (results.status == "Error") {
+                                    $("#errorDialog").dialog({
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    }); //end dialog
+                                }
+                                else {
+                                    $("#errorDialog").dialog({
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    }); //end dialog
+                                }
+                            },
+                            error: function (result) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $("#errorDialog").dialog({
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 'auto',
+                                    modal: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                }); //end dialog
+                            }
+                        });
+                    }, //end ok
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+    }
+
+    function highlightFailedEmployee(failedEmployeeID, successEmployeeID) {
+        if (successEmployeeID != "pageLoadFailedEmp") {
+            $("#allFailedEmpDialog").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        if (InitiateAppraisalButton != 'InitiateAppBtn' && InitiateAppraisalButton != "") {
+                            $.each(failedEmployeeID, function (i) {
+                                $.each($(".confDatehighlightRed"), function (l, val) {
+                                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                                        $("#" + $(val).attr("id") + ".confDatehighlightRed").css("color", "red");
+                                        $("#" + $(val).attr("id") + ".chkAllConfDateEmployees").prop("checked", false);
+                                    }
+                                });
+                            });
+                        }
+                        else {
+                            $.each(failedEmployeeID, function (i) {
+                                $.each($(".highlightRed"), function (l, val) {
+                                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                                        $("#" + $(val).attr("id")).css("color", "red");
+                                        $("#" + $(val).attr("id") + ".chkAllEmployees").prop("checked", false);
+                                    }
+                                });
+                            });
+                        }
+                        if (successEmployeeID.length > 0)
+                            showInitiatedEmployeeSuccess(successEmployeeID);
+                    } //end Ok
+                }
+            });  //end dialog
+        } //end if
+        else {
+            $.each(failedEmployeeID, function (i) {
+                $.each($(".highlightRed"), function (l, val) {
+                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                        $("#" + $(val).attr("id")).css("color", "red");
+                        $("#" + $(val).attr("id") + ".chkAllEmployees").prop("checked", false);
+                        $("#" + $(val).attr("id") + ".chkAllEmployees").attr("disabled", "disabled");
+                    }
+                });
+                $.each($(".highlightDesignation"), function (l, val) {
+                    if ($(val).attr("id") == failedEmployeeID[i]) {
+                        $("#" + $(val).attr("id") + ".highlightDesignation").css("color", "red");
+                        $("#" + $(val).attr("id") + ".designationChkbox").prop("checked", false);
+                        $("#" + $(val).attr("id") + ".designationChkbox").attr("disabled", "disabled");
+                    }
+                });
+            });
+        } //end else
+    }
+
+    function showInitiatedEmployeeSuccess(successEmployeeID) {
+        DisplayLoadingDialog();  //checked
+        var successEmpIDs = "";
+        $.each($(successEmployeeID), function (i, val) {
+            successEmpIDs = successEmployeeID + (',');
+        });
+        $.ajax({
+            url: '@Url.Action("ShowSuccessfulIniEmployee", "ConfigurationAppraisal")',
+            data: ({ successEmployeeID: successEmpIDs,
+                AppraisalYearID: '@Model.ApprasialYearID'
+            }),
+            type: 'GET',
+            datatype: "json",
+            success: function (data) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (data) {
+                    $("#allEmpSuccessDialog").html(data);
+                    $("#allEmpSuccessDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: "Successfully Initiated Employees",
+                        close: function () {
+                            window.location.href = '@Url.Action("EligibilityCriteria", "ConfigurationAppraisal")?AppraisalYearID=' + '@Model.ApprasialYearID';
+                        }
+
+                    }); //end dialog
+
+                    $("#okSuccessEmp").unbind('click');
+                    $("#okSuccessEmp").bind('click', function () {
+                        DisplayLoadingDialog();  //checked
+                        var Empstatus = '';
+                        var comments = "";
+                        var loggedinEmpID = "";
+                        var appraisalID = 0;
+                        AppraisalSendMail(successEmpIDs, loggedinEmpID, Empstatus, comments, appraisalID);
+                    });
+                }
+            },
+            error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+            }
+        });
+    }
+
+    function AppraisalSendMail(successEmpIDs, loggedinEmpID, Empstatus, comments, appraisalID) {
+
+        $.ajax({
+            url: '@Url.Action("AppraisalSendMail", "ConfigurationAppraisal")',
+            type: 'POST',
+            data: { successEmpIDs: successEmpIDs, loggedinEmpID: '@Model.SearchedUserDetails.EmployeeId', Empstatus: Empstatus, comments: comments, appraisalID: appraisalID },
+            datatype: "json",
+            success: function (data) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (data) {
+                    $("#approvalMailDialog").html(data);
+                    $("#approvalMailDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            $(this).dialog('close');
+                        }
+
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendConfigAppraisalMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#MailDetails').valid()) {
+                            DisplayLoadingDialog();  //checked
+                            var SendMailUrl = '@Url.Action("SendEmail", "ConfigurationAppraisal")';
+
+                            $.ajax({
+                                url: SendMailUrl,
+                                type: 'POST',
+                                data: $('#MailDetails').serialize(),
+                                success: function (data) {
+
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+
+                                    if (data.validtoId == true) {
+
+                                            $("#approvalMailDialog").dialog('destroy');
+
+                                    }
+                                    else if (data.status == "Error") {
+                                        $("#errorDialog").dialog({
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            title: 'Mail Error',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+                                    else {
+                                        if (data.validCcId == false)
+                                            $("#CCErrorMessage").show();
+
+                                        if (data.validtoId == false)
+                                            $("#ToErrorMessage").show();
+                                        return false;
+
+                                    }
+
+                                },
+                                error: function () {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    $("#errorDialog").dialog({
+                                        title: 'Mail Error',
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        buttons:
+                                        {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    }); //end dialog
+
+                                } //end error
+
+                            }); //end send ajax
+
+                        } //end valid
+                    }); //end send mail click
+                } //end if
+            }, //end success
+            error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+            } //end error
+        });  //end mail template
+    } //end AppraisalSendMail
+
+    $('#btnSearchConfirmEmployee').on('click', function () {
+        var postUrl = '@Url.Action("ConfirmationDateEligibilityCriteria", "ConfigurationAppraisal")';
+        var confirmDate = $('#ConfirmationDate').val();
+        if (confirmDate == '' || confirmDate == undefined || confirmDate == 'mm/dd/yyyy') {
+            $("#selectConfirmationDate").dialog({
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else {
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: { AppraisalYearId: '@Model.ApprasialYearID', ConfirmationDate: confirmDate },
+                success: function (results) {
+                    $('#AllConfirmDateEmployeesDiv').html(results);
+                    $('#AllConfirmDateEmployeesDiv').show();
+                    $("#confDateEmpListTable").show();
+                    GetIneligibileConfDateEmployees();
+                    if ('@ViewBag.IsPerformanceYearFrozen' == "True") {
+                        $("#AllConfirmDateEmployeesDiv").find(':checkbox').prop("disabled", true)
+                    }
+                },
+                error: function (results) {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

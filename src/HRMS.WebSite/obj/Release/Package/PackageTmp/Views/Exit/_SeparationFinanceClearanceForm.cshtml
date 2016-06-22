@@ -1,0 +1,282 @@
+﻿@model HRMS.Models.FinanceClearance
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Exit/SeparationFinanceClearanceForm.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    var questionsdataFinance = @Html.Raw(Json.Encode(Model.QuestionnaireQuestions));
+    var employeeIdToPassFinance = '@ViewBag.EmployeeIdFinance';
+    var exitInstanceIdToPassFinance = '@Model.ExitInstanceId';
+    var FinanceQuestionnaireID = '@Model.FinanceQuestionnaireID';
+
+    $("#MoveAheadIdFinance").click(function(evt) {
+
+        if (window.ValidateCurrentForm("#FinanceSeparationTable tr") != 0) {
+            evt.preventDefault();
+        } else {
+
+            MoveAheadconfirmDialog();
+        }
+    });
+
+    if ($("#IsFinanceStageCleared").val() == "true") {
+        $("#roleFinance").hide();
+        $("#buttonsFinance").hide();
+    }
+
+    $(document).ready(function() {
+        if ($("#IsFinanceStageCleared").val() == "true") {
+            $("#MoveAheadIdFinance").hide();
+            $("#pushbackbtnidFinance").hide();
+            $("#workflowFinance").hide();
+            $("#sendPendingFinance").hide();
+            $("#submit_financeform").hide();
+            $("#FinanceSeparationForm").find('textarea,.radioControl').attr("disabled","disabled");
+
+        } else {
+            $("#MoveAheadIdFinance").show();
+            $("#pushbackbtnidFinance").show();
+            $("#workflowFinance").show();
+            $("#sendPendingFinance").show();
+            $("#submit_financeform").show();
+        }
+        $("#workflowFinance").click(WorkFlowFinanceClick);
+
+        $('#progressbar').progressbar({
+            value: 0
+        });
+
+        $('[name*=radioQ]').click(RadioQFinanceClick);
+
+        $('#submit_financeform').click(SubmitFinanceFormClick);
+
+        $("#pushbackbtnidFinance").click(PushBackButtonFinanceClick);
+
+        $.each($('[name*=radioQ]'), function (index, value) {
+            var radioName = $(this).attr('name');
+            var radioId = this.id;
+            if ($('#' + radioId).is(':checked')) {
+                $(this).parent().parent().find(".hiddenQuestionID").val($(this).val());
+            }
+        });
+    });
+</script>
+<style>
+    #progressbar {
+        display: block;
+        width: 520px;
+        height: 6px;
+    }
+
+        #progressbar .ui-widget-header {
+            background: #AAF200 /*{bgColorHeader}*/ url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) /*{bgImgUrlHeader}*/ 50% /*{bgHeaderXPos}*/ 50% /*{bgHeaderYPos}*/ repeat-x /*{bgHeaderRepeat}*/;
+        }
+</style>
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "FinanceSeparationForm" }))
+{
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => Model.ExitInstanceId)
+    @Html.HiddenFor(c => Model.QuestionnaireQuestions)
+    @Html.HiddenFor(c => Model.ResponceList)
+    @Html.HiddenFor(m => m.UserRole)
+    @Html.HiddenFor(m => m.FinanceRevisionID)
+    @Html.HiddenFor(m => m.IsFinanceStageCleared)
+
+    <div class="SepContainer">
+        <div class="emp-details borderFieldsBottom">
+            <form class="clearfix">
+                <label class="prefix" for="Employee Name">
+                    @Html.Label("Employee:")
+                </label>
+                <label class="suffix" for="Namrata Chandrakant Shetkar">
+                    @Html.DisplayFor(x => x.EmployeeName)
+                </label>
+                <label class="prefix" for="Tentative Release Date">
+                    @Html.Label("Tentative Release Date:")
+                </label>
+                <label class="suffix" for="Date">
+                    @Html.DisplayFor(x => x.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.TentativeReleaseDate))
+                </label>
+                <label class="prefix" for="Location">
+                    @Html.Label("Location:")
+                </label>
+                <label class="suffix" for="Location1">
+                    @Html.DisplayFor(x => x.location)
+                </label>
+                <label class="prefix" for="Employee Code">
+                    @Html.Label("EmployeeCode:")
+                </label>
+                <label class="suffix" for="3449">
+                    @Html.DisplayFor(x => x.EmployeeCode)
+                </label>
+            </form>
+        </div>
+        <div class="Finance-heading clearfix">
+            <h3 class="HRHeadingGreen">Finance Clearance</h3>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="TableJqgrid mrgnB18" id="FinanceSeparationTable">
+            <thead>
+                <tr>
+                    <th class="tableHeaders" width="25%">
+                        Questions
+                    </th>
+                    <th class="tableHeaders" width="10%">
+                        Weight %
+                    </th>
+                    <th class="tableHeaders" width="31%">
+                        Options
+                    </th>
+                    <th class="tableHeaders" width="31%">
+                        Comments
+                    </th>
+                </tr>
+            </thead>
+            <tr class="TopRow">
+                <td>
+                    Finance Clearance
+                </td>
+
+                <td align="center">
+                    100
+                </td>
+                <td align="center" colspan="2">
+                    Section Rating: <span id="percentage"></span><br />
+                    <span id="progressbar"></span>
+                    <br />
+                </td>
+            </tr>
+            <tbody>
+                @foreach (var item in Model.QuestionnaireQuestions)
+                {
+                    if (item.QuetionRevisionID == Model.FinanceRevisionID)
+                    {
+                        <tr class="tableRows">
+                            <td>
+                                <label>
+                                    @Html.DisplayFor(model => item.QuestionDescription, new { @class = "textAeraClass", @descriptionId = @item.QuestionDescription })
+                                    @Html.HiddenFor(c => c.QuestionDescription)
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    @Html.DisplayFor(ss => item.wattage, new { @class = "textAeraClass", @wattageId = @item.wattage })
+                                </label>
+                            </td>
+                            <td>
+                                @{
+                        var questionnaireOptions = Model.QuestionnaireOptions.Where(Q => Q.QuestionnaireQuestionID == item.QuestionnaireQuestionID).ToList();
+                        int? checklistresponce = 0;
+                        if (null != Model.ResponceList && this.Model.ResponceList.Any())
+                        {
+                            var response = this.Model.ResponceList.FirstOrDefault(r => r.checklistitem == item.QuestionnaireQuestionID);
+                            if (response == null)
+                            {
+                                if (User.IsInRole("HR Admin"))
+                                {
+
+                                }
+                                else
+                                {
+                                    Model.ResponceList = null;
+                                }
+                            }
+                            else
+                            {
+                                checklistresponce = response.checklistresponce;
+                            }
+                        }
+
+                                }
+                                @foreach (var item1 in questionnaireOptions)
+                                {
+
+                                    @Html.RadioButton("radioQ" + @item1.QuestionnaireQuestionID, @item1.QuestionnaireOptionID, (@item1.QuestionnaireOptionID == (checklistresponce ?? 0)), new { @id = "radioQ" + @item1.OrderInWhichToAppear, @class = "radioControl", @optionId = @item1.QuestionnaireOptionID })
+                                     @Html.Label(@item1.OptionDescription, new { @class = "label-space LabelForRadio", @for = "radioQ" + @item1.OrderInWhichToAppear })
+
+                                }
+                                <p>  @Html.Label("errorText", new { @id = "errorRadio", @style = "display:none;color:red;" })     </p>
+                            </td>
+                            <td>
+                                @if (Model.ResponceList != null && this.Model.ResponceList.Any())
+                                {
+                                    if (this.Model.ResponceList.Where(r => r.RevisionIDDepartment == Model.FinanceRevisionID).Any())
+                                    {
+                                        foreach (var responce in Model.ResponceList)
+                                        {
+                                            if (item.QuestionnaireQuestionID == responce.checklistitem)
+                                            {
+                                                @Html.TextAreaFor(i => responce.ResponceComments, new { @class = "textAeraClass" })
+                                                @*   @Html.ValidationMessageFor(m => responce.ResponceComments)*@
+                                                @Html.Hidden("Qid", null, new { @class = "hiddenQuestionID" })
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.TextAreaFor(i => item.Comments, new { @class = "textAeraClass" })
+                                        @*   @Html.ValidationMessageFor(m => item.Comments)  *@
+                                        @Html.Hidden("Qid", null, new { @class = "hiddenQuestionID" })
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.TextAreaFor(i => item.Comments, new { @class = "textAeraClass" })
+                                    @*   @Html.ValidationMessageFor(m => item.Comments)  *@
+                                    @Html.Hidden("Qid", null, new { @class = "hiddenQuestionID" })
+                                }
+                                <p>  @Html.Label("errorcomment", new { @id = "errorComment", @style = "display:none;color:red;" })    </p>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+      <div id="buttonsFinance" class="mrgnB18 mrgnT15 mrgnL46">
+          <input type="button" value="Move Ahead - Stage Cleared" id="MoveAheadIdFinance" class="ButtonGray mrgnR11" />
+          <input type="button" value="Push Back" id="pushbackbtnidFinance" class="ButtonGray mrgnR11" />
+          <input type="button" value="Workflow Information" id="workflowFinance" class="ButtonGray mrgnR11" />
+          <input type="button" value="Send Pending Item Email" id="sendPendingFinance" onclick=" FinancePendingItemEmailForm() " class="ButtonGray mrgnR11" />
+          <input type="submit" value="Save" id="submit_financeform" class="ButtonGray mrgnR11" />
+         </div>
+}
+
+    <div id="MoveAheadConfirmationFinance" style="display: none">
+        <p>
+            Do you want to move the process to the next stage?
+        </p>
+    </div>
+    <div id="btnFinanceSendPendingItem" style="display: none">
+        @{Html.RenderPartial("_FinancePendingItemEmailForm", Model);}
+    </div>
+
+    <div id="PushBackConfirmationFinance" style="display: none">
+        <p>
+            Do you want to move the process to the previous stage?
+        </p>
+    </div>
+    <div id="successseparationDialog" title="Exit Details" style="display: none">
+        <p>
+            Exit Form Details have been saved.
+        </p>
+    </div>
+    <div id="ShowDetailsApproveSuccess" style="display: none">
+        Exit process has been moved to next stage.
+    </div>
+    <div id="ShowDetailsRejectSuccess" style="display: none">
+        Exit process has been moved to previous stage.
+    </div>
+    <div id="errorDialog" title="Error" style="display: none">
+        Some Error Occured.
+    </div>

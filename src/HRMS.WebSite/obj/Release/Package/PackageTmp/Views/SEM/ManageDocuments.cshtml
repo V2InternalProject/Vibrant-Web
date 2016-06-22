@@ -1,0 +1,474 @@
+﻿@model HRMS.Models.ManageDocumentsModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Manage Documents";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmProjectDocument" }))
+{
+    @Html.HiddenFor(x => x.ProjectId)
+    @Html.HiddenFor(x => x.Count)
+    @Html.HiddenFor(x => x.searchtext)
+    @Html.HiddenFor(x=>x.DocumentCategoryId)
+}
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+             @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="FormContainerBox clearfix">
+            <div class="colOneThird">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Select Project:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.ProjectId, new SelectList(Model.ProjectDetailsList, "ProjectId", "ProjectName", "Select"), "Select", new { @id = "ddlProjectList" })
+                        <p class="qualif-detail">
+                            @Html.HiddenFor(model => model.ProjectId, new { id = "projectId" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colOneThird">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Search Document:")
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" name="searchValue" id="txtSearchDocument" class="srchinput" height="20px" />
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colOneThird">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Select Category:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.DocumentCategoryId, new SelectList(Model.DocumentFileDetailsModel.DocumentCategoryDetailsList, "DocumentCategoryId", "DocumentCategory", "Select"), "Select", new { @id = "ddlDocumentCategoryList" })
+                        <p class="qualif-detail">
+                            @Html.HiddenFor(model => model.DocumentCategoryId, new { id = "selectedDocCategoryId" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" value="Add Document" class="ButtonGray mrgnR8" id="btnAddProjectDocument" />
+        </div>
+        <div class="tablestyle3">
+            <table id="jqManageDocumentTable"></table>
+        </div>
+        <div id="jqManageDocumentTablePager">
+        </div>
+        <div class="TotalRecordsDiv">
+            <div class="bluebgtable1" id="totalcountManagerDocument">
+            </div>
+        </div>
+        <div id="addDocumentFileDialog" style="display: none;">
+            @{Html.RenderPartial("_AddDocumentFileDetails", Model.DocumentFileDetailsModel);}
+        </div>
+        <div id="DeleteProjectDocumentFileDialog" style="display: none">
+            <p>
+                Are you sure you want to delete selected record?
+            </p>
+        </div>
+        <div id="DeleteSuccessDocumentFileDialog" style="display: none;">
+            <p>
+                Record has been deleted successfully.
+            </p>
+        </div>
+        <div id="projectSelectionError" style="display: none;">
+            Please select Project
+        </div>
+        <div id="FileNotFound" style="display: none;">
+            File might belongs to old folder structure.
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        str = "";
+        if ($('#ddlProjectList option:selected').text() != 'Select')
+            $('#btnAddProjectDocument').show();
+        else
+            $('#btnAddProjectDocument').hide();
+        $('.TotalRecordsDiv').hide();
+        $("#jqManageDocumentTable").jqGrid({
+            // Ajax related configurations searchtext : str
+            url: '@Url.Action("GetProjectDocumentLoadGrid", "SEM")',
+            postData: { projectId: function () { return $("#frmProjectDocument #ProjectId").val(); }, searchtext: function () { return $("#frmProjectDocument #searchtext").val(); }, documentCategoryId: function () { return $('#frmProjectDocument #DocumentCategoryId').val(); } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Project Document Id", "Project Id", "Document Name", "Category Id", "Document Category", "", "Document Sub Category", "Uploaded By", "Uploaded On", "Details", "Delete"],
+            // Configure the columns
+            colModel: [
+             { name: "DocumentAttachmentID", index: "DocumentAttachmentID", align: "left", hidden: true, width: 150 },
+              { name: "ProjectId", index: "ProjectId", align: "left", hidden: true, width: 150 },
+                { name: "DocName", index: "DocName", align: "left", width: 150, formatter: projectFilelink },
+                { name: "CategoryId", index: "CategoryId", align: "left", hidden: true, width: 150 },
+                { name: "Category", index: "Category", align: "left", width: 150 },
+                { name: "SubCategoryId", index: "CategoryId", align: "left", hidden: true, width: 150 },
+                { name: "SubCategory", index: "Category", align: "left", width: 150 },
+                { name: "UploadedBy", index: "UploadedBy", align: "left", width: 150 },
+                { name: "UploadedOn", index: "UploadedOn", align: "left", width: 80, editable: true,formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                { name: "Details", index: "Details", align: "left", width: 100 },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 12,
+                    align: "left",
+                    sortable: false,
+                    width: 60,
+                    formatter: deleteDocumentLink
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqManageDocumentTablePager"),
+            //rowNum: 20,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            loadonce: true,
+            // Grid caption
+            //caption: "Manage Documents",
+            gridComplete: function () {
+                var count = jQuery("#jqManageDocumentTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    //$('#gbox_jqManageDocumentTable').hide();
+                    $('#totalcountDocument').text("Total Records : " + count);
+                    $('.TotalRecordsDiv').hide();
+                }
+                else {
+                    $('.TotalRecordsDiv').show();
+                    $('#totalcountManagerDocument').text("Total Records : " + count);
+                    //$('#gbox_jqManageDocumentTable').show();
+                    if (count > 20) {
+                        $('#jqManageDocumentTablePager_center').show();
+                    }
+                    else {
+                        $('#jqManageDocumentTablePager_center').hide();
+                    }
+                    $('#totalcountDocument').text("Total Records : " + count);
+                }
+                if ($('#ddlProjectList option:selected').text() == 'Select') {
+                    setTimeout("$('#jqManageModuleTablePager').show()", 500);
+                }
+                else {
+                    $('#jqManageModuleTablePager').hide();
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                var DocumentAttachmentID = rowData['DocumentAttachmentID'];
+
+                //if (colName['index'] != "Delete") {
+                //    EditProjectDocumentFileDetails(rowData);
+                //}
+                //                else if (colName['index'] == "Delete") {
+                //                    DeleteDocumentFileDetails(DocumentAttachmentID);
+                //                }
+                //EditProjectDocumentFileDetails
+            }
+        }).navGrid("#jqManageDocumentTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        $('#ddlProjectList').change(function () {
+            if ($('#ddlProjectList').val() == "") {
+                $('#ddlProjectList').val("");
+                $('#frmProjectDocument #ProjectId').val(0);
+                //$('#jqManageDocumentTable').trigger("reloadGrid");
+                $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                $('#btnAddProjectDocument').hide();
+            }
+            else {
+                $('#btnAddProjectDocument').show();
+                var projId = $('#ddlProjectList').val();
+                $('#frmProjectDocument #ProjectId').val(projId);
+                // $('#jqManageDocumentTable').trigger("reloadGrid");
+                $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+            //            jQuery("#corporateTable").trigger("reloadGrid");
+        });
+        $("#btnAddProjectDocument").click(function () {
+            if ($('#ddlProjectList').val() == "") {
+                $("#projectSelectionError").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    resizable: false,
+                    width: 350,
+                    title: "Select Project",
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); // End of Add Visa Details Dialog
+                $("#projectSelectionError").dialog('open');
+            }
+            else {
+               
+                $(".field-validation-error").empty();
+                $('input').removeClass("input-validation-error");
+                $('#addDocumentFileDialog #txtUploadedBy').val('@Model.DocumentFileDetailsModel.EmployeeName');
+                $('#addDocumentFileDialog #hdnUploadedBy').val('@Model.DocumentFileDetailsModel.EmployeeName');
+                $('#addDocumentFileDialog #txtUploadedOn').val('@Model.DocumentFileDetailsModel.UploadedOn');
+                $('#addDocumentFileDialog #hdnUploadedOn').val('@Model.DocumentFileDetailsModel.UploadedOn');
+                $('#addDocumentFileDialog #txtDetails').val('');
+                $('#addDocumentFileDialog #hdnDetails').val('');
+                $('#addDocumentFileDialog #documentCategoryId').val('');
+                $('#addDocumentFileDialog #DocumentCategoryList').val('');
+                $('#addDocumentFileDialog #LoggedInUser').val('@Model.DocumentFileDetailsModel.UploadedBy');
+                $('#addDocumentFileDialog #hdnProjectId').val($("#frmProjectDocument #ProjectId").val());
+                $('#addDocumentFileDialog #hdnContractAttachmentID').val('0');
+                $('#addDocumentFileDialog #ManageDocField').val('No files selected');
+                $('#DocumentSubCategoryList').selectBox("destroy");
+                $('#DocumentSubCategoryList').empty();
+
+                $("#addDocumentFileDialog #DocumentSubCategoryList").each(function () {
+                    // Create option
+                    var option = $("<option />");
+                    option.attr("value", '0').text('Select');
+                    $("#addDocumentFileDialog #DocumentSubCategoryList").append(option);
+                });
+                $('#DocumentSubCategoryList').selectBox('create');
+                $("#addDocumentFileDialog #DocumentCategoryList").next().find("span:first-child").text("Select");
+                $("#addDocumentFileDialog #DocumentSubCategoryList").next().find("span:first-child").text("Select");
+                $("#addDocumentFileDialog").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    resizable: false,
+                    width: 500,
+                    title: "Add Contract File"
+                }); // End of Add Visa Details Dialog
+                $("#addDocumentFileDialog").dialog('open');
+            }
+        });
+
+        function deleteDocumentLink(cellvalue, options, rowobject) {
+            return "<a href=# id=" + rowobject['DocumentAttachmentID'] + " class=EmpLink onClick = DeleteDocumentFileDetails(" + rowobject['DocumentAttachmentID'] + ") class=HideinPrint > Delete </a>";
+        }
+        function EditProjectDocumentFileDetails(rowDataObject) {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#addDocumentFileDialog #txtUploadedBy').val(rowDataObject['UploadedBy']);
+            $('#addDocumentFileDialog #hdnUploadedBy').val(rowDataObject['UploadedBy']);
+            $('#addDocumentFileDialog #txtUploadedOn').val(rowDataObject['UploadedOn']);
+            $('#addDocumentFileDialog #hdnUploadedOn').val(rowDataObject['UploadedOn']);
+            $('#addDocumentFileDialog #txtDetails').val(rowDataObject['Details']);
+            $('#addDocumentFileDialog #hdnDetails').val(rowDataObject['Details']);
+            $('#addDocumentFileDialog #documentCategoryId').val(rowDataObject['CategoryId']);
+            //            $('#addDocumentFileDialog #DocumentFile').val(rowDataObject['DocName']);
+            $('#addDocumentFileDialog #hdnProjectId').val(rowDataObject['CategoryId']);
+            $('#addDocumentFileDialog #hdnDocumentAttachmentID').val(rowDataObject['DocumentAttachmentID']);
+            $("#addDocumentFileDialog #DocumentCategoryList option[value = " + rowDataObject['CategoryId'] + "] ").attr('selected', 'selected');
+            //$("#addDocumentFileDialog #DocumentCategoryList").next().find(".sbSelector").text(rowDataObject['Category']);
+            $("#addDocumentFileDialog #DocumentCategoryList").next().find("span:first-child").text(rowDataObject['Category']);
+            var CategoryId = rowDataObject['CategoryId'];
+            $.ajax({
+                url: '@Url.Action("GetSubCategory", "SEM")',
+                type: 'GET',
+                data: { categoryId: CategoryId },
+                datatype: "json",
+                async: false,
+                success: function (result) {
+                  
+                    $('#DocumentSubCategoryList').selectBox("destroy");
+                    $('#DocumentSubCategoryList').empty();
+                    $('#DocumentSubCategoryList').append($("<option></option>")
+              .attr("value", "")
+              .text("Select"));
+                    $.each(result.List, function (index, value) {
+                        
+                        var optionhtml = '<option value="' +
+                                              value.DocumentSubCategoryId + '">' + value.DocumentSubCategory + '</option>';
+                        $('#DocumentSubCategoryList').append(optionhtml);
+                    });
+                    $('#DocumentSubCategoryList').selectBox('create');
+                }
+            });
+
+            $("#addDocumentFileDialog #DocumentSubCategoryList").next().find("span:first-child").text(rowDataObject['SubCategory']);
+            $('#addDocumentFileDialog #ManageDocField').val('No files selected');
+            $("#addDocumentFileDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 500,
+                title: "Edit Document File"
+            }); // End of Add Visa Details Dialog
+            $("#addDocumentFileDialog").dialog('open');
+        }
+
+
+
+        DocName = "";
+        DocumentAttachmentID = 0;
+        ProjectId = 0;
+
+        //        function deleteDocumentFileLink(cellvalue, options, rowobject) {
+        //            return "<a href=# id=" + rowobject['DocumentAttachmentID'] + " class=EmpLink onClick = DeleteDocumentFileDetails(this.id) class=HideinPrint  > Delete </a>";
+        //        }
+        if ($("#ddlProjectList").val() == "") {
+            //$('#gbox_jqManageDocumentTable').hide();
+            $('#totalcountDocument').text("Total Records : 0");
+        }
+    });      //end ready
+
+    function projectFilelink(cellvalue, options, rowobject) {
+        DocumentAttachmentID = rowobject['DocumentAttachmentID'];
+        ProjectId = rowobject['ProjectId'];
+        DocName = rowobject['DocName'];
+        return "<a href=# id=" + rowobject['DocumentAttachmentID'] + " class=EmpLink onClick = LinkContractFileClick(this) class=EmployeeNameLink >" + cellvalue + "</a>";
+    }
+
+    function LinkContractFileClick(event) {
+
+        docID = event.id;
+        $.ajax({
+            url: '@Url.Action("CheckIfFileExist", "SEM")',
+            data: { ProjectId: ProjectId, DocumentAttachmentID: docID },
+            type: 'get',
+            success: function (results) {
+                if (results.status == true) {
+                    window.location = '@Url.Action("DownloadDocumentFile", "SEM")?ProjectId=' + ProjectId + '&DocumentAttachmentID=' + docID;
+                }
+                else {
+                    $("#FileNotFound").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "File Not Found",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                $(this).dialog('close');
+                                //$("#jqManageDocumentTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    //    function LinkContractFileClick(DocumentAttachmentID, DocName, ProjectId) {
+
+    //        var DocumentAttachmentID = event.id;
+    //        /var DocName = event.text;
+    //            window.location = '@Url.Action("DownloadDocumentFile", "SEM")?ProjectId=' + ProjectId + '&DocumentAttachmentID=' + DocumentAttachmentID + '&DocName=' + DocName;
+    //        }
+
+    //search document by document name
+  
+    $('#txtSearchDocument').keyup(function () {
+        str = $('#txtSearchDocument').val();
+        $('#frmProjectDocument #searchtext').val(str);
+        $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+    });
+
+    $('#ddlDocumentCategoryList').change(function () {
+        if ($('#ddlDocumentCategoryList').val() == "") {
+            $('#ddlDocumentCategoryList').val("");
+            $('#frmProjectDocument #DocumentCategoryId').val(0);
+            $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        }
+        else {
+            $('#frmProjectDocument #DocumentCategoryId').val($('#ddlDocumentCategoryList option:selected').val());
+            $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        }
+        //            jQuery("#corporateTable").trigger("reloadGrid");
+    });
+
+    function DeleteDocumentFileDetails(DocumentAttachmentID) {
+        $('#DeleteProjectDocumentFileDialog').dialog({
+            modal: true,
+            width: 300,
+            height: 'auto',
+            resizable: false,
+            dialogClass: "noclose",
+            title: "Delete Project Document File Details",
+            buttons: {
+                "Ok": function () {
+                    $.ajax({
+                        url: '@Url.Action("DeleteProjectDocumnetFileDetails", "SEM")',
+                        data: { DocumentAttachmentID: DocumentAttachmentID },
+                        datatype: "json",
+                        success: function (data) {
+                            if (data.status == true) {
+                                $("#DeleteProjectDocumentFileDialog").dialog("close");
+                                $("#DeleteSuccessDocumentFileDialog").dialog({
+                                    modal: true,
+                                    resizable: false,
+                                    height: 140,
+                                    width: 300,
+                                    title: "Deleted",
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        "Ok": function () {
+                                            $(this).dialog('close');
+                                            //$("#jqManageDocumentTable").trigger("reloadGrid");
+                                            $("#jqManageDocumentTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                        }
+                                    }
+                                });
+                            }
+                            else if (data.status == "Error") {
+                                DisplayErrorDialog("Customer Contract File");
+                            }
+                            else {
+                                DisplayErrorDialog("Customer Contract File");
+                            }
+                        } //end success
+                    });
+                },
+                Cancel: function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+    }
+
+</script>

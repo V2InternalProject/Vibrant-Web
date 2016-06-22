@@ -1,0 +1,66 @@
+﻿@model HRMS.Models.TravelDetailsViewModel
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<div class="tablestyle3 mrgnT15">
+    <table border="0" cellpadding="0" cellspacing="0" class="TableJqgrid">
+        <tr align="center" class="tableRows">
+            <td align="right" width="30%">
+                <div class="display-label">
+                    <b>File Name </b>
+                </div>
+            </td>
+            <td align="left" width="70%">
+                <div class="display-field">
+                    @*@Html.ActionLink(Model.PassportFileName, "DownloadPassportFile", "EmployeeDetails", new { @Model.PassportFileName, @Model.DocumentID, @Model.EmployeeId, @Model.PersonType }, null)*@
+                    <a href="#" onclick="LinkPassportFileClick()">'@Model.PassportFileName'</a>
+                </div>
+            </td>
+        </tr>
+        <tr align="center" class="tableRows">
+            <td align="right" class="infoDisplayHead">
+                <div class="display-label">
+                    <b>Upload Date </b>
+                </div>
+            </td>
+            <td align="left">
+                <div class="display-field">
+                    @Model.CreatedDate
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function LinkPassportFileClick() {
+        $.ajax({
+            url: '@Url.Action("CheckIfFileExistPassport", "EmployeeDetails")',
+            data: { PassportFileName: '@Model.PassportFileName', DocumentID: '@Model.DocumentID', EmployeeID: '@Model.EmployeeId', PersonType: '@Model.PersonType' },
+            type: 'get',
+            success: function (results) {
+                if (results.status == true) {
+                    window.location = '@Url.Action("DownloadPassportFile", "EmployeeDetails")?PassportFileName=' + '@Model.PassportFileName' + '&DocumentID=' + '@Model.DocumentID' + '&EmployeeID=' + '@Model.EmployeeId' + '&PersonType=' + '@Model.PersonType';
+                }
+                else {
+                    $('#ShowEmployeePassportDetails').dialog('close');
+                    $('#FileNotFoundPassport').dialog({
+                        autoOpen: false,
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        title: "File Not Found",
+                        dialogClass: "noclose",
+                        buttons: {
+                            "Ok": function () {
+                                $(this).dialog('close');
+                                //$("#jqManageDocumentTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                    $('#FileNotFoundPassport').dialog('open');
+                }
+            }
+        });
+    }
+</script>

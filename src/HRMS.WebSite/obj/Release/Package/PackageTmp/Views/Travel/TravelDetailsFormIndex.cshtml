@@ -1,0 +1,70 @@
+﻿@model HRMS.Models.TravelViewModel
+@{
+    ViewBag.Title = "TravelDetailsFormIndex";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="tabstyle" id="tabs">
+    <ul>
+        <li id="TravelDetailsTab"><a id="TravelCount" href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = Model.IsNewForm, encryptedTravelId = ViewBag.EncryptedTravelId, viewDetails = "NoExt" })">
+            Travel</a></li>
+        <li id="contactDetailsTab"><a href="@Url.Action("GetContactDetails", "Travel", new { TravelEmployeeId = ViewBag.EncryptedTravelEmployeeID, encryptedTravelId = ViewBag.EncryptedTravelId })">
+            Contact</a></li>
+        <li><a href="@Url.Action("GetPassportFormDetails", "Travel", new { encryptedTravelId = ViewBag.EncryptedTravelId })">
+            Passport</a></li>
+        <li><a href="@Url.Action("GetVisaFormDetails", "Travel", new { encryptedTravelId = ViewBag.EncryptedTravelId })">
+            Visa</a></li>
+        <li><a href="@Url.Action("GetJourneyFormDetails", "Travel", new { encryptedTravelId = ViewBag.EncryptedTravelId })">
+            Journey</a></li>
+        <li><a href="@Url.Action("GetClientFormDetails", "Travel")">Client Information</a></li>
+        @if (ViewBag.Extensionstatus == "Yes")
+        {
+            <li><a href="@Url.Action("GetAccomodationFormDetails", "Travel", new { TravelEmployeeId = ViewBag.encryptedEmployeeId, encryptedTravelId = ViewBag.EncryptedTravelId })">
+                Airport pickup / drop needed</a></li>
+        }
+        else
+        {
+            if (ViewBag.Extension == "Ext")
+            { 
+                 <li><a href="@Url.Action("GetAccomodationFormDetails", "Travel", new { TravelEmployeeId = ViewBag.encryptedEmployeeId, encryptedTravelId = ViewBag.EncryptedTravelId })">
+                Airport pickup / drop needed</a></li>
+            }
+            else
+            {
+         <li><a href="@Url.Action("GetAccomodationFormDetails", "Travel", new { TravelEmployeeId = ViewBag.encryptedEmployeeId, encryptedTravelId = ViewBag.EncryptedTravelId })">
+                Travel Requirements</a></li>
+            }
+        }
+        @*change admin approve to all employee access all Tabs :  (ViewBag.StageID >= 3 && Model.SearchedUserDetails.EmployeeId == ViewBag.AdminApproverID) *@
+        @if ((ViewBag.StageID >= 3 && ViewBag.UserRole == "Travel_Admin" && ViewBag.IsLoggedInUser != true) || (Model.SearchedUserDetails.EmployeeId == ViewBag.RequestorID) || (ViewBag.StageID == 4 && ViewBag.IsLoggedInUser != false && ViewBag.Viewstats != "NoExt" && ViewBag.Extension != "Ext"))
+        {
+            <li><a href="@Url.Action("GetAccomodationAdminFormDetails", "Travel")">Accommodation</a></li>
+            <li><a href="@Url.Action("GetConveyanceAdminFormDetails", "Travel")">Local Conveyance</a></li>
+            <li><a href="@Url.Action("GetOtherAdminFormDetails", "Travel", new { TravelEmployeeId = ViewBag.encryptedEmployeeId, encryptedTravelId = ViewBag.EncryptedTravelId })">
+                Miscellaneous</a></li>
+        }
+    </ul>
+</div>
+<script type="text/javascript">
+    if ('@Model.TravelId' != 0) {
+        $("#contactDetailsTab").attr("Disabled", "Disabled");
+    }
+
+    $(document).ready(function () {
+        var counter = 0;
+        //        $('#TravelCount').click(function() {
+        //            counter++;
+        //            if (counter > 0) {
+        //                $('#tabs').tabs('enable', 1);
+        //                $('#tabs').tabs('enable', 2);
+        //                $('#tabs').tabs('enable', 3);
+        //                $('#tabs').tabs('enable', 4);
+        //                $('#tabs').tabs('enable', 5);
+        //                $('#tabs').tabs('enable', 6);
+        //            }
+        //        });
+    });
+
+</script>
