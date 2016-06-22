@@ -1017,20 +1017,6 @@
 <div class="reportClass" id="iframesrc">
     <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
 </div>
-<div id="SubmitConfirmationMessageTravel" style="display: none">
-    @if (Model.StageID == 3)
-    {
-        <p>
-            Are you sure, you want to submit the form?
-        </p>
-    }
-    else
-    {
-        <p>
-            Are you sure, you want to move process to the next stage?
-        </p>
-    }
-</div>
 <div id="ApproveAdmindialog" style="display: none;">
     <p>
         Travel request approved successfully.
@@ -1786,94 +1772,6 @@
             });
             var buttonidClicked = this.id;
             saveTravelForm(buttonidClicked);
-
-            var postUrl = '@Url.Action("SubmitTravelApprovalForm", "Travel")';
-            $('#SubmitConfirmationMessageTravel').dialog(
-                			{
-                			    autoOpen: true,
-                			    modal: true,
-                			    width: 300,
-                			    height: 'auto',
-                			    resizable: false,
-                			    title: "Submit Travel Details",
-                			    dialogClass: 'noclose',
-                			    buttons:
-                					{
-                					    Ok: function () {
-                					        $(this).dialog("close");
-                					        $(this).dialog("destroy");
-                					        DisplayLoadingDialog(); // Checked global.js
-                					        $.ajax({
-                					            url: postUrl,
-                					            type: 'POST',
-                					            async: false,
-                					            data: $('#AccomodationDetailsForm').serialize(),
-                					            success: function (results) {
-
-                					                if (results.status == true) {
-                					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
-                					                    //callTravelMail(results.travelId, results.isApproved, false, false, null, null, null, null, null, null);
-                					                    //                					                    $("#loading").dialog("close");
-                					                    //                					                    $("#loading").dialog("destroy");
-                					                    //                					                    $("#ApproveAdmindialog").dialog({
-                					                    //                					                        resizable: false,
-                					                    //                					                        height: 140,
-                					                    //                					                        width: 300,
-                					                    //                					                        title: "Submitted",
-                					                    //                					                        dialogClass: 'noclose',
-                					                    //                					                        modal: true,
-                					                    //                					                        buttons: {
-                					                    //                					                            Ok: function () {
-                					                    //                					                                $(this).dialog("close");
-                					                    //                					                                //window.location.href = "Index/Travel";
-                					                    //                					                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
-                					                    //                					                            }
-                					                    //                					                        }
-                					                    //                					                    });
-                					                }
-                					                else if (results.status == "Error") {
-
-                					                    $("#loading").dialog("close");
-                					                    $("#loading").dialog("destroy");
-                					                    $("#errorDialog").dialog({
-                					                        resizable: false,
-                					                        height: 'auto',
-                					                        width: 'auto',
-                					                        modal: true,
-                					                        title: 'Travel Details',
-                					                        buttons: {
-                					                            Ok: function () {
-                					                                $(this).dialog("close");
-                					                            }
-                					                        }
-                					                    }); //end dialog
-                					                }
-                					                else {
-
-                					                    $("#loading").dialog("close");
-                					                    $("#loading").dialog("destroy");
-                					                    $("#TravelErrorMessege").dialog({
-                					                        resizable: false,
-                					                        height: 'auto',
-                					                        width: 300,
-                					                        modal: true,
-                					                        buttons: {
-                					                            Ok: function () {
-                					                                $(this).dialog("close");
-                					                            }
-                					                        }
-                					                    });
-                					                }
-                					            }
-                					        });
-                					        return true;
-                					    },
-                					    close: function () {
-                					        $(this).dialog("close");
-                					    }
-                					}
-
-                			});
         }
     });
     // Reject Travel Details
