@@ -1,0 +1,131 @@
+﻿@model HRMS.Models.EmployeeSearchResulViewtModel
+@{
+    ViewBag.Title = "Search Employee";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/employee.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+     <div class="clearfix">
+     <h2 class="MainHeading">Employee Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a></a>
+            <a></a>
+            <a></a>
+        </nav>
+    </div>
+
+<div class="MainBody">
+        <div>
+            @using (Html.BeginForm("SearchEmployee", "EmployeeDetails", FormMethod.Post, new { id = "frmSearchEmployee" }))
+{
+                @Html.HiddenFor(m => m.PageNo)
+                @Html.HiddenFor(m => m.PageSize)
+                @Html.HiddenFor(m => m.TotalPages)
+                @Html.HiddenFor(m => m.SearchText)
+}
+            <br />
+            @if (Model.EmployeeDetailsList.Count <= 0 && !string.IsNullOrEmpty(Model.SearchText))
+{
+                <p>@HRMS.Resources.CommonMessages.SearchRecordsNotFound.ToString()</p>
+}
+            @if (Model.EmployeeDetailsList.Count > 0)
+{
+                @:<table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid searchempC">
+            <tr>
+                <th class="tableHeaders">Name</th>
+                <th class="tableHeaders">Employee Code</th>
+                @if (Model.UserRole == "HR Admin")
+                {
+                    <th class="tableHeaders"></th>
+                }
+            </tr>
+}
+@foreach (var result in Model.EmployeeDetailsList)
+{
+    //if (Model.UserRole == HRMS.Models.UserRoles.RMG)
+    //{
+    @*    @: <tr><td><a href="@Url.Action("Index", "EmployeeDetails", new { employeeId = result.EmployeeId })"> @result.EmployeeName</a></td><td>
+         @: <a href="@Url.Action("Index", "EmployeeDetails", new { employeeId = result.EmployeeId })"> @result.EmployeeCode</a></td></tr>
+        }
+        else
+        {*@
+
+    @:<tr class="tableRows"><td><a href="@Url.Action("Index", "PersonalDetails", new { employeeId = result.EncryptedEmployeeId })"> @result.EmployeeName</a></td><td>
+     @:<a href="@Url.Action("Index", "PersonalDetails", new { employeeId = result.EncryptedEmployeeId })"> @result.EmployeeCode</a></td>
+
+    if (Model.UserRole == "HR Admin")
+    {
+        @:<td> <a href="@Url.Action("ResetPassword", "PersonalDetails", new { employeeId = result.EncryptedEmployeeId })"> Reset Password</a></td>
+
+    }
+   @: </tr>
+     //}
+}
+
+@if (Model.EmployeeDetailsList.Count > 0)
+{ @:</table>      <br />
+            <span class="floatL mrgnL30">Page @Model.PageNo/@Model.TotalPages</span><br />
+            <br />
+ }
+            <div class="pagination floatR mrgnR44 mrgnTN41">
+                @{
+
+    int startPage = 0;
+    if (Model.TotalPages > 1)
+    {
+        if (Model.PageNo != 1 && Model.TotalPages > 10)
+        {
+            <a href="#" id="lnkFirst" onclick="submitForm('1')">First</a>
+                    <span>&nbsp;</span>
+            var prevPage = Model.PageNo - 1;
+            <a href="#" id="lnkPrevious" onclick="submitForm('@prevPage')">Previous</a>
+                    <span>..</span>
+        }
+        if (Model.TotalPages > 10)
+        {
+            startPage = Model.PageNo;
+        }
+        else
+        {
+            startPage = 1;
+        }
+        for (int i = startPage; i < @Model.PageNo + 10 && i <= @Model.TotalPages; i++)
+        {
+            if (i == Model.PageNo)
+            {
+                <a class="pageSelected" onclick="submitForm('@i')" style="text-decoration:none;">@i</a> <span>&nbsp;</span>
+            }
+            else
+            {
+                <a href="#" onclick="submitForm('@i')">@i</a> <span>&nbsp;</span>
+            }
+        }
+        if (Model.TotalPages > 10 && Model.PageNo < Model.TotalPages)
+        {
+            var nextPage = Model.PageNo + 1;
+            <span>..</span>
+                    <a href="#" id="lnkNext" onclick="submitForm('@nextPage')">Next</a>
+                    <span>&nbsp;</span>
+                    <a href="#" id="lnkLast" onclick="submitForm('@Model.TotalPages')">Last</a>
+        }
+    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#txtSearchText").val('@Model.SearchText');
+    });
+
+    function submitForm(pageNo) {
+        $("#PageNo").val(pageNo);
+        $("#frmSearchEmployee").submit();
+    }
+</script>

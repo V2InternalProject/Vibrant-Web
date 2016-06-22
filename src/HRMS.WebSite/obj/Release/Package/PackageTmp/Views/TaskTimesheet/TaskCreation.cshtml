@@ -1,0 +1,701 @@
+﻿@model HRMS.Models.TaskCreationModel
+@{
+    ViewBag.Title = "TaskCreation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+   
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    var SelectedProjectStartDate = "";
+    var SelectedProjectEndDate = "";
+
+    $(document).ready(function () {
+        noEmployeeSelectedFlag = false;
+        noTagSelectedFlag = false;
+        noPlannedHoursFlag = false;
+        plannedHoursZeroFlag = false;
+        noPlannedUnitsFlag = false;
+        TagText = "";
+        AssignedToText = "";
+        $('#AddProjectTaskForm #AssignedEmployeeName').selectBox('create');
+        if ($("#AddProjectTaskForm #hdnProjectTaskTypeID").val() == 0) {
+            $("#AddProjectTaskForm #ProjectStatusDD").selectBox('disable');
+            TagSelected = [];
+        }
+        else {
+            $("#AddProjectTaskForm #ProjectStatusDD").selectBox('enable');
+        }
+        $("#jqTaskCreationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadProjectTaskGrid", "TaskTimesheet")',
+            postData: { ProjectID: function () { return $('#projectTaskForm #SelectedProjectId').val() }, MileStoneId: function () { return $('#projectTaskForm #SelectedMileStoneId').val() }, SelectedStatusID: function () { return $('#projectTaskForm #SelectedStatusId').val() }, SelectedAssignedEmployeeId: function () { return $('#projectTaskForm #SelectedAssignedEmployeeId').val() } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "", "", "", "", "", "", "Task Name", "Start Date", "End Date", "Planned hours", "Planned Units", "Actual hours", "Status", "Task Type", "Hot Time", "Assigned To", "Tag", "Description", "Project Task Type"],
+            // Configure the columns
+            colModel: [
+             { name: "ProjectTaskTypeID", index: "ProjectTaskTypeID", hidden: true, width: 50, align: "left" },
+              { name: "ProjectId", index: "ProjectId", hidden: true, width: 50, align: "left" },
+               { name: "StatusID", index: "StatusID", hidden: true, width: 50, align: "left" },
+               { name: "TaskTypeID", index: "TaskTypeID", hidden: true, width: 50, align: "left" },
+               { name: "AssignedTo", index: "AssignedTo", hidden: true, width: 50, align: "left" },
+               { name: "TagID", index: "TagID", hidden: true, width: 50, align: "left" },
+                 { name: "ProjectTaskType", index: "ProjectTaskType", hidden: true, width: 50, align: "left" },
+                { name: "TaskName", index: "TaskName", width: 50, align: "left" },
+                { name: "StartDate", index: "StartDate", width: 50, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "EndDate", index: "EndDate", width: 50, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "PlannedHours", index: "PlannedHours", width: 50, align: "left" },
+                { name: "PlannedUnits", index: "PlannedUnits", width: 50, align: "left" },
+                 { name: "ActualHours", index: "ActualHours", width: 50, align: "left" },
+                { name: "StatusValue", index: "StatusValue", width: 50, align: "left" },
+                { name: "TaskTypeName", index: "TaskTypeName", width: 50, align: "left" },
+                 { name: "AvgUnitTime", index: "AvgUnitTime", width: 50, align: "left" },
+                { name: "AssignedToName", index: "AssignedToName", width: 50, align: "left" },
+                { name: "TagName", index: "TagName", width: 50, align: "left" },
+                { name: "Description", index: "Description", width: 50, align: "left" },
+                { name: "ProjectTaskTypeValue", index: "ProjectTaskTypeValue", width: 50, align: "left" }
+            //                 { name: "Delete", index: "Delete", width: "20", align: "center", sortable: false, formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+            ],
+            // Grid total width and height
+            width: 750,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqTaskCreationTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            loadonce: true,
+            //editurl: '@Url.Action("AddEmployeeEmergencyContact", "PersonalDetails")',
+            // Grid caption
+            //caption: "Employee - Emergency Contact Details",
+            gridComplete: function () {
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (colName['index'] != "Delete") {
+                    EditProjectTaskDetails(rowData);
+                }
+                else if (colName['index'] == "Delete") {
+                    DeleteProjectTaskFunction(rowData['ProjectTaskTypeID']);
+                }
+            }
+        }).navGrid("#jqTaskCreationTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#TaskProjectDD").bind('change', function () {
+            $('#projectTaskForm #SelectedProjectId').val($('#TaskProjectDD :selected').val());
+            $('#AddProjectTaskForm #hdnProjectID').val($('#TaskProjectDD :selected').val());
+            $('#projectTaskForm #SelectedMileStoneId').val("");
+            $('#AddProjectTaskForm #hdnMileStoneId').val("");
+            $('#projectTaskForm #SelectedAssignedEmployeeId').val("");
+            $('#projectTaskForm #SelectedStatusId').val("");
+            $.ajax({
+                url: '@Url.Action("GetMileStoneList", "TaskTimesheet")',
+                type: 'Get',
+                data: { ProjectId: $('#TaskProjectDD :selected').val() },
+                datatype: 'json',
+                success: function (result) {
+                    $('#MileStoneDD').selectBox("destroy");
+                    $('#MileStoneDD').empty();
+                    $('#MileStoneDD').append($("<option></option>")
+                              .attr("value", "")
+                              .text("Select"));
+                    $.each(result.MileStoneList, function (index, value) {
+                        SelectedProjectStartDate = eval(value.ProjStartDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        SelectedProjectEndDate = eval(value.ProjEndDate.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                        $('#MileStoneDD').append($("<option></option>")
+                              .attr("value", value.MileStoneId)
+                              .text(value.MileStoneName));
+                    });
+                    $("#AddStartDate").datepicker("option", "minDate", SelectedProjectStartDate);
+                    $("#AddStartDate").datepicker("option", "maxDate", SelectedProjectEndDate);
+                    $("#AddEndDate").datepicker("option", "minDate", SelectedProjectStartDate);
+                    $("#AddEndDate").datepicker("option", "maxDate", SelectedProjectEndDate);
+
+                    $('#MileStoneDD').selectBox('create');
+
+                    $('#AssignedEmployeeNameFilter').selectBox("destroy");
+                    $('#AssignedEmployeeNameFilter').empty();
+                    $('#AssignedEmployeeNameFilter').append($("<option></option>")
+                              .attr("value", "")
+                              .text("Select"));
+                    $.each(result.AssignedToList, function (index, value) {
+                        $('#AssignedEmployeeNameFilter').append($("<option></option>")
+                              .attr("value", value.EmployeeId)
+                              .text(value.EmployeeName));
+                    });
+
+                    $('#AssignedEmployeeNameFilter').selectBox('create');
+
+                    $('#AddProjectTaskForm #AssignedEmployeeName').empty();
+
+                    $('#AddProjectTaskForm #AssignedEmployeeName').selectBox("destroy");
+
+                    $.each(result.AssignedToList, function (index, value) {
+                        $('#AddProjectTaskForm #AssignedEmployeeName').append($("<option></option>")
+                              .attr("value", value.EmployeeId)
+                              .text(value.EmployeeName));
+                    });
+
+                    $("#AddProjectTaskForm #AssignedEmployeeName").dropdownchecklist("destroy");
+                    $("#AddProjectTaskForm #AssignedEmployeeName").dropdownchecklist({ maxDropHeight: 220, width: 200, icon: {}, emptytext: "Select" });
+
+                    $('#AddProjectTaskForm #AddedTagName').empty();
+                    $('#AddProjectTaskForm #AddedTagName').selectBox("destroy");
+                    $.each(result.TagList, function (index, value) {
+                        $('#AddProjectTaskForm #AddedTagName').append($("<option></option>")
+                              .attr("value", value.TagId)
+                              .text(value.TagName));
+                    });
+                    $("#AddProjectTaskForm #AddedTagName").dropdownchecklist("destroy");
+                    $("#AddProjectTaskForm #AddedTagName").dropdownchecklist({ maxDropHeight: 220, width: 200, icon: {}, emptytext: "Select" });
+                }
+            });
+            ClearTaskDetails();
+            $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#MileStoneDD").bind('change', function () {
+            $('#projectTaskForm #SelectedMileStoneId').val($('#MileStoneDD :selected').val());
+            $('#AddProjectTaskForm #hdnMileStoneId').val($('#MileStoneDD :selected').val());
+            $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#AssignedEmployeeNameFilter").bind('change', function () {
+            $('#projectTaskForm #SelectedAssignedEmployeeId').val($('#AssignedEmployeeNameFilter :selected').val());
+            //$('#AddProjectTaskForm #hdnAssignedEmployeeId').val($('#AssignedEmployeeNameFilter :selected').val());
+            $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#ProjectStatusDDFilter").bind('change', function () {
+            $('#projectTaskForm #SelectedStatusId').val($('#ProjectStatusDDFilter :selected').val());
+            //$('#AddProjectTaskForm #hdnStatusId').val($('#ProjectStatusDDFilter :selected').val());
+            $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#saveTaskBtn").bind('click', function () {
+            var selectedProjectID = $('#TaskProjectDD :selected').val();
+            if (selectedProjectID == "") {
+                $("#NoProjectSelectDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    dialogClass: "noclose",
+                    buttons: {
+                        "Ok": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+            else
+                SaveTaskFunction();
+        });
+
+        $("#resetTaskBtn").bind('click', function () {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $("#AddProjectTaskForm #TxtTaskName").val($("#AddProjectTaskForm #hdnTaskName").val());
+            $("#AddProjectTaskForm #AddStartDate").val($("#AddProjectTaskForm #hdnStartDate").val());
+            $("#AddProjectTaskForm #AddEndDate").val($("#AddProjectTaskForm #hdnEndDate").val());
+            $("#AddProjectTaskForm #TxtPlannedHours").val($("#AddProjectTaskForm #hdnPlannedHours").val());
+            $("#AddProjectTaskForm #TxtAvgUnitTime").val($("#AddProjectTaskForm #hdnAvgUnitTime").val());
+            $("#AddProjectTaskForm #TaskDescription").val($("#AddProjectTaskForm #hdnDescription").val());
+            $("#AddProjectTaskForm #ProjectStatusDD").val($("#AddProjectTaskForm #hdnStatusId").val());
+            $("#AddProjectTaskForm #TaskTypeDD").val($("#AddProjectTaskForm #hdnTaskTypeID").val());
+            $("#AddProjectTaskForm #ProjectStatusDD").next().find('.selectBox-label').text($("#AddProjectTaskForm #ProjectStatusDD :selected").text());
+            $("#AddProjectTaskForm #TaskTypeDD").next().find('.selectBox-label').text($("#AddProjectTaskForm #TaskTypeDD :selected").text());
+
+            $("#AddProjectTaskForm #TxtPlannedUnits").val($("#AddProjectTaskForm #hdnPlannedUnits").val());
+            if ($("#AddProjectTaskForm #hdnProjectTaskType").val() == "true")
+                $("#AddProjectTaskForm #ProjectTaskType").attr("checked", "checked");
+            else
+                $("#AddProjectTaskForm #ProjectTaskType").removeAttr("checked");
+
+            $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+                $(this).attr("checked", false);
+            });
+            $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+                $(this).attr("checked", false);
+            });
+            $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+                var counter = 0;
+                var currentVal = $(this).val();
+                $(TagSelected).each(function (index, value) {
+                    if (value == currentVal) {
+                        counter = 1;
+                    }
+                });
+
+                if (counter == 1) {
+                    $(this).attr("checked", true);
+                }
+            });
+            $("#ddcl-AssignedEmployeeName").find(".ui-dropdownchecklist-text").text(AssignedToText);
+            $("#ddcl-AddedTagName").find(".ui-dropdownchecklist-text").text(TagText);
+        });
+    });                             //end document.ready
+
+    function EditProjectTaskDetails(object) {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+
+        if (object['TaskTypeName'] == "Hours" || object['TaskTypeName'] == "Hour" || object['TaskTypeName'] == "Hour Unit" || object['TaskTypeName'] == "Hours Unit") {
+            $("#PlannedHoursDiv").show();
+            $("#PlannedUnitsDiv").hide();
+        }
+        else if (object['TaskTypeName'] == "Units" || object['TaskTypeName'] == "Unit") {
+            $("#PlannedHoursDiv").hide();
+            $("#PlannedUnitsDiv").show();
+        }
+
+        $("#AddProjectTaskForm #hdnProjectTaskTypeID").val(object['ProjectTaskTypeID']);
+        $("#AddProjectTaskForm #hdnProjectID").val(object['ProjectId']);
+        $("#AddProjectTaskForm #TxtTaskName").val(object['TaskName']);
+        $("#AddProjectTaskForm #hdnTaskName").val(object['TaskName']);
+        //        $("#AddProjectTaskForm #SelectedTaskName").val(object['TaskName']);
+        $("#AddProjectTaskForm #AddStartDate").val(object['StartDate']);
+        $("#AddProjectTaskForm #hdnStartDate").val(object['StartDate']);
+        $("#AddProjectTaskForm #AddEndDate").val(object['EndDate']);
+        $("#AddProjectTaskForm #hdnEndDate").val(object['EndDate']);
+        $("#AddProjectTaskForm #TxtPlannedHours").val(object['PlannedHours']);
+        $("#AddProjectTaskForm #hdnPlannedHours").val(object['PlannedHours']);
+        $("#AddProjectTaskForm #TxtAvgUnitTime").val(object['AvgUnitTime']);
+        $("#AddProjectTaskForm #hdnAvgUnitTime").val(object['AvgUnitTime']);
+        $("#AddProjectTaskForm #TaskDescription").val(object['Description']);
+        $("#AddProjectTaskForm #hdnDescription").val(object['Description']);
+        $("#AddProjectTaskForm #ProjectStatusDD option[value = " + object['StatusID'] + "] ").attr('selected', 'selected');
+        $("#AddProjectTaskForm #hdnStatusId").val(object['StatusID']);
+        $("#AddProjectTaskForm #TaskTypeDD option[value = " + object['TaskTypeID'] + "] ").attr('selected', 'selected');
+        $("#AddProjectTaskForm #hdnTaskTypeID").val(object['TaskTypeID']);
+        $("#AddProjectTaskForm #ProjectStatusDD").next().find('.selectBox-label').text(object['StatusValue']);
+        $("#AddProjectTaskForm #ProjectStatusDD").selectBox('enable');
+
+        $("#AddProjectTaskForm #TxtPlannedUnits").val(object['PlannedUnits']);
+        $("#AddProjectTaskForm #hdnPlannedUnits").val(object['PlannedUnits']);
+
+        if (object['ProjectTaskType'] == "true") 
+            $("#AddProjectTaskForm #ProjectTaskType").attr("checked", "checked");
+        else
+            $("#AddProjectTaskForm #ProjectTaskType").removeAttr("checked");
+        $("#AddProjectTaskForm #hdnProjectTaskType").val(object['ProjectTaskType']);
+
+        $("#AddProjectTaskForm #TaskTypeDD").next().find('.selectBox-label').text(object['TaskTypeName']);
+        //        TagSelected = [];
+        TagSelected = object['TagID'].split(',');
+        $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+            $(this).attr("checked", false);
+        });
+        $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+            $(this).attr("checked", false);
+        });
+        $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+            var counter = 0;
+            var currentVal = $(this).val();
+            $(TagSelected).each(function (index, value) {
+                if (value == currentVal) {
+                    counter = 1;
+                }
+            });
+
+            if (counter == 1) {
+                $(this).attr("checked", true);
+            }
+        });
+        $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+            var counter = 0;
+            var currentVal = $(this).val();
+            if (currentVal == object['AssignedTo']) 
+                counter = 1;
+            
+
+            if (counter == 1) {
+                $(this).attr("checked", true);
+            }
+        });
+        $("#ddcl-AssignedEmployeeName").find(".ui-dropdownchecklist-text").text(object['AssignedToName']);
+        $("#ddcl-AddedTagName").find(".ui-dropdownchecklist-text").text(object['TagName']);
+        TagText = object['TagName'];
+        AssignedToText = object['AssignedToName'];
+        $("#ddcl-AssignedEmployeeName-ddw").hide();
+    }
+
+    function SaveTaskFunction() {
+        CheckSelectedTag();
+        CheckSelectedEmployee();
+        CheckTaskType();
+        if (noEmployeeSelectedFlag == true && ($("#AddProjectTaskForm #hdnProjectTaskTypeID").val() == 0 || $("#AddProjectTaskForm #hdnProjectTaskTypeID").val() == '')) {
+            $("#AddProjectTaskForm #AssignedToValidationMessage").text("Please select atleast one Employee name.").show();
+            return false;
+        }
+        else if (noTagSelectedFlag == true) {
+            $("#AddProjectTaskForm #TagValidationMessage").text("Please select atleast one Tag.").show();
+            return false;
+        }
+        else if (noPlannedHoursFlag == true) {
+            $("#AddProjectTaskForm #PlannedHoursZeroValidation").text("").hide();
+            $("#AddProjectTaskForm #PlannedHoursValidationMessage").text("Planned Hours field is required").show();
+            return false;
+        }
+        else if (plannedHoursZeroFlag == true) {
+            $("#AddProjectTaskForm #PlannedHoursValidationMessage").text("").hide();
+            $("#AddProjectTaskForm #PlannedHoursZeroValidation").text("Enter Planned Hours greater than 0").show();
+            return false;
+        }
+        else if (noPlannedUnitsFlag == true) {
+            $("#AddProjectTaskForm #PlannedUnitsValidationMessage").text("Planned Units field is required").show();
+            return false;
+        }
+        else if ($("#AddProjectTaskForm").valid()) {
+            $("#ddProjectTaskForm #TxtTaskName").val($("#ddProjectTaskForm #hdnTaskName").val());
+            DisplayLoadingDialog();
+            $.ajax({
+                url: '@Url.Action("SaveProjectTaskDetails", "TaskTimesheet")',
+                type: 'POST',
+                data: $('#AddProjectTaskForm').serialize(),
+                datatype: 'json',
+                success: function (result) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (result.status == true && result.mailStatus == "EmailSend") {
+                        $("#TaskSaveAndMailSuccess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    ClearTaskDetails();
+                                    $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == true) {
+                        $("#TaskSaveSuccess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    ClearTaskDetails();
+                                    $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == false) {
+                        $("#TaskSaveError").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog("Save Task Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Save Task Details");
+                    }
+                },
+                error: function (result) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    DisplayErrorDialog("Save Task Details");
+                }
+            });
+        }
+        else
+            return false;
+    }
+    function CheckSelectedTag() {
+        var counter = 0;
+        $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+            if ($(this).attr("checked")) {
+                counter = 1;
+            }
+        });
+        if (counter > 0) {
+            var value = "";
+            $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+                if ($(this).is(":checked")) {
+                    value += $(this).val() + ",";
+                }
+            });
+            $("#hdnSelectedTagList").val(value);
+            noTagSelectedFlag = false;
+            $("#AddProjectTaskForm #TagValidationMessage").text("").hide();
+        }
+        else
+            noTagSelectedFlag = true;
+    }
+    function CheckSelectedEmployee() {
+        var counter = 0;
+        $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+            if ($(this).attr("checked")) {
+                counter = 1;
+            }
+        });
+        if (counter > 0) {
+            var value = "";
+            $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+                if ($(this).is(":checked")) {
+                    value += $(this).val() + ",";
+                }
+            });
+            $("#hdnSelectedEmployeeList").val(value);
+            noEmployeeSelectedFlag = false;
+            $("#AddProjectTaskForm #AssignedToValidationMessage").text("").hide();
+        }
+        else
+            noEmployeeSelectedFlag = true;
+    }
+    function CheckTaskType() {
+        var selectedTaskType = $("#AddProjectTaskForm #TaskTypeDD :selected").text();
+        if ((selectedTaskType == "Hours" || selectedTaskType == "Hour" || selectedTaskType == "Hour Unit" || selectedTaskType == "Hours Unit")) {
+            if ($("#AddProjectTaskForm #TxtPlannedHours").val() == "") {
+                noPlannedHoursFlag = true;
+                plannedHoursZeroFlag = false;
+            }
+            else if ($("#AddProjectTaskForm #TxtPlannedHours").val() == 0) {
+                noPlannedHoursFlag = false;
+                plannedHoursZeroFlag = true;
+            }
+            else {
+                noPlannedHoursFlag = false;
+                plannedHoursZeroFlag = false;
+            }
+
+        }
+        else if((selectedTaskType == "Units" || selectedTaskType == "Unit"))
+        {
+            if ($("#AddProjectTaskForm #TxtPlannedUnits").val() == "") 
+                noPlannedUnitsFlag = true;
+            else
+                noPlannedUnitsFlag = false;
+        }
+        else {
+            noPlannedHoursFlag = false;
+            plannedHoursZeroFlag = false;
+            noPlannedUnitsFlag = false;
+        }
+
+    }
+    function ClearTaskDetails() {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#AddProjectTaskForm #hdnProjectTaskTypeID").val('');
+        $("#AddProjectTaskForm #TxtTaskName").val('');
+        $("#AddProjectTaskForm #AddStartDate").val('');
+        $("#AddProjectTaskForm #AddEndDate").val('');
+        $("#AddProjectTaskForm #TxtPlannedHours").val('');
+        $("#AddProjectTaskForm #TxtAvgUnitTime").val('');
+        $("#AddProjectTaskForm #TaskDescription").val('');
+        $("#AddProjectTaskForm #ProjectStatusDD option[text='Open']").attr('selected', 'selected');
+        $("#AddProjectTaskForm #TaskTypeDD").val('');
+        $("#AddProjectTaskForm #ProjectStatusDD").next().find('.selectBox-label').text('Open');
+        $("#AddProjectTaskForm #ProjectStatusDD").selectBox('disable');
+        $("#AddProjectTaskForm #TaskTypeDD").next().find('.selectBox-label').text('Select');
+        $("#AddProjectTaskForm #TxtPlannedUnits").val('');
+        $("#AddProjectTaskForm #hdnPlannedUnits").val('');
+        $("#AddProjectTaskForm #ProjectTaskType").removeAttr('checked');
+        $("#AddProjectTaskForm #hdnProjectTaskType").val('');
+        $("#ddcl-AssignedEmployeeName-ddw input:checkbox").each(function () {
+            $(this).attr("checked", false);
+        });
+        $("#ddcl-AddedTagName-ddw input:checkbox").each(function () {
+            $(this).attr("checked", false);
+        });
+        $("#ddcl-AssignedEmployeeName").find(".ui-dropdownchecklist-text").text('');
+        $("#ddcl-AddedTagName").find(".ui-dropdownchecklist-text").text('');
+        $("#ddcl-AssignedEmployeeName-ddw").show();
+    }
+
+    function DeleteProjectTaskFunction(ProjectTaskTypeId) {
+        $('#TaskDeleteConfirmationDialog').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+			    dialogClass: "noclose",
+			    title: "Delete Task Detail",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: "DeleteTaskDetails/TaskTimesheet",
+					            data: { ProjectTaskTypeId: ProjectTaskTypeId },
+					            type: 'Post',
+					            success: function (data) {
+					                $("#jqTaskCreationTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+					                $("#TaskDeleteConfirmationDialog").dialog("close");
+					                if (data.status == true) {
+					                    $("#DeleteTaskSuccess").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Delete Task Detail",
+					                        dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog('close');
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    DisplayErrorDialog("Delete Task Details");
+					                }
+					                else {
+					                    $("#DeleteTaskError").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Delete Task Detail',
+					                        dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			}
+			);
+        $('#TaskDeleteConfirmationDialog').dialog('open');
+    }
+</script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Task Creation
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+        </nav>
+    </div>
+    <div class="MainBody Projectbody">
+        <div class="FormContainerBox1 clearfix1">
+        </div>
+        <div class="ProjectPartials">
+            <div class="clearfix mrgnT10 NoTitleGridsContainer" id="ShowForProjectReviewers">
+                @Html.Partial("_AddTaskCreation", Model)
+            </div>
+        </div>
+        <br />
+        <div class="tablestyle3">
+            <table id="jqTaskCreationTable">
+            </table>
+        </div>
+        <div id="jqTaskCreationTablePager">
+        </div>
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "projectTaskForm" }))
+        {
+            @Html.HiddenFor(x => x.SelectedProjectId)
+            @Html.HiddenFor(x => x.SelectedMileStoneId)
+            @Html.HiddenFor(x => x.SelectedAssignedEmployeeId)
+            @Html.HiddenFor(x => x.SelectedStatusId)
+        }
+    </div>
+    <div id="NoProjectSelectDialog" title="Task creation" style="display: none">
+        <p>
+            Please select project.
+        </p>
+    </div>
+    <div id="TaskSaveSuccess" title="Task creation" style="display: none">
+        <p>
+            Project Task details has been saved successfully.<br />
+        </p>
+    </div>
+    <div id="TaskSaveAndMailSuccess" title="Task creation" style="display: none">
+        <p>
+            Project Task details has been saved successfully.<br />
+            Mail sent successfully.
+        </p>
+    </div>
+    <div id="TaskSaveSuccessMailError" title="Task creation" style="display: none">
+        <p>
+            Project Task details has been saved successfully.<br />
+            Mail could not be send.
+        </p>
+    </div>
+    <div id="TaskSaveError" title="Task creation" style="display: none">
+        <p>
+            Project Task details could not be saved.
+        </p>
+    </div>
+    <div id="TaskNameExistDialog" title="Task creation" style="display: none">
+        <p>
+            Cannot add same Task Name for selected project.
+        </p>
+    </div>
+    <div id="DeleteTaskSuccess" style="display: none;">
+        <p>
+            Record has been deleted.
+        </p>
+    </div>
+    <div id="DeleteTaskError" style="display: none;">
+        <p>
+            Record could not be deleted.
+        </p>
+    </div>
+    <div id="TaskDeleteConfirmationDialog" style="display: none">
+        <p>
+            Are you sure you want to delete the record?
+        </p>
+    </div>
+</section>

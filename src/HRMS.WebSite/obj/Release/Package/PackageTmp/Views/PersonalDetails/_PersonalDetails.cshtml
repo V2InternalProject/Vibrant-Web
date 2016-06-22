@@ -1,0 +1,2749 @@
+﻿@model HRMS.Models.PersonalDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/PersonalDetails/_PersonalDetails.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Personal Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#PersonalImagePreview").css({ 'cursor': 'default' });
+        $("#PersonalImagePreview").click(function (event) {
+            event.preventDefault();
+        });
+        $(".ClassDisplayLabel, .ClassDisplayLabelDD, .ClassTextareaDiv").hide();
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+        $('#empID').val('@Model.EmployeeId');
+        $('#birthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-75:", maxDate: new Date, showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#ContractFrom').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#ContractTo').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-50:+20", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#weddingDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: '-50:c', maxDate: new Date, showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+         .bind("change", function () {
+             var dateMin = $('#weddingDate').datepicker("getDate");
+             var rMin = new Date(dateMin.getFullYear(), dateMin.getMonth(), dateMin.getDate() + 1);
+             $('#children1BirthDate').datepicker("option", "minDate", rMin);
+             $('#children2BirthDate').datepicker("option", "minDate", rMin);
+             $('#children3BirthDate').datepicker("option", "minDate", rMin);
+
+             $('#children4BirthDate').datepicker("option", "minDate", rMin);
+             $('#children5BirthDate').datepicker("option", "minDate", rMin);
+
+         });
+        $('#AgreementDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: '2000:2050', maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#spouseBirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-70:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#children2BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#children1BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#children3BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+
+        $('#children4BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#children5BirthDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-40:", maxDate: "0", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        //added upper document.ready
+        $("span.ApprovalMessage").hide();
+        $("#ContractEmployeeChk").click(function () {
+            var movetoContract;
+            var postUrlContractCode = '@Url.Action("GetNewEmployeecode", "PersonalDetails")';
+            var employeecodecheck = $("#EmployeeCode").val().length;
+            if (employeecodecheck == 3)
+                movetoContract = false;
+            else {
+                if (employeecodecheck > 3)
+                    movetoContract = true;
+            }
+            var Checkstatus = false;
+            if (($(this).is(":checked")))
+                Checkstatus = true;
+            else
+                Checkstatus = false;
+            var Status = { checkBoxStatus: Checkstatus };
+            if ($('#empID').val() != 0) {
+                $.ajax({
+                    url: postUrlContractCode,
+                    data: Status,
+                    async: false,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.NewEmpCode) {
+                            $("#NewEmployeeCode").val(data.NewEmpCode);
+                        }
+                    }
+                });
+                $("#ConfirmEmpMoveMessage").dialog({
+                    title: 'Move Employee',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            var postUrl = '@Url.Action("SwapEmpToPermanentAndContract", "PersonalDetails")';
+                            var EmployeeId = { empId: $('#empID').val(), IsMoveToContract: movetoContract };
+                            $.ajax({
+                                url: postUrl,
+                                data: EmployeeId,
+                                type: 'POST',
+                                success: function (data, status, xhr) {
+                                    if (data.Status == true) {
+                                        var ContractEmployeeId = data.NewContractEmpId;
+                                        $("#ConfirmEmpMoveMessage").dialog("close");
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $("#ContractEmployeeChk").prop('checked', true);
+                                        $("#SuccessEmpMoveMessage").dialog({
+                                            title: 'Move employee',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            dialogClass: 'noclose',
+                                            closeOnEscape: false,
+                                            buttons: {
+                                                Ok: function (data) {
+                                                    window.location.href = '@Url.Action("Index", "PersonalDetails")?employeeId=' + ContractEmployeeId;
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        }); //end dialog
+                                        $("#SuccessEmpMoveMessage").dialog("open");
+                                    }
+                                    else if (data.status == "Error") {
+                                        $("#ConfirmEmpMoveMessage").dialog("close");
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $("#ContractEmployeeChk").prop('checked', false);
+                                        $("#errorDialog").dialog({
+                                            title: 'Personal Details',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            dialogClass: 'noclose',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+                                    else {
+                                        $("#ConfirmEmpMoveMessage").dialog("close");
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $("#ContractEmployeeChk").prop('checked', false);
+                                        $("#errorDialog").dialog({
+                                            title: 'Personal Details',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            dialogClass: 'noclose',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        }); //end dialog
+                                    }
+                                    if (data.NewContractEmpId) {
+                                        $("#EmployeeCode").val(data.NewContractEmpId);
+                                    }
+                                },
+                                error: function () {
+                                    $("#ConfirmEmpMoveMessage").dialog("close");
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    $("#ContractEmployeeChk").prop('checked', false);
+                                    $("#errorDialog").dialog({
+                                        title: 'Personal Details',
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    }); //end dialog
+                                }
+                            });
+                            $(this).dialog("close");
+                            DisplayLoadingDialog(); // Checked global.js
+                        },
+                        Cancel: function () {
+                            var employeecodecheck = $("#EmployeeCode").val().length;
+                            if (employeecodecheck == 3)
+                                $("#ContractEmployeeChk").prop('checked', true);
+                            else {
+                                if (employeecodecheck > 3)
+                                    $("#ContractEmployeeChk").prop('checked', false);
+                            }
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                var employeecodecheck = $("#EmployeeCode").val().length;
+                if (employeecodecheck == 3) {
+                    $("#ConfirmEmpMoveMessage").html("Are you sure, you want to move this employee to Permanent employee ?" + "</br>" + "The new employee code will be '" + $("#NewEmployeeCode").val() + "'.").dialog("open");
+                }
+                else {
+                    if (employeecodecheck > 3)
+                        $("#ConfirmEmpMoveMessage").html("Are you sure, you want to move this employee to Contract employee?" + "</br>" + "The new employee code will be '" + $("#NewEmployeeCode").val() + "'.").dialog("open");
+                }
+            }
+            else {
+                var postUrl = '@Url.Action("GetNewEmployeecode", "PersonalDetails")';
+                var Checkstatus = false;
+                if (($(this).is(":checked")))
+                    Checkstatus = true;
+                else
+                    Checkstatus = false;
+                var Status = { checkBoxStatus: Checkstatus };
+                $.ajax({
+                    url: postUrl,
+                    data: Status,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.NewEmpCode) {
+                            $("#EmployeeCode").val(data.NewEmpCode);
+                            var EmpCodeLenght = data.NewEmpCode.length;
+                            if (EmpCodeLenght == 3) {
+                                $(".ContractempDuration").show();
+                            }
+                            else {
+                                if (EmpCodeLenght > 3) {
+                                    $(".ContractempDuration").hide();
+                                }
+                            }
+                        }
+                        if (data.status == "Error") {
+                            $("#errorDialog").dialog({
+                                title: 'Personal Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                    },
+                    error: function () {
+                        $("#errorDialog").dialog({
+                            title: 'Personal Details',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                });
+            }
+        }); // end click of cotract
+
+        if (($("#Gender").val() == "Female") && ($("#maritalStatus").val() != "Single" && $("#maritalStatus").val() != ""))
+            $("#divMaidanName").show();
+        else
+            $("#divMaidanName").hide();
+
+        var employeecodecheck = '@Model.EmployeeCode'.length;
+        if (employeecodecheck == 3) {
+            $("#ContractEmployeeChk").prop('checked', true);
+            $(".ContractempDuration").show();
+        }
+        else {
+            if (employeecodecheck > 3) {
+                $("#ContractEmployeeChk").prop('checked', false);
+                $(".ContractempDuration").hide();
+            }
+        }
+
+        if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') {
+            jQuery('form#PersonalDetailForm').find('textarea,select,input').removeAttr('disabled');
+        }
+        else {
+            userlogin();
+        }
+
+        $("#jqPersonalHistory").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("EmpContractPermanentHistoryLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.EmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee Code", "Employee Type", "Employee Code Status", "Created Date"],
+            // Configure the columns
+            colModel: [
+             { name: "OldEmployeecode", index: "OldEmployeecode", width: 150, align: "left" },
+                {
+                    name: "EmployeeType", index: "EmployeeType", width: 150, align: "left"
+                },
+                { name: "EmployeeCodeStatus", index: "EmployeeCodeStatus", width: 150, align: "left" },
+                { name: "CreatedDate", index: "CreatedDate", width: 150, sortable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, align: "left" }
+            ],
+            width: 600,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqjqPersonalHistoryTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqPersonalHistory").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqPersonalHistory').hide();
+                }
+                else {
+                    $('#gbox_jqPersonalHistory').show();
+                    if (count > 20) {
+
+                        $('#jqjqPersonalHistoryTablePager').show();
+                    }
+                    else {
+                        $('#jqjqPersonalHistoryTablePager').hide();
+                    }
+                }
+            }
+            //caption: "Employment Status History Details"
+        }).navGrid("#jqjqPersonalHistoryTablePager",
+                                            { search: false, refresh: false, add: false, edit: false, del: false },
+                                            {},
+                                            {},
+                                            {}
+                                         );
+        if ($('#EmployeeId').val() > 0) {
+            $('#EmployeeCode').attr("disabled", "disabled");
+            $('#UserName').removeAttr("disabled", "disabled");
+        }
+        if ($('#maritalStatus').val() == "Married" || $('#maritalStatus').val() == "Divorced" || $('#maritalStatus').val() == "Widowed") {
+
+            $("#NoOfchildren").removeAttr('disabled');
+            $("#weddingDate").removeAttr('disabled');
+            $("#spouseName").removeAttr('disabled');
+            $("#spouseBirthDate").removeAttr('disabled');
+            $(".ChildBDDIV").show();
+        }
+        else if ($('#maritalStatus').val() == "Single") {
+            $("#NoOfchildren").removeAttr('disabled');
+            $(".ChildBDDIV").show();
+            $("#weddingDate").attr("disabled", "disabled");
+            $("#spouseName").attr("disabled", "disabled");
+            if ($("#spouseName").text() == "")
+            {
+                $("#spouseName").next().text('');
+            }
+            $("#spouseBirthDate").attr("disabled", "disabled");
+            $("#weddingDateCollection .ui-datepicker-trigger").hide();
+            $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+        }
+        else {
+            $("#weddingDate").attr("disabled", "disabled");
+            $("#spouseName").attr("disabled", "disabled");
+            $("#spouseBirthDate").attr("disabled", "disabled");
+            $("#weddingDateCollection .ui-datepicker-trigger").hide();
+            $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+            $("#NoOfchildren").attr("disabled", "disabled");
+            $(".ChildBDDIV").hide();
+        }
+        if ($("#NoOfchildren").val() == "") {
+            $("#NoOfchildren").val(0);
+        }
+
+        if ($("#NoOfchildren").val() == 0) {
+            $("#children1Name").val('');
+            $("#children1BirthDate").val('');
+            $("#children2Name").val('');
+            $("#children2BirthDate").val('');
+            $("#children3Name").val('');
+            $("#children3BirthDate").val('');
+            $("#children4Name").val('');
+            $("#children4BirthDate").val('');
+            $("#children5Name").val('');
+            $("#children5BirthDate").val('');
+
+            $(".ChildBDDIV").hide();
+        }
+        else if ($("#NoOfchildren").val() == 1) {
+            $(".ChildBDDIV").show();
+            $(".divFirstchild").show();
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $(".divSeconChild").hide();
+            $(".divThirdChild").hide();
+            $(".divFourthChild").hide();
+            $(".divFifthChild").hide();
+        }
+
+        else if ($("#NoOfchildren").val() == 2) {
+            $(".ChildBDDIV").show();
+            $(".divFirstchild").show();
+            $(".divSeconChild").show();
+            $(".divThirdChild").hide();
+            $(".divFourthChild").hide();
+            $(".divFifthChild").hide();
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children2Name").removeAttr('disabled');
+            $("#children2BirthDate").removeAttr('disabled');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+        }
+        else if ($("#NoOfchildren").val() == 3) {
+
+            $(".ChildBDDIV").show();
+            $(".divFirstchild").show();
+            $(".divSeconChild").show();
+            $(".divThirdChild").show();
+            $(".divFourthChild").hide();
+            $(".divFifthChild").hide();
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children2Name").removeAttr('disabled');
+            $("#children3Name").removeAttr('disabled');
+            $("#children2BirthDate").removeAttr('disabled');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children3BirthDate").removeAttr('disabled');
+            $("#children3BirthDateCollection .ui-datepicker-trigger").show();
+        }
+
+        else if ($("#NoOfchildren").val() == 4) {
+            $(".ChildBDDIV").show();
+            $(".divFirstchild").show();
+            $(".divSeconChild").show();
+            $(".divThirdChild").show();
+            $(".divFourthChild").show();
+            $(".divFifthChild").hide();
+            $("#children1Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children2Name").removeAttr('disabled');
+            $("#children3Name").removeAttr('disabled');
+            $("#children4Name").removeAttr('disabled');
+            $("#children2BirthDate").removeAttr('disabled');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children3BirthDate").removeAttr('disabled');
+            $("#children3BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children4BirthDate").removeAttr('disabled');
+            $("#children4BirthDateCollection .ui-datepicker-trigger").show();
+
+        }
+        else {
+            $(".ChildBDDIV").show();
+            $(".divFirstchild").show();
+            $(".divSeconChild").show();
+            $(".divThirdChild").show();
+            $(".divFourthChild").show();
+            $(".divFifthChild").show();
+            $("#children1Name").removeAttr('disabled');
+            $("#children2Name").removeAttr('disabled');
+            $("#children3Name").removeAttr('disabled');
+            $("#children4Name").removeAttr('disabled');
+            $("#children5Name").removeAttr('disabled');
+            $("#children1BirthDate").removeAttr('disabled');
+            $("#children2BirthDate").removeAttr('disabled');
+            $("#children3BirthDate").removeAttr('disabled');
+            $("#children4BirthDate").removeAttr('disabled');
+            $("#children5BirthDate").removeAttr('disabled');
+            $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children3BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children4BirthDateCollection .ui-datepicker-trigger").show();
+            $("#children5BirthDateCollection .ui-datepicker-trigger").show();
+        }
+
+        var ApprovedMessage = "Field change is Approved";
+        var RejectedMessage = "Field change approval is Rejected";
+        var onHoldMessage = "Field change approval is On Hold";
+        var currentDateTime = new Date();
+        var dateDiff;
+        var delay;
+
+        if ('@Model.EmpStatusMasterID' == 2) {
+            jQuery('form#PersonalDetailForm').find('input,select,textarea').attr('disabled', 'disabled');
+            $(".ui-datepicker-trigger").hide();
+            $("#btnSave").hide();
+            $('#btnReset').hide();
+        }
+        else if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' || $('#UserRole').val() == '@HRMS.Models.UserRoles.RMG') {
+            $("#UserName").attr("disabled", "disabled");
+            $('#EmployeeCode').attr("disabled", "disabled");
+        }
+        else if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') {
+            $("#UserName").removeAttr("disabled");
+            $('#EmployeeCode').attr("disabled", "disabled");
+        }
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' && ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' || $('#UserRole').val() != '@HRMS.Models.UserRoles.RMG'))
+            || ('@ViewBag.LoggedInEmployeeId' == '@Model.SearchUserID')) {
+            $.ajax({
+                url: '@Url.Action("PersonalChanges", "PersonalDetails")',
+                type: 'GET',
+                async: false,
+                cache: false,
+                data: { employeeId: '@ViewBag.EmployeeId' },
+                datatype: 'json',
+                success: function (result) {
+                    if (result.status == "Error") {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Personal Details',
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    if (result.status == false) {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Personal Details',
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    if (result.label.length > 0) {
+                        $.each(result.label, function (l) {
+                            $.each(result.approvalMessage, function (i) {
+                                //following for 72 hours-----------------------------------------------------------------------------
+                                $.each(result.approveddatetime, function (adt) {
+                                    $.each(result.rejecteddatetime, function (rdt) {
+                                        if (result.label[l] == $("#lblMaritalStatus").text()) {
+                                            $("#spMaritalStatus").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                $("#maritalStatus").removeAttr("disabled");
+                                                $("#spMaritalStatus").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#maritalStatus").removeAttr("disabled");
+                                                $("#spMaritalStatus").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spMaritalStatus").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#maritalStatus").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spMaritalStatus").hide();
+                                            }
+                                            return false;
+                                        }
+                                        if (result.label[l] == $("#lblMaidanName").text()) {
+                                            $("#spMaidanName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $('#Gender').val() == "Female") {
+                                                    $("#MaidanName").removeAttr("disabled");
+                                                }
+                                                $("#spMaidanName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#MaidanName").removeAttr("disabled");
+                                                $("#spMaidanName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spMaidanName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#MaidanName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spMaidanName").hide();
+                                            }
+                                            return false;
+                                        }
+                                        if (result.label[l] == $("#lblWeddingDate").text()) {
+                                            $("#spWeddingDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#weddingDate").removeAttr("disabled");
+                                                    $("#weddingDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spWeddingDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#weddingDate").removeAttr("disabled");
+                                                    $("#weddingDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spWeddingDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spWeddingDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#weddingDate").attr("disabled", "disabled");
+                                                $("#weddingDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spWeddingDate").hide();
+                                            }
+                                            return false;
+                                        }
+                                        if (result.label[l] == $("#lblNoOfchildren").text()) {
+                                            $("#spNoOfChildren").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#NoOfchildren").removeAttr("disabled");
+                                                }
+                                                $("#spNoOfChildren").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#NoOfchildren").removeAttr("disabled");
+                                                }
+                                                $("#spNoOfChildren").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spNoOfChildren").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#NoOfchildren").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spNoOfChildren").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblSpouseName").text()) {
+                                            $("#spSpouseName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#spouseName").removeAttr("disabled");
+                                                }
+                                                $("#spSpouseName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#spouseName").removeAttr("disabled");
+                                                }
+                                                $("#spSpouseName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spSpouseName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#spouseName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spSpouseName").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblSpouseBirthDate").text()) {
+                                            $("#spSpouseBirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#spouseBirthDate").removeAttr("disabled");
+                                                    $("#spouseBirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spSpouseBirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single") {
+                                                    $("#spouseBirthDate").removeAttr("disabled");
+                                                    $("#spouseBirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spSpouseBirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spSpouseBirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#spouseBirthDate").attr("disabled", "disabled");
+                                                $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spSpouseBirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild1Name").text()) {
+                                            $("#spChild1Name").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $('#NoOfchildren').val() != '0') {
+                                                    $("#children1Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild1Name").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $('#NoOfchildren').val() != '0') {
+                                                    $("#children1Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild1Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild1Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children1Name").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spChild1Name").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild1BirthDate").text()) {
+                                            $("#spChild1BirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $('#NoOfchildren').val() != '0') {
+                                                    $("#children1BirthDate").removeAttr("disabled");
+                                                    $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild1BirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $('#NoOfchildren').val() != '0') {
+                                                    $("#children1BirthDate").removeAttr("disabled");
+                                                    $("#children1BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild1BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild1BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children1BirthDate").attr("disabled", "disabled");
+                                                $("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spChild1BirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild2Name").text()) {
+                                            $("#spChild2Name").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children2Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild2Name").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children2Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild2Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild2Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children2Name").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spChild2Name").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild2BirthDate").text()) {
+                                            $("#spChild2BirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children2BirthDate").removeAttr("disabled");
+                                                    $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild2BirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children2BirthDate").removeAttr("disabled");
+                                                    $("#children2BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild2BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild2BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children2BirthDate").attr("disabled", "disabled");
+                                                $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spChild2BirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild3Name").text()) {
+                                            $("#spChild3Name").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children3Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild3Name").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children3Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild3Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild3Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children3Name").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spChild3Name").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild3BirthDate").text()) {
+                                            $("#spChild3BirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children3BirthDate").removeAttr("disabled");
+                                                    $("#children3BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild3BirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children3BirthDate").removeAttr("disabled");
+                                                    $("#children3BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild3BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild3BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children3BirthDate").attr("disabled", "disabled");
+                                                $("#children3BirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spChild3BirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild4Name").text()) {
+                                            $("#spChild4Name").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children4Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild4Name").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children4Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild4Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild4Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children4Name").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spChild4Name").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild4BirthDate").text()) {
+                                            $("#spChild4BirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children4BirthDate").removeAttr("disabled");
+                                                    $("#children4BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild4BirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children4BirthDate").removeAttr("disabled");
+                                                    $("#children4BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild4BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild4BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children4BirthDate").attr("disabled", "disabled");
+                                                $("#children4BirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spChild4BirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild5Name").text()) {
+                                            $("#spChild5Name").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children5Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild5Name").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children5Name").removeAttr("disabled");
+                                                }
+                                                $("#spChild5Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild5Name").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children5Name").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spChild5Name").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblChild5BirthDate").text()) {
+                                            $("#spChild5BirthDate").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children5BirthDate").removeAttr("disabled");
+                                                    $("#children5BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild5BirthDate").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                if ($('#maritalStatus').val() != "Single" && $("#NoOfchildren").val() > "1") {
+                                                    $("#children5BirthDate").removeAttr("disabled");
+                                                    $("#children5BirthDateCollection .ui-datepicker-trigger").show();
+                                                }
+                                                $("#spChild5BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spChild5BirthDate").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#children5BirthDate").attr("disabled", "disabled");
+                                                $("#children5BirthDateCollection .ui-datepicker-trigger").hide();
+                                            }
+                                            else {
+                                                $("#spChild5BirthDate").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblSalutation").text()) {
+                                            $("#spSalutation").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                $("#Salutation").removeAttr("disabled");
+                                                $("#spSalutation").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#Salutation").removeAttr("disabled");
+                                                $("#spSalutation").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spSalutation").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#Salutation").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spSalutation").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblFirstName").text()) {
+                                            $("#spFirstName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                $("#FirstName").removeAttr("disabled");
+                                                $("#spFirstName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#FirstName").removeAttr("disabled");
+                                                $("#spFirstName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spFirstName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#FirstName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spFirstName").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblMiddleName").text()) {
+                                            $("#spMiddleName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                $("#MiddleName").removeAttr("disabled");
+                                                $("#spMiddleName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#MiddleName").removeAttr("disabled");
+                                                $("#spMiddleName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spMiddleName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#MiddleName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spMiddleName").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                        if (result.label[l] == $("#lblLastName").text()) {
+                                            $("#spLastName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                $("#LastName").removeAttr("disabled");
+                                                $("#spLastName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                $("#LastName").removeAttr("disabled");
+                                                $("#spLastName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spLastName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#LastName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spLastName").hide();
+                                            }
+                                            return false;
+                                        }
+                                        if (result.label[l] == $("#lblUserName").text()) {
+                                            $("#spUserName").html("");
+                                            if (result.approvalMessage[l] == ApprovedMessage && result.approvalFlag[l] == 1) {
+                                                //$("#UserName").removeAttr("disabled");
+                                                $("#spUserName").append(result.approvalMessage[l]).css("color", "green").show();
+                                            }
+                                            else if (result.approvalMessage[l] == RejectedMessage && result.rejectFlag[l] == 1) {
+                                                //$("#UserName").removeAttr("disabled");
+                                                $("#spUserName").append(result.approvalMessage[l]).css("color", "red").show();
+                                            }
+                                            else if (result.approvalMessage[l] == onHoldMessage || (result.approvalFlag[l] == 2 && result.rejectFlag[l] == 2)) {
+                                                $("#spUserName").append(result.approvalMessage[l]).css("color", "red").show();
+                                                $("#UserName").attr("disabled", "disabled");
+                                            }
+                                            else {
+                                                $("#spUserName").hide();
+                                            }
+                                            return false;
+                                        }
+
+                                    }); return false; //end reject each
+                                }); return false; //end approve each
+                            }); //end approvalMsg each
+                        }); //end label each
+                    } //end if
+                },
+                error: function (result) {
+                    if (result) {
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                }
+            }); //end ajax
+        }
+        $('#weddingDate').rules("add", {
+            required: function () {
+                return $("#maritalStatus option:selected").val() == "Married";
+            },
+            messages:
+            {
+                required: "Wedding date is required."
+            }
+        });
+
+        $('#spouseName').rules("add", {
+            required: function () {
+                return $("#spouseBirthDate").val() != '';
+            },
+            messages:
+            {
+                required: "Spouse Name is required."
+            }
+        });
+
+        $('#spouseBirthDate').rules("add", {
+            required: function () {
+                return $("#spouseName").val() != '';
+            },
+            messages:
+            {
+                required: "Spouse Birth Date is required."
+            }
+        });
+
+        $('#children1Name').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 1);
+            },
+            messages:
+            {
+                required: "Child1 Name is required."
+            }
+        });
+
+        $('#children1BirthDate').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 1);
+            },
+            messages:
+            {
+                required: "Child1 Birth Date is required."
+            }
+        });
+
+        $('#children2Name').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 2);
+            },
+            messages:
+            {
+                required: "Child2 Name is required."
+            }
+        });
+
+        $('#children2BirthDate').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 2);
+            },
+            messages:
+            {
+                required: "Child2 Birth Date is required."
+            }
+        });
+
+        $('#children3Name').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 3);
+            },
+            messages:
+            {
+                required: "Child3 Name is required."
+            }
+        });
+
+        $('#children3BirthDate').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 3);
+            },
+            messages:
+            {
+                required: "Child3 Birth Date is required."
+            }
+        });
+
+        $('#children4Name').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 4);
+            },
+            messages:
+            {
+                required: "Child4 Name is required."
+            }
+        });
+
+        $('#children4BirthDate').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 4);
+            },
+            messages:
+            {
+                required: "Child4 Birth Date is required."
+            }
+        });
+
+        $('#children5Name').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 5);
+            },
+            messages:
+            {
+                required: "Child5 Name is required."
+            }
+        });
+
+        $('#children5BirthDate').rules("add", {
+            required: function () {
+                return ($("#NoOfchildren").val() >= 5);
+            },
+            messages:
+            {
+                required: "Child5 Birth Date is required."
+            }
+        });
+
+        $('#spouseName').rules("add", {
+            required: function () {
+                return $('#maritalStatus').val() == "Married";
+            },
+            messages:
+            {
+                required: "Spouse Name is required."
+            }
+        });
+
+        $('#spouseBirthDate').rules("add", {
+            required: function () {
+                return $('#maritalStatus').val() == "Married";
+            },
+            messages:
+            {
+                required: "Spouse Birth Date is required."
+            }
+        });
+
+        var contractEmployeeCheck = '@Model.EmployeeCode'.length;
+        if (contractEmployeeCheck == 3) {
+            $("#AgreementDate").removeAttr('disabled');
+            $('#ContractFrom').rules("add", {
+                required: true,
+                messages:
+            {
+                required: "Contract start date is required."
+            }
+            });
+
+            $('#ContractTo').rules("add", {
+                required: true,
+                messages:
+            {
+                required: "Contract end date is required."
+            }
+            });
+
+            $('#AgreementDate').rules("add", {
+                required: true,
+                messages:
+            {
+                required: "Agreement date is required."
+            }
+            });
+        }
+        else {
+            $("#contractAgreementDiv").hide();
+        }
+
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeId') {
+            jQuery('form#PersonalDetailForm').find('input,select,textarea').attr('disabled', 'disabled');
+            $(".ui-datepicker-trigger").hide();
+            $("#btnSave").hide();
+            $('#btnReset').hide();
+        }
+
+        if ($("#ContractEmployeeChk").is(":disabled")) {
+            if ($("#ContractEmployeeChk").prop('checked', false)) {
+                $("#ContractEmployeeChkLabel").hide();
+                $("#ContractEmployeeLabel").html("").append("No").show();
+            }
+            else {
+                $("#ContractEmployeeChkLabel").hide();
+                $("#ContractEmployeeLabel").html("").append("Yes").show();
+            }
+        }
+
+        //assign Selected Dropdown Value to its respective Label.
+        $("#Salutation").next().next().text($("#Salutation :selected").text());
+        $("#Gender").next().next().text($("#Gender :selected").text());
+        $("#maritalStatus").next().next().text($("#maritalStatus :selected").text());
+        $("#Salutation").next().next().text($("#Salutation :selected").text());
+        DisplayLabel();
+    });//end document ready
+
+    function myFunction() {
+        var defaultPath = "Images/New Design/browse-person-img.png";
+        var image = document.getElementById('PersonalImagePreview');
+        image.src = image.bln ? "@Url.Action("getfilefrompath", "PersonalDetails" , new { filepath=Model.ProfileImagePath })" : "../../" + defaultPath;
+        image.bln = !image.bln;
+        $('#tempProfileImagePath').val(defaultPath);
+        $('#blogpic').val('');
+        //$('#PersonalImagePreview').attr("src", "data:image/jpg;base64,")
+        //$('#blogpic').val()
+    }
+
+    function file_readImage(objThis) {
+        readImage(objThis);
+        if ($(objThis).val() != '') {
+            $('#tempProfileImagePath').val('');
+        }
+    }
+</script>
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*@if (ViewBag.EmployeeId != null)
+                {*@
+            @if (ViewBag.UserRole == "RMG" && Model.SearchUserID != ViewBag.loggedinEmployeeID)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                    Personal</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Skill</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Contact</a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
+                    Personal</a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Dependent</a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Declaration</a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Residence</a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Contact</a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Education</a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Certification</a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Skill</a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
+                    Medical History</a>
+
+            }
+
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+
+            @*}*@ @*else
+                {
+                    if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Education</a>
+                    <a href="#">Certification</a>
+                    <a href="#">Skill</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">Personal</a>
+                    <a href="#">Dependent</a>
+                    <a href="#">Declaration</a>
+                    <a href="#">Residence</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Education</a>
+                    <a href="#">Certification</a>
+                    <a href="#">Skill</a>
+                    <a href="#"> Medical History</a>
+                }
+                }*@
+        </nav>
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("PersonalDetails", "PersonalDetails", FormMethod.Post, new { id = "PersonalDetailForm" }))
+        {
+            @Html.ValidationSummary(true)
+            <div id="ShowError" style="color: Red;">
+            </div>
+            @Html.HiddenFor(m => m.UserRole, new { @id = "UserRole" })
+            @Html.HiddenFor(m => m.EmployeeId, new { @id = "empID" })
+            @Html.HiddenFor(m => m.lblMaritalStatus, new { @id = "lblmaritalstatus" })
+            @Html.HiddenFor(m => m.lblWeddingDate, new { @id = "lblweddingdate" })
+            @Html.HiddenFor(m => m.lblSpouseName, new { @id = "lblspousename" })
+            @Html.HiddenFor(m => m.lblSpouseBirthDate, new { @id = "lblspousebirthdate" })
+            @Html.HiddenFor(m => m.lblNoOfchildren, new { @id = "lblnoofchildren" })
+            @Html.HiddenFor(m => m.lblChild1Name, new { @id = "lblchild1name" })
+            @Html.HiddenFor(m => m.lblChild1BirthDate, new { @id = "lblchild1birthdate" })
+            @Html.HiddenFor(m => m.lblChild2Name, new { @id = "lblchild2name" })
+            @Html.HiddenFor(m => m.lblChild2BirthDate, new { @id = "lblchild2birthdate" })
+            @Html.HiddenFor(m => m.lblChild3Name, new { @id = "lblchild3name" })
+            @Html.HiddenFor(m => m.lblChild3BirthDate, new { @id = "lblchild3birthdate" })
+            @Html.HiddenFor(m => m.lblChild4Name, new { @id = "lblchild4name" })
+            @Html.HiddenFor(m => m.lblChild4BirthDate, new { @id = "lblchild4birthdate" })
+            @Html.HiddenFor(m => m.lblChild5Name, new { @id = "lblchild5name" })
+            @Html.HiddenFor(m => m.lblChild5BirthDate, new { @id = "lblchild5birthdate" })
+            @Html.HiddenFor(m => m.lblUserName, new { @id = "lblusername" })
+            @Html.HiddenFor(m => m.lblMaidanName, new { @id = "lblmaidanname" })
+            @Html.HiddenFor(m => m.lblSalutation, new { @id = "lblsalutation" })
+            @Html.HiddenFor(m => m.lblFirstName, new { @id = "lblfirstname" })
+            @Html.HiddenFor(m => m.lblLastName, new { @id = "lbllastname" })
+            @Html.HiddenFor(m => m.lblMiddleName, new { @id = "lblmiddlename" })
+            @Html.HiddenFor(m => m.NewEmployeeCode)
+            @Html.HiddenFor(m => m.ProfileImagePath)
+            <input type="hidden" name="tempProfileImagePath" id="tempProfileImagePath" />
+
+            <div class="FormContainerBox PersonalDetails clearfix">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.LabelFor(model => model.ContractEmployee):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.CheckBoxFor(model => model.ContractEmployee, new { @class = "LabelForCheckbox", @id = "ContractEmployeeChk" })
+                            <label id="ContractEmployeeChkLabel" for="ContractEmployeeChk" class="LabelForCheckbox">
+                            </label>
+                            <label id="ContractEmployeeLabel" style="display: none">
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContractEmployee)
+                            @Html.HiddenFor(model => model.ContractEmployee, new { id = "contractEmployee" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                        * @Html.Label("Employee Code")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.EmployeeCode, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.EmployeeCode, Model.EmployeeCode, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmployeeCode)</p>
+                            @Html.HiddenFor(model => model.EmployeeCode, new { id = "employeecode" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Salutation:", new { @id = "lblSalutation" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.Prefix, new SelectList(Model.GetSalutation(), "Value", "Text", "Select"), "Select", new { @id = "Salutation", @class = "ClassDisabledFields ValidationDropDown" })
+                            @Html.LabelFor(model => model.Prefix, new { @class = "ClassDisplayLabelDD" })
+                            <p class="qualif-detail" id="salutaionValidation">@Html.ValidationMessageFor(model => model.Prefix)</p>
+                            @Html.HiddenFor(model => model.Prefix, new { id = "prefix" })
+                            <span id="spSalutation" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix ContractempDuration">
+                        <div class="LabelDiv">
+                            * @Html.Label("Contract start date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ContractFrom, String.Format("{0:MM/dd/yyyy}", Model.ContractFrom), new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ContractFrom, String.Format("{0:MM/dd/yyyy}", Model.ContractFrom), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractFrom)</p>
+                            @Html.Hidden("ContractFrom", String.Format("{0:MM/dd/yyyy}", Model.ContractFrom), new { id = "contractFrom" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("First Name:", new { @id = "lblFirstName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.FirstName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.FirstName, Model.FirstName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.FirstName)</p>
+                            @Html.HiddenFor(model => model.FirstName, new { id = "firstname" })
+                            <span id="spFirstName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Middle Name:", new { @id = "lblMiddleName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.MiddleName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.MiddleName, Model.MiddleName, new { @class = "ClassDisplayLabel" })
+                            @Html.ValidationMessageFor(model => model.MiddleName)
+                            @Html.HiddenFor(model => model.MiddleName, new { id = "middlename" })
+                            <span id="spMiddleName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Last Name:", new { @id = "lblLastName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.LastName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.LastName, Model.LastName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LastName)</p>
+                            @Html.HiddenFor(model => model.LastName, new { id = "lastname" })
+                            <span id="spLastName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Gender:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.Gender, new SelectList(Model.GetGender(), "Value", "Text", "Select"), "Select", new { id = "Gender", @class = "ClassDisabledFields ValidationDropDown" })
+                            @Html.LabelFor(model => model.Gender, new { @class = "ClassDisplayLabelDD" })
+                            <p class="qualif-detail" id="GenderValidation">@Html.ValidationMessageFor(model => model.Gender)</p>
+                            @Html.HiddenFor(model => model.Gender, new { id = "gender" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix" id="divMaidanName">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Maiden Name:", new { @id = "lblMaidanName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.MaidanName, new { id = "MaidanName", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.MaidanName, Model.MaidanName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.MaidanName)</p>
+                            @Html.HiddenFor(model => model.MaidanName, new { id = "maidanname" })
+                            <span id="spMaidanName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Wedding Date:", new { @id = "lblWeddingDate" })
+                        </div>
+                        <div class="InputDiv" id="weddingDateCollection">
+                            @Html.TextBoxFor(model => model.WeddingDate, String.Format("{0:MM/dd/yyyy}", Model.WeddingDate), new { @id = "weddingDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.WeddingDate, String.Format("{0:MM/dd/yyyy}", Model.WeddingDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.WeddingDate)</p>
+                            @Html.Hidden("WeddingDate", String.Format("{0:MM/dd/yyyy}", Model.WeddingDate), new { @id = "WeddingDate" })
+                            <span id="spWeddingDate" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Spouse Name:", new { @id = "lblSpouseName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.SpouseName, new { @id = "spouseName", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SpouseName, Model.SpouseName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.SpouseName)</p>
+                            @Html.HiddenFor(model => model.SpouseName, new { @id = "spousename" })
+                            <span id="spSpouseName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="ChildBDDIV">
+                        <div class="divFirstchild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 1 Name:", new { @id = "lblChild1Name" })
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.Child1Name, new { @id = "children1Name", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child1Name, Model.Child1Name, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child1Name)</p>
+                                    @Html.HiddenFor(model => model.Child1Name, new { id = "children1name" })
+                                    <span id="spChild1Name" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divSeconChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 2 Name:", new { @id = "lblChild2Name" })
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.Child2Name, new { @id = "children2Name", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child2Name, Model.Child2Name, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child2Name)</p>
+                                    @Html.HiddenFor(model => model.Child2Name, new { id = "children2name" })
+                                    <span id="spChild2Name" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divThirdChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 3 Name:", new { @id = "lblChild3Name" })
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.Child3Name, new { @id = "children3Name", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child3Name, Model.Child3Name, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child3Name)</p>
+                                    @Html.HiddenFor(model => model.Child3Name, new { id = "children3name" })
+                                    <span id="spChild3Name" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divFourthChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 4 Name:", new { @id = "lblChild4Name" })
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.Child4Name, new { @id = "children4Name", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child4Name, Model.Child4Name, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child4Name)</p>
+                                    @Html.HiddenFor(model => model.Child4Name, new { id = "children4name" })
+                                    <span id="spChild4Name" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divFifthChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 5 Name:", new { @id = "lblChild5Name" })
+                                </div>
+                                <div class="InputDiv">
+                                    @Html.TextBoxFor(model => model.Child5Name, new { @id = "children5Name", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child5Name, Model.Child5Name, new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child5Name)</p>
+                                    @Html.HiddenFor(model => model.Child5Name, new { id = "children5name" })
+                                    <span id="spChild5Name" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Hobbies:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(model => model.Hobbies, new { @class = "ClassDisabledFields" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.Hobbies, Model.Hobbies, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.Hobbies)
+                            </p>
+                            @Html.HiddenFor(model => model.Hobbies, new { id = "hobbies" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Achievements:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(model => model.Achievement, new { @class = "ClassDisabledFields" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.Achievement, Model.Achievement, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            @Html.HiddenFor(model => model.Achievement, new { id = "achievement" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.Achievement)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix BlogPicContainer">
+                        <div class="LabelDiv">
+                            <input type="image" src="@Url.Action("getfilefrompath", "PersonalDetails" , new { filepath=Model.ProfileImagePath })" id="PersonalImagePreview" height="80" width="75" />
+                            <span title="Set Default" class="default-btn" onclick="myFunction()">X</span>
+                        </div>
+                        <div class="InputDiv FileUpload">
+                            <div class="BlogPic">
+                                <input type="file" id="blogpic" class="FileUploadBtn" name="blogpic" onchange="file_readImage(this)"
+                                       size="24" style="width:100px" />
+                                <div class="BrowserVisible">
+                                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                                                                                                              id="FileBlogPicField" class="FileField" value="No files selected" />
+                                </div>
+                                <div>
+
+                                    @*<input type="button" id="setdiffault" class="BtnForCustomUpload" value="Set Default" onclick="myFunction()"  size="24" style="width:100px" />*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix" id="contractAgreementDiv">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Agreement Signed Date:")
+                        </div>
+                        <div class="InputDiv" id="aggreementDateCollection">
+                            @Html.TextBoxFor(model => model.AgreementDate, String.Format("{0:MM/dd/yyyy}", Model.AgreementDate), new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.AgreementDate, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AgreementDate)</p>
+                            @Html.Hidden("AgreementDate", String.Format("{0:MM/dd/yyyy}", Model.AgreementDate), new { id = "agreementdate" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix ContractempDuration">
+                        <div class="LabelDiv">
+                            * @Html.Label("Contract end date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ContractTo, String.Format("{0:MM/dd/yyyy}", Model.ContractTo), new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ContractTo, String.Format("{0:MM/dd/yyyy}", Model.ContractTo), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractTo)</p>
+                            @Html.Hidden("ContractTo", String.Format("{0:MM/dd/yyyy}", Model.ContractTo), new { id = "contractTo" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                             * @Html.Label("User Name:", new { @id = "lblUserName" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.UserName, new { id = "UserName", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.UserName, Model.UserName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.UserName)</p>
+                            @Html.HiddenFor(model => model.UserName, new { id = "username" })
+                            <span id="spUserName" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                             * @Html.Label("Date Of Birth:")
+                        </div>
+                        <div class="InputDiv" id="DateOfBirthCollection">
+                            @Html.TextBoxFor(model => model.BirthDate, String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { @id = "birthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.BirthDate, String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.BirthDate)</p>
+                            @Html.Hidden("BirthDate", String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { id = "birthdate" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                           <span class="hiddenstar">* </span>@Html.Label("Age:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.Age, null, new { @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.Age, Model.Age, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(model => model.Age, new { @id = "txtAge" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.LabelFor(model => model.MaritalStatus, new { @id = "lblMaritalStatus" }):
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.MaritalStatus, new SelectList(Model.GetMarritalStatus(), "Value", "Text", "Select"), "Select", new { @id = "maritalStatus", @class = "ClassDisabledFields ValidationDropDown" })
+                            @Html.LabelFor(model => model.MaritalStatus, new { @class = "ClassDisplayLabelDD" })
+                            <p class="qualif-detail" id="maritalValidation">@Html.ValidationMessageFor(model => model.MaritalStatus)</p>
+                            @Html.HiddenFor(model => model.MaritalStatus, new { id = "maritalstatus" })
+                            <span id="spMaritalStatus" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * @Html.Label("Number of Children:", new { @id = "lblNoOfchildren" })
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.NoOfchildren, null, new { @id = "NoOfchildren", @disabled = "disabled", @onblur = "NoChildrenchange()", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.NoOfchildren, Model.NoOfchildren.ToString(), new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.NoOfchildren)</p>
+                            @Html.HiddenFor(model => model.NoOfchildren, new { id = "noofchildren" })
+                            <span id="spNoOfChildren" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Spouse Birth Date:", new { @id = "lblSpouseBirthDate" })
+                        </div>
+                        <div class="InputDiv" id="spouseBirthDateCollection">
+                            @Html.TextBoxFor(model => model.SpouseBirthDate, String.Format("{0:MM/dd/yyyy}", Model.SpouseBirthDate), new { @id = "spouseBirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SpouseBirthDate, String.Format("{0:MM/dd/yyyy}", Model.SpouseBirthDate), new { @id = "SpouseLabelClass", @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.SpouseBirthDate)</p>
+                            @Html.Hidden("spousebirthdate", String.Format("{0:MM/dd/yyyy}", Model.SpouseBirthDate), new { @id = "spousebirthdate" })
+                            <span id="spSpouseBirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                        </div>
+                    </div>
+                    <div class="ChildBDDIV">
+                        <div class="divFirstchild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 1 Birth Date:", new { @id = "lblChild1BirthDate" })
+                                </div>
+                                <div class="InputDiv" id="children1BirthDateCollection">
+                                    @Html.TextBoxFor(model => model.Child1BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child1BirthDate), new { @id = "children1BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child1BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child1BirthDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child1BirthDate)</p>
+                                    @Html.Hidden("children1birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child1BirthDate), new { id = "children1birthdate" })
+                                    <span id="spChild1BirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divSeconChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 2 Birth Date:", new { @id = "lblChild2BirthDate" })
+                                </div>
+                                <div class="InputDiv" id="children2BirthDateCollection">
+                                    @Html.TextBoxFor(model => model.Child2BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child2BirthDate), new { @id = "children2BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child2BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child2BirthDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child2BirthDate)</p>
+                                    @Html.Hidden("children2birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child2BirthDate), new { id = "children2birthdate" })
+                                    <span id="spChild2BirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divThirdChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 3 Birth Date:", new { @id = "lblChild3BirthDate" })
+                                </div>
+                                <div class="InputDiv" id="children3BirthDateCollection">
+                                    @Html.TextBoxFor(model => model.Child3BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child3BirthDate), new { @id = "children3BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child3BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child3BirthDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child3BirthDate)</p>
+                                    @Html.Hidden("children3birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child3BirthDate), new { id = "children3birthdate" })
+                                    <span id="spChild3BirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divFourthChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                   <span class="hiddenstar">* </span>@Html.Label("Child 4 Birth Date:", new { @id = "lblChild4BirthDate" })
+                                </div>
+                                <div class="InputDiv" id="children4BirthDateCollection">
+                                    @Html.TextBoxFor(model => model.Child4BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child4BirthDate), new { @id = "children4BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child4BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child4BirthDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child4BirthDate)</p>
+                                    @Html.Hidden("children4birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child4BirthDate), new { id = "children4birthdate" })
+                                    <span id="spChild4BirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divFifthChild">
+                            <div class="formrow clearfix">
+                                <div class="LabelDiv">
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 5 Birth Date:", new { @id = "lblChild5BirthDate" })
+                                </div>
+                                <div class="InputDiv" id="children5BirthDateCollection">
+                                    @Html.TextBoxFor(model => model.Child5BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child5BirthDate), new { @id = "children5BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
+                                    @Html.LabelFor(model => model.Child5BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child5BirthDate), new { @class = "ClassDisplayLabel" })
+                                    <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Child5BirthDate)</p>
+                                    @Html.Hidden("children5birthdate", String.Format("{0:MM/dd/yyyy}", Model.Child5BirthDate), new { id = "children5birthdate" })
+                                    <span id="spChild5BirthDate" class="ApprovalMessage" hidden="hidden"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Recognition:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(model => model.Recognition, new { @class = "ClassDisabledFields" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.Recognition, Model.Recognition, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.Recognition)
+                            </p>
+                            @Html.HiddenFor(model => model.Recognition, new { id = "recognition" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Remarks:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(model => model.Remarks, new { @class = "ClassDisabledFields" })
+                            <div class="ClassTextareaDiv">
+                                @Html.LabelFor(model => model.Remarks, Model.Remarks, new { @class = "ClassDisplayLabel" })
+                            </div>
+                            @Html.HiddenFor(model => model.Remarks, new { id = "remarks" })
+                            <p class="qualif-detail">
+                                @Html.ValidationMessageFor(model => model.Remarks)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1">
+                <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" onclick="SavePersonalData()" />
+                <input type="button" class="ButtonGray" value="Reset" onclick="RestoreValues()" id="btnReset" />
+            </div>
+
+        }
+        <div class="commondivider mrgnL30 mrgnR30">
+        </div>
+        <div class="Container96">
+            <h4 class="SmallHeading">
+                Employment Status History Details</h4>
+            <div class="tablestyle3">
+                <table id="jqPersonalHistory">
+                </table>
+            </div>
+            <div id="jqjqPersonalHistoryTablePager">
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    var userNameforJS = '@Model.UserName';
+    $("#Gender").change(function () {
+        var selectedValue = $(this)[0].value;
+        if (selectedValue == "Female") {
+            if ($("#maritalStatus").val() == "Single" || $("#maritalStatus").val() == "")
+                $("#divMaidanName").hide();
+            else {
+                $("#divMaidanName").show();
+            }
+        }
+        else {
+            $("#divMaidanName").hide();
+        }
+        if (selectedValue == "Female") {
+            if (($("#maritalStatus").val() == "Married" || $("#maritalStatus").val() == "Divorced" || $("#maritalStatus").val() == "Widowed") && '@Model.UserRole' == '@HRMS.Models.UserRoles.HRAdmin') {
+                $("#UserName").removeAttr('disabled');
+            }
+        }
+        if (selectedValue != "")
+            $("#GenderValidation").hide();
+        else
+            $("#GenderValidation").show();
+    });
+
+    $("#Salutation").change(function () {
+        var selectedValue = $(this)[0].value;
+        if (selectedValue != "")
+            $("#salutaionValidation").hide();
+        else
+            $("#salutaionValidation").show();
+    });
+
+    $("#maritalStatus").change(function () {
+        var selectedValue = $(this)[0].value;
+        // existing unmarried employee
+        $("#Gender").removeAttr('disabled').next().show().next().hide();
+        if (selectedValue == "" && '@Model.EmployeeId' >= 0) {
+            $("#NoOfchildren").attr('disabled', 'disabled');
+            $("#weddingDate").attr("disabled", "disabled");
+            $("#divMaidanName").hide();
+            $("#weddingDateCollection .ui-datepicker-trigger").hide();
+            $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+            $("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+            $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+            $("#weddingDate").val('');
+            $("#NoOfchildren").val('0');
+            $("#spouseName").attr("disabled", "disabled");
+            $("#spouseBirthDate").attr("disabled", "disabled");
+            $("#children1Name").attr("disabled", "disabled");
+            $("#children1BirthDate").attr("disabled", "disabled");
+            $("#children2Name").attr("disabled", "disabled");
+            $("#children2BirthDate").attr("disabled", "disabled");
+            $("#children3Name").attr("disabled", "disabled");
+            $("#children3BirthDate").attr("disabled", "disabled");
+
+            $("#children4Name").attr("disabled", "disabled");
+            $("#children4BirthDate").attr("disabled", "disabled");
+            $("#children5Name").attr("disabled", "disabled");
+            $("#children5BirthDate").attr("disabled", "disabled");
+
+            $("#spouseName").val('');
+            $("#spouseBirthDate").val('');
+            $("#MaidanName").val('');
+            $("#children1Name").val('');
+            $("#children1BirthDate").val('');
+            $("#children2Name").val('');
+            $("#children2BirthDate").val('');
+            $("#children3Name").val('');
+            $("#children3BirthDate").val('');
+
+            $("#children4Name").val('');
+            $("#children4BirthDate").val('');
+
+            $("#children5Name").val('');
+            $("#children5BirthDate").val('');
+
+            $(".ChildBDDIV").hide();
+
+        }
+        else if (selectedValue == "Single") {
+            $("#NoOfchildren").removeAttr('disabled').show().next(".ClassDisplayLabel").hide();
+            $("#divMaidanName").hide();
+            $("#weddingDateCollection .ui-datepicker-trigger").hide();
+            $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+            $("#weddingDate").attr("disabled", "disabled");
+            $("#spouseName").attr("disabled", "disabled");
+            $("#spouseBirthDate").attr("disabled", "disabled");
+            $("#weddingDate").val('');
+            $("#spouseName").val('');
+            $("#spouseBirthDate").val('');
+            $("#MaidanName").val('');
+            $(".ChildBDDIV").show();
+            NoChildrenchange();
+        }
+        else {
+            var empRole = '@Model.UserRole';
+            $("#NoOfchildren").removeAttr('disabled').show().next(".ClassDisplayLabel").hide();
+            $("#weddingDate").removeAttr('disabled').show().next(".ClassDisplayLabel").hide();
+            if ($("#Gender").val() == "Female")
+                $("#divMaidanName").show();
+            else
+                $("#divMaidanName").hide();
+            $("#weddingDateCollection .ui-datepicker-trigger").show();
+            $("#spouseBirthDateCollection .ui-datepicker-trigger").show();
+            $("#weddingDate").val($("#WeddingDate").val());
+            $("#spouseName").removeAttr('disabled').show().next(".ClassDisplayLabel").hide();
+            $("#spouseBirthDate").removeAttr('disabled').show().next(".ClassDisplayLabel").hide();
+            $("#spouseName").val($("#spousename").val());
+            $("#spouseBirthDate").val($("#spousebirthdate").val());
+            $("#MaidanName").val($("#maidanname").val());
+        }
+        if ('@Model.UserRole' != '@HRMS.Models.UserRoles.HRAdmin')
+            $("#Gender").attr("disabled", "disabled").next().hide().next().show();
+        if (selectedValue != "")
+            $("#maritalValidation").hide();
+        else
+            $("#maritalValidation").show();
+    });
+
+    $('#btnSave').click(function () {
+        var reportTo = $('#prefix').val();
+        if (reportTo.toString() == "Select") {
+            $('#prefix').rules("add", {
+                messages:
+            {
+                required: "Please select prefix."
+            }
+            });
+        }
+    });
+
+    $('#MaidanName').rules("add", {
+        required: function () {
+            return (($("#Gender").val() == "Female") && ($("#maritalStatus").val() != "Single"));
+        },
+        messages:
+			{
+			    required: "MaidanName is required."
+			}
+    });
+
+    $('#LastName').blur(function () {
+        lastNameBlur();
+    });
+
+    $('#FirstName').blur(function () {
+        firstNameBlur();
+    });
+
+    $("#birthDate").change(function () {
+        birthChange();
+    });
+
+    $('input[type="text"]').keyup(function (evt) {
+        var txt = $(this).val();
+        var username = $('#UserName').val();
+        // Regex taken from php.js (http://phpjs.org/functions/ucwords:569)
+        $(this).val(txt.replace(/^(.)|\s(.)/g, function ($1) { return $1.toUpperCase(); }));
+        $('#UserName').val(username.replace(/^(.)|\s(.)/g, function ($1) { return $1.toLowerCase(); })); // added becaues username should be lowerCase 21-01-2012
+    });
+    function RestoreValues() {
+        var contractEmployee = $('#contractEmployee').val();
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $('#FirstName').val($('#firstname').val());
+        $('#LastName').val($('#lastname').val());
+        $('#MiddleName').val($('#middlename').val());
+        $('#UserName').val($('#username').val());
+        $('#Prefix').val($('#prefix').val());
+        $('#Hobbies').val($('#hobbies').val());
+        $('#Gender').val($('#gender').val());
+        $('#ContractEmployeeChk').val(contractEmployee);
+        $('#ContractFrom').val($('#contractFrom').val());
+        $('#ContractTo').val($('#contractTo').val());
+        $('#Recognition').val($('#recognition').val());
+        $('#Achievement').val($('#achievement').val());
+        $('#birthDate').val($('#birthdate').val());
+        $('#weddingDate').val($('#WeddingDate').val());
+        $('#NoOfchildren').val($('#noofchildren').val());
+        $('#ddlUsers').val($('#maritalstatus').val());
+        $('#maritalStatus').val($('#maritalstatus').val());
+        $('#Age').val($('#txtAge').val());
+        $('#AgreementDate').val($('#agreementdate').val());
+        $('#EmployeeCode').val($('#employeecode').val());
+        $('#LoginRole').val($('#loginrole').val());
+        $('#Remarks').val($('#remarks').val());
+        $('#spouseName').val($('#spousename').val());
+        $('#spouseBirthDate').val($('#spousebirthdate').val());
+        if ($('#Gender').val() == "Female" && $("#maritalStatus").val() == "Married") {
+            $("#divMaidanName").show();
+        }
+        if ($("#NoOfchildren").val() == 0) {
+            $('#children1Name').val('');
+            $('#children2Name').val('');
+            $('#children1BirthDate').val('');
+            $('#children2BirthDate').val('');
+        }
+        else if ($("#NoOfchildren").val() == 1) {
+            $('#children1Name').val($('#children1name').val());
+            $('#children2Name').val('');
+            $('#children1BirthDate').val($('#children1birthdate').val());
+            $('#children2BirthDate').val('');
+        }
+        else if ($("#NoOfchildren").val() == 2) {
+            $('#children1Name').val($('#children1name').val());
+            $('#children2Name').val($('#children2name').val());
+            $('#children1BirthDate').val($('#children1birthdate').val());
+            $('#children2BirthDate').val($('#children2birthdate').val());
+        }
+        else if ($("#NoOfchildren").val() == 3) {
+            $('#children1Name').val($('#children1name').val());
+            $('#children2Name').val($('#children2name').val());
+            $('#children3Name').val($('#children3name').val());
+
+            $('#children1BirthDate').val($('#children1birthdate').val());
+            $('#children2BirthDate').val($('#children2birthdate').val());
+            $('#children3BirthDate').val($('#children3birthdate').val());
+        }
+
+        else if ($("#NoOfchildren").val() == 4) {
+            $('#children1Name').val($('#children1name').val());
+            $('#children2Name').val($('#children2name').val());
+            $('#children3Name').val($('#children3name').val());
+            $('#children4Name').val($('#children4name').val());
+
+            $('#children1BirthDate').val($('#children1birthdate').val());
+            $('#children2BirthDate').val($('#children2birthdate').val());
+            $('#children3BirthDate').val($('#children3birthdate').val());
+            $('#children4BirthDate').val($('#children4birthdate').val());
+
+        }
+
+        else {
+            $('#children1Name').val($('#children1name').val());
+            $('#children2Name').val($('#children2name').val());
+            $('#children3Name').val($('#children3name').val());
+            $('#children4Name').val($('#children4name').val());
+            $('#children5Name').val($('#children5name').val());
+
+            $('#children1BirthDate').val($('#children1birthdate').val());
+            $('#children2BirthDate').val($('#children2birthdate').val());
+            $('#children3BirthDate').val($('#children3birthdate').val());
+            $('#children4BirthDate').val($('#children4birthdate').val());
+            $('#children5BirthDate').val($('#children5birthdate').val());
+        }
+
+        NoChildrenchange();
+        $('#PersonalImagePreview').attr('src', '@Url.Action("GetFileFromPath", "PersonalDetails", new { filepath = Model.ProfileImagePath })');
+        $("#Gender").next().find(".sbSelector").text($("#Gender :selected").text());
+        $("#maritalStatus").next().find(".sbSelector").text($("#maritalStatus :selected").text());
+        $("#Salutation").next().find(".sbSelector").text($("#prefix").val());
+    }
+
+    function SavePersonalData() {
+        $("#UserName").removeAttr("disabled");
+        $("#username").val($("#UserName").val());
+        if ($("#UserName").val() != "") {
+            $("#UserName").attr("disabled", "disabled");
+        }
+        $("#EmployeeCode").removeAttr("disabled");
+        $("#employeecode").val($("#EmployeeCode").val());
+        $("#EmployeeCode").attr("disabled", "disabled");
+        if ($('#PersonalDetailForm').valid()) {
+            if ($(".field-validation-error").is(':visible')) {
+                if ('@Model.UserName' == $("#UserName").val()) {
+                    $(".field-validation-error").remove();
+                }
+                else {
+                    $("#UserName").removeAttr("disabled");
+                    return false;
+                }
+            }
+            var checkNoOfChildren = "";
+            var checkModelNoOfChildren = "";
+            if ($("#NoOfchildren").val() == "0")
+                checkNoOfChildren = "";
+            else
+                checkNoOfChildren = $("#NoOfchildren").val();
+
+            if ('@Model.NoOfchildren' == "" || '@Model.NoOfchildren' == 0)
+                checkModelNoOfChildren == "";
+            else
+                checkModelNoOfChildren = '@Model.NoOfchildren';
+            if ((($('#maritalStatus').val() != '@Model.MaritalStatus') || ($('#weddingDate').val() != $('#WeddingDate').val()) ||
+            ($('#Salutation').val() != '@Model.Prefix') || ($('#FirstName').val() != '@Model.FirstName') ||
+            ($('#LastName').val() != '@Model.LastName') || ($('#MiddleName').val() != '@Model.MiddleName') ||
+			     (checkNoOfChildren != checkModelNoOfChildren) || ($('#spouseName').val() != '@Model.SpouseName') ||
+				 ($('#spouseBirthDate').val() != $('#spousebirthdate').val()) || ($('#children1Name').val() != '@Model.Child1Name') ||
+				  ($('#children1BirthDate').val() != $('#children1birthdate').val()) || ($('#children2Name').val() != '@Model.Child2Name') ||
+				  ($('#children2BirthDate').val() != $('#children2birthdate').val()) || ($('#children3Name').val() != '@Model.Child3Name') ||
+                   ($('#children3BirthDate').val() != $('#children3birthdate').val()) || ($('#children4Name').val() != '@Model.Child4Name') ||
+                   ($('#children4BirthDate').val() != $('#children4birthdate').val()) || ($('#children5Name').val() != '@Model.Child5Name') ||
+                   ($('#children5BirthDate').val() != $('#children5birthdate').val()) || ($('#MaidanName').val() != '@Model.MaidanName')) &&
+				   '@Model.EmployeeId' != 0 && '@ViewBag.LoggedInEmployeeId' == '@Model.SearchUserID') {
+
+                $('#PersonalDetailForm').find('input,select,textarea').removeAttr('disabled');
+                $("#EmployeeCode").attr("disabled", "disabled");
+                $("#UserName").attr("disabled", "disabled");
+                if ($('#maritalStatus').val() == "Single") {
+                    $('#spouseName').val('');
+                    $('#spousename').val('');
+                    $('#spouseBirthDate').val('');
+                    $('#spousebirthdate').val('');
+                }
+                $("#lblmaritalstatus").val($("#lblMaritalStatus").text());
+                $("#lblweddingdate").val($("#lblWeddingDate").text());
+                $("#lblspousename").val($("#lblSpouseName").text());
+                $("#lblspousebirthdate").val($("#lblSpouseBirthDate").text());
+                $("#lblnoofchildren").val($("#lblNoOfchildren").text());
+                $("#lblchild1name").val($("#lblChild1Name").text());
+                $("#lblchild1birthdate").val($("#lblChild1BirthDate").text());
+                $("#lblchild2name").val($("#lblChild2Name").text());
+                $("#lblchild2birthdate").val($("#lblChild2BirthDate").text());
+                $("#lblchild3name").val($("#lblChild3Name").text());
+                $("#lblchild3birthdate").val($("#lblChild3BirthDate").text());
+
+                $("#lblchild4name").val($("#lblChild4Name").text());
+                $("#lblchild4birthdate").val($("#lblChild4BirthDate").text());
+
+                $("#lblchild5name").val($("#lblChild5Name").text());
+                $("#lblchild5birthdate").val($("#lblChild5BirthDate").text());
+
+                $("#lblsalutation").val($("#lblSalutation").text());
+                $("#lblfirstname").val($("#lblFirstName").text());
+                $("#lbllastname").val($("#lblLastName").text());
+                $("#lblmiddlename").val($("#lblMiddleName").text());
+
+                $("#lblusername").val($("#lblUserName").text());
+                $("#lblmaidanname").val($("#lblMaidanName").text());
+                $("#WeddingDate").val($("#weddingDate").val());
+                DisplayLoadingDialog(); // Checked global.js
+                $.ajax({
+                    url: '@Url.Action("PersonalChanges", "PersonalDetails")',
+                    type: 'POST',
+                    cache: false,
+                    data: $('#PersonalDetailForm').serialize(),
+                    datatype: 'json',
+                    success: function (result) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (result.status == true) {
+                            SaveAjaxForm();
+                        } //end if==true
+                        else if (result.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Personal Details',
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.reload();
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#NoChange").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.reload();
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            }); //end dialog
+                        }
+                        if (result.label.length > 0) {
+                            $.each(result.label, function (l) {
+                                if (result.label[l] == $("#lblMaritalStatus").text() && $("#maritalStatus").val() != "") {
+                                    $("#spMaritalStatus").html("");
+                                    $("#spMaritalStatus").append(result.approvalMessage).css("color", "red").show();
+                                    $("#maritalStatus").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblMaidanName").text()) {
+                                    $("#spMaidanName").html("");
+                                    $("#spMaidanName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#MaidanName").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblWeddingDate").text() && $("#weddingDate").val() != "") {
+                                    $("#spWeddingDate").html("");
+                                    $("#spWeddingDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#weddingDate").attr("disabled", "disabled");
+                                    $("#weddingDateCollection .ui-datepicker-trigger").hide();
+                                }
+                                if (result.label[l] == $("#lblNoOfchildren").text() && $("#NoOfchildren").val() != "") {
+                                    $("#spNoOfChildren").html("");
+                                    $("#spNoOfChildren").append(result.approvalMessage).css("color", "red").show();
+                                    $("#NoOfchildren").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblSpouseName").text() && $("#spouseName").val() != "") {
+                                    $("#spSpouseName").html("");
+                                    $("#spSpouseName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#spouseName").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblSpouseBirthDate").text() && $("#spouseBirthDate").val() != "") {
+                                    $("#spSpouseBirthDate").html("");
+                                    $("#spSpouseBirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#spouseBirthDate").attr("disabled", "disabled");
+                                    $("#spouseBirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+                                if (result.label[l] == $("#lblChild1Name").text() && $("#children1Name").val() != "") {
+                                    $("#spChild1Name").html("");
+                                    $("#spChild1Name").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children1Name").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblChild1BirthDate").text() && $("#children1BirthDate").val() != "") {
+                                    $("#spChild1BirthDate").html("");
+                                    $("#spChild1BirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children1BirthDate").attr("disabled", "disabled");
+                                    $("#children1BirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+                                if (result.label[l] == $("#lblChild2Name").text() && $("#children2Name").val() != "") {
+                                    $("#spChild2Name").html("");
+                                    $("#spChild2Name").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children2Name").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblChild2BirthDate").text() && $("#children2BirthDate").val() != "") {
+                                    $("#spChild2BirthDate").html("");
+                                    $("#spChild2BirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children2BirthDate").attr("disabled", "disabled");
+                                    $("#children2BirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+                                if (result.label[l] == $("#lblChild3Name").text() && $("#children3Name").val() != "") {
+                                    $("#spChild3Name").html("");
+                                    $("#spChild3Name").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children3Name").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblChild3BirthDate").text() && $("#children3BirthDate").val() != "") {
+                                    $("#spChild3BirthDate").html("");
+                                    $("#spChild3BirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children3BirthDate").attr("disabled", "disabled");
+                                    $("#children3BirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+
+                                if (result.label[l] == $("#lblChild4Name").text() && $("#children4Name").val() != "") {
+                                    $("#spChild4Name").html("");
+                                    $("#spChild4Name").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children4Name").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblChild4BirthDate").text() && $("#children4BirthDate").val() != "") {
+                                    $("#spChild4BirthDate").html("");
+                                    $("#spChild4BirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children4BirthDate").attr("disabled", "disabled");
+                                    $("#children4BirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+
+                                if (result.label[l] == $("#lblChild5Name").text() && $("#children5Name").val() != "") {
+                                    $("#spChild5Name").html("");
+                                    $("#spChild5Name").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children5Name").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblChild5BirthDate").text() && $("#children5BirthDate").val() != "") {
+                                    $("#spChild5BirthDate").html("");
+                                    $("#spChild5BirthDate").append(result.approvalMessage).css("color", "red").show();
+                                    $("#children5BirthDate").attr("disabled", "disabled");
+                                    $("#children5BirthDateCollection .ui-datepicker-trigger").hide();
+                                }
+                                if (result.label[l] == $("#lblSalutation").text() && $("#Salutation").val() != "") {
+                                    $("#spSalutation").html("");
+                                    $("#spSalutation").append(result.approvalMessage).css("color", "red").show();
+                                    $("#Salutation").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblFirstName").text() && $("#FirstName").val() != "") {
+                                    $("#spFirstName").html("");
+                                    $("#spFirstName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#FirstName").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblLastName").text() && $("#LastName").val() != "") {
+                                    $("#spLastName").html("");
+                                    $("#spLastName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#LastName").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblMiddleName").text() && $("#MiddleName").val() != "") {
+                                    $("#spMiddleName").html("");
+                                    $("#spMiddleName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#MiddleName").attr("disabled", "disabled");
+                                }
+                                if (result.label[l] == $("#lblUserName").text() && $("#UserName").val() != "") {
+                                    $("#spUserName").html("");
+                                    $("#spUserName").append(result.approvalMessage).css("color", "red").show();
+                                    $("#UserName").attr("disabled", "disabled");
+                                }
+                            }); //end label each
+                        } //end if
+                    }, //end main success
+                    error: function (result) {
+                        if (result) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                title: 'Personal Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.reload();
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            }); //end dialog
+                        }
+                    }
+                });                    //end ajax
+            } // end field change check
+                //  will enter in else if fields other than aprrovals are changed.
+            else {
+                $('#PersonalDetailForm').find('input,select,textarea').removeAttr('disabled');
+                $("#EmployeeCode").attr("disabled", "disabled");
+                $("#UserName").attr("disabled", "disabled");
+
+                if ($('#NoOfchildren').is(':disabled') == true) {
+                    $('#NoOfchildren').removeAttr('disabled');
+                    $('#noofchildren').val($('#NoOfchildren').val());
+                    $('#NoOfchildren').attr('disabled', 'disabled');
+                }
+                if ($('#maritalStatus').val() == "Single") {
+
+                    $('#spouseName').val('');
+                    $('#spousename').val(' ');
+                    $('#spouseBirthDate').val('');
+                    $('#spousebirthdate').val('');
+                }
+                DisplayLoadingDialog(); // Checked global.js
+                $('#PersonalDetailForm').ajaxForm({
+                    success: function (results) {
+                        var userRole = '@Model.UserRole';
+                        if (userRole == '@HRMS.Models.UserRoles.HRAdmin' && $("#UserName").is(":enabled")) {
+                            $("#UserName").attr('disabled', 'disabled');
+                        }
+                        if (results.isNewEmployee == true) {
+                            $("#UserName").removeAttr("disabled");
+                            $("#UserName").attr("enabled", true);
+                        }
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        var st = $.parseJSON(results);
+                        if (st.status == true) {
+                            $("#successDialog").dialog({
+                                title: 'Personal Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        if (st.isNewEmployee == true || st.isNewEmployee == "True") {
+                                            window.location.href = '@Url.Action("Index", "PersonalDetails")?employeeId=' + st.employeeId;
+                                        }
+                                        else {
+                                            window.location.reload();
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            });
+                        }
+                        else if (st.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                title: 'Personal Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.reload();
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            });
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                title: 'Personal Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: 'noclose',
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.reload();
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    window.location.reload();
+                                    $(this).dialog("destroy");
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $("#errorDialog").dialog({
+                            title: 'Personal Details',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    window.location.reload();
+                                    $(this).dialog("close");
+                                }
+                            },
+                            close: function () {
+                                window.location.reload();
+                                $(this).dialog("destroy");
+                            }
+                        });
+                    }
+                }).submit();
+            } //end of else of field check change
+        } //end form valid
+        else {
+            if ('@Model.UserRole' == '@HRMS.Models.UserRoles.HRAdmin') {
+                $("#UserName").removeAttr("disabled");
+            }
+        }
+    } //end save click
+
+    function SaveAjaxForm() {
+        $('#PersonalDetailForm').ajaxForm({
+            success: function (results) {
+                var userRole = '@Model.UserRole';
+                if (userRole == '@HRMS.Models.UserRoles.HRAdmin' && $("#UserName").is(":enabled")) {
+                    $("#UserName").attr('disabled', 'disabled');
+                }
+                if (results.isNewEmployee == true) {
+                    $("#UserName").removeAttr("disabled");
+                    $("#UserName").attr("enabled", true);
+                }
+//                $("#loading").dialog("close");
+//                $("#loading").dialog("destroy");
+                var st = $.parseJSON(results);
+                if (st.status == true) {
+                    $("#successDialog").dialog({
+                        closeOnEscape: false,
+                        title: 'Personal Details',
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog('destroy');
+                                DisplayLoadingDialog(); // Checked global.js
+                                callPersonalDetailsMail('@ViewBag.EmployeeId');
+                            }
+                        },
+                        close: function () {
+                            $(this).dialog("destroy");
+                            window.location.reload();
+                        }
+                    });
+                }
+                else if (st.status == "Error") {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#errorDialog").dialog({
+                        title: 'Personal Details',
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                window.location.reload();
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            window.location.reload();
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+                else {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#errorDialog").dialog({
+                        title: 'Personal Details',
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                window.location.reload();
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            window.location.reload();
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+            },
+            error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    title: 'Personal Details',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            window.location.reload();
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function () {
+                        window.location.reload();
+                        $(this).dialog("destroy");
+                    }
+                });
+            }
+        }).submit();
+    }
+
+    $("#Gender").change(function () {
+        var n = $(this).val();
+        switch (n) {
+            case 'Male':
+                $('#Prefix').val('Mr.');
+                break;
+            case 'Female':
+                $('#Prefix').val('Ms.');
+                break;
+            case '':
+                $('#Prefix').val('');
+                break;
+        }
+    });
+
+    $("#Prefix").change(function () {
+        var n = $(this).val();
+        switch (n) {
+            case 'Mr.':
+                $('#Gender').val('Male');
+                break;
+            case 'Ms.':
+                $('#Gender').val('Female');
+                break;
+            case 'Mrs.':
+                $('#Gender').val('Female');
+                break;
+            case '':
+                $('#Gender').val('');
+                break;
+        }
+    });
+
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                if (val.id == "Salutation" || val.id == "Gender" || val.id == "maritalStatus") {
+                    if (val.id == "Gender")
+                        $(this).css({ 'display': 'none' });
+                    $(this).next().hide().next().show();
+                }
+                else if (val.id == "Achievement" || val.id == "Recognition" || val.id == "Remarks" || val.id == "Hobbies") {
+                    $(this).hide().next().show().children().show();
+                }
+                else if (val.id == "ContractFrom" || val.id == "weddingDate" || val.id == "AgreementDate" || val.id == "ContractTo" || val.id == "birthDate" || val.id == "spouseBirthDate" ||
+                    val.id == "children1BirthDate" || val.id == "children2BirthDate" || val.id == "children3BirthDate" || val.id == "children4BirthDate" || val.id == "children5BirthDate") {
+                    $(this).hide().next().hide().next().show();
+                }
+                else
+                    $(this).hide().next().show();
+            }
+        });
+    } //end function
+</script>
+<div id="successDialog" title="Personal Details" style="display: none">
+    <p>
+        Personal Details have been saved.
+    </p>
+</div>
+<div id="ImageUploadError" title="Error" style="display: none">
+    <p>
+        Please Select the Image to upload
+    </p>
+</div>
+<div id="userNameDialog" title="Error" style="display: none">
+    <p>
+        User name already exist.Please select another user name.
+    </p>
+</div>
+<div id="ConfirmEmpMoveMessage" title="Move Employee" style="display: none">
+</div>
+<div id="SuccessEmpMoveMessage" title="Move Employee" style="display: none">
+    <p>
+        Employee moved successfully.
+    </p>
+</div>
+<div id="NoChange" title="No Changes" style="display: none">
+    <p>
+        No Changes Made.
+    </p>
+</div>
+<div id="mailError" title="Mail Error" style="display: none">
+    <p>
+        Mail Sending Failed, Please check the entered EmailId's.
+    </p>
+</div>
+<div id="PersonalFeildChangeMailDialog" style="display: none">
+    @{Html.RenderPartial("_MailTemplateEmployee", Model.Mail);}
+</div>
+<div id="failedRecipient" title="Sending Failed" style="display: none">
+    <center>
+        <span>Could not send mail to<br /> </span><span id="span_failedRecipient"></span>
+    </center>
+</div>

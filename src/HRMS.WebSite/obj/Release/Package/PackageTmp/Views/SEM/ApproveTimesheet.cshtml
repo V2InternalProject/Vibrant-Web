@@ -1,0 +1,81 @@
+﻿@model HRMS.Models.ApproveTimesheetModel
+@{
+    ViewBag.Title = "Approve Timesheet";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew NoTitleGridsContainer clearfix">
+    <h2 class="title-bgcolor">
+        @Html.Label("Period: 3/24/2014 to 03/28/2014")<a class="LinkBlue floatR" href="#">Back</a> <a class="LinkBlue floatR"
+            href="#" id="btnTaskList">View Task List</a><a class="LinkBlue floatR"
+            href="/SEM/CompleteTimesheet">View Complete Timesheet</a></h2>
+    
+   
+
+    <h3 class="mrgnT10">HRMS</h3>
+    <div class="tablestyle3">
+        <table id="jqApproveTSTable">
+        </table>
+    </div>
+    <div id="jqApproveTSTablePager">
+    </div>
+    
+
+    <div class="mrgnT15">
+         <input type="button" class="button" value="Approve" />
+        <input type="button" class="button" value="Reject" />
+    
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    $("#jqApproveTSTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "Planned (Hours)", "Date", "Description", "Actual Work (Hours)"],            
+            // Configure the columns
+            colModel: [
+                { name: "", index: "", align: "left", width: 200},
+                { name: "PlannedHrs", index: "PlannedHrs", align: "left", width: 100 },
+                { name: "Date", index: "Date", align: "left", width: 100 },
+                { name: "Description", index: "Description", align: "left", width: 200 },
+                { name: "ActualWork", index: "ActualWork", align: "left", width: 100 },
+                
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqApproveTSTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Approve Timesheet",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqApproveTSTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+    });
+    
+</script>

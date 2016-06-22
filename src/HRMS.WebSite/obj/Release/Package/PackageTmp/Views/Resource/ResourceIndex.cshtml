@@ -1,0 +1,281 @@
+﻿@model HRMS.Models.ResourceIndexModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Resource Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Resource Allocation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+                    @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+        <h4 class="smallhead2">
+            Current Resource Details</h4>
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" value="Export to Excel" id="BtnExportToexcelResourceSelf" /></div>
+        <div class="tablestyle3" id="CurrentResourceContainer">
+            <table id="jqCurrentResourceGrid">
+            </table>
+        </div>
+        <div id="jqCurrentResourceGridPager">
+        </div>
+        <h4 class="SmallHead">
+            Resource History</h4>
+        <div class="tablestyle3" id="ResourceHistoryContainer">
+            <table id="jqResourceHistoryTable">
+            </table>
+        </div>
+        <div id="jqResourceHistoryTablePager">
+        </div>
+    </div>
+</section>
+<div id="TableError1" style="display: none">
+    <center>
+       You are not allocated on any project.
+    </center>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#HelpdeskTicketID').val(1234);
+        var ProjectId = 0;
+        var LoggedInUserId = '@ViewBag.LogInUserId';
+        $('#AddEditResourse').click(function () {
+            //OpenLoadingPopup();
+            //            $.ajax({
+            //                url: '@Url.Action("AddEditResourse", "Resource")',
+            //                data: { HelpdeskTicketID: $('#HelpdeskTicketID').val() },
+            //                type: 'GET',
+            //                success: function (result) {
+            //                    $("#AddEditResourseDialog").empty().append(result);
+            //                    $("#AddEditResourseDialog").dialog({
+            //                        closeOnEscape: false,
+            //                        //resizable: false,
+            //                        height: 615,
+            //                        width: 930,
+            //                        modal: true,
+            //                        title: "Add / Edit Resource Details"
+            //                    });
+            //                    CloseLoadingPopup();
+            //                }
+            //            });
+            var test = $('#HelpdeskTicketID').val();
+            var NewTab = '@Url.Action("AddEditResourse", "Resource")?HelpdeskTicketID=' + $('#HelpdeskTicketID').val();
+            window.open(NewTab, "_Blank");
+        });
+        var EmployeeId = '@ViewBag.LogInUserId';
+        $('#BtnExportToexcelResourceSelf').click(function () {
+            var Currentcount = jQuery("#jqResourceHistoryTable").jqGrid('getGridParam', 'records');
+            var Historycount = jQuery("#jqCurrentResourceGrid").jqGrid('getGridParam', 'records');
+            if (Currentcount == 0 && Historycount == 0) {
+                $("#TableError1").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            window.location.href = '@Url.Action("ExportToExcelResourceData", "Resource")?EmployeeId=' + EmployeeId;
+        });
+
+        $("#jqCurrentResourceGrid").jqGrid({
+            // Ajax related configurations
+            // Grid for Resource History
+            url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
+            postData: { EmployeeId: function () { return LoggedInUserId }, projectID: function () { return ProjectId }, GridName: function () { return "MyCurrentAllocation" } }, //hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "Project Name", "HelpDesk Ticket ID", "Employee Code", "Employee Name", "Reporting To", "Resource Pool", "Designation", "Project Role", "Resource Type", "Employment Status", "Allocation Start Date", "Allocation End Date", "Allocated (%)", "Release Date", "Project End Appraisal Form", "RMG Comments"],
+            // Configure the columns
+            colModel: [
+                { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 10, hidden: true, editable: true },
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 35 },
+                { name: "HelpDeskTicketID", index: "HelpDeskTicketID", align: "left", width: 35, hidden: true },
+                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 60 },
+                { name: "ReportingTo", index: "ReportingTo", align: "left", width: 60 },
+                { name: "ResourcePool", index: "ResourcePool", align: "left", width: 50 },
+                { name: "Designation", index: "Designation", align: "left", width: 50 },
+                { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30 },
+                { name: "ResourceType", index: "ResourceType", align: "left", width: 35 },
+                { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
+                { name: "AllocationStartDate1", index: "AllocationStartDate1", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "AllocationEndDate1", index: "AllocationEndDate1", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "Allocated", index: "Allocated", align: "left", width: 30 },
+                { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50, formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                { name: "RMGComments", index: "RMGComments", align: "left", width: 50 }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqCurrentResourceGridPager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: true,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            loadonce: true,
+            // Grid caption
+            //caption: "Resource History",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqCurrentResourceGrid").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqCurrentResourceGrid').hide();
+                    $("#CurrentResourceContainer").append("<p>No records found</p>")
+                }
+                else {
+                    $('#gbox_jqCurrentResourceGrid').show();
+                    if (count > 20) {
+
+                        $('#jqCurrentResourceGridPager_center').show();
+                    }
+                    else {
+                        $('#jqCurrentResourceGridPager_center').hide();
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            }
+        }).navGrid("#jqCurrentResourceGridPager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqResourceHistoryTable").jqGrid({
+            // Ajax related configurations
+            // Grid for Resource History
+            url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
+            postData: { EmployeeId: function () { return LoggedInUserId }, projectID: function () { return ProjectId }, GridName: function () { return "MyYHistoryAllocation" } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            //colNames: ["", "Project Name", "HelpDesk Ticket ID", "Employee Code", "Employee Name", "Reporting To", "Resource Pool", "Designation", "Project Role", "Resource Type", "Employment Status", "Allocation Start Date", "Allocation End Date", "Allocated (%)", "Release Date", "Project End Appraisal Form", "RMG Comments"],
+            colNames: ["", "Project Name", "HelpDesk Ticket ID", "Employee Code", "Employee Name", "Resource Pool", "Designation", "Project Role", "Resource Type", "Employment Status", "Allocation Start Date", "Allocation End Date", "Allocated (%)", "Release Date", "Project End Appraisal Form", "RMG Comments"],
+            // Configure the columns
+            colModel: [
+                 { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 10, hidden: true, editable: true },
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 35, sortable: true },
+                { name: "HelpDeskTicketID", index: "HelpDeskTicketID", align: "left", width: 35, hidden: true },
+                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 60 },
+            //{ name: "ReportingTo", index: "ReportingTo", align: "left", width: 60 },
+                {name: "ResourcePool", index: "ResourcePool", align: "left", width: 50 },
+                { name: "Designation", index: "Designation", align: "left", width: 50 },
+                { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30 },
+                { name: "ResourceType", index: "ResourceType", align: "left", width: 35 },
+                { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
+                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "Allocated", index: "Allocated", align: "left", width: 30 },
+                { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' }, sorttype: 'date' },
+                { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50, formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                { name: "RMGComments", index: "RMGComments", align: "left", width: 50 }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqResourceHistoryTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: true,
+            // Default sorting
+            sortname: "",
+            //sortorder: "asc",
+            loadonce: true,
+            // Grid caption
+            //caption: "Resource History",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqResourceHistoryTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqResourceHistoryTable').hide();
+                    $("#ResourceHistoryContainer").append("<p>No records found</p>")
+                }
+                else {
+                    $('#gbox_jqResourceHistoryTable').show();
+                    if (count > 20) {
+
+                        $('#jqResourceHistoryTablePager_center').show();
+                    }
+                    else {
+                        $('#jqResourceHistoryTablePager_center').hide();
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            }
+        }).navGrid("#jqResourceHistoryTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        function returnPhaseLink(cellValue, options, rowdata, action) {
+            if (rowdata["ProjectEndAppraisalStausID"] == 1) {
+                return "<a href='/Resource/ProjectEndAppraisalFormView/?EmployeeCode=" + rowdata['EmployeeCode'] + "&ProjectID=" + ProjectId + "&ProjectEmployeeRoleID=" + rowdata["ProjectEmployeeRoleID"] + "&ProjectEndAppraisalStatusID=" + rowdata["ProjectEndAppraisalStausID"] + "' >View</a>";
+            }
+            else {
+                return "";
+            }
+        }
+
+    });
+
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+          {
+              closeOnEscape: false,
+              resizable: false,
+              height: 140,
+              width: 300,
+              modal: true,
+              dialogClass: "noclose"
+          });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>
+<div id="AddEditResourseDialog" style="display: none">
+</div>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "formResourseIndex" }))
+{
+    @Html.HiddenFor(x => x.HelpdeskTicketID);
+}

@@ -1,0 +1,313 @@
+﻿@model HRMS.Models.SkillDetailsViewModel
+@{
+    ViewBag.Title = "Skill Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/PersonalDetailsCommon.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    SetPageTitle('Skill Details');
+    function editSkillRecord(control, editRow) {
+        var parentTR = $(control).parents('tr');
+        var skillName = $('td#skill_name', parentTR);
+        var skillLevel = $('td#skill_level', parentTR);
+
+        var editName = $('#item_Skill', skillName).val();
+        var editLevel = $('#item_SkillLevelText', skillLevel).val();
+
+        var skillID = $('td#skill_Id', parentTR);
+        var skillLevelID = $('td#skill_LevelId', parentTR);
+
+        var editID = $('#skillId', skillID).val();
+        var editLevelID = $('#skillLevelId', skillLevelID).val();
+
+        $("#Skill option").each(function () {
+            if ($(this).text() == editName) {
+                $(this).attr('selected', 'selected');
+            }
+        });
+
+        $("#skillLevel option").each(function () {
+            if (editLevel == "") {
+                $(this).attr('selected', 'selected');
+                return false;
+            }
+            else {
+                if ($(this).text() == editLevel) {
+                    $(this).attr('selected', 'selected');
+                }
+            }
+        });
+
+        //$('#skillDetailsDialog #skillLevel').val(editLevel);
+        $('#skillDetailsDialog #NewSkillDetail_EmployeeSkillID').val(editRow);
+        $('#skillDetailsDialog #NewSkillDetail_Skill').val(editID);
+        $('#skillDetailsDialog #level').val(editLevelID);
+        $('#skillDetailsDialog #skillError').css('display', 'none');
+        $('#skillDetailsDialog #levelError').css('display', 'none');
+        $("#skillDetailsDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: 400,
+            resizable: false,
+            title: "Edit Skill Details",
+            close: function () {
+
+                $("#Skill option").each(function () {
+                    $(this).removeAttr('selected');
+
+                });
+
+                $("#skillLevel option").each(function () {
+                    $(this).removeAttr('selected');
+
+                });
+
+            }
+        });
+        if (('@Model.EmpStatusMasterID' != 2) && ('@Model.UserRole' == "RMG") || (('@Model.UserRole' == 'HR Executive') && ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) || ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) {
+            $("#skillDetailsDialog").dialog('open');
+        }
+    }
+    if (('@Model.EmpStatusMasterID' != 2) && ('@Model.UserRole' == "RMG") || (('@Model.UserRole' == 'HR Executive') && ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) || ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) {
+        $('#btnAddSkillDetails').show();
+    }
+    else if (('@ViewBag.loggedinEmployeeID' != '@Model.NewSkillDetail.EmployeeID')) {
+        $('#btnAddSkillDetails').hide();
+    }
+    function deleteRecord(deletedSkillId, employeeId) {
+        $("#SuccessMessege").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            height: 140,
+            width: 300,
+            title: "Deleted",
+            buttons: {
+                "Ok": function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+        var deleteURL = '@Url.Action("DeleteEmployeeSkillDetails", "PersonalDetails")?employeeSkillId=' + deletedSkillId + '&employeeId=@ViewBag.skillEmployeeId';
+        if (('@Model.EmpStatusMasterID' != 2) && ('@Model.UserRole' == "RMG") || (('@Model.UserRole' == 'HR Executive') && ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) || ('@ViewBag.loggedinEmployeeID' == '@Model.NewSkillDetail.EmployeeID')) {
+            createAndDestroy($('#confirmDelete'), deleteURL, employeeId);
+        }
+    }
+
+    function createAndDestroy(element, deleteURL, employeeId) {
+        $(element).dialog({
+            autoOpen: true,
+            modal: true,
+            resizable: false,
+            height: 140,
+            width: 300,
+            title: "Delete Skill Record",
+            buttons:
+                        [
+                            {
+                                text: "Yes",
+                                click: function () {
+                                    $.ajax({
+                                        cache: false,
+                                        url: deleteURL,
+                                        success: function (results) {
+                                            if (results.status == true) {
+                                                $.ajax({
+                                                    cache: false,
+                                                    url: '@Url.Action("LoadSkillDetailRecords", "PersonalDetails")',
+                                                    data: { employeeId: employeeId },
+                                                    success: function (result) {
+                                                        $("#skillDetailRecords").html(result);
+                                                    }
+                                                });
+                                                $(element).dialog('close');
+                                                $(element).dialog('destroy');
+                                                $("#SuccessMessege").dialog("open");
+                                            }
+                                            else if (results.status == "Error") {
+                                                $(element).dialog('close');
+                                                $(element).dialog('destroy');
+                                                $("#errorDialog").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Skill Details',
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                $(element).dialog('close');
+                                                $(element).dialog('destroy');
+                                                $("#errorDialog").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Skill Details',
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                        },
+                                        error: function () {
+                                            $(element).dialog('close');
+                                            $(element).dialog('destroy');
+                                            $("#errorDialog").dialog({
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                title: 'Skill Details',
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                text: "No",
+                                click: function () {
+                                    $(element).dialog('close')
+                                    $(element).dialog('destroy')
+                                }
+                            }
+                        ]
+        });
+    }
+
+    $("#btnAddSkillDetails").click(function () {
+
+        $("#skillDetailsDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: 400,
+            resizable: false,
+            title: "Add Skill Details"
+        });
+
+        $('#skillDetailsDialog #NewSkillDetail_EmployeeSkillID').val(0);
+        $('#skillDetailsDialog #NewSkillDetail_Skill').val('');
+        $('#skillDetailsDialog #NewSkillDetail_skillLevel').val('');
+        $('#skillDetailsDialog #NewSkillDetail_skill').val('');
+        $('#skillDetailsDialog #NewSkillDetail_level').val('');
+        $('#skillDetailsDialog #skillError').css('display', 'none');
+        $('#skillDetailsDialog #skillError').text("");
+        $('#skillDetailsDialog #levelError').css('display', 'none');
+        $('#skillDetailsDialog #levelError').text("");
+
+        $("#skillDetailsDialog").dialog('open');
+    });
+
+    function sendMail() {
+        SendMailForSkill('@ViewBag.skillEmployeeId');
+        $('#btnSkillSendEmail').attr('disabled', 'disabled');
+    }
+
+    if ('@ViewBag.SendMail' == 'CanSend') {
+        $('#btnSkillSendEmail').removeAttr('disabled');
+    }
+</script>
+@*<h3 class="mrgnT15 conformsub-title">
+    Skills Details</h3>
+<div class="clearfix">
+    @Html.HiddenFor(m => m.UserRole)
+    <fieldset class="">
+        @Html.HiddenFor(m => m.UserRole)
+        <div class="clear">
+            <input type="button" class="button" value="Add Skill" id="btnAddSkillDetails" />
+        </div>
+        <div id="skillDetailRecords" class="tablestyle2">
+            @Html.Partial("_SkillDetailRecords", Model)
+        </div>
+        <div id="skillDetailsDialog" style="display: none">
+            @Html.Partial("_AddSkillDetails", Model)
+        </div>
+        <div class="clear">
+        <input type="button" value="Send Approval Mail" id="btnSkillSendEmail" disabled="disabled" class="button" onclick=" sendMail()" />
+        </div>
+    </fieldset>
+</div>*@
+
+<section class="EmployeeContainer Container">
+
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Personal Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Personal</a>
+            <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Dependent</a>
+            <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Declaration</a>
+            <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Residence</a>
+            <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Contact</a>
+            <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Education</a>
+            <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">Certification</a>
+            <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })" class="selected">Skill</a>
+            <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })"> Medical History</a>
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody SkillMainbody">
+
+        @*<div class="FormContainerBox  Skill clearfix">
+            <div class="formrow clearfix">*@
+
+                @*<div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Skill:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Skill Level:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>*@
+            @*</div>
+        </div>*@
+        @*<div class="fill-dtls clearfix">
+            <input type="button" value="Save" class="ButtonGray" />
+        </div>*@
+        @Html.Partial("_SkillDetailRecords", Model)
+    </div>
+</section>

@@ -1,0 +1,191 @@
+﻿@model HRMS.Models.EmpSeperationTerminationViewModel
+@{
+    ViewBag.Title = "Employee Termination";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+        $("#ddlOrganizationGroup").change(function () {
+
+            jQuery("#TerminationTable").trigger("reloadGrid");
+        });
+
+        $(".Title").hide();
+        $("#txtSearchTextExit").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggestCnfrm", "ConfirmationProcess")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var searchterm = $("#txtSearchTextExit").val();
+                        var emplyeeInformation = el.EmployeeName + " {" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName
+                        };
+                    }));
+                });
+            }
+        });
+
+        var searchterm = $("#txtSearchTextExit").val();
+        //SetPageTitle('Initiate Termination Process');
+        var deletionIdSelected = 0;
+
+        // Set up the jquery grid
+        $("#TerminationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("InitiateTerminationLoadGrid", "Exit")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { term: function () { return $("#txtSearchTextExit").val(); }, OrganizationUnit: function () { return $("#ddlOrganizationGroup").val(); } },
+            // Specify the column names
+            colNames: ["Initiate", "Employee Code", "Employee Id", "Employee Name", "Joining Date", "Reporting Manager", "Business Group", "Organization Group", "Is Exit"],
+            // Configure the columns
+            colModel: [
+                { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'left' },
+                { name: "EmployeeCode", index: "EmployeeCode", hidden: true, width: 50, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 50, align: "left" },
+                { name: "EmployeeName", index: "EmployeeName", width: 150, align: "left" },
+                { name: "JoiningDate", index: "JoiningDate", width: 50, align: "left", sorttype: 'date', formatter: 'date' },
+                { name: "ReportingManager", index: "ReportingManager", width: 150, align: "left" },
+                { name: "BusinessGroup", index: "BusinessGroup", width: 50, align: "left" },
+                { name: "OrganizationGroup", index: "OrganizationGroup", width: 50, align: "left" },
+                { name: "IsExit", index: "IsExit", hidden: true, width: 50, align: "left" }
+            ],
+            width: 700,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#TerminationTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // caption: "Termination Process",
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var selectedDependantId = rowData['EmployeeId']
+                if (iCol == 0) {
+                    InitiateProcess(rowData);
+                }
+            }
+        }).navGrid("#TerminationTablePager",
+                    { search: false, refresh: false, add: false, edit: false, del: false }
+                );
+
+        $("#txtSearchTextExit").keypress(function (e) {
+            if (e.keyCode == 13) {
+                searchterm = $("#txtSearchTextExit").val();
+                jQuery("#TerminationTable").trigger("reloadGrid");
+            }
+        });
+    });
+
+    function EncryptedId() {
+        var id = "";
+        var posturl = '@Url.Action("EmployeeEncryption", "ConfirmationProcess")';
+        var Parameter = { employeeId: $("#hiddenEmpId").val() };
+        $.ajax(
+             {
+                 url: posturl,
+                 type: 'POST',
+                 async: false,
+                 data: Parameter,
+                 dataType: 'json',
+                 success: function (data) {
+                     id = data.result;
+                 },
+                 error: function () {
+                     return false;
+                 }
+             });   //end ajax
+        return id;
+    }
+
+    function checkstatus(cellvalue, options, rowobject) {
+        debugger;
+        var stage = rowobject['IsExit'];
+        var employeeId = rowobject['EmployeeId'];
+        $("#hiddenEmpId").val(employeeId);
+        var encyptedEmplId = EncryptedId();
+        var termination = "yes";
+        if (stage == "no") {
+            return "<a  href=" + '@Url.Action("SeparationForm", "Exit")?Istermination=' + termination + "&employeeid=" + encyptedEmplId + ">Initiate</a>";
+        }
+        else {
+            return '<span>-</span>';
+        }
+    }
+
+    function InitiateProcess(Object) {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+    }
+</script>
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<section class="ConfirmationContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation Process</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("SeparationForm", "Exit")">Fill My Separation Form</a>
+            <a href="@Url.Action("EmpSeparationApprovals", "Exit")">Employee Separation Approvals</a>
+            <a href="@Url.Action("EmpSeparationTermination", "Exit")" class="selected">Employee Separation - Termination</a>
+        </nav>
+    </div>
+
+    <div class="MainBody">
+        @using (Html.BeginForm("SearchEmployee", "Exit", FormMethod.Post, new { @id = "frmSearchEmployeeLayoutExit" }))
+        {
+            <div class="Hrmain terminate clearfix">
+                <div class="fill-dtls clearfix">
+                    @Html.Hidden("empId")
+                    @Html.HiddenFor(m => m.hiddenEmpId)
+                    <div class="LabelDiv">
+                        @*<label for="From Date" class="select-type">Employee Search:</label>*@
+                        <label id="">@HRMS.Resources.EmployeeMessages.SearchEmployeeLabel.ToString()</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" name="searchValue" id="txtSearchTextExit" class="srchinput" />
+                        <input class="button" id="btnSubmitSearchExit" value="Search" type="hidden" onclick="searchEmployeeExit()" />
+                    </div>
+                    <div class="LabelDiv width20">
+                        <label for="Field" class="select-type">Organization Group:</label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.ddlOrganizationGroup, (SelectList)ViewBag.Location, "")
+                    </div>
+                </div>
+            </div>
+
+            <div class="tablestyle3">
+                <table id="TerminationTable" class="scroll"></table>
+            </div>
+            <div id="TerminationTablePager">
+            </div>
+
+            <div class="reason-exit mrgnT10 InnerContainer">
+                <label class="suffix">
+                    <b style="color: red">Note: </b>Records shown in <b style="color: red">Red</b> are
+                    either Released or already initiated for exit Process
+                </label>
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,346 @@
+﻿@model HRMS.Models.StackHolderVM
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+@*<table style="float: right">
+    <thead>
+        <tr>
+            <td>
+                <input class="button" type="button" id="btnSelectResource" value="Show Selected Resources"
+                    onclick="ShowResource()" />
+            </td>
+            <td>
+                <input class="button" type="button" id="btnSave" value="Save" onclick="SaveStakeholder()" />
+            </td>
+        </tr>
+    </thead>
+</table>*@
+@*<table style="float: left">
+    <thead>
+        <tr>
+            <td>
+                @Html.Label("Employee Name")
+                <input type="text" id="search" />
+            </td>
+        </tr>
+    </thead>
+</table>*@
+
+    <div class="popuphead-stake clearfix">
+        <div class="formrow clearfix">
+            <div class="leftcol clearfix">
+                <div class="LabelDiv">
+                    <label>Employee Name:</label>
+                </div>
+                <div class="InputDiv">
+                    <a href="#"></a>
+                    <input type="text" id="search" placeholder="Employee Search">
+                </div>
+            </div>
+            <div class="rightcol clearfix">
+                    <input class="ButtonGray" type="button" id="btnSelectResource" value="Show Selected Resources"
+                           onclick="ShowResource()" />
+                    <input class="ButtonGray" type="button" id="btnSave" value="Save" onclick="SaveStakeholder()" />
+            </div>
+        </div>
+
+        @*<div class="topstakebuttons">
+            <input class="ButtonGray" type="button" id="btnSelectResource" value="Show Selected Resources"
+                   onclick="ShowResource()" />
+
+            <input class="ButtonGray" type="button" id="btnSave" value="Save" onclick="SaveStakeholder()" />
+        </div>*@
+    </div>
+<table cellpadding="0" cellspacing="0" border="0" width="98%" class="PerformanceHinderTable stakeholderT TableJqgrid">
+    <thead>
+        <tr>
+            <th class="tableHeaders" width="120px">
+                Delete
+            </th>
+            <th class="tableHeaders" width="120px">
+                Employee Name
+            </th>
+            <th class="tableHeaders" width="120px">
+                Business Group
+            </th>
+            <th class="tableHeaders" width="120px">
+                Organization Unit
+            </th>
+            <th class="tableHeaders" width="120px">
+                Roles
+            </th>
+            <th class="tableHeaders" width="120px">
+                Designation
+            </th>
+            <th class="tableHeaders" width="120px">
+                Department
+            </th>
+            <th class="tableHeaders" width="120px">
+                Employee Status
+            </th>
+            <th class="tableHeaders" width="120px">
+                Location
+            </th>
+            <th class="tableHeaders" width="120px">
+                Total Experience
+            </th>
+            <th class="tableHeaders" width="120px">
+                Experience with us
+            </th>
+        </tr>
+    </thead>
+    <div id="seperationReasonContainer">
+        @foreach (var item in Model.stackHolder)
+{
+    <tr class="tableRows">
+        <td id="Delete" align="center">
+            @if (item.isChecked)
+            {
+                @Html.CheckBoxFor(x => item.isChecked, new { @class = "caseShowSelected", @data = item.EmployeeID, @disabled = "disabled" })
+            }
+            else
+            {
+                @Html.CheckBoxFor(x => item.isChecked, new { @class = "stackholderselected", @data = item.EmployeeID })
+                  <input type="checkbox" id="c" />
+                                <label class="LabelForCheckbox" for="c"></label>
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.Employee, new { @class = "showselectedstakeholder", @data = item.EmployeeID })
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.BusinessGroup)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.OrganizationUnit)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.Role)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.Designation)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.Department)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.EmpStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.Location)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.TotalExperiance)
+        </td>
+        <td>
+            @Html.DisplayFor(x => item.V2Experiance)
+        </td>
+    </tr>
+}
+    </div>
+    <tr class="tableRows configbottomcount">
+        <td colspan="11">
+            <span>
+                Total Records = @Html.DisplayFor(x => x.CountRecord)
+            </span>
+        </td>
+    </tr>
+</table>
+@*<table class="confiremations-tot">
+    <thead class="bluebutton1">
+        <tr>
+            <td  class="bluebgtable1">
+                Total Records = @Html.DisplayFor(x => x.CountRecord)
+            </td>
+        </tr>
+    </thead>
+</table>*@
+<br />
+<br />
+<div id="SelectStakeHolderDialogNew" style="display: none">
+</div>
+<div id="SelectstakeholderDialogparameternew">
+</div>
+<div id="SelectStakeHolderDialog" style="display: none">
+</div>
+<div id="NoitemSelectedForStakeholder" style="display: none" title="Record Save">
+    <center class="LoadingWrap">
+          Please select atleast one record to Save.
+    </center>
+</div>
+<div id="savestakeholdersuccuessfull" style="display: none" title="Save SuccessFully">
+    <center class="LoadingWrap">
+          Selected Record has been Saved Successfully.
+    </center>
+</div>
+<div id="ErrorsaveForStakeholder" style="display: none" title="Save SuccessFully">
+    <center class="LoadingWrap">
+         There is some Error.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function() {
+        if ('@ViewBag.IsShowButtonHide' == 'True') {
+            $('#btnSave').hide();
+        }
+    });
+    function SaveStakeholder() {
+        var collection = "";
+        $.each($('input[class=stackholderselected]:checked'), function (i, val) {
+            collection = collection + $(val).attr("data") + (',');
+        });
+        if (collection == "") {
+            $("#NoitemSelectedForStakeholder").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $.ajax({
+                url: '@Url.Action("SaveStackHolder", "ExitConfiguration")',
+                type: 'POST',
+                data: { collection: collection },
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        $("#SelectStakeHolderDialog").dialog('close');
+                        $("#SelectStakeHolderDialog").dialog('destroy');
+                        $("#savestakeholdersuccuessfull").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    location.reload();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorsaveForStakeholder").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                Error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorsaveForStakeholder").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    function Close() {
+        if ($("#SelectStakeHolderDialog").dialog("isOpen") == true) {
+            $("#SelectStakeHolderDialog").dialog("destroy");
+        }
+    }
+
+    $("#search").keyup(function (e) {
+        if (e.keyCode == 13) {
+            var searchval = $("#search").val();
+            searchval = $.trim(searchval);
+            searchval = encodeURIComponent(searchval);
+            var collection = "";
+            $.each($(".casestackeholder"), function (i, val) {
+                collection = collection + $(val).attr("data") + (',');
+            });
+            if ($("#SelectstakeholderDialogparameternew").dialog("isOpen") == true) {
+                $("#SelectstakeholderDialogparameternew").dialog("destroy");
+            }
+            $("#SelectstakeholderDialogparameternew").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 650,
+                width: 1300,
+                modal: true,
+                title: "Resource Selection",
+                open: function (event, ui) {
+                    $('#SelectstakeholderDialogparameternew').load("/ExitConfiguration/SelectStakeholder?collection=" + collection + "&searchstring=" + searchval).dialog('open');
+                    $("#SelectStakeHolderDialog").dialog("destroy").remove()
+                }
+            });
+        }
+    });
+
+    function ShowResource() {
+        var collection = "";
+        $.each($("input[class=caseShowSelected]:checked"), function (i, val) {
+            collection = collection + $(val).attr("data") + (',');
+        });
+        var employeeID = "";
+        $.each($('.showselectedstakeholder'), function (i, val) {
+            employeeID = employeeID + $(val).attr('data') + (',');
+        });
+
+        if ($("#SelectstakeholderDialogparameternew").dialog("isOpen") == true) {
+            $("#SelectstakeholderDialogparameternew").dialog("destroy");
+        }
+        $("#SelectstakeholderDialogparameternew").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 650,
+            width: 1300,
+            modal: true,
+            title: "Resource Selection",
+            open: function (event, ui) {
+               $('#SelectstakeholderDialogparameternew').load("/ExitConfiguration/ShowSelectedStakeholder?collection=" + collection).dialog('open');
+                $("#SelectStakeHolderDialog").dialog("destroy").remove()
+            }
+        });
+    }
+</script>

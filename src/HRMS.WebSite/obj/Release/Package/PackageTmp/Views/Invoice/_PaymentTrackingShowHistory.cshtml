@@ -1,0 +1,58 @@
+﻿@model HRMS.Models.FinancePaymentTrackingModel
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "" }))
+{
+    @Html.HiddenFor(x => x.CollectionDate)
+    @Html.HiddenFor(x => x.CollectedAmount)
+    @Html.HiddenFor(x => x.PendingAmount)
+    @Html.HiddenFor(x => x.Status)
+
+}
+<table cellpadding="0" width="100%" cellspacing="0" border="0" id="PerformanceTable"
+    class="mrgnT10 TableJqgrid">
+    <thead>
+        <tr>
+            <td width="16%"  class="tableHeaders">
+                Collection Date
+            </td>
+            <td width="16%"  class="tableHeaders">
+                Collected Amount
+            </td>
+            <td width="16%"  class="tableHeaders">
+                Pending Amount
+            </td>
+            <td width="16%"  class="tableHeaders">
+                Status
+            </td>
+            <td width="20%"  class="tableHeaders">
+                Updated By
+            </td>
+            <td width="16%"  class="tableHeaders">
+                Updated On
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PaymentDataHistoryList) {
+        <tr class="tableRows">
+            <td>
+                @item.CollectionDate
+            </td>
+            <td>
+                @item.CollectedAmount
+            </td>
+            <td>
+                @item.PendingAmount
+            </td>
+            <td>
+                @item.Status
+            </td>
+            <td>
+            @item.UpdatedBy
+            </td>
+            <td>
+            @item.UpdatedOn
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,244 @@
+﻿@model HRMS.Models.PastEmployeeExperienceDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        var DaterangesList;
+        var Count;
+        function GetDateList() {
+            var employeeId = '@Model.EmployeeId';
+            var postUrl = '@Url.Action("GetExpDateList", "EmployeeDetails")';
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                async: false,
+                data: { EmployeeId: employeeId },
+                success: function (data) {
+                    Count = data.Count;
+                    if (data.Count > 0)
+                        DaterangesList = data.DateList;
+                }
+            });
+        }
+        function disableRangeOfDays(date) {
+            GetDateList();
+            if (Count > 0) {
+                for (var i = 0; i < DaterangesList.length; i++) {
+                    var SDate = DaterangesList[i].WorkedFrom.replace(/[^0-9]/g, '');
+                    var EDate = DaterangesList[i].WorkedTill.replace(/[^0-9]/g, '');
+                    var StartDate = parseInt(SDate);
+                    var EndDate = parseInt(EDate);
+                    if (date >= new Date(StartDate) && date <= new Date(EndDate)) {
+                        return [false, ''];
+                    }
+                }
+                return [true, ''];
+            }
+            else {
+                return [true, ''];
+            }
+        }
+
+        $('#frmAddPastExperienceDetails #txtAddNewWorkedFrom').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true,
+            yearRange: "1960:+0", maxDate: new Date, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif",
+            buttonImageOnly: true, beforeShowDay: disableRangeOfDays
+        }).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("mm/dd/yy", minValue);
+            minValue.setDate(minValue.getDate() + 1);
+            $("#frmAddPastExperienceDetails #txtAddNewWorkedTill").datepicker("option", "minDate", minValue);
+        });
+
+        $('#frmAddPastExperienceDetails #txtAddNewWorkedTill').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "1960:+30", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+        if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+            $("#frmAddPastExperienceDetails :input").attr("disabled", true);
+            $("#btnSavePastExperienceDetails").attr("disabled", true);
+            $(".ui-datepicker-trigger").hide();
+        }
+
+    });
+</script>
+@using (Html.BeginForm("ExperienceDetails", "EmployeeDetails", FormMethod.Post, new { id = "frmAddPastExperienceDetails" }))
+{
+    @Html.HiddenFor(m => m.UserRole)
+    @Html.HiddenFor(x => x.IsEdit)
+    @Html.HiddenFor(x => x.EmployeeId, new { @id = "hdnAddExperienceDetailsEmployeeId" })
+    @Html.HiddenFor(x => x.EmployeeHistoryId, new { @id = "hdnAddExperienceDetailsEmployeeHistoryId" })
+    @Html.ValidationSummary(true)
+
+    <div class="mrgnT25">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Organization Name:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.OrganizationName, new { @id = "txtAddPastExperienceDetailsOrganizationName" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.OrganizationName)</p>
+                @Html.HiddenFor(model => model.OrganizationName, new { @id = "organizationName" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Location:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.Location, new { @id = "txtAddPastExperienceDetailsLocation" })<br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.Location)</p>
+                @Html.HiddenFor(model => model.Location, new { @id = "location" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Worked From:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.WorkedFrom, string.Format("{0: MM/dd/yyyy}", Model.WorkedFrom), new { @id = "txtAddNewWorkedFrom", @readonly = "readonly" })
+                <br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.WorkedFrom)</p>
+                @Html.HiddenFor(model => model.WorkedFrom, new { @id = "workedFrom" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Worked Till:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.WorkedTill, string.Format("{0: MM/dd/yyyy}", Model.WorkedTill), new { @id = "txtAddNewWorkedTill", @readonly = "readonly" })
+                <br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.WorkedTill)</p>
+                @Html.HiddenFor(model => model.WorkedTill, new { @id = "workedTill" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Type:
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(m => m.EmployeeTypeId, new SelectList(Model.EmployeeWorkingTypeList, "EmployeeTypeId", "WorkingTypeName"), "Select", new { @id = "ddlPastExperienceDetailsEmployeeType" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmployeeTypeId)</p>
+                @Html.HiddenFor(model => model.EmployeeTypeId, new { @id = "employeeTypeId" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Last Designation:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.LastDesignation, new { @id = "txtAddPastExperienceDetailsLastDesignation" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.LastDesignation)</p>
+                @Html.HiddenFor(model => model.LastDesignation, new { @id = "LastDesignation" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                Reporting Manager:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.ReportingManager, new { @id = "txtAddPastExperienceDetailsReportingManager" })<br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.ReportingManager)</p>
+                @Html.HiddenFor(model => model.ReportingManager, new { @id = "ReportingManager" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                Last Salary Drawn (LPA):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.LastSalaryDrawn, new { @id = "txtAddPastExperienceDetailsLastSalaryDrawn" })<br />
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.LastSalaryDrawn)</p>
+                @Html.HiddenFor(model => model.LastSalaryDrawn, new { @id = "LastSalaryDrawn" })
+            </div>
+        </div>
+        <div class="clear popup_button ">
+            <div class="floatR">
+                <input id="btnSavePastExperienceDetails" type="submit" value="Save" class="button mrgnR5" />
+                <input id="cancel" type="button" value="Reset" onclick="emptyGapDiaglog()" class="button " />
+            </div>
+        </div>
+    </div>
+}
+<div id="pastExperienceSuccessDialog" title="Experience Details" style="display: none">
+    <p>
+        Experience Details have been saved.</p>
+</div>
+<div id="pastExperienceErrorDialog" title="Experience Details" style="display: none">
+    <p>
+        There are some errors.</p>
+</div>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        var postUrl = '@Url.Action("ExperienceDetails", "EmployeeDetails")';
+
+        $('#frmAddPastExperienceDetails').submit(function () {
+            if ($(this).valid()) {
+                DisplayLoadingDialog();  //checked
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#frmAddPastExperienceDetails').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results == true) {
+                            $('#pastNewExperienceDialog').dialog("close");
+                            $("#pastExperiencejqTable").trigger("reloadGrid");
+                            RefreshTotalExperienceView();
+                            $("#pastExperienceSuccessDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                title: 'Experience Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            $("#pastExperienceErrorDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                title: 'Experience Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+    });
+
+    var emptyGapDiaglog = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+
+        $('#txtAddPastExperienceDetailsOrganizationName').val($('#organizationName').val());
+        $('#txtAddPastExperienceDetailsLocation').val($('#location').val());
+        $('#txtAddNewWorkedFrom').val($('#workedFrom').val());
+        $('#txtAddNewWorkedTill').val($('#workedTill').val());
+        $('#ddlPastExperienceDetailsEmployeeType').val($('#employeeTypeId').val());
+        $('#txtAddPastExperienceDetailsLastDesignation').val($('#LastDesignation').val());
+        $('#txtAddPastExperienceDetailsReportingManager').val($('#ReportingManager').val());
+        $('#txtAddPastExperienceDetailsLastSalaryDrawn').val($('#LastSalaryDrawn').val());
+        // $('#newExperienceDialog').dialog('close');
+    }
+</script>

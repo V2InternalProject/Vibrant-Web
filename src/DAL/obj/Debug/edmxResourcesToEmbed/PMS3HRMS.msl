@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="PMS3_HRMSModelStoreContainer" CdmEntityContainer="PMS3_HRMSDBEntities">
+    <EntitySetMapping Name="Project_Resource_Mapping">
+      <EntityTypeMapping TypeName="PMS3_HRMSModel.Project_Resource_Mapping">
+        <MappingFragment StoreEntitySet="Project_Resource_Mapping">
+          <ScalarProperty Name="Project_ResourceID" ColumnName="Project_ResourceID" />
+          <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="DesignationID" ColumnName="DesignationID" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+          <ScalarProperty Name="IsConnected" ColumnName="IsConnected" />
+          <ScalarProperty Name="ResourceTypeID" ColumnName="ResourceTypeID" />
+          <ScalarProperty Name="AllocatedPercentage" ColumnName="AllocatedPercentage" />
+          <ScalarProperty Name="Comments" ColumnName="Comments" />
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProjectMasters">
+      <EntityTypeMapping TypeName="PMS3_HRMSModel.ProjectMaster">
+        <MappingFragment StoreEntitySet="ProjectMaster">
+          <ScalarProperty Name="ProjectHours" ColumnName="ProjectHours" />
+          <ScalarProperty Name="DeliveryTeamID" ColumnName="DeliveryTeamID" />
+          <ScalarProperty Name="DeliveryUnitID" ColumnName="DeliveryUnitID" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="ProjectEndDate" ColumnName="ProjectEndDate" />
+          <ScalarProperty Name="ProjectStartDate" ColumnName="ProjectStartDate" />
+          <ScalarProperty Name="IsProjectFixed" ColumnName="IsProjectFixed" />
+          <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+          <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+          <ScalarProperty Name="ProcessID" ColumnName="ProcessID" />
+          <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,576 @@
+﻿@model HRMS.Models.SkillDetailsViewModel
+@{
+    ViewBag.Title = "Skill Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "" }))
+{
+    @Html.HiddenFor(x => x.ID)
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="../../Content/New%20Design/rmg.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/New%20Design/employee.css" rel="stylesheet" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+
+@{
+    var searchempcode = HttpContext.Current.Session["SearchEmpCode"];
+    //var searchempName = HttpContext.Current.Session["SearchEmpFullName"];
+    var searchempID = HttpContext.Current.Session["SearchEmpIDForSkill"];
+    var LoggedInempcode = HttpContext.Current.Session["LoggedInEmployee"];
+    var LoggedInempId = HttpContext.Current.Session["LoggedInEmployeeSEMID"];
+    //var LoggedInempName = HttpContext.Current.Session["LoggedInEmployeeName"];
+    var empcode = "";
+    var empid = "";
+    var employee_name = "";
+    if (searchempcode != null)
+    {
+
+        empcode = searchempcode.ToString();
+        empid = searchempID.ToString();
+        //employee_name = searchempName.ToString();
+
+    }
+    else if (LoggedInempcode != null)
+    {
+        empcode = LoggedInempcode.ToString();
+        empid = LoggedInempId.ToString();
+        //employee_name = LoggedInempName.ToString();
+    }
+    if (empcode != "")
+    {
+
+        Response.Write("<script> var empcode = " + empcode.ToString() + "</script>");
+        Response.Write("<script> var empid = " + empid.ToString() + "</script>");
+        //Response.Write("<script> var employeename = " + employee_name + "</script>");
+    }
+}
+
+<script type="text/javascript">
+    //-------------------------------
+
+    var PrimaryGridUniqueId;
+    var PrimaryGridRating;
+    var SecondaryGridUniqueId;
+    var SecondaryGridRating;
+    var SelectedEmployeeCode;
+    //-------------------------------
+
+    //-----Function----------------
+    function SaveSkill()
+    {
+        DisplayDailog("CheckSubmit");
+    }
+
+        function DisplayDailog(Dialogname) {
+
+            $('#' + Dialogname).dialog({
+                modal: true,
+                resizable: false,
+                width: 250,
+                height: 'auto',
+                title: "Information",
+                buttons: {
+                    "OK": function () {
+                        $(this).dialog('close');
+
+                    }
+                }
+            });
+            $('#' + Dialogname).dialog('open');
+        };
+        function DisplayDailogFocus(Dialogname) {
+
+            $('#' + Dialogname).dialog({
+                modal: true,
+                resizable: false,
+                width: 250,
+                height: 'auto',
+                title: "Information",
+                buttons: {
+                    "OK": function () {
+                        $(this).dialog('close');
+
+                    }
+                }
+            });
+            $('#' + Dialogname).dialog('open');
+        };
+        //-----------------------------------------
+        $(document).ready(function () {
+
+            //===================== Employee Search Autocomplete==========================
+            var EmployeecodeGrid;
+
+              var ResourcePoolIDForGrid;
+             SelectedEmployeeCode=empcode;
+       getSkillDetailsFunc(empcode,empid);
+
+            function getSkillDetailsFunc(EmpCode,EmpId)
+        {
+
+             //Send Emplopyee Id to Controller
+         ResourcePoolIDForGrid=EmpId;
+                $.ajax({
+                        url: "/PersonalDetails/GetEmployeeDetails/",
+                        type: 'POST',
+                        data: { EmpId: EmpCode },
+                        dataType: 'json',
+                        success: function (results) {
+                            var st = results.status;
+                            if (st != null) {
+                                EmployeecodeGrid =EmpId;
+
+                                $("#Designation").html(st.Designation);
+                                $("#ResourcePoolNames").html(st.ResourcePoolNames);
+                                $("#ReportingTo").html(st.ReportingTo);
+                                $("#CompetencyManagerName").html(st.CompetencyManagerName_Emp);
+                                $("#ConfirmationManagerName").html(st.ConfirmationManager);
+                            }
+                        }
+                    });
+        }
+
+            //==============================================================
+            $('#showHistory').live("click", function () {
+                count = jQuery("#jqManageModuleTable").jqGrid('getGridParam', 'reccount');
+                $.ajax(
+                {
+                    url: '@Url.Action("SkillCount", "SkillMatrix")',
+                    data: { employeeId: '@Model.EmployeeId' },
+                    type: 'POST',
+                    async: false,
+                    success: function (result) {
+                        if (result.status == false) {
+                            InitializeDialog($("#Historydialog"));
+                            $("#Historydialog").dialog("open");
+                        }
+                        else {
+                            $("#NoRecordInHistory").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 300,
+                                modal: true,
+                                title: 'No Record!!!!',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            function InitializeDialog($element) {
+                $element.dialog({
+                    autoOpen: false,
+                    width: 1200,
+                    resizable: true,
+                    draggable: true,
+                    title: "History",
+                    modal: true,
+                    show: 'slide',
+                    closeText: 'x',
+                    dialogClass: 'alert',
+                    closeOnEscape: true,
+                    open: function (event, ui) {
+                        $element.load("@Url.Action("ShowHistory", "SkillMatrix", new { EmployeeId =@Model.EmployeeId})");
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('close');
+                    }
+                });
+            }
+
+            //-------------------------------------------------------------------------
+            // Main Grid For Employee
+            $("#jqManageModuleTable").jqGrid({
+                // Ajax related configurations
+                url: '@Url.Action("LoadSkillDetailRecords", "PersonalDetails")',
+                postData: { employeeId: '@Model.EmployeeId' },
+                datatype: "json",
+                mtype: "POST",
+                //
+                // Specify the column names
+                colNames: ['Resource Pool Name', 'Skill Name', 'Rating'],
+                // Configure the columns
+                colModel: [
+                       {
+                           name: "ResourcePoolName", index: "ResourcePoolName", align: "center", width: 120
+                       },
+                       { name: "Description", index: "Description", align: "center", width: 120 },
+                       { name: "Rating", index: "Rating", align: "center", width: 50 }],
+                width: 700,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqManageModuleTablePager"),
+                rowNum: 20,
+                rowList: [],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                autowidth: false,
+                //sorting
+                editurl: '@Url.Action("PmsSaveFunction", "TaskTimesheet")',
+                loadonce: true,
+                gridComplete: function () {
+                },
+                onCellSelect: function (rowid, iCol) {
+                },
+            }).navGrid("#pager",
+        { search: false, refresh: false, add: false, edit: false, del: false },
+        {}, // settings for edit
+        {},
+        {}
+       );
+
+            var Filtervalue;
+            var TempRatings = @(Html.Raw(Json.Encode(ViewBag.IsRating)))
+            $.each(TempRatings, function (index, obj) {
+
+                Filtervalue += obj.ProficiencyID + ":" + obj.Rating + ";";
+            });
+            Filtervalue = Filtervalue.substring(0, Filtervalue.length - 1);
+
+            function getRatingPrimaryGrid(e) {
+                PrimaryGridRating = e.target[e.target.options.selectedIndex].text;
+            }
+            function getRatingSecondaryGrid(e) {
+                SecondaryGridRating = e.target[e.target.options.selectedIndex].text;
+            }
+            //===================== Primary SubSkill grid =====================
+
+            $("#jqGridPrimarySkill").jqGrid({
+
+                // Ajax related configurations
+                url: '@Url.Action("LoadSkillManagementDetails", "PersonalDetails")',
+
+                postData: {skillInformation: function(){return ResourcePoolIDForGrid;} },
+                datatype: "json",
+                mtype: "POST",
+                // Specify the column names
+                colNames: ['', '', 'Skill Name','Rating'],
+                // Configure the columns
+                colModel: [
+                       { name: "ID", index: "ID", align: "center", hidden: true},
+                       { name: "ToolId", index: "ToolId", align: "center", hidden: true},
+                       { name: "Description", index: "Description", align: "center", width: 'auto' },
+                       { name: "Rating", index: "Rating", align: "center", width: 'auto', editable: true, editrules: { required: true, custom: true, custom_func: IsRatingSelected }, edittype: "select", editoptions: { value: Filtervalue, dataEvents: [{ type: 'change', fn: function (e) { getRatingPrimaryGrid(e); } }] } }
+                ],
+                width: 800,
+                // Paging
+                toppager: false,
+                jsonReader : { repeatitems: false },
+                pager: $("#jqGridPrimarySkillTablePager"),
+                rowNum: 20,
+                rowList: [5,10,20],
+                //viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                //autowidth: false,
+                //sorting
+                loadonce: true,
+                editurl: '@Url.Action("SaveSkillManagementDetails", "PersonalDetails")',
+                gridComplete: function () {
+
+                },
+                onCellSelect: function (rowid, iCol) {
+
+                    rowData = jQuery("#jqGridPrimarySkill").getRowData(rowid);
+                    PrimaryGridUniqueId = rowData["ID"];
+                    PrimaryGridRating = rowData["Rating"];
+
+                },
+            }).navGrid("#jqGridPrimarySkillTablePager",
+
+           { search: false, refresh: false, add: false, edit: false, del: false },
+           {}, // settings for edit
+           {},
+           {}
+          );
+
+            $("#jqGridPrimarySkill").jqGrid('inlineNav', "#jqGridPrimarySkillTablePager",
+          {
+              edit: true,
+              editicon: "ui-icon-pencil",
+              add: false,
+              addicon: "ui-icon-plus",
+              save: true,
+              saveicon: "ui-icon-disk",
+              cancel: true,
+              cancelicon: "ui-icon-cancel",
+              editParams: {
+                  keys: false,
+                  oneditfunc: function (rowid) {
+
+                  },
+                  sucessfunc: function (data) {
+
+                  },
+                  url: null,
+                  extraparam: {
+                      UniqueID: function () {
+
+                          return PrimaryGridUniqueId;
+                      },
+                      Rating: function () {
+
+                          return PrimaryGridRating;
+                      },
+                  },
+                  beforeSaveRow: function (options, rowid){
+                  },
+                  aftersavefunc: function (result,response) {
+
+                      $("#SkillDetailsSucess").dialog({
+                          resizable: false,
+                          autoOpen: true,
+                          height: 140,
+                          width: 300,
+                          modal: true,
+                          dialogClass: "noclose",
+                          buttons: {
+                              Ok: function () {
+                                  $(this).dialog("close");
+                                  jQuery("#jqGridPrimarySkill").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid', [{ page: 1 }]);
+                              }
+                          }
+                      });
+                  },
+                  errorfunc: null,
+                  afterrestorefunc: function(result)
+                  {
+
+                      jQuery('#jqGridPrimarySkill').setColProp('Description',{editable:false});
+                      jQuery('#jqGridPrimarySkill').setColProp('Rating',{editable:false});
+                  },
+                  restoreAfterError: true,
+                  mtype: "POST"
+              }
+          });
+
+            function split( val ) {
+                return val.split( /,\s*/ );
+            }
+            function extractLast( term ) {
+                return split( term ).pop();
+            }
+
+            function IsRatingSelected(value, colname) {
+
+                if (value == "0") {
+                    $("#RequiredFieldForRating").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        dialogClass: "noclose",
+                        buttons:
+                        {
+                            "Ok": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+                else {
+                    return [true, ""];
+                }
+            }
+
+        });
+</script>
+
+<div class="clearfix">
+    <div id="NoRecordInHistory" title="Record Saved" style="display: none;">
+        <p>
+            No Record Found.
+        </p>
+    </div>
+    <div id="RequiredFieldForRating" style="display: none;" title="Development Plan">
+        <p>
+            Please select Rating.
+        </p>
+    </div>
+    <div id="SkillDetailsSucess" style="display: none;" title="Search By Employee">
+        <p>
+            Ratings saved Successfully.
+        </p>
+    </div>
+    <div id="SubmitSuccess" style="display: none;">
+        <p>
+            Record has been Submitted successfully.
+        </p>
+    </div>
+
+    <div id="CheckSubmit" style="display: none;">
+        <p>
+            Record has been Submitted successfully. @*Need to check Status*@
+        </p>
+    </div>
+
+    <div id="info_Check_txtBox" style="display: none;">
+        <p>
+            Select employee name before selecting skills.
+        </p>
+    </div>
+</div>
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Personal Details
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+
+            @if (ViewBag.UserRole == "RMG" && Model.SearchUserID != ViewBag.loggedinEmployeeID)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Personal
+                </a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Education
+                </a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Certification
+                </a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })" class="selected">
+                    Skill
+                </a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Contact
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Personal
+                </a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Dependent
+                </a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Declaration
+                </a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Residence
+                </a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Contact
+                </a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Education
+                </a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Certification
+                </a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })" class="selected">
+                    Skill
+                </a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.skillEmployeeId })">
+                    Medical History
+                </a>
+            }
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <a href="@Url.Action("DevelopmentPlan", "PersonalDetails")">Development Plan</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody SkillBody searchempL">
+        <div class="FormContainerBox clearfix">
+            @if (HttpContext.Current.User.IsInRole("RMG"))
+            {
+
+                <div class="formrow clearfix">
+
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <label>Designation: </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label id="Designation"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>ResourcePool Names: </label>
+                        </div>
+                        <div class="InputDiv">
+                            <label id="ResourcePoolNames"></label>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>Reporting To:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <label id="ReportingTo"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>Competency Manager:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <label id="CompetencyManagerName"></label>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>Confirmation Manager:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <label id="ConfirmationManagerName"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="SkillTable1">
+                        <div>
+                            <div class="tablestyle3">
+                                <table id="jqGridPrimarySkill"> </table>
+                                <div id="jqGridPrimarySkillTablePager"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!HttpContext.Current.User.IsInRole("RMG"))
+            {
+                <div class="formrow clearfix" id="ViewForEmployee">
+
+                    <div class="clearfix blueBorderNew">
+                        <input type="button" class="ButtonGray mrgnB10" value="Show History" id="showHistory" />
+                        <div class="tablestyle3 clearfix">
+                            <table id="list"></table>
+                            <table id="jqManageModuleTable"></table>
+                            <div id="jqManageModuleTablePager"></div>
+                        </div>
+
+                        <div id="pager" class="scroll" style="text-align:center;"></div>
+                        <div id="Historydialog" title="" style="overflow: hidden; border-bottom-width:15px;border-color:cadetblue"></div>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (HttpContext.Current.User.IsInRole("RMG"))
+        {
+            <div class="clearfix ButtonContainer2">
+                <input type="button" class="ButtonGray" value="Submit" id="btnsubmitSkills" onclick="SaveSkill()" style="display:none;" />
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,166 @@
+﻿@model HRMS.Models.PerformanceHinderTable
+@using HRMS.DAL
+@section HeaderLinks{
+}
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<form id="frmAddPerfHinderDetails" method="post">
+@Html.HiddenFor(modelitem => modelitem.perfHinderID)
+    @Html.HiddenFor(modelitem => modelitem.confID)
+    @Html.HiddenFor(modelitem => modelitem.empID)
+
+    <table cellpadding="0" width="100%" cellspacing="0" border="0">
+        <thead>
+            <tr class="bluebgtable1">
+                <td align="center">
+                    Area
+                </td>
+                <td align="center">
+                    Employee's Comment
+                </td>
+                <td align="center"  class ="mngrViewDetails">
+                    Manager Comments <br /> @Model.MgrName
+                </td>
+                 <td align="center" class="managerSecond mngrViewDetails">
+                   Manager 2 Comments <br /> @Model.MgrNameSecond
+                </td>
+                <td align="center" id="thReviewComments" class="revViewDetails" style="display: none">
+                    Reviewer Comments <br /> @Model.RevName
+                </td>
+                <td align="center" id="thHRComments" class="revViewDetails" style="display: none;">
+                    HR Reviewer Comments <br /> @Model.HRName
+                </td>
+            </tr>
+        </thead>
+        <tr class="bluebgtable-confi">
+            <td align="left">
+                Facilitating Factors (self)
+            </td>
+            <td>
+                @Html.TextAreaFor(modelItem => modelItem.EmpCommentsFFSelf, new { @id = "empCommentsFFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.EmpCommentsFFSelf)</p>
+            </td>
+            <td class="mngrViewDetails">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsFFSelf, new { @id = "mngrCommentsFFSelf", @disabled = "disabled" })
+            </td>
+             <td class ="mngrViewDetails managerSecond">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsFFSelfSecond, new { @id = "mngrCommentsFFSelfSecond", @disabled = "disabled" })
+            </td>
+            <td id="tdReviewerCommentsFFSelf" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.ReviewerCommentsFFSelf, new { @id = "reviewerCommentsFFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.ReviewerCommentsFFSelf)</p>
+            </td>
+            <td id="tdHrCommentsFFSelf" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.HrCommentsFFSelf, new { @id = "hrCommentsFFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.HrCommentsFFSelf)</p>
+            </td>
+        </tr>
+        <tr class="bluebgtable-confi">
+            <td align="left">
+                Facilitating Factors (environment)
+            </td>
+            <td>
+                @Html.TextAreaFor(modelItem => modelItem.EmpCommentsFFEnvi, new { @id = "empCommentsFFEnvi", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.EmpCommentsFFEnvi)</p>
+            </td>
+            <td class="mngrViewDetails">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsFFEnvi, new { @id = "mngrCommentsFFEnvi", @disabled = "disabled"})
+            </td>
+             <td class ="mngrViewDetails managerSecond">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsFFEnviSecond, new { @id = "mngrCommentsFFEnviSecond", @disabled = "disabled" })
+            </td>
+            <td id="tdReviewerCommentsFFEnvi" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.ReviewerCommentsFFEnvi, new { @id = "reviewerCommentsFFEnvi", @disabled = "disabled" })
+               <p> @Html.ValidationMessageFor(model => model.ReviewerCommentsFFEnvi)</p>
+            </td>
+            <td id="tdHrCommentsFFEnvi" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.HrCommentsFFEnvi, new { @id = "hrCommentsFFEnvi", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.HrCommentsFFEnvi)</p>
+            </td>
+        </tr>
+        <tr class="bluebgtable-confi">
+            <td align="left">
+                Inhibiting Factors (Self related)
+            </td>
+            <td>
+                @Html.TextAreaFor(modelItem => modelItem.EmpCommentsIFSelf, new { @id = "empCommentsIFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.EmpCommentsIFSelf)</p>
+            </td>
+            <td class="mngrViewDetails">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsIFSelf, new { @id = "mngrCommentsIFSelf", @disabled = "disabled" })
+            </td>
+             <td class ="mngrViewDetails managerSecond">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsIFSelfSecond, new { @id = "mngrCommentsIFSelfSecond", @disabled = "disabled" })
+            </td>
+            <td id="tdReviewerCommentsIFSelf" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.ReviewerCommentsIFSelf, new { @id = "reviewerCommentsIFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.ReviewerCommentsIFSelf)</p>
+            </td>
+            <td id="tdHrCommentsIFSelf" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.HrCommentsIFSelf, new { @id = "hrCommentsIFSelf", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.HrCommentsIFSelf)</p>
+            </td>
+        </tr>
+        <tr class="bluebgtable-confi">
+            <td align="left">
+                Inhibiting Factors (Environment Related)
+            </td>
+            <td>
+                @Html.TextAreaFor(modelItem => modelItem.EmpCommentsIFEnvi, new { @id = "empCommentsIFEnvi", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.EmpCommentsIFEnvi)</p>
+            </td>
+            <td class="mngrViewDetails">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsIFEnvi, new { @id = "mngrCommentsIFEnvi", @disabled = "disabled" })
+            </td>
+             <td class ="mngrViewDetails managerSecond">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsIFEnviSecond, new { @id = "mngrCommentsIFEnviSecond", @disabled = "disabled" })
+            </td>
+            <td id="tdReviewerCommentsIFEnvi" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.ReviewerCommentsIFEnvi, new { @id = "reviewerCommentsIFEnvi", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.ReviewerCommentsIFEnvi)</p>
+            </td>
+            <td id="tdHrCommentsIFEnvi" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.HrCommentsIFEnvi, new { @id = "hrCommentsIFEnvi", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.HrCommentsIFEnvi)</p>
+            </td>
+        </tr>
+        <tr class="bluebgtable-confi hrcommetn">
+            <td align="left">
+                Support Expected/ Required from Organization in Future
+            </td>
+            <td>
+                @Html.TextAreaFor(modelItem => modelItem.EmpCommentsSupport, new { @id = "empCommentsSupport", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.EmpCommentsSupport)</p>
+            </td>
+            <td class="mngrViewDetails">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsSupport, new { @id = "mngrCommentsSupport", @disabled = "disabled"})
+            </td>
+            <td class ="mngrViewDetails managerSecond">
+                @Html.TextAreaFor(modelItem => modelItem.MngrCommentsSupportSecond, new { @id = "mngrCommentsSupportSecond", @disabled = "disabled" })
+            </td>
+            <td id="tdReviewerCommentsSupport" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.ReviewerCommentsSupport, new { @id = "reviewerCommentsSupport", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.ReviewerCommentsSupport)</p>
+            </td>
+            <td id="tdHrCommentsSupport" class="revViewDetails" style="display: none">
+                @Html.TextAreaFor(modelItem => modelItem.HrCommentsSupport, new { @id = "hrCommentsSupport", @disabled = "disabled" })
+                <p>@Html.ValidationMessageFor(model => model.HrCommentsSupport)</p>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" type="submit" id="btnPerfHinderSubmit" />
+    @Html.HiddenFor(model => model.IsManagerOrEmployee)
+</form>
+@*@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddPerfHinderDetails" }))
+{
+
+}*@
+<div id="AddPerformanceHinderSuccessMessege" title="Performance details" style="display: none;">
+    <p>
+        Corporate details have been saved.
+    </p>
+</div>
+<div id="AddPerformanceErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>

@@ -1,0 +1,268 @@
+﻿@model HRMS.Models.ProjectAchievement
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<form id="testin" action="">
+<label id="test">
+    This is test</label></form>
+@*<form id="frmProjectAchievementDetails" name="" method="post" action="">*@
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmProjectAchievementDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        @Html.HiddenFor(x => x.EmpID)
+        @Html.HiddenFor(x => x.ProjAchieveID)
+        @Html.HiddenFor(x => x.ConfirmationID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Project Description/ Assignments Handled")<span class="mandatory spanEmployee"
+                    style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.ProjectDesc)
+                @Html.ValidationMessageFor(model => model.ProjectDesc)
+                @Html.HiddenFor(model => model.ProjectDesc, new { id = "txtprojectDesc" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Achievements on the project if any")<span class="mandatory spanEmployee"
+                    style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ProjectAchievements)
+                @Html.ValidationMessageFor(model => model.ProjectAchievements)
+                @Html.HiddenFor(model => model.ProjectAchievements, new { @id = "txtProjAchievements" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Start Date")<span class="mandatory spanEmployee" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.StartDate, String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.StartDate)
+                @Html.Hidden("StartDate", String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { id = "startDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("End Date")<span class="mandatory spanEmployee" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.EndDate, String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.EndDate)
+                @Html.Hidden("EndDate", String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { id = "endDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Name of the Project Manager")<span class="mandatory spanEmployee" style="display: none">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.NameOfManager)
+                @Html.ValidationMessageFor(model => model.NameOfManager)
+                @Html.HiddenFor(model => model.NameOfManager, new { @id = "txtNameOfManager" })
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <br />
+            <input id="saveProjectAchievement" type="button" value="Save" class="button" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialogProjectAchievement()"
+                class="button " />
+        </div>
+    </div>
+@*</form>*@
+}
+<div id="AddProjectAchievementSuccessMessege" title="Project Achievement details"
+    style="display: none;">
+    <p>
+        Project Achievement details have been saved.
+    </p>
+</div>
+<div id="AddProjectAchievementErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteProjectAchievement" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteProjectAchievementDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#test').hide();
+        $('#StartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+        var JoiningDate = '@ViewBag.JoiningDate';
+        $('#StartDate').datepicker("option", "minDate", JoiningDate);
+        $('#StartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: '2000:c', maxDate: new Date, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true })
+         .bind("change", function () {
+
+             var dateMin = $('#StartDate').datepicker("getDate");
+             var rMin = new Date(dateMin.getFullYear(), dateMin.getMonth(), dateMin.getDate() + 1);
+             $('#EndDate').datepicker("option", "minDate", rMin);
+
+         });
+        $('#EndDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "2000:c", maxDate: new Date,showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+    });
+    if ('@ViewBag.IsManagerOrEMployee' == "Employee") {
+        $('.spanEmployee').show();
+    }
+
+    if ('@ViewBag.IsManagerOrEMployee' != "Employee") {
+        $('#ProjectDesc').attr('disabled', true);
+        $('#ProjectAchievements').attr('disabled', true);
+        $('#StartDate').attr('disabled', true);
+        $('#EndDate').attr('disabled', true);
+        $('#NameOfManager').attr('disabled', true);
+        $('#saveProjectAchievement').hide();
+        $('#cancel').hide();
+        $('.ui-datepicker-trigger').hide();
+    }
+    $('#ProjectDesc ').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+        			{
+        			    required: "Project Description is required."
+        			}
+    });
+
+    $('#ProjectAchievements ').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+        			{
+        			    required: "Project Achievements is required."
+        			}
+    });
+
+    $('#StartDate ').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+        			{
+        			    required: "Start Date is required."
+        			}
+    });
+
+    $('#StartDate ').rules("add", {
+        required: function () {
+            return ($('#StartDate').val() <= $('#EndDate').val());
+        },
+        messages:
+        			{
+        			    required: "Start Date should be less than equal to End Date"
+        			}
+    });
+
+    $('#EndDate ').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+        			{
+        			    required: "End Date is required."
+        			}
+    });
+
+    $('#EndDate ').rules("add", {
+        required: function () {
+            return ($('#EndDate').val() >= $('#StartDate').val());
+        },
+        messages:
+        			{
+        			    required: "End Date should be greater than equal to End Date"
+        			}
+    });
+
+    $('#NameOfManager ').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+        			{
+        			    required: "Name Of Manager is required."
+        			}
+    });
+
+    var postUrl = '@Url.Action("SaveProjectAchievementInfo", "ConfirmationProcess")';
+    $('#saveProjectAchievement').off('click').on('click', function () {
+        if ($('#frmProjectAchievementDetails').valid()) {
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmProjectAchievementDetails').serialize(),
+                success: function (results) {
+                    if (results.status == true) {
+                        $('#addProjectAchievementsDialog').dialog("close");
+                        jQuery("#projectAchievementsTable").trigger("reloadGrid");
+                        $("#AddProjectAchievementSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        $("#errorDialog").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#AddProjectAchievementErrorMessege").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        return false;
+    });
+
+    var emptyDialogProjectAchievement = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#ProjectDesc").val($('#txtprojectDesc').val());
+        $("#ProjectAchievements").val($('#txtProjAchievements').val());
+        $("#StartDate").val($('#startDate').val());
+        $("#EndDate").val($('#endDate').val());
+        $("#NameOfManager").val($('#txtNameOfManager').val());
+    }
+</script>

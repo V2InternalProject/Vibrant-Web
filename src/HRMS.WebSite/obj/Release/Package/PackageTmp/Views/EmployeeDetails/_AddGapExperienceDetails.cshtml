@@ -1,0 +1,206 @@
+﻿@model HRMS.Models.EmployeeExperienceDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $('#frmAddGapExperienceDetails #txtAddGapExperienceDetailsFromDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "1960:+0", maxDate: new Date, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true })
+    .bind("change", function () {
+        var minValue = $(this).val();
+        minValue = $.datepicker.parseDate("mm/dd/yy", minValue);
+        minValue.setDate(minValue.getDate() + 1);
+        $("#frmAddGapExperienceDetails #txtAddGapExperienceDetailsToDate").datepicker("option", "minDate", minValue);
+    })
+        $('#frmAddGapExperienceDetails #txtAddGapExperienceDetailsToDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "1960:+30", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+        if ($('#UserRole').val() != '@HRMS.Models.UserRoles.HRAdmin') {
+            $("#frmAddGapExperienceDetails :input").attr("disabled", true);
+            $("#btnSavePastExperienceDetails").attr("disabled", true);
+            $(".ui-datepicker-trigger").hide();
+        }
+
+        $("#txtAddGapExperienceDetailsToDate").change(function () {
+            if ($("#txtAddGapExperienceDetailsFromDate").val() != "" && $(this).val() != "") {
+                var todate = new Date($('#txtAddGapExperienceDetailsToDate').val());
+                var fromDate = new Date($('#txtAddGapExperienceDetailsFromDate').val());
+                var retToDate = todate.getFullYear() * 12 + todate.getMonth();
+                var retFromDate = fromDate.getFullYear() * 12 + fromDate.getMonth();
+
+                var ret_todays = todate.getDate();
+                var ret_fromdays = fromDate.getDate();
+
+                var monthDiff = (retToDate - retFromDate);
+                var daysDiff = (ret_todays - ret_fromdays);
+
+                var yeartotal;
+                var monthDiff1;
+                var year1;
+                var monthfinal;
+                if (monthDiff > 12) {
+                    yeartotal = monthDiff / 12;
+                    monthDiff1 = monthDiff % 12;
+                    year1 = yeartotal.toFixed(0);
+                }
+                else {
+                    year1 = 0;
+                    monthDiff1 = (retToDate - retFromDate);
+                }
+
+                if (daysDiff > 0) {
+                    monthfinal = monthDiff1 + 1;
+                }
+                else {
+                    monthfinal = monthDiff1;
+                }
+                var total = year1 + " Year " + monthfinal + " Month";
+                $('#txtAddGapExperienceDetailsDuration').val(total);
+            }
+        });
+    });
+</script>
+@using (Html.BeginForm("GapExperienceDetails", "EmployeeDetails", FormMethod.Post, new { id = "frmAddGapExperienceDetails" }))
+{
+    @Html.HiddenFor(m => m.UserRole)
+    //@Html.HiddenFor(x => x.)
+    @Html.HiddenFor(x => x.EmployeeId, new { @id = "hdnAddGapExperienceDetailsEmployeeId" })
+    @Html.HiddenFor(x => x.EmployeeGapExpId, new { @id = "hdnAddExperienceDetailsEmployeeGapId" })
+    @Html.ValidationSummary(true)
+
+    <div class="mrgnT25">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Reason:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.Reason, new { @id = "txtAddGapExperienceDetailsReason" })<br />
+               <p class="qualif-detail"> @Html.ValidationMessageFor(model => model.Reason)</p>
+                @Html.HiddenFor(model => model.Reason, new { @id = "reason" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> From Date:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.FromDate, string.Format("{0: MM/dd/yyyy}", Model.FromDate), new { @id = "txtAddGapExperienceDetailsFromDate", @readonly = "readonly" })
+                <br />
+               <p class="qualif-detail"> @Html.ValidationMessageFor(model => model.FromDate)</p>
+                @Html.HiddenFor(model => model.FromDate, new { @id = "fromDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> To Date:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.ToDate, string.Format("{0: MM/dd/yyyy}", Model.ToDate), new { @id = "txtAddGapExperienceDetailsToDate", @readonly = "readonly" })
+                <br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ToDate)</p>
+                @Html.HiddenFor(model => model.ToDate, new { @id = "toDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> Gap Duration:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.GapDuration, new { @id = "txtAddGapExperienceDetailsDuration", @readonly = "readonly" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.GapDuration)</p>
+                @Html.HiddenFor(model => model.GapDuration, new { @id = "gapDuration" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                Description:
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextAreaFor(m => m.Description, new { @id = "AddGapExperienceDetailsDesc" })<br />
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Description)</p>
+                @Html.HiddenFor(model => model.Description, new { @id = "gapDescription" })
+            </div>
+        </div>
+        <div class="clear popup_button ">
+            <div class="floatR">
+                <input id="btnSaveGapExperienceDetails" type="submit" value="Save" class="button mrgnR5" />
+                <input id="cancel" type="button" value="Reset" onclick="emptyDiaglog()" class="button " />
+            </div>
+        </div>
+    </div>
+}
+<div id="GapExperienceSuccessDialog" title="Gap Experience Details" style="display: none">
+    <p>
+        Gap Experience Details have been saved.</p>
+</div>
+<div id="GapExperienceErrorDialog" title=" Gap Experience Details" style="display: none">
+    <p>
+        There are some errors.</p>
+</div>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        var postUrl = '@Url.Action("GapExperienceDetails", "EmployeeDetails")';
+
+        // $('#frmAddGapExperienceDetails #hdnAddGapExperienceDetailsEmployeeId').val(gapExperienceEmployeeId);
+
+        $('#frmAddGapExperienceDetails').submit(function () {
+            if ($(this).valid()) {
+                DisplayLoadingDialog();  //checked
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#frmAddGapExperienceDetails').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        if (results == true) {
+                            $('#GapNewExperienceDialog').dialog("close");
+                            $("#gapExperiencejqTable").trigger("reloadGrid");
+                            RefreshTotalExperienceView();
+                            $("#GapExperienceSuccessDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                title: ' Gap Experience Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            $("#GapExperienceErrorDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                title: 'Gap Experience Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+    });
+
+    var emptyDiaglog = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+
+        $('#txtAddGapExperienceDetailsReason').val($('#reason').val());
+        $('#txtAddGapExperienceDetailsFromDate').val($('#fromDate').val());
+        $('#txtAddGapExperienceDetailsToDate').val($('#toDate').val());
+        $('#txtAddGapExperienceDetailsDuration').val($('#gapDuration').val());
+        $('#AddGapExperienceDetailsDesc').val($('#gapDescription').val());
+
+        // $('#newExperienceDialog').dialog('close');
+    }
+</script>

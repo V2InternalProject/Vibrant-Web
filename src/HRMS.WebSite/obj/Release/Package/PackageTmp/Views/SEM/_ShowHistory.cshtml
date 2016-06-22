@@ -1,0 +1,205 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+<div class="clearfix">
+    <div class="leftcol">
+        <div class="formrow">
+            <div class="LabelDiv">
+                <label class="labelBlue">
+                    Sort By:
+                </label>
+            </div>
+            <div class="InputDiv">
+                <select id='ddlshowHistory' class="dropdownBlue mrgnL10">
+                    <option value="1">Show Revision History</option>
+                    <option value="2">Show History</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="divShowRevisionHistory">
+    <h4 class="SmallHead">
+        View Revision History
+    </h4>
+    <div class="tablestyle3">
+        <table id="jqShowRevisionHistoryTable"></table>
+    </div>
+    <div id="jqShowRevisionHistoryTablePager">
+    </div>
+</div>
+<div id="divShowHistory">
+    <h4 class="SmallHead">
+        Show History
+    </h4>
+    <div class="tablestyle3">
+        <table id="jqShowHistoryTable"></table>
+    </div>
+    <div id="jqShowHistoryTablePager">
+    </div>
+</div>
+<div id="divProjectHistory">
+    <h4 class="SmallHead">
+        Project Approval
+    </h4>
+    <div class="tablestyle3">
+        <table id="jqShowProjectApprovalTable"></table>
+    </div>
+    <div id="jqShowProjectApprovalTablePager">
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#divShowHistory').hide();
+        $('#divShowRevisionHistory').show();
+        $('#ddlshowHistory').change(function () {
+            if ($('#ddlshowHistory').val() == 1) {
+                $('#divShowHistory').hide();
+                $('#divShowRevisionHistory').show();
+            }
+            else if ($('#ddlshowHistory').val() == 2) {
+                $('#divShowHistory').show();
+                $('#divShowRevisionHistory').hide();
+            }
+        });
+        $("#jqShowRevisionHistoryTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ViewRevisionHistoryProjectLoadGrid", "SEM")',
+            postData: { projectId: '@Model.ShowHistory.ProjectId' },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "Field Name", "Old Value", "New Value", "Status", "Approver Description", "Approved By", "Approved On"],
+            // Configure the columns
+            colModel: [
+                 { name: "AuditId", index: "AuditId", align: "left", width: 100, hidden: true },
+                { name: "FieldName", index: "FieldName", align: "left", width: 100 },
+                { name: "OldValueProjectHistory", index: "OldValueProjectHistory", align: "left", width: 200 },
+                { name: "NewValueProjectHistory", index: "NewValueProjectHistory", align: "left", width: 200 },
+                { name: "ApprovalStatus", index: "ApprovalStatus", align: "left", width: 150 },
+                { name: "ApproverDescription", index: "ApproverDescription", align: "left", width: 200 },
+                { name: "ApprovedBy", index: "ApprovedBy", align: "left", width: 200 },
+                { name: "ApprovedOn", index: "ApprovedOn", align: "left", width: 100, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqShowRevisionHistoryTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+
+            // Default sorting
+            //            sortname: "",
+            //            sortorder: "asc",
+            // Grid caption
+            //caption: "Revision History",
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+            },
+        }).navGrid("#jqShowRevisionHistoryTablePager",
+               { search: false, refresh: false, add: false, edit: false, del: false },
+               {}, // settings for edit
+               {},
+               {}
+           );
+
+
+        $("#jqShowHistoryTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ShowHistoryProjectLoadGrid", "SEM")',
+            postData: { projectId: '@Model.ShowHistory.ProjectId' },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "Field Name", "Old Value", "New Value", "Status", "Description", "Approved By", "Approved On"],
+            // Configure the columns
+            colModel: [
+             { name: "AuditId", index: "AuditId", align: "left", width: 100, hidden: true },
+                { name: "FieldName", index: "FieldName", align: "left", width: 100 },
+                { name: "OldValueProjectHistory", index: "OldValueProjectHistory", align: "left", width: 200 },
+                { name: "NewValueProjectHistory", index: "NewValueProjectHistory", align: "left", width: 200 },
+                { name: "ApprovalStatus", index: "ApprovalStatus", align: "left", width: 150 },
+                { name: "ApproverDescription", index: "ApproverDescription", align: "left", width: 200 },
+                { name: "ApprovedBy", index: "ApprovedBy", align: "left", width: 200 },
+                { name: "ApprovedOn", index: "ApprovedOn", align: "left", width: 100, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqShowHistoryTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            // Default sorting
+            //            sortname: "",
+            //            sortorder: "asc",
+            // Grid caption
+            //caption: "History",
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+            },
+        }).navGrid("#jqShowHistoryTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqShowProjectApprovalTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ShowProjectApprovalLoadGrid", "SEM")',
+            postData: { projectId: '@Model.ShowHistory.ProjectId' },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["", "Status", "Approved/Rejected By", "Approved/Rejected On", "Description"],
+            // Configure the columns
+            colModel: [
+             { name: "AuditId", index: "AuditId", align: "left", width: 100, hidden: true },
+                { name: "ApprovalStatus", index: "ApprovalStatus", align: "left", width: 100 },
+                { name: "ApprovedRejectedBy", index: "ApprovedRejectedBy", align: "left", width: 100 },
+                { name: "ApprovedRejectedOn", index: "ApprovedRejectedOn", align: "left", width: 100, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "ApproverDescription", index: "ApproverDescription", align: "left", width: 200 },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqShowProjectApprovalTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            // Default sorting
+            //            sortname: "",
+            //            sortorder: "asc",
+            // Grid caption
+            //caption: "Project Approval",
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+            },
+        }).navGrid("#jqShowProjectApprovalTablePager",
+          { search: false, refresh: false, add: false, edit: false, del: false },
+          {}, // settings for edit
+          {},
+          {}
+      );
+    });
+</script>

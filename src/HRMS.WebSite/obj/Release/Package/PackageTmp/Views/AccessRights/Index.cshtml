@@ -1,0 +1,281 @@
+﻿@model HRMS.Models.AccessRightsNodeDetails
+@{
+    ViewBag.Title = "Access Rights Node Mapping";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+@* <table border="0" cellpadding="0" class="TablesBlueHeaders" width="100%" id="roleMapping">
+            <tr>
+                <th class="bluebgtable1 whiteB">
+                    Role
+                </th>
+                @foreach (var item in Model.NodesList)
+                {
+                    <th colspan="4" class="bluebgtable1 whiteB">
+                        @Html.DisplayFor(modelItem => item.NodeName)
+                    </th>
+                }
+            </tr>
+            <tr>
+                <th>
+                    Role List
+                </th>
+                @foreach (var item in Model.NodesList)
+                {
+                    <th>
+                        A
+                    </th>
+                    <th>
+                        E
+                    </th>
+                    <th>
+                        D
+                    </th>
+                    <th>
+                        V
+                    </th>
+                }
+            </tr>
+            @foreach (var item in Model.AccessList)
+            {
+                <tr>
+                    <td align="center">
+                        @Html.DisplayFor(modelItem => item.AccessRightName)
+                    </td>
+                    @foreach (var i in Model.NodesList)
+                    {
+                        var val = Model.AccessRightsList.Where(x => (x.AccessRightID == item.AccessRightID) && x.NodeID == i.NodeID).FirstOrDefault();
+                        <td align="center">
+                            <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_1" checked="@val.CanAdd" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_2" checked="@val.CanEdit" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_3" checked="@val.CanDelete" />
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_4" checked="@val.CanView" />
+                        </td>
+                    }
+                </tr>
+            }
+        </table>*@
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Access Rights Mapping</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")" class="selected">Configure Separation Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Separation Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Separation Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Separation Stages Approvers</a>*@
+        </nav>
+    </div>
+    <div class="MainBody AccessRightMainbody">
+   @if (Model.AccessRightsList != null)
+    {
+         <div class="TableHorizontalScrollContainer">
+            <table cellpadding="0" cellspacing="0" border="0" id="roleMapping" class="TableJqgrid TableRoleMapping" @* width="2120px"*@>
+                <thead id="roleMappingHead">
+                    <tr>
+                        <th class="tableHeaders" width="110px">
+                            Role
+                        </th>
+                        @foreach (var item in Model.NodesList)
+                        {
+                            <th colspan="4" class="tableHeaders" width="200px">
+                                @Html.DisplayFor(modelItem => item.NodeName)
+                            </th>
+                        }
+                    </tr>
+                    <tr>
+                        <th width="110px" class="tableHeadersSecondary">
+                            Role List
+                        </th>
+                        @foreach (var item in Model.NodesList)
+                        {
+                            <th width="50px" class="tableHeadersSecondary">
+                                A
+                            </th>
+                            <th width="50px" class="tableHeadersSecondary">
+                                E
+                            </th>
+                            <th width="50px" class="tableHeadersSecondary">
+                                D
+                            </th>
+                            <th width="50px" class="tableHeadersSecondary">
+                                V
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody id="roleMappingBody">
+                    @foreach (var item in Model.AccessList)
+                    {
+                        <tr class="tableRows">
+                            <td align="center" width="110px">
+                                @Html.DisplayFor(modelItem => item.AccessRightName)
+                            </td>
+                            @foreach (var i in Model.NodesList)
+                            {
+                                var val = Model.AccessRightsList.Where(x => (x.AccessRightID == item.AccessRightID) && x.NodeID == i.NodeID).FirstOrDefault();
+                                <td align="center" width="50px">
+                                    <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_1" checked="@val.CanAdd" />
+                                    <label for="@(item.AccessRightID)_@(i.NodeID)_1" class="LabelForCheckbox">
+                                    </label>
+                                </td>
+                                <td align="center" width="50px">
+                                    <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_2" checked="@val.CanEdit" />
+                                    <label for="@(item.AccessRightID)_@(i.NodeID)_2" class="LabelForCheckbox">
+                                    </label>
+                                </td>
+                                <td align="center" width="50px">
+                                    <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_3" checked="@val.CanDelete" />
+                                    <label for="@(item.AccessRightID)_@(i.NodeID)_3" class="LabelForCheckbox">
+                                    </label>
+                                </td>
+                                <td align="center" width="50px">
+                                    <input type="checkbox" id="@(item.AccessRightID)_@(i.NodeID)_4" checked="@val.CanView" />
+                                    <label for="@(item.AccessRightID)_@(i.NodeID)_4" class="LabelForCheckbox">
+                                    </label>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+      <div class="InnerContainer mrgnT20">
+        <input type="button" id="SubmitValues" value="Submit" class="ButtonGray" />
+      </div>
+
+    }
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        WidthHeadBody = (200 * '@Model.NodesList.Count') + 100;
+        WidthTotal = WidthHeadBody + 20;
+
+        $('#roleMappingHead').css('width', WidthHeadBody);
+        $('#roleMappingBody').css('width', WidthHeadBody);
+        $('#roleMapping').css('width', WidthTotal);
+
+    });
+    var arrayAccessRightID = [];
+    var arrayNodeID = [];
+    var arraySelectedValues = [];
+    var arrayFinalValues = [];
+    var nodeid;
+    $('#SubmitValues').click(function () {
+        arraySelectedValues = [];
+        arrayNodeID = [];
+        arrayAccessRightID = [];
+        arrayFinalValues = [];
+        $('#roleMapping :checkbox').each(function (i, val) {
+            var first = $(this).prop("id").indexOf('_');
+            var last = $(this).prop("id").lastIndexOf('_');
+            var totlength = $(this).prop("id").length;
+            var roleId = $(this).prop("id").slice(0, first);
+            if (arrayAccessRightID.indexOf(roleId) > -1) {
+                //do nothing
+            }
+            else {
+                arrayAccessRightID.push(roleId);
+            }
+            var nodeId = $(this).prop("id").slice(first + 1, last);
+            if (arrayNodeID.indexOf(nodeId) > -1) {
+                //do nothing
+            }
+            else {
+                arrayNodeID.push(nodeId);
+            }
+            if ($(this).is(":checked")) {
+                arraySelectedValues.push(true);
+            }
+            else {
+                arraySelectedValues.push(false);
+            }
+        });
+        arrayFinalValues = [];
+        var counter = 0;
+        $(arrayAccessRightID).each(function (i, val) {
+            $(arrayNodeID).each(function (j, val1) {
+                arrayFinalValues.push(val);
+                arrayFinalValues.push(val1);
+                for (var k = counter; k < arraySelectedValues.length; k++) {
+                    arrayFinalValues.push(arraySelectedValues[k]);
+                    if (arrayFinalValues.length % 6 == 0) {
+                        counter = counter + 4;
+                        return true;
+                    }
+                }
+            });
+        });
+
+        $.ajax({
+            url: '@Url.Action("UpdateRoleNodeMapping", "AccessRights")',
+            data: JSON.stringify(arrayFinalValues),
+            contentType: "application/json",
+            type: 'POST',
+            success: function (results) {
+                if (results.status == true) {
+                    $("#SuccessNodeMapping").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqPhaseManagementTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+            },
+            error: function (results) {
+                if (results.status == false) {
+                    $("#ErrorNodeMapping").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqPhaseManagementTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+<div id="SuccessNodeMapping" title="Contact Details" style="display: none;">
+    <p>
+        Node Mapping Saved Sucessfully.
+    </p>
+</div>
+<div id="ErrorNodeMapping" title="Contact Details" style="display: none;">
+    <p>
+        There are some errors.
+    </p>
+</div>

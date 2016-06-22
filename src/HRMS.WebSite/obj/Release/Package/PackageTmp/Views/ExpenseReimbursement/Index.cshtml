@@ -1,0 +1,43 @@
+﻿@model HRMS.Models.ExpenseReimbursementViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Expense Reimbursement</h2>
+    <div class="clearfix">
+        <fieldset class="blueBorder">
+            <ul>
+               @* <li id="lnkSeparationForm">@Html.ActionLink("New Expense Reimbursement Forms", "GetExpenseReimbursementFormDetails", "ExpenseReimbursement")</li>
+                <li>@Html.ActionLink("Expense Reimbursement Approvals", "GetExpenseReimbursementStatus", "ExpenseReimbursement")
+                    @{
+
+                        if (@ViewBag.InboxCount > 0)
+                        {
+                        <span class="count-red">(@ViewBag.InboxCount: Action Items)</span>
+                        }
+                    }
+                </li>   *@
+                 <li><a href="@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement", new { expenseEmployeeId = ViewBag.encryptedEmployeeId, encryptedExpenseId = ViewBag.EncryptedExpenseId })">
+                New Request</a></li>
+            <li><a href="@Url.Action("GetExpenseReimbursementStatus", "ExpenseReimbursement", new { expenseEmployeeId = ViewBag.encryptedEmployeeId, encryptedExpenseId = ViewBag.EncryptedExpenseId })">
+                Saved/Submitted Requests</a>
+                @{
+
+					if (@ViewBag.InboxCount !=null)
+					{
+				<span class="count-red">(@ViewBag.InboxCount: Action Items)</span>
+					}
+				}
+                </li>
+            </ul>
+        </fieldset>
+    </div>
+</div>

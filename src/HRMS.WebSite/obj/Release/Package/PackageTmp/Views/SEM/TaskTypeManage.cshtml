@@ -1,0 +1,259 @@
+﻿@model HRMS.Models.TaskTypeManageModel
+@{
+    ViewBag.Title = "Task Type Management";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew clearfix">
+    <h2 class="title-bgcolor">
+        Task Type Management</h2>
+    <div class="clearfix mrgnT10">
+        <input class="button" type="button" value="Add Task Type" id="BtnAddTaskType" />
+        <input class="button" type="button" value="Select All" />
+        <input class="button" type="button" value="Deselect All" />
+        <input class="button" type="button" value="Delete" />
+        
+    </div>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_Emp" class="mrgnT10">
+        <tr>
+            <td>
+                <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders" width="99%">
+                    <tr>
+                        <th width="85%" class="bluebgtable1">
+                            Task Type
+                        </th>
+                        <th class="bluebgtable1" width="15%">
+                            Delete
+                        </th>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="width: 100%; height: 500px; overflow: auto;">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" class="TablesBlueHeaders">
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Adhoc Testing
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Admin
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Analysis
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="85%">
+                                Annual Performance Review
+                            </td>
+                            <td width="15%" align="center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <input class="button mrgnT15" type="button" value="Save" />
+    <div class="bluebutton1 clearB floatR mrgnT15">
+        <div class="bluebgtable1">
+            Total Records: 0
+        </div>
+    </div>
+    <div id="AddTaskTypePop" style="display: none">
+        @Html.Partial("_AddTaskType", Model.AddTaskType)
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+            $(window).scroll(function () { return false; });
+            $('#AddTaskTypePop').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Add / Edit Task Types"
+            });
+            $('#AddTaskTypePop').dialog('open');
+        });
+
+    });
+</script>

@@ -1,0 +1,142 @@
+﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/_MedicalHistory.js" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddEmployeeMedicalHistory" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(model => model.MedicalHistory.MedicalDescription):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.EditorFor(model => model.MedicalHistory.MedicalDescription)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.MedicalHistory.MedicalDescription)
+                    @Html.HiddenFor(model => model.MedicalHistory.MedicalDescription, new { @id = "MedicalHistory_medicalDescription" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(model => model.MedicalHistory.Year):
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.MedicalHistory.Year, new SelectList(Model.YearList, "Year", "Year", "Select"), "Select")
+                <p class="qualif-detail">@Html.HiddenFor(model => model.MedicalHistory.Year, new { @id = "MedicalHistory_year" })
+                    @Html.ValidationMessageFor(model => model.MedicalHistory.Year)</p>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.MedicalHistory.EmployeeId)
+        @Html.HiddenFor(model => model.MedicalHistory.MedicalDescId)
+        <div class="clear popup_button ">
+            <div class="floatR">
+                <input id="btnSaveMedicalHistoryDetails" type="submit" value="Save" class="button mrgnR5" />
+                <input id="cancel" type="button" value="Reset" onclick="closeDialog()" class="button " />
+            </div>
+        </div>
+    </div>
+}
+<div id="AddMedicalSuccessMessege" style="display: none">
+    <p>
+        Medical Details have been saved.</p>
+</div>
+<div id="AddMedicalErrorMessege" style="display: none">
+    <p>
+        There are some errors</p>
+</div>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(function () {
+        var postUrl = '@Url.Action("AddEmployeeMedicalHistory", "PersonalDetails")';
+        $('#frmAddEmployeeMedicalHistory').submit(function () {
+            if ($(this).valid()) {
+                DisplayLoadingDialog(); // Checked global.js
+
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#frmAddEmployeeMedicalHistory').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+
+                        if (results.status == "Error") {
+                            $('#dialogAction').dialog('close');
+                            $("#errorDialog").dialog({
+                                title: 'Medical History',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        jQuery("#jqMedicalTable").trigger("reloadGrid");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == true) {
+                            $('#dialogAction').dialog('close');
+                            $("#AddMedicalSuccessMessege").dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: "Medical History",
+                                buttons: {
+                                    "Ok": function () {
+                                        jQuery("#jqMedicalTable").trigger("reloadGrid");
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
+                        } // if close
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $('#dialogAction').dialog('close');
+                            $("#AddQualificationErrorMessege").dialog({
+                                modal: true,
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                title: "Medical History",
+                                buttons: {
+                                    "Ok": function () {
+                                        jQuery("#jqMedicalTable").trigger("reloadGrid");
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            }); //dialog close
+                        } //else close
+                    }, //success close
+                    error: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $('#dialogAction').dialog('close');
+                        $("#errorDialog").dialog({
+                            title: 'Medical History',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#jqMedicalTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                }); //ajax close
+            } //if close
+            return false;
+        }); //frmAddEmployeeMedicalHistory submit event close
+    });
+</script>

@@ -1,0 +1,236 @@
+﻿@model HRMS.Models.BondDetailsViewModel
+@{
+    ViewBag.Title = "Bond Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/EmployeeDetails/_BondDetails.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+
+    var yesValue = '@HRMS.Models.YesNoCondition.Yes.ToLower()';
+    var noValue = '@HRMS.Models.YesNoCondition.No.ToLower()';
+    var hrAdmin = '@HRMS.Models.UserRoles.HRAdmin';
+    var empStatusId = '@Model.EmpStatusMasterID';
+    var RMGRole = '@HRMS.Models.UserRoles.RMG';
+    var HRExecutive = '@HRMS.Models.UserRoles.HRExecutive';
+    var employeeId = '@Model.EmployeeId';
+    var bondEmployeeId = '@ViewBag.bondEmployeeId';
+    var bondId = '@Model.BondId';
+    var empbondtypeList = @(Html.Raw(Json.Encode(ViewBag.BondTypeList)));
+    var empbondstatusList = @(Html.Raw(Json.Encode(ViewBag.BondStatusList)));
+    var loanBondDetailGridUrl = '@Url.Action("LoadBondDetailsGrid", "EmployeeDetails")';
+    var deleteBondUrl = '@Url.Action("DeleteBondDetails", "EmployeeDetails")';
+    var editBondUrl = '@Url.Action("BondDetails", "EmployeeDetails")';
+    //});
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+</script>
+
+<div style="display:none">
+    @Html.HiddenFor(m => m.UserRole)
+    @Html.HiddenFor(m => m.EmployeeId)
+    @Html.HiddenFor(m => m.BondId)
+    @Html.HiddenFor(m=>m.BondStatus)
+    @Html.HiddenFor(m=>m.BondType)
+    @Html.HiddenFor(m => m.BondTypeID)
+</div>
+
+@*<h3 class="mrgnT15">Bond Details</h3>*@
+
+@*<div class="clearfix">
+    @Html.HiddenFor(m => m.UserRole)
+    <fieldset>
+        <div class="clear">
+            <input type="button" onclick="AddBondDetails()" id="btnAddBondDetail" value="Add Bond Details"
+                   class="button" />
+        </div>
+        <div id="BondDetailsDialog" style="display: none">
+            @{Html.RenderPartial("_AddBondDetails", Model);}
+        </div>
+        <div class="tablestyle3 NoTitleGridsContainer">
+            <table id="jqBondDetailsTable" class="scroll">
+            </table>
+            <div id="jqTableBondDetailsPager" />
+        </div>
+    </fieldset>
+</div>
+</div>*@
+
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Employee Details</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Employee</a>
+            <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Designation</a>
+            <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Passport / Visa</a>
+            <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })" >Disciplinary</a>
+            <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Project</a>
+            <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Experience</a>
+            <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.EmployeeId })">Upload Documents</a>
+            <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })" class="selected">Bonds</a>*@
+
+            @if (Model.EmployeeId != null)
+            {
+                if (ViewBag.UserRole == "HR Executive")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Upload Documents</a>
+                }
+                else if (ViewBag.UserRole == "RMG")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Designation</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Experience</a>
+                }
+
+                else if (ViewBag.UserRole == "HR Admin")
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Experience</a>
+                    <a href="@Url.Action("UploadDocuments", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Upload Documents</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })" class="selected">Bond Details</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EmployeeDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Employee</a>
+                    <a href="@Url.Action("DesignationDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Designation</a>
+                    <a href="@Url.Action("TravelDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Passport / Visa</a>
+                    <a href="@Url.Action("DisciplinaryDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Disciplinary</a>
+                    <a href="@Url.Action("ProjectDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Project</a>
+                    <a href="@Url.Action("ExperienceDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })">Experience</a>
+                    <a href="@Url.Action("BondDetails", "EmployeeDetails", new { employeeId = ViewBag.bondEmployeeId })" class="selected">Bond Details</a>
+                }
+            }
+        </nav>
+    </div>
+    <div class="MainBody BondMainbody">
+            <div class="FormContainerBox Bond clearfix" style="display:none;">
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Bond Type:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Bond Status:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>* Bond Amount:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" />
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>* Bond End Date:</label>
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" placeholder="datepicker" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fill-dtls clearfix" style="display:none;">
+            <input type="button" value="Save" class="ButtonGray" />
+        </div>
+        <div class="mrgnT33">
+            <div class="tablestyle3" id="BondDetailsContainer">
+                <table id="jqBondDetailsTable" class="scroll"></table>
+                <div id="jqTableBondDetailsPager"></div>
+            </div>
+             <div class="TotalRecordsDiv">
+            <div class="bluebgtable1" id="totalcount">
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div id="successBondDialog" title="Bond Details" style="display: none">
+        <p>
+            Bond Details have been saved.
+        </p>
+    </div>
+
+    <div id="ValidAmountDialog" title="Bond Details" style="display: none">
+        <p>
+            Please enter valid bond amount.
+        </p>
+    </div>
+
+    <div id="RequiredFeildForBondType" style="display: none;" title="Required Feild">
+        <p>
+            Please select Bond Type.
+        </p>
+    </div>
+    <div id="RequiredFeildForBondStatus" style="display: none;" title="Required Feild">
+        <p>
+            Please select Bond Status.
+        </p>
+    </div>
+
+<div id="deleteBondDialogConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?
+    </p>
+</div>
+
+<div id="deleteBondRecord" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+
+    <div id="RequiredFeildForBondAmount" style="display: none;">
+        <p>
+            Bond Amount is required.
+        </p>
+    </div>
+    <div id="RequiredFeildForBondDate" style="display: none;">
+        <p>
+            Bond Date is required.
+        </p>
+    </div>
+</section>

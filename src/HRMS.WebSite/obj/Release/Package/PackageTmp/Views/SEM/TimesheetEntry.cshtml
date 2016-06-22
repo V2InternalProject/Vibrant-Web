@@ -1,0 +1,106 @@
+﻿@model HRMS.Models.TimesheetEntryModel
+@{
+    ViewBag.Title = "TimesheetEntry";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew NoTitleGridsContainer clearfix">
+    <h2 class="title-bgcolor">
+        @Html.Label("Period: 3/24/2014 to 03/28/2014")<a class="LinkBlue floatR" href="#">Back</a> <a class="LinkBlue floatR"
+            href="#" id="btnTaskList">View My Task List</a></h2>
+    
+    <div class="clearB mrgnT10">
+        <input type="button" class="button" value="Add Task" id="btnAddTask" />
+        <input type="button" class="button" value="Delete All Tasks" />
+    </div>
+    <div class="tablestyle3">
+        <table id="jqAddTaskTable">
+        </table>
+    </div>
+    <div id="jqAddTaskTablePager">
+    </div>
+    <div id="AddTaskDiv" style="display: none">
+        @Html.Partial("_AddTask", Model.AddTaskModel)
+    </div>
+    <div id="TaskListDiv" style="display: none">
+        @Html.Partial("_TaskList", Model.TaskListModel)
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    $("#jqAddTaskTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Project", "Task Name", "Mon [Mar 3]", "Tue [Mar 4]", "Wed [Mar 5]", "Thu [Mar 6]", "Fri [Mar 7]", "Sat [Mar 8]", "Sun [Mar 9]","Actual Hrs"],            
+            // Configure the columns
+            colModel: [
+                { name: "Project", index: "Project", align: "center", width: 140},
+                { name: "Taskname", index: "Taskname", align: "center", width: 240 },
+                { name: "Mon", index: "Mon", align: "center", width: 40 },
+                { name: "Tue", index: "Tue", align: "center", width: 40 },
+                { name: "Wed", index: "Wed", align: "center", width: 40 },
+                { name: "Thu", index: "Thu", align: "center", width: 40 },
+                { name: "Fri", index: "Fri", align: "center", width: 40},
+                { name: "Sat", index: "Sat", align: "center", width: 40},
+                { name: "Sun", index: "Sun", align: "center", width: 40},
+                { name: "ActualHrs", index: "ActualHrs", align: "center", width: 40},
+               
+               
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddTaskTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Timesheet",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqAddTaskTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        $('#btnAddTask').click(function () {
+            $('#AddTaskDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Add Task"
+            });
+            $('#AddTaskDiv').dialog('open');
+        });
+
+         $('#btnTaskList').click(function () {
+            $('#TaskListDiv').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 1100,
+                resizable: false,
+                title: "My Task List"
+            });
+            $('#TaskListDiv').dialog('open');
+        });
+    });
+    
+</script>

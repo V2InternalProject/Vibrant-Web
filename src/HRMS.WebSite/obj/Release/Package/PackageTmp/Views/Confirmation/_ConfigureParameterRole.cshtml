@@ -1,0 +1,92 @@
+﻿@model HRMS.Models.ConfigureParametersforRoles
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")">Configure Parameter</a>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">Configure Parameter Categories</a>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })" class="selected">Configure Parameters for Roles</a>
+        </nav>
+    </div>
+
+<div class="MainBody ProjectIndexbody SmartT">
+    <div class=" FormContainerBox clearfix ProjectIndexFliter">
+        <div class=" leftcol">
+             <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("Role:")
+                </div>
+                <div class="InputDiv">
+                    <input type="text" id="search" />
+                </div>
+            </div>
+        </div>
+    </div>
+   @* <div class="ButtonContainer1 clearfix">
+        <input type="button" class="ButtonGray mrgnR8" id="Back_configParameterRole" value="Back" />
+    </div>*@
+    <div class="tablestyle3 clearfix">
+        <table cellpadding="0" cellspacing="0" width="100%" border="0" class="TableJqgrid">
+            <thead>
+                <tr>
+                    <td width="10%"  class="tableHeaders">
+                        Role
+                    </td>
+                </tr>
+            </thead>
+            <div id="competencyMainContainer">
+                @foreach (var item in Model.RoleList.OrderBy(x => x.RoleDescription).ToList())
+                {
+
+                    <tr class="tableRows">
+                        <td>
+                            <a href="@Url.Action("EditParameterRole", "Confirmation", new { RoleID = item.RoleID })" id="editRecord">@item.RoleDescription</a>
+                        </td>
+                    </tr>
+                }
+            </div>
+        </table>
+
+        <div class="recordDivPopup">
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(x => x.RecordsCount)
+                            @Html.DisplayFor(x => x.RecordsCount)
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+</section>
+<script type="text/javascript">
+
+    $('#search').keydown(function (e) {
+        if (e.keyCode == 13) {
+            var searchval = $("#search").val();
+            searchval = $.trim(searchval);
+            window.location.href = '@Url.Action("ConfigureParametersRoles", "Confirmation")?searchstring=' + searchval;
+        }
+    });
+
+    $('#Back_configParameterRole').click(function () {
+        parent.history.back();
+        return false;
+    });
+</script>

@@ -1,0 +1,419 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head id="Head1" runat="server">
+    <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+    <meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
+    <link type="text/css" rel="stylesheet" href="../../Content/New Design/demo.css" />
+    <link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/New%20Design/orbit.css" rel="stylesheet" type="text/css" />   
+    <!-- SelectBOx -->
+    <script src="../../Scripts/Common.js"></script>
+    <link href="../../Content/New%20Design/jquery.selectbox.css" rel="stylesheet" />   
+    <script src="~/JavaScript/jquery.selectbox-0.2.min.js" type="text/javascript"></script>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="../../Content/New Design/common.css" />
+    <script type="text/javascript" language="javascript" src="../../Scripts/New Design/common.js"></script>
+    <script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+    <link href="../../Content/themes/base/jquery.ui.dialog.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/themes/base/jquery.ui.datepicker.css" rel="stylesheet"
+        type="text/css" />
+    <script type="text/javascript" language="javascript" src="../../Scripts/ExpenseReimbursement/ExpenseReimbursementForm.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/ExpenseReimbursement/ConfigureExpenseReimbursementProjects.js"></script>
+    <script type="text/javascript" language="javascript" src="../../Scripts/ExpenseReimbursement/ExpenseReimbursementStatus.js"></script>
+    <script src="../../Scripts/Global.min.js" type="text/javascript"></script> 
+    <script src="../../Scripts/New%20Design/jquery.selectBox.js"></script>
+    <link href="../../Content/New%20Design/jquery.selectBox%20(2).css" rel="stylesheet" />
+    <link href="../../Content/themes/base/jquery.ui.autocomplete.css" rel="stylesheet"
+        type="text/css" />
+    <script src="../../Scripts/Recruitment/pop_up_window.js" type="text/javascript"></script>
+    <script src="../../Scripts/Recruitment/jquery.tmpl.js" type="text/javascript"></script>  
+    <script type="text/javascript">
+
+        //New addition
+
+        $(document).ready(function () {
+            // hide #back-top first
+
+            function LoadImage() {
+                this.src = "../PersonalDetails/GetFileFromPath";
+            }
+
+            $(".MoveTopBtn").hide();
+
+            // fade in #back-top
+            $(function () {
+                $('#wrapper').scroll(function () {
+                    if ($(this).scrollTop() > 10) {
+                        $('.MoveTopBtn').fadeIn();
+                    } else {
+                        $('.MoveTopBtn').fadeOut();
+                    }
+                });
+                // scroll body to 0px on click
+                $('.MoveTopBtn').click(function () {
+
+                    $('#wrapper').animate({
+                        scrollTop: 0
+                    }, 500);
+                    return false;
+                });
+            });
+
+
+            $('#LogOut').click(function () {
+                window.location.href = location.protocol + '//' + location.host + "/Account/LogOff";
+                //for Live changes
+                //window.location.href = location.protocol + '//' + location.host + "http://192.168.30.15/intranet";
+            });
+
+
+            $("#accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+
+            $('.ui-accordion-header').click(function () {             
+                $('.ui-accordion-header').not(this).css("background-color", "#262626");
+            });
+
+            $.each($('#accordion').find('a'), function () {              
+                var array = window.location.pathname.toString().split('/');
+                var MainArray = this.attributes.href.value.toString().split('/');
+                if (array[2] == "CompensationApplicationForm.aspx" || array[2] == "LeaveApplicationForm.aspx") {
+                    $('#LeaveApplication').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#LeaveApplication').parent().parent().parent().addClass('headcolorC');
+                    $('#LeaveApplication').css({ 'border-left-color': '#ED8E4E', 'color': '#ffffff' });
+                    return false;
+                }
+                else if (array[2] == "SignInSignOut.aspx" || array[2] == "ManualSignin.aspx") {
+                    $('#Attendance').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#Attendance').parent().parent().parent().addClass('headcolorC');
+                    $('#Attendance').css({ 'border-left-color': '#ED8E4E', 'color': '#ffffff' });
+                    return false;
+                }
+                else if (array[2] == "OutOfOffice.aspx") {
+                    $('#OutOfOffice').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#OutOfOffice').parent().parent().parent().addClass('headcolorC');
+                    $('#OutOfOffice').css({ 'border-left-color': '#ED8E4E', 'color': '#ffffff' });
+                    return false;
+                }
+                else if (array[2] == "SignInSignOutApproval.aspx" || array[2] == "LeaveApproval.aspx" || array[2] == "CompensationApproval.aspx") {
+                    $('#Approvals').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#Approvals').parent().parent().parent().addClass('headcolorC');
+                    $('#Approvals').css({ 'border-left-color': '#ED8E4E', 'color': '#ffffff' });
+                    return false;
+                }
+                else if (array[1] == "Recruitment") {
+                    $('#recruitmentId').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#recruitmentId').parent().parent().parent().addClass('headcolorC');
+                    $('#recruitmentId').css({ 'border-left-color': '##2eb38d', 'color': '#ffffff' });
+                    return false;
+                }
+                else if (array[1] == "HelpDesk" && array[2] != "admin") {
+                    $('#helpdeskId').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#helpdeskId').parent().parent().parent().addClass('headcolorC');
+                    $('#helpdeskId').css({ 'border-left-color': '#ED8E4E', 'color': '#ffffff' });
+                    //$('#helpdeskId').parent().parent().parent().prev().trigger('click');
+                    return false;
+                }
+                else if (array[1] == "HelpDesk" && array[2] == "admin") {
+                    $('#helpdeskadmin,#helpdeskadminId').parent().parent().parent().prev().css('background-color', '#1C1C1C').trigger('click');
+                    $('#helpdeskadmin,#helpdeskadminId').parent().parent().parent().addClass('headcolorC');
+                    $('#helpdeskadmin,#helpdeskadminId').css({ 'border-left-color': '#e3bd42', 'color': '#ffffff' });
+                    return false;
+                }
+
+            });
+            // on container
+            $('#SlideMenuBtn').click(function () {
+                $("#page").animate({ left: "300px" }, 600);
+                $("#SidePanel").animate({ left: "0px" }, 600);
+                $("#page").addClass("move-right");
+            });
+
+            $('.exit-off-canvas').click(function () {
+                $("#page").animate({ left: "0px" }, 600);
+                $("#SidePanel").animate({ left: "-300px" }, 600);
+                $("#page").removeClass("move-right");
+            });
+            $('.Container').click(function () {
+                $("#page").animate({ left: "0px" }, 600);
+                $("#SidePanel").animate({ left: "-300px" }, 600);
+                $("#page").removeClass("move-right");
+            });
+
+            $('select').selectBox({
+                hideOnWindowScroll: true,
+                keepInViewport: false
+            });
+        });
+
+
+        // Old
+
+        function BeforeShowForDatePicker() {
+            $("#wrapper").css({ overflow: 'hidden' });
+        }
+        function onCloseForDatePicker() {
+            $("#wrapper").css({ overflow: 'auto' });
+        }
+        function errorOccured() {
+            $('#errorDialog').dialog({
+                modal: true,
+                resizable: false,
+                width: 300,
+                height: 'auto',
+                title: "Error",
+                buttons: {
+                    "OK": function () { $(this).dialog('close'); }
+                }
+            });
+        }
+
+
+        $(function () {
+            $("#tabs").tabs({ cache: false, ajaxOptions: { cache: false} });
+        });
+
+
+        function searchEmployee() {
+            $("#empId").val($("#hdnEmployeeId").val());
+            $("#dynamicElement").html('<input type="hidden" name="EmployeeId" value="' + $("#hdnEmployeeId").val() + '" /> <input type="hidden" name="SearchText" value="' + $("#txtSearchText").val() + '" />');
+            $("#frmSearchEmployeeLayout").submit();
+        }
+
+        $(document).ready(function () {
+            $('#txtSearchText').keypress(function (e) {
+                if (e.keyCode == 13) {
+                    searchEmployee();
+                }
+            });
+            $("#txtSearchText").autocomplete({
+                source: function (request, response) {
+                    $.getJSON('@Url.Action("SearchEmployeeAutoSuggest", "EmployeeDetails")', { term: request.term }, function (data) {
+                        response($.map(data, function (el) {
+                            var emplyeeInformation = el.EmployeeName + " {" + el.EmployeeCode + "}";
+                            return {
+                                label: emplyeeInformation,
+                                value: el.EmployeeName
+
+                            };
+                        }));
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="AttendancePage">
+    <div id="wrapper">
+        <form id="form1" runat="server">
+        <div id="page">
+            <section class="clearfix">
+                <header id="header">
+                    <div class="SideMenuConBorderR">
+                        <a href="#SidePanel" id="SlideMenuBtn"></a>
+                    </div>
+                    <h1>
+                        Vibrant Web</h1>
+                    <%--                    <% 
+                        {
+                           Session["UserName"] = (string)Session["UserName"];
+                       }%>--%>
+                    <div class="userlog">
+                        <div class="UserLogout">
+                            <div class="ImgConBorderL">
+                                <a href="#" id="LogOut">
+                                    <img src="../../Images/New Design/logout.png" alt="logout" />
+                                </a>
+                            </div>
+                            <div class="ImgConBorderL">
+                                <img src="../../Images/New%20Design/user.png" />
+                            </div>
+                            <span id="spnDisplayUserName" class="floatR mrgnR15">
+                                <%=Server.HtmlEncode(Convert.ToString(Session["UserName"]))                              
+                                %>
+                                <% 
+                                    {
+                                        Session["SearchEmpID"] = null;
+                                        Session["SearchEmpFullName"] = null;
+                                        Session["SearchEmpCode"] = null;
+                                    }%>
+                            </span>
+                        </div>
+                    </div>
+                    <%--<input type="image" src="../Images/New Design/dp-icon.png" id="ImagePreview" width="48px" height="38px" />--%>
+                </header>
+                <%--<div class="EmpSearch clearfix">
+                    <a href="#" onclick="searchemployee();"></a>
+                    <input type="text" id="txtSearchText" placeholder="Employee Search">                                      
+                </div>--%>
+                <% {
+
+                       HRMS.DAL.CommonMethodsDAL dal = new HRMS.DAL.CommonMethodsDAL();
+                       HRMS.DAL.EmployeeDAL employeeDAL = new HRMS.DAL.EmployeeDAL();
+                       HRMS.DAL.PersonalDetailsDAL personalDAL = new HRMS.DAL.PersonalDetailsDAL();
+                       HRMS.DAL.SemDAL semDal = new HRMS.DAL.SemDAL();
+                       HRMS.DAL.TaskTimesheetDAL taskDal = new HRMS.DAL.TaskTimesheetDAL();
+                       HRMS.DAL.InvoiceDAL invoiceDal = new HRMS.DAL.InvoiceDAL();
+                       HRMS.Models.SearchedUserDetails employeeDetails = new HRMS.Models.SearchedUserDetails();
+                       int EmployeeId = employeeDAL.GetEmployeeID(Membership.GetUser().UserName);
+                       string encyptedEmployeeId = dal.Encrypt(this.Session["SecurityKey"].ToString() + Convert.ToString(EmployeeId), true);
+                       string encryptedTravelId = dal.Encrypt(this.Session["SecurityKey"].ToString() + "0", true);
+                       string DPImagePath = "";
+                       string FirstName = "";
+
+                       Tuple<string, string> statusVal;
+                       statusVal = personalDAL.GetEmployeeProfileImagePath(EmployeeId);
+                       DPImagePath = statusVal.Item1;
+                       FirstName = statusVal.Item2;
+                       if (System.IO.File.Exists(DPImagePath) == false)
+                       {
+                           //DPImagePath = Server.MapPath(Url.Content("/Images/New Design/dp-icon.png"));
+                       }
+
+                       employeeDetails = semDal.GetEmployeeDetails(EmployeeId);
+                       int EmpCode = Convert.ToInt32(employeeDetails.EmployeeCode);
+                       string EmpID = taskDal.GetEmployeeIdFromEmployeeCodeSEM(EmpCode);
+                       Session["IsIRApprover"] = invoiceDal.CheckLoggedUserIsIRApprover(Convert.ToInt32(EmpID));
+                       Session["IsIRFinanceApprover"] = invoiceDal.CheckLoggedUserIsIRFinanceApprover(Convert.ToInt32(EmpID));
+                   }
+                %>
+            </section>
+            <div id="body1" class="clearfix clearB">
+                <%--<% __Renderform1(Html32TextWriter __w, Control parameterContainer); %>--%>
+                <%--<% __Renderform1(__w, parameterContainer); %>--%>
+                <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+            <a class="exit-off-canvas"></a><a id="goToTopTravel" href="#top" class="floatR alignC MoveTopBtn">
+            </a>
+            <footer>&#169; 2014 V2Solutions, Inc.</footer>
+        </div>
+        <div id="SidePanel" class="panel">
+            <div id="accordion">
+            </div>
+            <a href="/Account/LogOff" class="logout-head">LOG OUT</a>
+        </div>
+        <!---------- Model Code ------------->
+        <div class="dialog" style="color: blue;" id="modal_alertModalWindow_container">
+        </div>
+        <script type="text/html" id="modal_alertModalWindow" style="color: Red;">
+                <div class="modal quickFund" id="alertmodaltitle" title="${headerMessage}">
+                    <div class="midLeft">
+                        <div class="midRight">
+                            <form class="thin" action="">
+                                <div class="innerContent">
+                                    <div class="padMe">
+                                        <div class="info">
+                                            <div class="messagePara">
+                                                <p>${message}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modalButtons">
+                                        <input type="button" value="OK" class="submitBtn btn orange_sm" onclick="$('#modal_alertModalWindow_container').dialog('close'); return false;">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="botLeft">
+                        <div class="botRight">
+                        </div>
+                    </div>
+                </div>
+        </script>
+        <!---------- Model Code ------------->
+        <asp:SiteMapDataSource ID="smdsOrbitMenu" runat="server" ShowStartingNode="False" />
+        </form>
+    </div>
+    <div id="loading" style="display: none" title="Please Wait....">
+        <center class="LoadingWrap">
+            <img class="loadImg" src="../../Images/New%20Design/loader.gif" style="width: 120px;
+                height: 128px;" alt="Loading..." />
+        </center>
+    </div>
+    <%
+        var accessRights = HttpContext.Current.Session["MenuDataList"];
+        if (accessRights != null)
+        {
+
+            Response.Write("<script>var accessRights=" + accessRights.ToString() + "</script>");
+        }
+    %>
+    <script>
+        $(function () {
+            var menu = {
+
+                Filter: function (source, container, urlHandler,imagePath) {
+                   
+                    var first_Level_last = "", secondLevel_Last = "";
+                    for (var i = 0; i < source.Menu.length; i++) {
+                        if (source.Menu[i].Name != first_Level_last) {
+                            first_Level_last = source.Menu[i].Name;
+                            $("<h3 />")
+                            .html(source.Menu[i].Name)
+                            .prepend($("<span />")
+                                            .append($("<img src='" + imagePath + source.Menu[i].Images + "' />")
+                                                        .css("vertical-align", "middle")
+                                                        .css("width", "32px")
+                                                        .css("height", "26px")
+                                                        )
+                                            .css("width", "28px")
+                                            .css("padding-right", "4px")
+                                            )
+                            .addClass('VW-head')
+                            .appendTo(container);
+                            if (source.Menu[i].Menus != null) {
+                                var ul = $("<ul />");
+                                var menuList = source.Menu[i].Menus.Menu;
+                                if (!menuList.length)
+                                    menuList = [menuList];
+
+                                for (var j = 0; j < menuList.length; j++) {
+                                    if (menuList[j].Name != secondLevel_Last) {
+                                        secondLevel_Last = menuList[j].Name;
+                                        var level = menuList[j].Menus.Menu;
+                                        var url = level.length ? level[0].Url : level.Url;
+                                        $("<li />").append($("<a href='" + urlHandler(url, "{employeeId},{encryptedTravelId}".split(",")) + "'>" + menuList[j].Name + "</a>").addClass('myvb')).addClass('submenu1').appendTo(ul);
+                                        ul.addClass('slide-submenu VW-submenu clearfix');
+                                    }
+                                }
+                            }
+                            $("<div />").addClass('pane').append(ul).appendTo(container);
+                        }
+                    }
+                }
+            }
+
+            menu.Filter(accessRights, $("#accordion"), function (str, replacers) {
+                var encID = '<%= (new HRMS.DAL.CommonMethodsDAL()).Encrypt(this.Session["SecurityKey"].ToString() + Convert.ToString((new HRMS.DAL.EmployeeDAL()).GetEmployeeID(Membership.GetUser().UserName)), true) %>';
+                for (var i = 0; i < replacers.length; i++) {
+                    var splitter = str.split(replacers[i]);
+                    if (splitter.length > 1) {
+                        str = splitter.join(encID);
+                        break;
+                    }
+
+                }
+                return str;
+            }, /admin/.test(location.href) ? "../../Images/New Design/" : "../Images/New Design/");
+
+            $('#accordion div').slideToggle('medium');
+            $("#accordion h3").click(function () {
+                $(this).next(".pane").slideToggle("medium").siblings(".pane:visible").slideUp("medium");
+            });
+
+        });
+      
+    </script>
+</body>
+</html>

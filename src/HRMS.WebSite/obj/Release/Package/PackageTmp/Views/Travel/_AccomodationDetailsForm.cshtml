@@ -1,0 +1,333 @@
+﻿@model HRMS.Models.AccomodationViewModel
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".ValidationDropDowns").each(function () {
+            $('.ValidationDropDowns').show();
+            $('.ValidationDropDowns').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDowns').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px', 'margin-left': '-250px' });
+            $('.ValidationDropDowns').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px !important' });
+        });
+
+        $("#AccomodationDetailsForm .ClassDisplayLabel,#AccomodationDetailsForm .ClassTextareaDiv").hide();
+        if ($('#AccomodationNeeded option:selected').text() != "Select") {
+            $('#replaceDDAccomodationNeeded').append($('#AccomodationNeeded option:selected').text());
+        }
+
+        if ($('#HardDriveNeeded option:selected').text() != "Select") {
+            $('#replaceDDHardDriveNeeded').append($('#HardDriveNeeded option:selected').text());
+        }
+
+        if ($('#AirportPickUpNeeded option:selected').text() != "Select") {
+            $('#replaceDDAirportPickUpNeeded').append($('#AirportPickUpNeeded option:selected').text());
+        }
+
+        if ($('#LaptopNeeded option:selected').text() != "Select") {
+            $('#replaceDDLaptopNeeded').append($('#LaptopNeeded option:selected').text());
+        }
+
+        if ($('#USBDriveNeeded option:selected').text() != "Select") {
+            $('#replaceDDUSBDriveNeeded').append($('#USBDriveNeeded option:selected').text());
+        }
+
+        $('#btnSubmitAccomodationDetailsForm').show();
+        $('#btnRejectAccomodationDetailsForm').hide();
+        $('#btnCancelAccomodationDetailsForm').show();
+        var viewstatus = '@ViewBag.StageID';
+        if (viewstatus == "0") {
+            $('#btnRejectAccomodationDetailsForm').hide();
+        }
+
+        if (viewstatus >= "1" && viewstatus <= "4") {
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#AccomodationDiv').find('input, textarea, button, select, img').attr('disabled', 'disabled');
+            $('#btnSubmitAccomodationDetailsForm').hide();
+            $('#btnRejectAccomodationDetailsForm').show();
+            $('#btnRejectAccomodationDetailsForm').removeAttr("disabled");
+            $('#btnCancelAccomodationDetailsForm').hide();
+        }
+        var btnstatus = '@ViewBag.submitBtnstatus';
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+
+        if (btnstatus == "Yes" && IsloggedUser != "True") {
+            $('#btnSaveAccomodationDetailsForm').show();
+            $('#btnSaveAccomodationDetailsForm').removeAttr("disabled");
+        }
+
+        if (viewstatus == "3") {
+            $('#tabs').tabs('enable', 7);
+            $('#tabs').tabs('enable', 8);
+            $('#tabs').tabs('enable', 9);
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#btnRejectAccomodationDetailsForm').hide();
+        }
+        if (viewstatus >= "1" && viewstatus <= "3" && IsloggedUser == "True") {
+            $('#btnCancelAccomodationDetailsForm').show();
+            $('#btnCancelAccomodationDetailsForm').removeAttr("disabled");
+            $('#btnSubmitAccomodationDetailsForm').hide();
+            //            $('#btnSaveAccomodationDetailsForm').show();
+            //            $('#btnSaveAccomodationDetailsForm').removeAttr("disabled");
+            $('#btnRejectAccomodationDetailsForm').hide();
+        }
+
+        if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+            $('#AccomodationDiv').find('input, textarea, button, select, img').attr("disabled", true);
+            $('#btnSubmitAccomodationDetailsForm').hide();
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#btnCancelAccomodationDetailsForm').show();
+            $('#btnRejectAccomodationDetailsForm').hide();
+
+        }
+        if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == "True" && '@ViewBag.viewDetailClick' == "Ext") {
+            $('#AccomodationDiv').find('input, textarea, button, select, img').removeAttr("disabled");
+        }
+
+        if ('@ViewBag.UserRole' == 'TravelApprover' && viewstatus >= 2 || viewstatus <= 0) {
+            $('#btnRejectAccomodationDetailsForm').hide();
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#btnCancelAccomodationDetailsForm').hide();
+        }
+        if ('@ViewBag.UserRole' == 'Group Head' && viewstatus <= 3 && viewstatus <= 1) {
+            $('#btnRejectAccomodationDetailsForm').hide();
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#btnCancelAccomodationDetailsForm').hide();
+        }
+        if ('@ViewBag.UserRole' == 'Travel_Admin' && viewstatus <= 2 || viewstatus == 4) {
+            $('#btnRejectAccomodationDetailsForm').hide();
+            $('#btnSaveAccomodationDetailsForm').hide();
+            $('#btnCancelAccomodationDetailsForm').hide();
+        }
+
+        if (viewstatus == 0) {
+            $('#btnSubmitAccomodationDetailsForm').show();
+            $('#btnSaveAccomodationDetailsForm').show();
+        }
+
+        if (viewstatus == 0 && IsloggedUser == "True") {
+            $('#btnCancelAccomodationDetailsForm').show();
+        }
+
+        //for converting disables fields to lables
+        //assign Selected Dropdown Value to its respective Label.
+        $("#AccomodationNeeded").next().next().text($("#AccomodationNeeded :selected").text());
+        $("#AirportPickUpNeeded").next().next().text($("#AirportPickUpNeeded :selected").text());
+        $("#HardDriveNeeded").next().next().text($("#HardDriveNeeded :selected").text());
+        $("#LaptopNeeded").next().next().text($("#LaptopNeeded :selected").text());
+        $("#USBDriveNeeded").next().next().text($("#USBDriveNeeded :selected").text());
+        DisplayLabel();
+        function DisplayLabel() {
+            //test
+            $.each($("#AccomodationDetailsForm .ClassDisabledFields"), function (l, val) {
+                if ($(val).is(':disabled')) {
+                    if (val.id == "AccomodationNeeded" || val.id == "AirportPickUpNeeded" || val.id == "HardDriveNeeded" || val.id == "LaptopNeeded" || val.id == "USBDriveNeeded") {
+                        $(this).hide().next().hide().next().show().append("</br>");
+                    }
+                    else if (val.id == "AdditionalInformation" || val.id == "SoftwaresNeeded") {
+                        $(this).hide().next().show().children().show();
+                    }
+                    else
+                        $(this).hide().next().show();
+                }
+            });
+        } 
+    });
+
+</script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "AccomodationDetailsForm" }))
+{
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(x => x.TravelEmployeeId)
+    @Html.HiddenFor(x => x.TravelId)
+    @Html.HiddenFor(x => x.StageID) 
+    @Html.HiddenFor(x => x.Comments) 
+    <h4 class="SmallHeadW">
+        Travel Requirements</h4>
+    <div id="AccomodationDiv">
+        <div class="FormContainerBox mrgnT30 Travel travelmrgn clearfix">
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix">
+                    <div class="LabelDiv">
+                        <label>
+                            * Accomodation Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.AccomodationNeeded, new SelectList(Model.ClientTravelYesNoList, "ClientTraveAccomodationlsId", "ClientTraveAccomodationlsValue", "Select"), "Select", new { @class = "ValidationDropDowns DDtoReplace ClassDisabledFields" })
+                        @Html.LabelFor(model => model.AccomodationNeeded, new { @id = "lblAccomodationNeeded", @class = "ClassDisplayLabelDD" })
+                        @* <span class="replaceDD" id="replaceDDAccomodationNeeded"></span>*@
+                        <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AccomodationNeeded)</p>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        <label>
+                            * Airport Pick Up Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.AirportPickUpNeeded, new SelectList(Model.ClientTravelYesNoList, "ClientTraveAccomodationlsId", "ClientTraveAccomodationlsValue", "Select"), "Select", new { @class = "DDtoReplace ValidationDropDowns ClassDisabledFields" })
+                        @Html.LabelFor(model => model.AirportPickUpNeeded, new { @id = "lblAirportPickUpNeeded", @class = "ClassDisplayLabelDD" })
+                        @*<span class="replaceDD" id="replaceDDAirportPickUpNeeded"></span>*@
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AirportPickUpNeeded)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix travelExtensionHide">
+                    <div class="LabelDiv">
+                        <label>
+                            * Hard Drive Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.HardDriveNeeded, new SelectList(Model.ClientTravelYesNoList, "ClientTraveAccomodationlsId", "ClientTraveAccomodationlsValue", "Select"), "Select", new { @class = "DDtoReplace ValidationDropDowns ClassDisabledFields" })
+                        @Html.LabelFor(model => model.HardDriveNeeded, new { @id = "lblHardDriveNeeded", @class = "ClassDisplayLabelDD" })
+                        @*<span class="replaceDD" id="replaceDDHardDriveNeeded"></span>*@
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.HardDriveNeeded)</p>
+                    </div>
+                </div>
+                <div class="rightcol travelExtensionHide">
+                    <div class="LabelDiv">
+                        <label>
+                            * Laptop Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.LaptopNeeded, new SelectList(Model.ClientTravelYesNoList, "ClientTraveAccomodationlsId", "ClientTraveAccomodationlsValue", "Select"), "Select", new { @class = "DDtoReplace ValidationDropDowns ClassDisabledFields" })
+                        @Html.LabelFor(model => model.LaptopNeeded, new { @id = "lblLaptopNeeded", @class = "ClassDisplayLabelDD" })
+                        @*<span class="replaceDD" id="replaceDDLaptopNeeded"></span>*@
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.LaptopNeeded)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="formrow clearfix">
+                <div class="leftcol clearfix travelExtensionHide">
+                    <div class="LabelDiv">
+                        <label>
+                            * Softwares Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextAreaFor(model => model.SoftwaresNeeded, new { @class = "ClassDisabledFields" })
+                        <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
+                            @Html.LabelFor(model => model.SoftwaresNeeded, Model.SoftwaresNeeded, new { @class = "ClassDisplayLabel" })
+                        </div>
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.SoftwaresNeeded)</p>
+                    </div>
+                </div>
+                <div class="rightcol travelExtensionHide">
+                    <div class="LabelDiv">
+                        <label>
+                            * USB Drive Needed:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(model => model.USBDriveNeeded, new SelectList(Model.ClientTravelYesNoList, "ClientTraveAccomodationlsId", "ClientTraveAccomodationlsValue", "Select"), "Select", new { @class = "DDtoReplace ValidationDropDowns ClassDisabledFields" })
+                        @Html.LabelFor(model => model.USBDriveNeeded, new { @id = "lblUSBDriveNeeded", @class = "ClassDisplayLabelDD" })
+                        @*<span class="replaceDD" id="replaceDDUSBDriveNeeded"></span>*@
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.USBDriveNeeded)</p>
+                    </div>
+                </div>
+                <div class="rightcol mrgnT18">
+                    <div class="LabelDiv"><span class="hiddenstar">*</span>
+                        <label>
+                            Additional Information:
+                        </label>
+                    </div>
+                    <div class="InputDiv">
+                        @Html.TextAreaFor(model => model.AdditionalInformation, new { @class = "ClassDisabledFields" })
+                        <div class="ClassTextareaDiv" @*style="height:80px;overflow:auto;border:solid 1px red;"*@>
+                            @Html.LabelFor(model => model.AdditionalInformation, Model.AdditionalInformation, new { @class = "ClassDisplayLabel" })
+                        </div>
+                        <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AdditionalInformation)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div id="RejectCommentDialog" style="display: none">
+    <div class="floatL">
+        Enter Comment<span class="mandatory">*</span> :</div>
+    <div class="floatL">
+        <textarea rows="5" cols="20" id="txtComment"></textarea></div>
+    <div style="display: none" id="ErrorComment">
+        Please Enter commment</div>
+</div>
+<div id="CancelCommentDialog" style="display: none">
+    Enter Comment * :
+    <textarea rows="2" cols="20" id="txtCancelComment"></textarea>
+    <div style="display: none; color: red" id="ErrorCancelComment">
+        Please Enter Comment</div>
+</div>
+<div id="TraveRequestFormError" style="display: none">
+    <center>
+        Please Fill All Mandatory Details from Travel Tab.
+    </center>
+</div>
+<div id="PocDetailsError" style="display: none">
+    <center>
+        Please Fill PocDetails field from Travel Tab.
+    </center>
+</div>
+<div id="GridEmptyErrorContact" style="display: none">
+    <center>
+        Please add atleast one Emergency Contact Details in Conatct Tab.
+    </center>
+</div>
+<div id="GridEmptyErrorContact1" style="display: none">
+    <center>
+        Please fill all mandatory details from Contact Tab.<br />
+        ( If Contact Number (Local) and Personal Email Id already exists then just Press
+        Save and Continue.)
+    </center>
+</div>
+<div id="GridEmptyErrorPass" style="display: none">
+    <center>
+        Please add atleast one record in Passport Tab.
+    </center>
+</div>
+<div id="GridEmptyErrorVisa" style="display: none">
+    <center>
+        Please add atleast one record in Visa Tab or valid till date is not valid.
+    </center>
+</div>
+<div id="GridEmptyErrorJourney" style="display: none">
+    <center>
+        Please add atleast one record in Journey Tab.
+    </center>
+</div>
+<div id="GridEmptyErrorClient" style="display: none">
+    <center>
+        Please add atleast one record in Client Information Tab.
+    </center>
+</div>
+<div id="AccomodationDetailsFormError" style="display: none">
+    <center>
+        Please fill all the mandatory fields on this tab and save them before clicking Submit.
+    </center>
+</div>
+<div id="ErrorGroupHeadIsE" style="display: none">
+    <center>
+        Please select Is Eligible for Car Hire Details from Travel Tab and Save Details.
+    </center>
+</div>
+<div id="CancelAllTravelDelDialog" style="display: none">
+    <p>
+        Are you sure you want to cancel this record?</p>
+</div>
+<script type="text/javascript">
+    if ('@ViewBag.viewDetailClick' == "Ext") {
+        $('.travelExtensionHide').hide();
+    }
+    else
+        $('.travelExtensionHide').show(); 
+</script>

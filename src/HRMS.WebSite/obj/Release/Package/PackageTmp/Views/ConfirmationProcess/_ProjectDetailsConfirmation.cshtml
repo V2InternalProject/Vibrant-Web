@@ -1,0 +1,126 @@
+﻿@model HRMS.Models.ProjectAchievement
+@using HRMS.DAL
+@section HeaderLinks{
+}
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // Set up the jquery grid
+        $("#projectDetailsConfirmationTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadGridProjectDetailsConfirmation", "ConfirmationProcess")',
+            postData: { employeeId: '@ViewBag.confirmationEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["ProjectEmployeeRoleID", "ProjectEndAppraisalStausID", "ProjectID", "Employee ID", "Confirmation ID", "", "", "Project Name", "Reporting To", "Project End Appraisal"],
+            // Configure the columns
+            colModel: [
+            { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", hidden: true, width: 10, align: "left" },
+            { name: "ProjectEndAppraisalStausID", index: "ProjectEndAppraisalStausID", hidden: true, width: 10, align: "left" },
+            { name: "ProjectID", index: "ProjectID", hidden: true, width: 100, align: "left" },
+             { name: "EmpID", index: "EmpID", hidden: true, width: 100, align: "left" },
+             { name: "ConfirmationID", index: "ConfirmationID", hidden: true, width: 100, align: "left" },
+             { name: "AllocationEndDate", index: "AllocationEndDate", width: 70, hidden: true, align: "left" },
+             { name: "SystemDate", index: "SystemDate", width: 70, hidden: true, align: "left" },
+             { name: "ProjectName", index: "ProjectName", width: 150, align: "left" },
+             { name: "NameOfManager", index: "NameOfManager", width: 150, align: "left" },
+		     { name: "ProjectEndAppraisal", index: "ProjectEndAppraisal", width: 70, align: "left", formatter: formatlink,sortable:false }
+
+            ],
+            width: 700,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#projectDetailsConfirmationTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            loadonce: true,
+            //caption: "Project Details",
+            gridComplete: function () {
+            },
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var selectedProjAchievementID = rowData['ProjAchieveID']
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+
+            }
+        }).navGrid("#projectDetailsConfirmationTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+        function formatlink(cellvalue, options, rowobject) {
+            var status = rowobject['EmpID'];
+            // systemDate = rowobject['SystemDate'];
+            var systemDate = new Date(rowobject['SystemDate']);
+            //endDate = rowobject['EndDate'];
+            var endDate = new Date(rowobject['AllocationEndDate']);
+            if (systemDate <= endDate) {
+                status = 'View';
+                var projectID = rowobject['ProjectID'];
+                var EmpID = rowobject['EmpID'];
+                var ProjectEmployeeRoleID = rowobject['ProjectEmployeeRoleID'];
+                var ProjectEndAppraisalStausID = rowobject['ProjectEndAppraisalStausID'];
+                //return "<a href=# id=" + rowobject['EmpID'] + " class=EmpLink onClick = LinkClick(this," + rowobject['EmpID'] + ",'" + rowobject['ProjectID'] + "'" + "') class=EmployeeNameLink >" + 'View' + "</a>";
+
+                return "<a href=# id=" + rowobject['EmpID'] + " class=EmpLink onClick = ClickView(this," + EmpID + "," + projectID + "," + ProjectEmployeeRoleID + "," + ProjectEndAppraisalStausID + ") class=EmployeeNameLink >" + 'View' + "</a>";
+
+            }
+            else
+                return 'Project Ongoing';
+        }
+
+    });
+    function ClickView(event, empId, ProjectID, ProjectEmployeeRoleID, ProjectEndAppraisalStausID) {
+        DisplayLoadingDialog();
+        $.ajax({
+            url: '@Url.Action("ProjectEndAppraisalFormView", "ConfirmationProcess")',
+            data: { EmployeeID: empId, ProjectID: ProjectID, ProjectEmployeeRoleID: ProjectEmployeeRoleID, ProjectEndAppraisalStatusID: ProjectEndAppraisalStausID },
+            type: 'POST',
+            success: function (result) {
+                $('#loading').dialog('close');
+                $('#loading').dialog('destroy');
+                $('#DisaplyForm').html(result);
+                $("#DisaplyForm").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 600,
+                    width: 1000,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+        });
+        //$("#LinkPopUpConfirmation").css({
+        //    top: positionlink.top,
+        //    left: positionlink.left + width,
+        //    position: "absolute"
+        //}).show();
+        //$("#btnShowStatusConfirmation").focus();
+    }
+</script>
+@Html.HiddenFor(model => model.ConfirmationID)
+@Html.HiddenFor(model => model.EmployeeCode, new { @id = "TextEmployeeCode" })
+<div class="ConfirmationGrid">
+    <div class="tablestyle3">
+        <table id="projectDetailsConfirmationTable" class="scroll"></table>
+    </div>
+    <div id="projectDetailsConfirmationTablePager">
+    </div>
+</div>
+<div id="DisaplyForm" style="display:none"></div>

@@ -1,0 +1,940 @@
+﻿@model HRMS.Models.AppraisalStatusReport
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#AppraisalYearFroozenOn').val('');
+        $('#AppraisalYearFroozenOn').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: 0, yearRange: "0:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#IndividualDevelopmentFrozenOn').val('');
+        $('#IndividualDevelopmentFrozenOn').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: 0, yearRange: "0:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+    });
+
+    $(document).ready(function () {
+        $(".Title").hide();
+        $("#AppraisalFreezeRecords").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("FreezeAppraisalLoadGrid", "ConfigurationAppraisal")',
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["Appraisal Year", "Frozen On", "Frozen By"],
+
+            // Configure the columns
+            colModel: [
+                { name: "AppraisalYearDesc", index: "AppraisalYearDesc", width: 50, align: "left" },
+                { name: "AppraisalYearFroozenOn", index: "AppraisalYearFroozenOn", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "AppraisalYearFroozenByEmpName", index: "AppraisalYearFroozenByEmpName", width: 170, align: "left" }
+            ],
+
+            width: 800,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#appraisalFreezeTablePager"),
+            //caption: "Records",
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#AppraisalFreezeRecords").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_AppraisalFreezeRecords').hide();
+                }
+                else {
+                    $('#gbox_AppraisalFreezeRecords').show();
+                    if (count > 20) {
+
+                        $('#appraisalFreezeTablePager').show();
+                    }
+                    else {
+                        $('#appraisalFreezeTablePager').hide();
+                    }
+                }
+            }
+        }).navGrid("#appraisalFreezeTablePager", { search: false, refresh: false, add: false, edit: false, del: false }, {}, {}, {});
+    });
+
+    $(document).ready(function () {
+        $("#FreezeIndividualDevelopmentRecords").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("FreezeIndividualDevelopmentLoadGrid", "ConfigurationAppraisal")',
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["Appraisal Year", "Frozen On", "Frozen By"],
+
+            // Configure the columns
+            colModel: [
+                { name: "FrozenYear", index: "FrozenYear", width: 50, align: "left" },
+                { name: "FrozenOn", index: "FrozenOn", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "FrozenBy", index: "FrozenBy", width: 170, align: "left" }
+            ],
+
+            width: 800,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#individualDevelopFreezeTablePager"),
+            //caption: "Records",
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#FreezeIndividualDevelopmentRecords").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_FreezeIndividualDevelopmentRecords').hide();
+                }
+                else {
+                    $('#gbox_FreezeIndividualDevelopmentRecords').show();
+                    if (count > 20) {
+
+                        $('#individualDevelopFreezeTablePager').show();
+                    }
+                    else {
+                        $('#individualDevelopFreezeTablePager').hide();
+                    }
+                }
+            }
+        }).navGrid("#individualDevelopFreezeTablePager", { search: false, refresh: false, add: false, edit: false, del: false }, {}, {}, {});
+    });
+
+    function freezeRecords() {
+        var yearID = '@Model.FreezeYearID';
+        var date = $('#AppraisalYearFroozenOn').val();
+        if (date == "") {
+            $("#selectFreezeDate").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $.ajax({
+            url: '@Url.Action("FreezeAppraisalYear", "ConfigurationAppraisal")',
+            type: 'POST',
+            data: { YearID: yearID, FroozenDate: date },
+            async: true,
+            datatype: "json",
+            success: function (result) {
+                if (result.status == "true") {
+                    $("#FreezeAppraisalSuccess").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Appraisal Success",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#AppraisalYearFroozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                if (result.status == "Cannot Change") {
+                    $("#FreezeAppraisalCannotChange").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Appraisal Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#AppraisalYearFroozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                if (result.status == "Greater Date") {
+                    $("#FreezeAppraisalDateGreater").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Appraisal Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#AppraisalYearFroozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                jQuery("#AppraisalFreezeRecords").trigger("reloadGrid");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+            } //result bracket
+        });
+    }
+
+    function freezeIndividualDevelopment() {
+        var yearID = $('#FreezeIndividualDevelopmentYearID').val();
+        var date = $('#IndividualDevelopmentFrozenOn').val();
+        if (date == "") {
+            $("#selectFreezeDate").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $.ajax({
+            url: '@Url.Action("FreezeIndividualDevelopment", "ConfigurationAppraisal")',
+            type: 'POST',
+            data: { YearID: yearID, FroozenDate: date },
+            async: true,
+            datatype: "json",
+            success: function (result) {
+                if (result.status == "true") {
+                    $("#FreezeIndividualDevelopmentSuccess").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Success",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentFrozenOn').val('');
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("InitiateIndividualDevelopStage", "ConfigurationAppraisal")',
+                        type: 'GET',
+                        success: function (result) {
+                            if (result != null) {
+                                $('#IndividualDevelopStage').html(result);
+                            }
+                        }
+                    });
+                }
+                if (result.status == "IDFInitiate Date Greater") {
+                    $("#IDFDateGreaterError").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentFrozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                //Initiate IDF first
+                if (result.status == "Initiate IDF first") {
+                    $("#InitiateIDFfirst").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentFrozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                if (result.status == "Appraisal FreezeDate Greater") {
+                    $("#AppraisalFreezeDateGreaterError").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Froozen Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentFrozenOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                jQuery("#FreezeIndividualDevelopmentRecords").trigger("reloadGrid");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+            } //result bracket
+        });
+    }
+
+    function initiateIndividualDevelopment() {
+        var yearID = $('#InitiateIndividualDevelopmentYearID').val();
+        var date = $('#IndividualDevelopmentInitiatedOn').val();
+        if (date == "") {
+            $("#selectInitiateDate").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+        if (yearID == "") {
+            $("#selectAppraisalYear").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $.ajax({
+            url: '@Url.Action("InitiateIndividualDevelopment", "ConfigurationAppraisal")',
+            type: 'POST',
+            data: { YearID: yearID, InitiateDate: date },
+            async: true,
+            datatype: "json",
+            success: function (result) {
+                if (result.status == true) {
+                    $("#InitiateIndividualDevelopmentSuccess").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Initiate Success",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentInitiatedOn').val('');
+                                $(this).dialog("close");
+
+                                var Empstatus = 'IDFInitiate';
+                                var successEmpIDs = result.appraiserListData;
+                                var appraisalID = 0;
+                                AppraisalSendMailIDF(successEmpIDs, Empstatus, appraisalID);
+
+                            }
+                        }
+                    });
+                }
+                else if (result.InitiateIDF_LessThan_FreezePerformanceAppraisal == true) {
+                    $("#InitiateIndividualDevelopmentError").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Initiate Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentInitiatedOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if (result.InitiateIDF_GreaterThan_FreezeIDF == true) {
+                    $("#InitiateIDF_GreaterThan_FreezeIDFError").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        title: "Initiate Error",
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $('#IndividualDevelopmentInitiatedOn').val('');
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if (result.status == "Error") {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                } else {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                }
+                jQuery("#InitiateIndividualDevelopmentRecords").trigger("reloadGrid");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+            } //result bracket
+        });
+    }
+
+    function IndividualDevelopmentStatusReportShow() {
+        var id = $('#IndividualDevelopmentYearID').val();
+        if (id == "") {
+            $("#selectAppraisalYear").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $.ajax({
+            url: '@Url.Action("IndividualDevelopmentStatusReportByYear", "ConfigurationAppraisal")',
+            type: 'GET',
+            async: true,
+            data: { YearID: id },
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#IndividualDevelopmentStatusReportDetails").empty().append(results);
+                $("#IndividualDevelopmentStatusReportDetails").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: '550',
+                    width: 1100,
+                    title: "Individual Development Form Status Report",
+                    close: function (event, ui) {
+                        $("#IndividualDevelopmentStatusReportDetails").dialog("destroy");
+                    }
+                });
+            }
+        });
+    }
+
+    function AppraisalStatusReportShow() {
+        var id = $('#YearID').val();
+        if (id == "") {
+            $("#selectAppraisalYear").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+            return false;
+        }
+        $("#loading").dialog(
+        {
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose"
+        });
+        $.ajax({
+            url: '@Url.Action("AppraisalStatusReportByYear", "ConfigurationAppraisal")',
+            type: 'GET',
+            async: true,
+            data: { YearID: id },
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#AppraisalStatusReportDetails").empty().append(results);
+                $("#AppraisalStatusReportDetails").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: '550',
+                    width: 1100,
+                    title: "Appraisal Status Report",
+                    close: function (event, ui) {
+                        $("#AppraisalStatusReportDetails").dialog("destroy");
+                    }
+                });
+            }
+        });
+    }
+
+    function AppraisalRatingsReportShow() {
+        var id = $('#AppraisalRatingsYearID').val();
+        if (id == "") {
+            $("#selectAppraisalYear").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 120,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        DisplayLoadingDialog();  //checked
+        $.ajax({
+            url: '@Url.Action("AppraisalRatingsReportByYear", "ConfigurationAppraisal")',
+            type: 'GET',
+            async: true,
+            data: { YearID: id },
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+
+                var docprint = window.open("about:blank", "_blank");
+                docprint.document.open();
+                docprint.document.write('<html><head><link rel="stylesheet" type="text/css" href="../../Content/Default.css" /><title>Rating Report</title>');
+                docprint.document.write('</head><body>');
+                docprint.document.write(results);
+
+//                $("#AppraisalRatingReportDetails").empty().append(results);
+//                $("#AppraisalRatingReportDetails").dialog({
+//                    closeOnEscape: false,
+//                    resizable: false,
+//                    height: '550',
+//                    width: 1100,
+//                    title: "Appraisal Rating Report",
+//                    close: function (event, ui) {
+//                        $("#AppraisalRatingReportDetails").dialog("destroy");
+//                    }
+//                });
+            },
+            error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                DisplayErrorDialog();
+            }
+        });
+    }
+
+    function AppraisalSendMailIDF(successEmpIDs, Empstatus, appraisalID) {
+        var comments;
+        $.ajax({
+            url: '@Url.Action("AppraisalSendMail", "ConfigurationAppraisal")',
+            type: 'POST',
+            async: false,
+            data: { successEmpIDs: successEmpIDs, loggedinEmpID: '@ViewBag.LoggedInEmployeeId', status: Empstatus, comments: comments, appraisalID: appraisalID },
+            datatype: "json",
+            success: function (data) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (data) {
+                    $("#approvalMailDialog").html(data);
+                    $("#approvalMailDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            $(this).dialog('destroy');
+                        }
+
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendConfigAppraisalMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#MailDetails').valid()) {
+                            DisplayLoadingDialog();  //checked
+                            var SendMailUrl = '@Url.Action("SendEmail", "ConfigurationAppraisal")';
+
+                            $.ajax({
+                                url: SendMailUrl,
+                                type: 'POST',
+                                data: $('#MailDetails').serialize(),
+                                success: function (data) {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    if (data.validtoId == true) {
+                                        //if (data.status == true) {
+                                        if (Empstatus == "IDFInitiate") {
+                                            $("#SubmittedMessageIDF").dialog({
+                                                resizable: false,
+                                                height: 140,
+                                                width: 300,
+                                                title: "Appraisal IDF Initiated",
+                                                dialogClass: 'noclose',
+                                                modal: true,
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        $("#approvalMailDialog").dialog('destroy');
+                                        //}
+                                    }
+                                    else if (data.status == "Error") {
+                                        DisplayErrorDialog("Mail Error");
+                                    }
+                                    else {
+                                        if (data.validCcId == false)
+                                            $("#CCErrorMessage").show();
+
+                                        if (data.validtoId == false)
+                                            $("#ToErrorMessage").show();
+                                        return false;
+
+                                    }
+
+                                },
+                                error: function () {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    DisplayErrorDialog("Mail Error");
+                                } //end error
+
+                            }); //end send ajax
+
+                        } //end valid
+                    }); //end send mail click
+                } //end if
+            }, //end success
+            error: function () {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                DisplayErrorDialog("Appraisal Process");
+            } //end error
+        });            //end mail template
+    }
+</script>
+
+<div id="AppraisalStatusReportDetails" style="display: none;">
+</div>
+<div id="FreezeAppraisalSuccess" style="display: none;">
+    Performance Appraisal Period Froozen Successfully.
+</div>
+<div id="FreezeIndividualDevelopmentSuccess" style="display: none;">
+    Individual Development Froozen Successfully.
+</div>
+<div id="InitiateIndividualDevelopmentSuccess" style="display: none;">
+    Individual Development Initiated Successfully.
+</div>
+<div id="InitiateIndividualDevelopmentError" style="display: none;">
+    Individual Development Stage cannot be initiated prior to Freeze Appraisal Stage.
+    Kindly select a date greater than Freeze Appraisal Stage
+</div>
+<div id="InitiateIDF_GreaterThan_FreezeIDFError" style="display: none;">
+    Initiate Individual Development date should be less than Freeze Individual Development
+    Stage. Kindly select a date lesser than Freeze Individual Development Stage.
+</div>
+<div id="FreezeAppraisalCannotChange" style="display: none;">
+    Performance Appraisal Period is already Frozen for a previous date. Cannot freeze
+    again for the same year.
+</div>
+<div id="FreezeAppraisalDateGreater" style="display: none;">
+    Appraisal Freeze Date should be less than Individual Development Stage. Kindly select
+    a date prior to Individual Development Stage.
+</div>
+<div id="IDFDateGreaterError" style="display: none;">
+    Individual Development Freeze Date cannot be less than Individual Development Stage.
+    Kindly select a date greater than Individual Development Stage.
+</div>
+<div id="InitiateIDFfirst" style="display: none;">
+    IDF is not yet initiate.Kindly initiate IDF first and then try again.
+</div>
+<div id="AppraisalFreezeDateGreaterError" style="display: none;">
+    Individual Development Freeze Date cannot be less than Freeze Appraisal Stage. Kindly
+    select a date greater than Freeze Appraisal Stage.
+</div>
+<div id="selectAppraisalYear" title="Select Appraisal Year" style="display: none;">
+    <center>
+        Please select appraisal year.
+    </center>
+</div>
+<div id="selectFreezeDate" title="Select Freeze Date" style="display: none;">
+    <center>
+        Please select the freeze date.
+    </center>
+</div>
+<div id="selectInitiateDate" title="Select Initiate Date" style="display: none;">
+    <center>
+        Please select the initiate date.
+    </center>
+</div>
+<div id="IndividualDevelopmentStatusReportDetails" style="display: none;">
+</div>
+<div id="AppraisalRatingReportDetails" style="display: none;">
+</div>
+<div id="SubmittedMessageIDF" style="display: none;">
+    Individual Development Initiated Successfully.
+</div>
+<div id="approvalMailDialog" style="display: none">
+    @{Html.RenderPartial("_MailTemplateConfigureAppraisalProcess", Model.Mail);}
+</div>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Appraisal</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")">Configure Appraisal Year</a>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")" class="selected">Appraisal Status</a>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">Configuration</a>
+        </nav>
+    </div>
+<div class="MainBody ProjectIndexbody clearfix">
+    <div class="InnerContainer">
+    <div class="clearfix"><a href="/Confirmation/Index" class="BackLink">Back</a></div>
+    <h4 class="subHead">Appraisal Status Report</h4>
+    <div class="FormContainerBox clearfix ProjectIndexFliter">
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    @Html.Label("Appraisal Year:")
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.YearID, new SelectList(Model.AppraisalYear, "AppraisalYearID", "AppraisalYearDesc"), "Select")
+                </div>
+            </div>
+        </div>
+        <div class="ButtonContainer3"><input type="button" value="Generate Report" class="ButtonGray mrgnR8" onclick="AppraisalStatusReportShow()" /></div>
+    </div>
+    <h2 class="title-bgcolor mrgnT10">
+        Freeze Performance Appraisal Period</h2>
+    <div class="blueBorderTop clearfix AppraisalStatus">
+        <div class="clearfix">
+            <div class="leftcol">
+                <div class="formcol clearfix mrgnT15">
+                    <div class="labelwidth floatL editor-label">
+                        @Html.Label("Appraisal Year:")
+                    </div>
+                    <div class="fieldwidth floatL editor-field">
+                        @Html.DropDownListFor(model => model.FreezeYearID, new SelectList(Model.FreezeAppraisalYear, "AppraisalYearID", "AppraisalYearDesc"), new { @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="formcol clearfix mrgnT15">
+                    <div class="floatL editor-field fieldwidth">
+                        @*<input type="text" />*@
+                        @Html.TextBoxFor(model => model.AppraisalYearFroozenOn, String.Format("{0:MM/dd/yyyy}", Model.AppraisalYearFroozenOn))
+                    </div>
+                    <div class="floatR editor-field">
+                        <input type="button" value="Freeze" class="button" id="btnFreeze" onclick="freezeRecords()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearL mrgnT15 smalltablestyle3 NoTitleGridsContainer">
+            <table id="AppraisalFreezeRecords" class="scroll tablestyle3">
+            </table>
+            <div id="appraisalFreezeTablePager">
+            </div>
+        </div>
+    </div>
+    <h2 class="title-bgcolor mrgnT30">
+        Initiate Individual Development Form Stage</h2>
+    <div class="blueBorderTop clearfix AppraisalStatus" id="IndividualDevelopStage">
+        @{Html.RenderPartial("_InitiateIndividualDevelopment", Model);}
+    </div>
+    <h2 class="title-bgcolor mrgnT30">
+        Freeze Individual Development Form Stage</h2>
+    <div class="blueBorderTop clearfix AppraisalStatus">
+        <div class="clearfix">
+            <div class="leftcol">
+                <div class="formcol clearfix mrgnT15">
+                    <div class="labelwidth floatL editor-label">
+                        @Html.Label("Appraisal Year:")
+                    </div>
+                    <div class="fieldwidth floatL editor-field">
+                        @Html.DropDownListFor(model => model.FreezeIndividualDevelopmentYearID, new SelectList(Model.FreezeIndividualDevelopmentYear, "AppraisalYearID", "AppraisalYearDesc"), new { @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="rightcol">
+                <div class="formcol clearfix mrgnT15">
+                    <div class="floatL editor-field fieldwidth">
+                        @Html.TextBoxFor(model => model.IndividualDevelopmentFrozenOn, String.Format("{0:MM/dd/yyyy}", Model.IndividualDevelopmentFrozenOn))
+                    </div>
+                    <div class="floatR editor-field">
+                        <input type="button" value="Freeze" class="button" onclick="freezeIndividualDevelopment()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearL mrgnT15 smalltablestyle3 NoTitleGridsContainer">
+            <table id="FreezeIndividualDevelopmentRecords" class="scroll">
+            </table>
+            <div id="individualDevelopFreezeTablePager">
+            </div>
+        </div>
+    </div>
+    <h2 class="title-bgcolor mrgnT30">
+        Individual Development Form Status Report</h2>
+    <div class="blueBorderTop clearfix AppraisalStatus">
+        <div class="leftcol">
+            <div class="formcol clearfix mrgnT15">
+                <div class="labelwidth floatL editor-label">
+                    @Html.Label("Appraisal Year:")
+                </div>
+                <div class="fieldwidth floatL editor-field">
+                    @Html.DropDownListFor(model => model.IndividualDevelopmentYearID, new SelectList(Model.IndividualDevelopmentYear, "AppraisalYearID", "AppraisalYearDesc"), "Select")
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formcol clearfix">
+                <div class="floatR editor-field">
+                    <input type="button" value="Generate Report" class="button" onclick="IndividualDevelopmentStatusReportShow()" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 class="title-bgcolor mrgnT30">
+        Appraisal Ratings Report</h2>
+    <div class="blueBorderTop clearfix AppraisalStatus">
+        <div class="leftcol">
+            <div class="formcol clearfix mrgnT15">
+                <div class="labelwidth floatL editor-label">
+                    @Html.Label("Appraisal Year:")
+                </div>
+                <div class="fieldwidth floatL editor-field">
+                    @Html.DropDownListFor(model => model.AppraisalRatingsYearID, new SelectList(Model.IndividualDevelopmentYear, "AppraisalYearID", "AppraisalYearDesc"), "Select")
+                </div>
+            </div>
+        </div>
+        <div class="rightcol">
+            <div class="formcol clearfix">
+                <div class="floatR editor-field">
+                    <input type="button" value="Generate Report" class="button" onclick="AppraisalRatingsReportShow()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>

@@ -1,0 +1,27 @@
+
+2016-04-06 @ 11:42:43  Informational , App start Global.asax App_Start  
+2016-04-06 @ 11:43:29  Informational , App start finished Global.asax App_Start  
+
+2016-04-06 @ 16:17:58  Informational , App start Global.asax App_Start  
+2016-04-06 @ 16:18:24  Informational , App start finished Global.asax App_Start  
+2016-04-06 @ 16:18:45  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.IndexOutOfRangeException: Cannot find table 0.
+   at System.Data.DataTableCollection.get_Item(Int32 index)
+   at RRFList.BindData() in d:\VB\src\HRMS.WebSite\Recruitment\RRFList.aspx.cs:line 119
+   at RRFList.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Recruitment\RRFList.aspx.cs:line 45
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.recruitment_rrflist_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_ywkdabwr.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-04-06 @ 16:18:45  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-04-06 @ 16:22:05  Informational , App start Global.asax App_Start  
+2016-04-06 @ 16:22:20  Informational , App start finished Global.asax App_Start  

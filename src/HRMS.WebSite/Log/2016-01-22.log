@@ -1,0 +1,906 @@
+
+2016-01-22 @ 10:45:47  Informational , App start Global.asax App_Start  
+2016-01-22 @ 10:45:55  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 10:51:03  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 10:51:03  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 10:51:04  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 10:51:04  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 10:51:04  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 14:06:06  Informational , App start Global.asax App_Start  
+2016-01-22 @ 14:06:12  Informational , App start finished Global.asax App_Start  
+
+2016-01-22 @ 14:06:22  Informational , App start Global.asax App_Start  
+2016-01-22 @ 14:06:28  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 14:06:58  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:06:58  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:07:00  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 14:07:00  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 14:07:00  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 14:07:25  FATAL ERROR   , A field or property with the name 'Category' was not found on the selected data source. ViewSuperAdminIssues.aspx GetSuperAdminIssueList     at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+2016-01-22 @ 14:07:38  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): A field or property with the name 'Category' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218 ---> System.Web.HttpException: A field or property with the name 'Category' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 244
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 86
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_viewsuperadminissues_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_ehrkhc2p.7.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 14:07:38  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-01-22 @ 14:23:37  Informational , App start Global.asax App_Start  
+2016-01-22 @ 14:23:54  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 14:24:33  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:24:33  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:24:33  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 14:24:33  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 14:24:34  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 14:24:59  FATAL ERROR   , A field or property with the name 'SubCategory' was not found on the selected data source. ViewSuperAdminIssues.aspx GetSuperAdminIssueList     at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+2016-01-22 @ 14:28:17  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): A field or property with the name 'SubCategory' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218 ---> System.Web.HttpException: A field or property with the name 'SubCategory' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 244
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 86
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_viewsuperadminissues_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_ehrkhc2p.7.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 14:28:17  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-01-22 @ 14:28:29  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:28:29  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:28:29  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 14:28:29  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 14:28:29  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 14:28:43  FATAL ERROR   , A field or property with the name 'ProblemSeverity' was not found on the selected data source. ViewSuperAdminIssues.aspx GetSuperAdminIssueList     at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+2016-01-22 @ 14:31:13  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): A field or property with the name 'ProblemSeverity' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218 ---> System.Web.HttpException: A field or property with the name 'ProblemSeverity' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 244
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 86
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_viewsuperadminissues_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_ehrkhc2p.7.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 14:31:13  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-01-22 @ 14:31:26  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:31:26  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:31:27  FATAL ERROR   , The remote name could not be resolved: 'api.ipinfodb.com' SignInSignOut.cs Page_Load     at System.Net.HttpWebRequest.GetResponse()
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 120
+2016-01-22 @ 14:31:39  FATAL ERROR   , A field or property with the name 'SubCategory' was not found on the selected data source. ViewSuperAdminIssues.aspx GetSuperAdminIssueList     at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+2016-01-22 @ 14:33:04  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): A field or property with the name 'SubCategory' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218 ---> System.Web.HttpException: A field or property with the name 'SubCategory' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 244
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 86
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_viewsuperadminissues_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_ehrkhc2p.7.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 14:33:04  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-01-22 @ 14:33:18  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:33:18  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:33:18  FATAL ERROR   , The remote name could not be resolved: 'api.ipinfodb.com' SignInSignOut.cs Page_Load     at System.Net.HttpWebRequest.GetResponse()
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 120
+2016-01-22 @ 14:33:27  FATAL ERROR   , A field or property with the name 'AssignTo' was not found on the selected data source. ViewSuperAdminIssues.aspx GetSuperAdminIssueList     at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+2016-01-22 @ 14:37:07  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): A field or property with the name 'AssignTo' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218 ---> System.Web.HttpException: A field or property with the name 'AssignTo' was not found on the selected data source.
+   at System.Web.UI.WebControls.BoundColumn.OnDataBindColumn(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnDataBinding(EventArgs e)
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.Control.DataBindChildren()
+   at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)
+   at System.Web.UI.Control.DataBind()
+   at System.Web.UI.WebControls.DataGrid.CreateItem(Int32 itemIndex, Int32 dataSourceIndex, ListItemType itemType, Boolean dataBind, Object dataItem, DataGridColumn[] columns, TableRowCollection rows, PagedDataSource pagedDataSource)
+   at System.Web.UI.WebControls.DataGrid.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.BaseDataList.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.BaseDataList.DataBind()
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 218
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.GetSuperAdminIssueList() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 244
+   at V2.Helpdesk.web.admin.ViewSuperAdminIssues.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\admin\ViewSuperAdminIssues.aspx.cs:line 86
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_viewsuperadminissues_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_ehrkhc2p.7.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 14:37:07  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-01-22 @ 14:43:00  Informational , App start Global.asax App_Start  
+2016-01-22 @ 14:43:05  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 14:43:40  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 14:43:40  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 14:43:40  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 14:43:40  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 14:43:40  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 15:07:34  Informational , App start Global.asax App_Start  
+2016-01-22 @ 15:07:36  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 15:08:50  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 15:08:50  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 15:08:51  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 15:08:51  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 15:08:51  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 15:13:17  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 15:13:17  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 15:13:17  FATAL ERROR   , The remote name could not be resolved: 'api.ipinfodb.com' SignInSignOut.cs Page_Load     at System.Net.HttpWebRequest.GetResponse()
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 120
+
+2016-01-22 @ 15:48:20  Informational , App start Global.asax App_Start  
+2016-01-22 @ 15:48:28  Informational , App start finished Global.asax App_Start  
+
+2016-01-22 @ 16:33:49  Informational , App start Global.asax App_Start  
+2016-01-22 @ 16:33:55  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 16:34:26  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 16:34:26  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 16:34:27  FATAL ERROR   , The remote name could not be resolved: 'api.ipinfodb.com' SignInSignOut.cs Page_Load     at System.Net.HttpWebRequest.GetResponse()
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 120
+2016-01-22 @ 16:35:22  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 16:35:22  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 16:35:22  FATAL ERROR   , The remote name could not be resolved: 'api.ipinfodb.com' SignInSignOut.cs Page_Load     at System.Net.HttpWebRequest.GetResponse()
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 120
+
+2016-01-22 @ 17:17:51  Informational , App start Global.asax App_Start  
+2016-01-22 @ 17:17:55  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 17:20:00  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:20:00  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:20:01  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:20:01  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:20:01  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 17:25:47  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:25:47  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:25:47  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:25:47  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:25:48  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 17:27:03  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:27:03  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:27:03  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:27:03  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:27:03  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 17:29:15  Informational , App start Global.asax App_Start  
+2016-01-22 @ 17:29:22  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 17:29:44  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:29:44  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:29:44  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:29:44  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:29:45  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 17:39:51  Informational , App start Global.asax App_Start  
+
+2016-01-22 @ 17:40:09  Informational , App start Global.asax App_Start  
+2016-01-22 @ 17:40:43  Informational , App start finished Global.asax App_Start  
+
+2016-01-22 @ 17:41:01  Informational , App start Global.asax App_Start  
+2016-01-22 @ 17:41:03  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 17:41:57  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:41:57  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:41:58  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:41:58  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:41:58  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 17:43:07  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:43:07  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:43:07  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:43:07  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:43:07  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 17:44:39  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:44:39  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:44:39  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:44:39  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:44:39  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 17:57:46  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 17:57:46  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 17:57:46  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 17:57:46  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 17:57:46  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 18:00:34  Informational , App start Global.asax App_Start  
+2016-01-22 @ 18:00:43  Informational , App start finished Global.asax App_Start  
+2016-01-22 @ 18:09:09  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:09:09  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:09:09  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:09:09  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:09:09  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:15:30  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:15:30  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:15:31  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:15:31  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:15:31  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:17:14  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:17:14  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:17:15  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:17:15  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:17:15  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:20:56  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:20:56  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:20:57  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:20:57  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:20:57  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:29:34  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:29:34  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:29:34  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:29:34  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:29:34  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:48:16  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:48:16  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:48:17  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:48:17  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:48:17  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 18:49:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 18:49:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 18:49:38  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 18:49:38  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 18:49:38  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+2016-01-22 @ 19:03:13  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-01-22 @ 19:03:13  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-01-22 @ 19:03:14  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-01-22 @ 19:03:14  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-01-22 @ 19:03:14  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 143
+
+2016-01-22 @ 19:03:43  FATAL ERROR   , A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) clsDLViewMyStatus.cs GetIssues     at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+2016-01-22 @ 19:03:43  FATAL ERROR   , System.Data.SqlClient.SqlException (0x80131904): A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception (0x80004005): The specified network name is no longer available
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+ClientConnectionId:4e75267f-b0dc-4d05-b0ba-07ba24d35cc1 ViewMyStatus.aspx CheckParameterValues     at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 71
+   at V2.Helpdesk.BusinessLayer.clsBLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\BusinessLayerHelpDeskBranch\clsBLViewMyStatus.cs:line 49
+   at HRMS.HelpDesk.ViewMyStatus.BindDataGrid() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\ViewMyStatus.aspx.cs:line 267
+2016-01-22 @ 19:04:09  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlClient.SqlException (0x80131904): A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception (0x80004005): The specified network name is no longer available
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+ClientConnectionId:4e75267f-b0dc-4d05-b0ba-07ba24d35cc1 ---> System.Data.SqlClient.SqlException: A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception: The specified network name is no longer available
+   --- End of inner exception stack trace ---
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+   --- End of inner exception stack trace ---
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 71
+   at V2.Helpdesk.BusinessLayer.clsBLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\BusinessLayerHelpDeskBranch\clsBLViewMyStatus.cs:line 49
+   at HRMS.HelpDesk.ViewMyStatus.BindDataGrid() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\ViewMyStatus.aspx.cs:line 267 ---> V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlClient.SqlException (0x80131904): A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception (0x80004005): The specified network name is no longer available
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+ClientConnectionId:4e75267f-b0dc-4d05-b0ba-07ba24d35cc1 ---> System.Data.SqlClient.SqlException: A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception: The specified network name is no longer available
+   --- End of inner exception stack trace ---
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at System.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at System.Data.SqlClient.TdsParserStateObject.TryPrepareBuffer()
+   at System.Data.SqlClient.TdsParserStateObject.TryReadByte(Byte& value)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 58
+   --- End of inner exception stack trace ---
+   at DataLayerHelpDeskBranch.clsDLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\DataLayerHelpDeskBranch\clsDLViewMyStatus.cs:line 71
+   at V2.Helpdesk.BusinessLayer.clsBLViewMyStatus.GetIssues(clsViewMyStatus objClsViewMyStatus) in d:\mahesh .F\VB\src\BusinessLayerHelpDeskBranch\clsBLViewMyStatus.cs:line 49
+   at HRMS.HelpDesk.ViewMyStatus.BindDataGrid() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\ViewMyStatus.aspx.cs:line 267
+   --- End of inner exception stack trace ---
+   at HRMS.HelpDesk.ViewMyStatus.BindDataGrid() in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\ViewMyStatus.aspx.cs:line 323
+   at HRMS.HelpDesk.ViewMyStatus.Page_Load(Object sender, EventArgs e) in d:\mahesh .F\VB\src\HRMS.WebSite\HelpDesk\ViewMyStatus.aspx.cs:line 161
+   at System.EventHandler.Invoke(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_viewmystatus_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\862b9d29\cb184c30\App_Web_4pwymucn.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-01-22 @ 19:04:09  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------

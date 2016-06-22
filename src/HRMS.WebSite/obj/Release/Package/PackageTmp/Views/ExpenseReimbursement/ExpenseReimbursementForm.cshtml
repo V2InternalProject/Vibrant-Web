@@ -1,0 +1,1999 @@
+﻿@using HRMS.Models
+@model HRMS.Models.ExpenseReimbursementViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+@*<script src="../../Scripts/GridView/jquery-1.7.2.min.js" type="text/javascript"></script>*@
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/finance.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/ExpenseReimbursement/ExpenseReimbursementForm.js" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/New Design/common.js"></script>
+<script src="../../Scripts/New%20Design/jquery.selectBox.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/jquery.selectBox%20(2).css" rel="stylesheet"
+      type="text/css" />
+<style>
+    #ErrorComment {
+        float: left;
+        margin-left: 118px;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        isExpenseRowInAddEditMode = false;
+        selectedFileName = "";
+        selectedFilePath = "";
+        $('#reportView').hide();
+        $('select').selectBox({
+            hideOnWindowScroll: true,
+            keepInViewport: false
+        });
+
+        SelectedExpenseTypeID="";
+        if('@Model.StageID' == 0 ||'@Model.StageID' == 3)
+            $('#AdvancesAmount').attr('disabled',false);
+        else
+            $('#AdvancesAmount').attr('disabled',true);
+
+        $("#AdvancesAmount").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });//to allow only numbers
+        $("#AdvancesAmount").bind('contextmenu',function(e){
+            e.preventDefault();
+        });//to disable right click in text box
+
+        $('#ClientReimbursement').change(function () {
+            if($('#ClientReimbursement option:selected').val()!=""){
+                $('#validationMsgClientReimbursement').hide();
+            }
+            else
+                $('#validationMsgClientReimbursement').show();
+        });//to hide reimbursement validation message
+
+        $('#ProjectName').change(function () {
+            if($('#ProjectName option:selected').val()!=""){
+                $('#validationMsgProjectName').hide();
+                $('#SecondApproveContain').addClass('ClearLFix');
+            }
+            else
+                $('#validationMsgProjectName').show();
+        });//to hide client name validation message
+
+        $('#CostCentre').change(function () {
+            if($('#CostCentre option:selected').val()!="")
+                $('#validationMsgCostCentre').hide();
+            else
+                $('#validationMsgCostCentre').show();
+        });//to hide Cost Center name validation message
+
+        if ('@Model.StageID' == 0){
+            $('.LabelForCheckbox').hide();
+        }
+
+        if('@ViewBag.IsExpenseAdmin' == '@UserRoles.ExpenseAdmin' && '@Model.StageID'==3){
+            $('.forFinanceApprover').show();
+        }
+        if('@ViewBag.IsExpenseAdmin' == '@UserRoles.ExpenseAdmin' && '@ViewBag.viewDetailClick'=="yes"){
+            $('.forFinanceApprover').hide();
+        }
+        if('@ViewBag.viewDetailClick'=="yes"){
+            $("#printbtnfrm").show();
+            $('.LabelForCheckbox').hide();
+        }
+        if('@ViewBag.viewDetailClick'=="fillForm" ||'@ViewBag.viewDetailClick'=="yes"){
+            $('#expenseNewRequest').removeClass("selected");
+            $('#expenseSavedRequest').addClass("selected");
+        }
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+
+        $(".ValidationDropDown").each(function() {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display':'block !important', 'visibility':'hidden'});
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible','top': '-28px'});
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-32px'});
+
+        });
+        //
+
+        //save details
+        $('#btnSaveExpenseReimursementForm').click(function () {
+            if (($('#PrimaryApprover').is(":enabled") && $('#SecondaryApprover').is(":enabled"))) {
+                if ($('#PrimaryApprover').attr('selected', 'selected').val() == $('#SecondaryApprover').attr('selected', 'selected').val()) {
+                    return false;
+                }
+            }
+            if ('@Model.StageID' == 0 && '@Model.ExpenseId' == 0) {
+                var url = '@Url.Action("ValidateFormCode", "ExpenseReimbursement")';
+                var formCode = $("#formCode").text();
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    async: false,
+                    data: { FormCode: formCode },
+                    success: function (data) {
+                        if (data.status == true) {
+                            $("#DuplicateFormCode").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: 'Expense Details',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    OK: function () {
+                                        $('#FormCode').removeAttr("disabled");
+                                        $('#FormCode').val(data.newFormCode);
+                                        $('#FormCode').attr("disabled", "disabled");
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $.preventDefault();
+                        } else {
+                            return true;
+                        }
+                    }
+                });
+            }
+            var data = $('#ReimbursementTable').getRowData();
+            var feedback = "";
+            for (var i = 0; i < data.length; i++) {
+                feedback = feedback + data[i].ExpenseDetailsId + "," + data[i].Verify + ",";
+            }
+            $('#ExpenseReimbursementForm #ExpenseDetails').val(feedback);
+            $("#ExpenseReimbursementForm").find('input, select').attr("disabled", false);
+            $("#gbox_ReimbursementTable").find('input, select').attr("disabled", false);
+            if ($('#ReimbursementFormName').val() == "") {
+                $('#FormNameValidationMessage').show();
+                return false;
+            } else {
+                DisplayLoadingDialog();  //checked
+                $('#ExpenseId').val('@Model.ExpenseId');
+                var postUrl = '@Url.Action("SaveExpenseApprovalForm", "ExpenseReimbursement")';
+                var formData = $('#ExpenseReimbursementForm').serialize();
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#ExpenseReimbursementForm').serialize(),
+                    success: function (results) {
+                        if (results.status == true) {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#expenseRecordSuccess").dialog({
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: "Deleted",
+                                open: function (event, ui) {
+                                    setTimeout("$('#expenseRecordSuccess').dialog('close')", 1000);
+                                }
+                            });
+                            window.location.href = '@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement")?expenseEmployeeId=' + '@ViewBag.encryptedReimbursementEmployeeId' + '&encryptedExpenseId=' + results.EncryptedExpenseId + '&viewDetails= ' + '@ViewBag.viewDetailClick';
+
+                        } else if (results.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Expense Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.reload();
+                                    }
+                                }
+                            }); //end dialog
+                        } else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#addExpenseErrorMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                title: 'Expense Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                return true;
+                $("#ExpenseReimbursementForm").find('input,select').attr("disabled", true);
+                grayOutFields();
+                $("#gbox_ReimbursementTable").find('input,select').attr("disabled", true);
+            }
+        });
+
+        $('#anchor_guidelinesExpenseForRoles').click(function () {
+            $('#guideLinesExpenseForRoles').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                height: 300,
+                resizable: false,
+                title: "Guidelines"
+            });
+            $('#guideLinesExpenseForRoles').dialog('open');
+        });
+
+        // Reject Expense Reimbursement Details
+        $('#btnRejectExpenseReimursementForm').click(function () {
+            var expenseId = '@Model.ExpenseId';
+            $('#ExpenseDetailsId').val(expenseId);
+            $('#RejectCommnentDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                dialogClass: "noclose",
+                width: 410,
+                height: 160,
+                resizable: false,
+                title: "Reject comment",
+                buttons: {
+                    Ok: function () {
+                        var comments = $("#txtComment").val().trim();
+                        if (comments.length <= 0) {
+                            $('#ErrorComment').show();
+                            return false;
+                        }
+                        else {
+                            $('#ErrorComment').hide();
+                        }
+                        $("#RejectComments").val(comments);
+
+                        DisplayLoadingDialog();  //checked
+                        var postUrlReject = '@Url.Action("RejectExpenseDetails", "ExpenseReimbursement")';
+                        $("#ExpenseReimbursementForm").find('input,select').attr("disabled", false);
+                        $("#gbox_ReimbursementTable").find('input,select').attr("disabled", false);
+                        $.ajax({
+                            url: postUrlReject,
+                            type: 'POST',
+                            data: $('#ExpenseReimbursementForm').serialize(),
+                            success: function (data) {
+                                $("#RejectCommnentDialog").dialog("destroy");
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (data.status == true) {
+                                    //callExpenseReimursementMail(data.expenseID, false, true, false, null, null, null, null, null, null, comments);
+                                    DisplayLoadingDialog();  //checked
+                                    callExpenseReimursementMail(data.expenseID, false, true, false, data.employeeID, data.stageID, data.primaryApprover, data.secondaryApprover, data.FinanceApprover, data.Formname, comments, data.ExpenseCode);
+                                    $('#RejectCommnentDialog').dialog("destroy");
+                                    $("#RejectSuccessMessage").dialog({
+                                        modal: true,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        title: "Rejected",
+                                        open: function (event, ui) {
+                                            setTimeout("$('#addExpenseSuccessMessege').dialog('close')", 1000);
+                                        }
+
+                                    });
+                                    window.location.href = '@Url.Action("GetExpenseReimbursementStatus", "ExpenseReimbursement")';
+                                }
+                                else if (data.status == "Error") {
+                                    DisplayErrorDialog("Expense Details");
+                                }
+                                else {
+                                    DisplayErrorDialog("Expense Details");
+                                }
+                            }
+                        });
+                    },
+                    Cancel: function () {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            $('#RejectCommnentDialog').dialog('open');
+
+        });
+
+        //add expense details
+        $("#btnAddRecord").click(function () {
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $('#ExpenseDetailsId').val('');
+            $('#addExpenseReimbursementDetails #ExpenseId').val('@Model.ExpenseId');
+            $('#addExpenseReimbursementDetails #EncryptedEmployeeId').val('@ViewBag.encryptedReimbursementEmployeeId');
+            $('#addExpenseReimbursementDetails #EncryptedExpenseId').val('@ViewBag.encryptedReimbursementExpenseId');
+            $('#ReceiptNo').val('');
+            $('#DateOfExpense').val('');
+            $('#NatureOfExpense').val('');
+            $('#Details').val('');
+            $('#Amount').val('');
+            $('#Comments').val('');
+            $('#addExpenseDetailDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 460,
+                resizable: false,
+                title: "Expense Details"
+            });
+            $('#addExpenseDetailDialog').dialog('open');
+        });
+
+        // Delete all Expense Reimbursement Details
+        $('#btnCancelExpenseReimursementForm').click(function () {
+            var expenseId = '@Model.ExpenseId';
+            $('#CancelCommentDialog').dialog(
+			           {
+			               autoOpen: false,
+			               modal: true,
+			               dialogClass: "noclose",
+			               width: 410,
+			               height: 'auto',
+			               resizable: false,
+			               title: "Cancel Comment",
+			               buttons:
+					{
+					    Ok: function () {
+					        var comments = $("#txtExpCancelCommnet").val();
+					        if (comments.length <= 0) {
+					            $('#ErrorCancelComment').show();
+					            return false;
+					        }
+					        else {
+					            $('#ErrorCancelComment').hide();
+					        }
+					        var commenttype = "canceled";
+					        $.ajax({
+					            url: "SaveComments/ExpenseReimbursement",
+					            type: "POST",
+					            Async: false,
+					            cache: false,
+					            data: { expenseId: expenseId, comments: comments, commenttype: commenttype },
+					            success: function (resul) {
+					                $("#CancelCommentDialog").dialog("destroy");
+					                if (resul.status == "Error") {
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Expense Details',
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else{
+					                    DisplayLoadingDialog();  //checked
+
+					                    $.ajax({
+					                        url: "DeleteAllReimbursementDetailsByExpenseId/ExpenseReimbursement",
+					                        type: "POST",
+					                        Async: false,
+					                        cache: false,
+					                        data: { expenseId: expenseId, expenseEmployeeId: '@ViewBag.encryptedReimbursementEmployeeId', comments: comments },
+					                        success: function (res) {
+					                            $("#loading").dialog("close");
+					                            $("#loading").dialog("destroy");
+					                            if (res.status == true) {
+					                                $("#CancelMessage").dialog({
+					                                    modal: true,
+					                                    resizable: false,
+					                                    height: 140,
+					                                    width: 300,
+					                                    title: "Cancelled",
+					                                    open: function (event, ui) {
+					                                        setTimeout("$('#addExpenseSuccessMessege').dialog('close')", 1000);
+					                                    }
+
+					                                });
+					                                DisplayLoadingDialog();  //checked
+					                                callExpenseReimursementMail(res.expenseID, false, false, true, res.employeeID, res.stageID, res.primaryApprover, res.secondaryApprover, res.FinanceApprover, res.Formname, res.comments, res.ExpenseCode);
+
+					                            }
+					                            else if (res.status == "Error") {
+					                                $("#errorDialog").dialog({
+					                                    resizable: false,
+					                                    height: 'auto',
+					                                    width: 'auto',
+					                                    modal: true,
+					                                    title: 'Expense Details',
+					                                    buttons: {
+					                                        Ok: function () {
+					                                            $(this).dialog("close");
+					                                            jQuery("#ReimbursementTable").trigger("reloadGrid");
+					                                        }
+					                                    }
+					                                }); //end dialog
+					                            }
+					                            else {
+					                                $("#errorDialog").dialog({
+					                                    resizable: false,
+					                                    height: 'auto',
+					                                    width: 'auto',
+					                                    modal: true,
+					                                    title: 'Expense Details',
+					                                    buttons: {
+					                                        Ok: function () {
+					                                            $(this).dialog("close");
+					                                            jQuery("#ReimbursementTable").trigger("reloadGrid");
+					                                        }
+					                                    }
+					                                }); //end dialog
+					                            }
+					                        }
+					                    });
+					                }
+					            }
+
+					        });
+
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			           });
+            $('#CancelCommentDialog').dialog('open');
+
+        });
+
+        $('#PrimaryApprover').change(function () {
+            //---
+            var exEid = '@(System.Configuration.ConfigurationManager.AppSettings["ExpenseReimbursementEmpID"].ToString())'
+            if ($('#PrimaryApprover option:selected').val() == exEid) {
+                $('#SecondaryApprover').attr("disabled", true);
+
+            }
+            else if ('@ViewBag.RequestorRole' == '@UserRoles.GroupHead' || '@ViewBag.RequestorRole' == '@UserRoles.AccountOwner' || '@ViewBag.RequestorRole' == '@UserRoles.DeliveryManager' || '@ViewBag.RequestorRole' == '@UserRoles.Manager') {
+                $("#SecondaryApprover").attr("disabled", "disabled").addClass("bg-gray");
+                $("#SecondaryApprover").val("Select");
+                $("#secondaryAsterisk").hide();
+            }
+            else {
+                $('#SecondaryApprover').attr("disabled", false);
+                $('#SecondaryApprover').removeClass("bg-gray");
+                $("#secondaryAsterisk").show();
+            }
+            //--------
+            if($('#PrimaryApprover').val()!=""){
+                $('#validationMsgPrimaryApprover').hide();
+                if ($('#PrimaryApprover').val() == $('#SecondaryApprover').val())
+                    $('#PrimaryApproverErrorMessage').show();
+                else
+                    $('#PrimaryApproverErrorMessage').hide();
+            }
+            else {
+                $('#validationMsgPrimaryApprover').show();
+                $('#PrimaryApproverErrorMessage').hide();
+                if ($('#PrimaryApprover').val() !== $('#SecondaryApprover').val()) {
+                    $('#SecondaryApproverErrorMessage').hide();
+                }
+            }
+
+        });
+
+        $('#SecondaryApprover').change(function () {
+            if($('#SecondaryApprover').val()!=""){
+                $('#validationMsgSecondaryApprover').hide();
+                if ($('#PrimaryApprover').val() == $('#SecondaryApprover').val()) {
+                    $('#SecondaryApproverErrorMessage').show();
+                }
+                else
+                    $('#SecondaryApproverErrorMessage').hide();
+            }
+            else {
+                $('#validationMsgSecondaryApprover').show();
+                $('#SecondaryApproverErrorMessage').hide();
+                if ($('#PrimaryApprover').val() !== $('#SecondaryApprover').val()) {
+                    $('#PrimaryApproverErrorMessage').hide();
+                }
+            }
+        });
+
+        //submit details
+        $('#btnSubmitExpenseReimursementForm').click(function () {
+            if ('@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId' && '@Model.StageID' == 3) {
+                $("#ErrorForselfFinanceApprove").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+
+                });
+                $.preventDefault();
+            }
+            else {
+
+                if (($('#PrimaryApprover').is(":enabled") && $('#SecondaryApprover').is(":enabled"))) {
+                    if (!$('#ExpenseReimbursementForm').valid()) {
+                        return false;
+                    }
+                    if ($('#PrimaryApprover').attr('selected', 'selected').val() == $('#SecondaryApprover').attr('selected', 'selected').val()) {
+                        return false;
+                    }
+                }
+
+                if ('@Model.ExpenseId' > 0 && '@Model.StageID' > 0) {
+                    var tblCheckBox = $(".chkVerify");
+                    for (j = 0; j < tblCheckBox.length; j++) {
+                        if ($(tblCheckBox[j]).prop('checked') == false) {
+                            $("#ErrorIsVerified").dialog({
+                                title: 'Expense Reimbursement Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    $(this).dialog("destroy");
+                                }
+                            }); //end dialog
+                            return false;
+                        }
+                    } //end table for loop
+                }
+                if ('@Model.ExpenseId' > 0 && '@Model.StageID' > 0) {
+                    reimbursementTableData = jQuery("#ReimbursementTable").getRowData();
+                    for (var i = 0; i < reimbursementTableData.length; i++) {
+                        var isVerified = reimbursementTableData[i].Verify;
+                        if (isVerified != "" && isVerified != null)
+                            isVerified = isVerified.toLowerCase().trim();
+                        if (isVerified == "false") {
+                            $("#ErrorIsVerified").dialog({
+                                title: 'Expense Reimbursement Details',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function () {
+                                    $(this).dialog("destroy");
+                                }
+                            }); //end dialog
+                            return false;
+                        }
+                    } //end grid for loop
+                } //end if
+
+                var reimbursementDetailsData = jQuery("#ReimbursementTable").getRowData();
+                if (reimbursementDetailsData.length <= 0 && isExpenseRowInAddEditMode == false) {
+                    $("#ErrorExpenseDetails").dialog({
+                        title: 'Expense Reimbursement Details',
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }); //end dialog
+                    return false;
+                }
+                else if(isExpenseRowInAddEditMode == true)
+                {
+                    $("#RowinAddEditModeDialog").dialog({
+                        title: 'Expense Reimbursement Details',
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }); //end dialog
+                    return false;
+                }
+                if ('@Model.StageID' == 0 && '@Model.ExpenseId' == 0) {
+                    var url = '@Url.Action("ValidateFormCode", "ExpenseReimbursement")';
+                    var formCode = $("#FormCode").val();
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        async: false,
+                        data: { FormCode: formCode },
+                        success: function (data) {
+                            if (data.status == true) {
+                                $("#DuplicateFormCode").dialog({
+                                    closeOnEscape: false,
+                                    resizable: false,
+                                    height: 140,
+                                    width: 300,
+                                    modal: true,
+                                    title: 'Expense Details',
+                                    dialogClass: "noclose",
+                                    buttons: {
+                                        OK: function () {
+                                            $('#FormCode').removeAttr("disabled");
+                                            $('#FormCode').val(data.newFormCode);
+                                            $('#FormCode').attr("disabled", "disabled");
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                                $.preventDefault();
+                            }
+                            else {
+                                return true;
+                            }
+                        }
+                    });
+                }
+
+                //  return false;
+                var postUrl = '@Url.Action("SubmitExpenseApprovalForm", "ExpenseReimbursement")';
+                if ($('#ExpenseReimbursementForm').valid()) {
+                    var note_text;
+                    $('#SubmitConfirmationMessageExp').dialog({
+                        autoOpen: true,
+                        modal: true,
+                        width: 300,
+                        height: 160,
+                        resizable: false,
+                        title: "Submit Expense Reimbursement",
+                        open: function () {
+                            var selectedval = $("#CurrencyExpense option:selected").text();
+                            if (selectedval == "Indian Rupee - INR") {
+                                note_text = "Final Amount is Rs. " + $('#ExpenseReimbursementForm #AmountInWords').val() + "<p>Are you sure, you want to move process to the next stage?</p>";
+                                $("#SubmitConfirmationMessageExp").html(note_text);
+                            }
+                            else {
+                                note_text = "Final Amount is $ " + $('#ExpenseReimbursementForm #AmountInWords').val() + "<p>Are you sure, you want to move process to the next stage?</p>";
+                                $("#SubmitConfirmationMessageExp").html(note_text);
+                            }
+
+                            $("#ExpenseReimbursementForm").find('input,select').attr("disabled", false);
+                            $("#gbox_ReimbursementTable").find('input,select').attr("disabled", false);
+                            $('#ExpenseId').val('@Model.ExpenseId');
+
+                            $('#Total').val($('#TotalAmount').val());
+                            $('#Advances').val($('#AdvancesAmount').val());
+                            $('#Balance').val($('#BalanceAmount').val());
+                            $('#IsApproved').val($('#chkVerify').val());
+
+                            if ('@Model.StageID' == 3)
+                                $('#FinanceApprover').val('@ViewBag.loginUserId');
+                            var employeeId = '@ViewBag.encryptedReimbursementEmployeeId';
+                            $("#SubmitConfirmationMessageExp").dialog("close");
+                            DisplayLoadingDialog();  //checked
+                            $.ajax({
+                                url: postUrl,
+                                type: 'POST',
+                                async: false,
+                                data: $('#ExpenseReimbursementForm').serialize(),
+                                success: function (results) {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    if (results.status == true) {
+                                        DisplayLoadingDialog();  //checked
+                                        callExpenseReimursementMail(results.expenseID, true, false, false, results.employeeID, results.stageID, results.primaryApprover, results.secondaryApprover, results.FinanceApprover, results.Formname, null, results.ExpenseCode);
+                                    }
+                                    else if (results.status == "Error") {
+                                        DisplayErrorDialog("Expense Details");
+                                    }
+                                    else {
+                                        $("#addExpenseErrorMessege").dialog({
+                                            resizable: false,
+                                            height: 140,
+                                            width: 300,
+                                            modal: true,
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+                                    } //end else
+                                    $("#ExpenseReimbursementForm").find('input,select').attr("disabled", true);
+                                    grayOutFields();
+                                    $("#gbox_ReimbursementTable").find('input,select').attr("disabled", true);
+                                } //end success
+                            }); //end ajax
+                            return true;
+
+                        }
+                    });
+                }
+                else
+                    return false;
+            }
+        });
+
+        if ('@ViewBag.viewDetailClick' == "yes")
+        {
+            $('#AdvancesAmount').attr("disabled", "disabled");
+        }
+
+        if ($('#CurrencyExpense option:selected').text() != "Select") {
+            $('#replaceDDCurrency').append($('#CurrencyExpense option:selected').text());
+        }
+
+        if ($('#FinanceApprover option:selected').text() != "Select") {
+            $('#replaceDDFinanceApprover').append($('#FinanceApprover option:selected').text());
+        }
+        if ($('#SecondaryApprover option:selected').text() != "Select") {
+            $('#replaceDDSecondaryApprover').append($('#SecondaryApprover option:selected').text());
+        }
+
+        if ($('#PrimaryApprover option:selected').text() != "Select") {
+            $('#replaceDDPrimaryApprover').append($('#PrimaryApprover option:selected').text());
+        }
+
+        if ($('#ProjectName option:selected').text() != "Select") {
+            $('#replaceDDProjectName').append($('#ProjectName option:selected').text());
+        }
+
+        if ($('#ClientReimbursement option:selected').text() != "Select") {
+            $('#replaceDDClientReimbursement').append($('#ClientReimbursement option:selected').text());
+        }
+
+        if ($('#CostCentre option:selected').text() != "Select") {
+            $('#replaceDDCostCentre').append($('#CostCentre option:selected').text());
+        }
+        var exEid = '@(System.Configuration.ConfigurationManager.AppSettings["ExpenseReimbursementEmpID"].ToString())'
+        if ($('#PrimaryApprover option:selected').val() == exEid) {
+            $('#SecondaryApprover').attr("disabled", true);
+
+        }
+
+        var totalAmount = parseInt($("#TotalAmount").val());
+        var advanceAmount = $("#AdvancesAmount").val();
+        balance = $("#TotalAmount").val() - $("#AdvancesAmount").val();
+        balance = balance.toFixed(2);
+        $('#BalanceAmount').val(balance);
+        $(".Title").hide();
+
+        if ('@Model.ExpenseId' != 0) {//for disable form name after saving the form
+            $('#ReimbursementFormName').attr("disabled", true);
+        }
+
+        if ('@Model.StageID' == 0 || '@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId') {
+            $('#btnRejectExpenseReimursementForm').hide();
+        }
+
+        if ('@ViewBag.loginUserId' != '@Model.ReimbursementEmployeeId' && '@Model.ReimbursementEmployeeId' != 0) {//to disable form for approver
+            $("#ExpenseReimbursementForm").find('input,select').attr("disabled", true);
+            $('.forFinanceApprover').attr("disabled", false);
+            grayOutFields();
+
+            $("#gbox_ReimbursementTable").find('input,select').attr("disabled", true);
+            $('#btnAddRecord').hide();
+            $("#ReimbursementTablePager_left").css("visibility", "hidden");
+            $('.chkVerify').attr("disabled", false);
+        }
+
+        if (('@Model.StageID' == 3 && '@ViewBag.UserRole' == '@UserRoles.ExpenseAdmin') || ('@Model.StageID' >= 4))
+            $("#ChequeDetailsDiv").show();
+        else
+            $("#ChequeDetailsDiv").hide();
+
+        if ('@Model.StageID' == 3 && '@ViewBag.UserRole' == '@UserRoles.ExpenseAdmin')
+            $('#AdvancesAmount').attr("disabled", false);
+
+        if ('@Model.StageID' <= 0) {
+            $('#btnCancelExpenseReimursementForm').hide();
+        }
+
+        if (('@Model.StageID' == 1 || '@Model.StageID' == 2) && ('@ViewBag.loginUserId' != '@Model.ReimbursementEmployeeId')) {
+            $('#btnCancelExpenseReimursementForm').hide();
+            if ('@Model.StageID' == 1) {
+                $('#SecondaryApprover').attr("disabled", false);
+                $('#SecondaryApprover').removeClass("bg-gray");
+            }
+        }
+
+        //focus out of advances to calculate balance
+        $("#AdvancesAmount").focusout(function () {
+            CalculateBalance();
+        });
+
+        $("#txtComment").keyup(function () {
+            var comments = $("#txtComment").val().trim();
+            if (comments.length > 0) {
+                $('#ErrorComment').hide();
+            }
+        });
+
+        $("#txtExpCancelCommnet").keyup(function () {
+            var comments = $("#txtExpCancelCommnet").val().trim();
+            if (comments.length > 0) {
+                $('');
+            }
+        });
+
+        $("#BackPrevious").click(function () {
+            window.location.href = '@Url.Action("GetExpenseReimbursementStatus", "ExpenseReimbursement")';
+            return false;
+        });
+
+        $("#ReimbursementFormName").blur(function () {
+            $('#FormNameValidationMessage').hide();
+            var Formname = $(this).val().trim();
+            var postUrl = '@Url.Action("ValidateFormName", "ExpenseReimbursement")';
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                async: false,
+                data: { Formname: Formname },
+                success: function (data) {
+                    if (data == true) {
+                        $("#DuplicateFormname").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $("#ReimbursementFormName").val("");
+                                    $("#ReimbursementFormName").focus();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        //-------------------------   changes start
+
+        function deleteExpenseRecordLink(cellvalue, options, rowobject) {
+            return "<a href=# id=" + rowobject['ExpenseDetailsId'] + " class=EmpLink onClick = DeleteExpenseDetail(this.id) class=HideinPrint > Delete </a>";
+        }
+
+        function getNatureOfExpense(e) {
+            var Name = e.target[e.target.selectedIndex].text;
+            var ID;
+            $.each(natureofExpList, function (index, value) {
+
+                var empName = value.NatureOfExpensevalue.replace('  ', ' ');
+
+                if (empName == Name) {
+                    ID = value.NatureOfExpenseId;
+                }
+            });
+            $('#manageMilestones #ResponsiblePerson').val(ID);
+            $('#' + SelectedExpenseTypeID + '_NatureOfExpense').attr('title', Name);
+        }
+
+        // Set up the jquery grid
+        $("#ReimbursementTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ExpenseDetailLoadGrid", "ExpenseReimbursement")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { encryptedEmployeeId: '@ViewBag.encryptedReimbursementEmployeeId', expenseId: '@Model.ExpenseId' },
+            // Specify the column names
+            colNames: ["FileName","FilePath","Expense Details Id", "Employee Id", "Receipt No.", "Date Of Expense", "Expense Category", "Expense Sub-Category", "Amount", "Comments","Expense Receipt","Expense Receipt", "Verify", "Delete"],
+            // Configure the columns
+            colModel: [
+            //             { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'center' },
+              {name: "FileName", index: "FileName", hidden: true, width: 50, align: "left", editable: true },
+              {name: "FilePath", index: "FilePath", hidden: true, width: 50, align: "left", editable: true },
+              {name: "ExpenseDetailsId", index: "ExpenseDetailsId", hidden: true, width: 50, align: "left", editable: true },
+             { name: "ReimbursementEmployeeId", index: "ReimbursementEmployeeId", width: 50, editable: true, align: "left", hidden: true },
+                { name: "ReceiptNo", index: "ReceiptNo", width: 70, editable: true, align: "left" },
+
+              { name: "DateOfExpense", index: "DateOfExpense", width: 100, align: "left", editrules: { required: true }, sorttype: 'date', editable: true, yearRange: "-100:+10", showOn: "both", maxDate: 0, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                  readonly: true,
+                  dataEvents: [{ type: 'change', fn: function (e) { } }],
+                  dataInit: function (element) {
+                      $(element).datepicker({
+                          dateFormat: 'mm/dd/yy',
+                          changeMonth: true,
+                          changeYear: true
+                      }).bind("mouseover", function () {
+
+                          // $(this).datepicker("option", "minDate", );
+                          $(this).datepicker("option", "maxDate", 0);
+                          var selectedDateID = this.id;
+                          var rowID = selectedDateID.split("_");
+                          var selectedEndDate = this.value;
+                      });
+                  }
+              }
+              },
+                 { name: "NatureOfExpense", index: "NatureOfExpense", align: "left", width: 100, editable: true, editrules: { required: true, custom: true, custom_func: IsExpenseCategorySelected }, edittype: "select", editoptions: { value: persponList, dataEvents: [{ type: 'change', fn: function (e) { getNatureOfExpense(e); } }]} },
+                { name: "Details", index: "Details", width: 170, editable: true, align: "left", editoptions: { maxlength: 500} },
+                { name: "Amount", index: "Amount", width: 80, editable: true, align: "left", editrules: { required: true, custom: true, custom_func: isValidAmount} },
+                 { name: "Comments", index: "Comments", width: 150, editable: true, align: "left", editoptions: { maxlength: 300} },
+                  { name: "ViewReceipt", index: "ViewReceipt", width: 80, align: "left", formatter: viewReceiptButton, classes: 'ClassViewReceipt' },
+                   {name: "ReceiptNameUpload", index: "ReceiptNameUpload", width: 180, align: "left", hidden: true, formatter: uploadReceiptButton, classes: 'ClassUploadReceipt'},
+                 { name: 'Verify', index: "Verify", width: 70, align: "left", edittype: 'checkbox', editoptions: { value: "True:False" }, editable: true, formatter: AddVerifyChkBox, formatoptions: { disabled: isViewDetails() }, editable: true },
+	              { name: "Delete",
+	                  index: "Delete",
+	                  width: 50,
+	                  align: "left",
+	                  classes: "ClassDeleteLink",
+	                  formatter: deleteExpenseRecordLink
+	              }
+            ],
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false, //s
+            rowNum: 20,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            sortname: "",
+            sortorder: "asc",
+            pager: $("#ReimbursementTablePager"),
+
+            editurl: '@Url.Action("SaveExpenseDetails", "ExpenseReimbursement")',
+
+            gridComplete: function () {
+
+                if ('@ViewBag.viewDetailClick' == "yes") {
+                    $("#ReimbursementTable").find('input,select').attr("disabled", true);
+                    $("#ReimbursementTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                    $("#ReimbursementTable").find(".ClassViewReceipt").children().removeAttr("disabled","disabled");
+                }
+                else {
+                    $("#ReimbursementTable").find('input,select').removeAttr("disabled");
+                }
+                var count = jQuery("#ReimbursementTable").jqGrid('getGridParam', 'records');
+                if (count > 20) {
+                    $('#ReimbursementTablePager_center').show();
+                }
+                else {
+                    $('#ReimbursementTablePager_center').hide();
+                }
+                var gridData;
+                gridData = $("#ReimbursementTable").getRowData();
+
+            },
+
+            onCellSelect: function (rowid, iCol) {
+                SelectedExpenseTypeID=rowid;
+                var rowData = jQuery("#ReimbursementTable").getRowData(rowid);
+                //  var rowData = $(this).getRowData(rowid);
+                var employeeId = rowData['ReimbursementEmployeeId'];
+                var expenseDetailsId = rowData['ExpenseDetailsId'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                selectedFileName = rowData["FileName"];
+                selectedFilePath = rowData["FilePath"];
+            }
+        }).navGrid("#ReimbursementTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#ReimbursementTable").jqGrid('inlineNav', "#ReimbursementTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            edittext:"Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+            addtext:"Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+            savetext:"Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            canceltext:"Cancel",
+            addParams: {
+                //                position: "last",
+                addRowParams: {
+                    // the parameters of editRow used to edit new row
+                    keys: true,
+                    oneditfunc: function (rowid) {
+                        isExpenseRowInAddEditMode = true;
+                        $("#ReimbursementTable").jqGrid('hideCol', 'ViewReceipt');
+                        $("#ReimbursementTable").jqGrid('showCol', 'ReceiptNameUpload');
+                        SelectedExpenseTypeID=rowid;
+                        $(".ClassUploadReceipt").children().hide();
+                        $("."+rowid+"_UploadLink").show();
+                        $("."+rowid+"_UploadLink").parent().siblings('.ClassDeleteLink').children().hide();
+                    }
+                }
+            },
+            editParams: {
+                keys: true,
+                oneditfunc: function (data, value) {
+                    isExpenseRowInAddEditMode = true;
+                    $("#ReimbursementTable").jqGrid('hideCol', 'ViewReceipt');
+                    $("#ReimbursementTable").jqGrid('showCol', 'ReceiptNameUpload');
+                    $(".ClassUploadReceipt").children().hide();
+                    $("."+data+"_UploadLink").show();
+                    $("."+data+"_UploadLink").parent().siblings('.ClassDeleteLink').children().hide();
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    ExpenseId: function () {
+                        return '@Model.ExpenseId';
+                    },
+                    EncryptedEmployeeId: function () {
+
+                        return '@ViewBag.encryptedReimbursementEmployeeId';
+                    },
+                    EncryptedExpenseId: function () {
+
+                        return '@ViewBag.encryptedReimbursementExpenseId';
+                    },
+                    ReimbursementEmployeeId: function () {
+                        return '@ViewBag.reimbursementHRMSEmployeeId';
+                    },
+                    UploadedFileName: function()
+                    {
+                        return $("#ExpenseReimbursementForm #uploadedFileName").val();
+                    },
+                    UploadedFilePath: function()
+                    {
+                        return $("#ExpenseReimbursementForm #uploadedFilePath").val();
+                    }
+                },
+                aftersavefunc: function () {
+                    isExpenseRowInAddEditMode = false;
+                    $("#ReimbursementTable").jqGrid('hideCol', 'ReceiptNameUpload');
+                    $("#ReimbursementTable").jqGrid('showCol', 'ViewReceipt');
+                    SaveExpenseDetails();
+                    $("#ExpenseReimbursementForm #uploadedFileName").val("");
+                    $("#ExpenseReimbursementForm #uploadedFilePath").val("");
+
+                },
+                errorfunc: null,
+                afterrestorefunc: function(){
+                    isExpenseRowInAddEditMode = false;
+                    $("#ReimbursementTable").jqGrid('hideCol', 'ReceiptNameUpload');
+                    $("#ReimbursementTable").jqGrid('showCol', 'ViewReceipt');
+                    $("#ExpenseReimbursementForm #uploadedFileName").val("");
+                    $("#ExpenseReimbursementForm #uploadedFilePath").val("");
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+        //       //--------------------------------------------
+        if ('@Model.StageID' > 0) {
+            $("#ReimbursementTable").hideCol("Delete");
+            //$("#ReimbursementTable").hideCol("Verify");
+        }
+
+        if ('@Model.StageID' != 3) {
+            $(".VerifyColumn").hide();
+        }
+
+        if ((('@Model.ExpenseId' == 0) || ('@Model.ExpenseId' == '')) || (('@Model.StageID' == 0) || ('@Model.StageID' == ""))) {
+            $("#ReimbursementTable").hideCol("Verify");
+            $(".VerifyColumn").hide();
+        }
+
+        function isViewDetails() {
+            if ('@ViewBag.viewDetailClick' == "yes")
+                return true;
+            else
+                return false;
+        }
+
+        if ('@ViewBag.viewDetailClick' == "yes") {
+            $("#ExpenseReimbursementForm").find('input,select,textarea').attr("disabled", true);
+            if('@Model.StageID'==4)
+                $('.forFinanceApprover').show();
+            grayOutFields();
+            $("#ReimbursementTablePager_left").css("visibility", "hidden");
+
+            $('#btnAddRecord').hide();
+            $("#gbox_ReimbursementTable").find('input,select').attr("disabled", true);
+            $('#btnRejectExpenseReimursementForm').hide();
+            $('#btnSubmitExpenseReimursementForm').hide();
+            $('#btnSaveExpenseReimursementForm').hide();
+            $("#ReimbursementTable").hideCol("Verify");
+            $("#ReimbursementTable").hideCol("Delete");
+
+            if (('@ViewBag.UserRole' == '@UserRoles.ExpenseAdmin' && '@Model.StageID' != 4) || ('@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId')) {
+                $('#btnCancelExpenseReimursementForm').show();
+            }
+            else
+                $('#btnCancelExpenseReimursementForm').hide();
+        }
+
+        if (('@Model.PrimaryApprover' == '@ViewBag.loginUserId' && '@Model.StageID' != 4) || ('@Model.SecondaryApprover' == '@ViewBag.loginUserId' && '@Model.StageID' != 4)) {
+            $('#btnCancelExpenseReimursementForm').show();
+        }
+        if('@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId' && '@Model.StageID'==4)
+            $('#btnCancelExpenseReimursementForm').hide();
+
+        if ('@ViewBag.RequestorRole' == '@UserRoles.Management') {
+
+            $("#PrimaryApprover").attr("disabled", "disabled").addClass("bg-gray");
+            $("#PrimaryApprover").val("Select");
+            $("#primaryAsterisk").hide();
+            $("#SecondaryApprover").attr("disabled", "disabled").addClass("bg-gray");
+            $("#SecondaryApprover").val("Select");
+            $("#secondaryAsterisk").hide();
+
+        }
+        else if ('@ViewBag.RequestorRole' == '@UserRoles.GroupHead' || '@ViewBag.RequestorRole' == '@UserRoles.AccountOwner' || '@ViewBag.RequestorRole' == '@UserRoles.DeliveryManager' || '@ViewBag.RequestorRole' == '@UserRoles.Manager') {
+            $("#SecondaryApprover").attr("disabled", "disabled").addClass("bg-gray");
+            $("#SecondaryApprover").val("Select");
+            $("#secondaryAsterisk").hide();
+        }
+
+        if ('@ViewBag.loginUserId' != '@Model.ReimbursementEmployeeId' && '@Model.ReimbursementEmployeeId' != 0) {//to disable form for approver
+            $("#ReimbursementTablePager_left").css("visibility", "hidden");
+        }
+    });
+
+    function CalculateBalance() {
+        var bal;
+        var balance;
+        var totalAmount = parseInt($("#TotalAmount").val());
+        var advanceAmount = $("#AdvancesAmount").val();
+        balance = $("#TotalAmount").val() - $("#AdvancesAmount").val();
+        balance = balance.toFixed(2);
+        var postUrl = '@Url.Action("NumberToStringConvertor", "ExpenseReimbursement")';
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            async: false,
+            data: { balance: balance },
+            success: function (data) {
+                bal = data.balance;
+                $("#ExpenseReimbursementForm #AmountInWords").val(bal);
+            }
+        });
+
+        $("#BalanceAmount").val(balance);
+        $("#AdvancesAmount").val($("#AdvancesAmount").val());
+
+    }
+
+    controls=[];
+    var SelectedGuid="";
+    var selectedReportID = 22;
+    function printDiv() {
+        controls.push({ id: 'EmplId', value: '@ViewBag.Reimbursementemployeeid', TypeId: 22});
+        controls.push({ id: 'expenceid', value: '@Model.ExpenseId', TypeId: 22});
+
+        $.ajax({
+            url: "/Reports/SaveFormData",
+            type: 'POST',
+            async: false,
+            contentType: "application/json",
+            dataType: 'json',
+            data: JSON.stringify(controls),
+            success: function (data) {
+                if (data.IsUpdated == true) {
+                    newGuid = data.newGuid;
+                    SelectedGuid=newGuid;
+                }
+            },
+            error: function () {
+            }
+        });
+        var url = "../ReportViewer.aspx?selectedGuid=" +SelectedGuid + "&reportID=" + selectedReportID;
+
+        $("#iframesrc").dialog({
+            autoOpen: false,
+            modal: true,
+            height: 500,
+            width: 1140,
+            open: function (ev, ui) {
+                $('#reportView').attr('src', url);
+            },
+            close: function (event, ui) {
+                $('#reportView').attr('src', "about:blank");
+            }
+        });
+        $("#iframesrc").dialog("open");
+        $('#reportView').show();
+
+    }
+
+    function grayOutFields() {
+        $("#CostCentre").addClass("bg-gray");
+        $("#ProjectName").addClass("bg-gray");
+        $("#ClientReimbursement").addClass("bg-gray");
+        $("#PrimaryApprover").addClass("bg-gray");
+        $('#SecondaryApprover').addClass("bg-gray");
+        $("#CurrencyExpense").addClass("bg-gray");
+    }
+
+    //Edit expense details
+    function EditExpenseDetails(Object) {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $('#addExpenseReimbursementDetails #ExpenseDetailsId').val(Object['ExpenseDetailsId']);
+        $('#addExpenseReimbursementDetails #EncryptedEmployeeId').val('@ViewBag.encryptedReimbursementEmployeeId');
+        $('#addExpenseReimbursementDetails #EncryptedExpenseId').val('@ViewBag.encryptedReimbursementExpenseId');
+        $('#ReceiptNo').val(Object['ReceiptNo']);
+
+        $('#addExpenseReimbursementDetails #ReimbursementEmployeeId').val('@Model.ReimbursementEmployeeId');
+        $('#DateOfExpense').val(Object['DateOfExpense']);
+
+        $("#NatureOfExpense option").each(function () {
+            if ($(this).text() == Object['NatureOfExpense']) {
+                $(this).attr('selected', 'selected');
+            }
+        });
+
+        $('#Details').val(Object['Details']);
+        $('#Amount').val(Object['Amount']);
+        $('#Comments').val(Object['Comments']);
+        $('#addExpenseDetailDialog').dialog({
+            autoOpen: true,
+            modal: true,
+            width: 500,
+            resizable: false,
+            title: "Edit Expense Details"
+        }
+        );
+    }
+
+    function DeleteExpenseDetail(expenseDetailsId) {
+        $.ajax({
+            url: "DeleteExpenseDetails/ExpenseReimbursement",
+            data: { expenseId: expenseDetailsId, expenseEmployeeId: '@ViewBag.encryptedReimbursementEmployeeId' },
+            success: function (data) {
+                if (data.status == true) {
+                    $("#deleteExpenseRecord").dialog({
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        title: "Deleted",
+                        dialogClass: "noclose",
+                        open: function (event, ui) {
+                            setTimeout("$('#deleteExpenseRecord').dialog('close')", 1000);
+                        }
+                    });
+
+                    jQuery("#ReimbursementTable").trigger("reloadGrid");
+                    $.ajax({
+                        url: '@Url.Action("CalcuateTotalExpense", "ExpenseReimbursement")',
+                        data: { expenseEmployeeId: '@ViewBag.encryptedReimbursementEmployeeId', encryptedExpenseId: '@ViewBag.encryptedReimbursementExpenseId' },
+                        type: "GET",
+                        Async: false,
+                        success: function (results) {
+                            if (results.status == true) {
+                                $("#TotalAmount").val(results.total);
+                                CalculateBalance();
+                            }
+                        }
+                    });
+
+                }
+                else if (data.status == "Error") {
+                    $("#expenseDeleteConfirmationDialog").dialog("close");
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Dependent Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#ReimbursementTable").trigger("reloadGrid");
+                            }
+                        }
+                    }); //end dialog
+                }
+                else {
+                    $("#expenseDeleteConfirmationDialog").dialog("close");
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Dependent Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#ReimbursementTable").trigger("reloadGrid");
+                            }
+                        }
+                    }); //end dialog
+                }
+
+            }
+        });
+    }
+
+    function CalBalance() {
+        var bal;
+        var balance;
+        var totalAmount = parseInt($("#TotalAmount").val());
+        var advanceAmount = $("#AdvancesAmount").val();
+        balance = $("#TotalAmount").val() - $("#AdvancesAmount").val();
+        balance = balance.toFixed(2);
+        var postUrl = '@Url.Action("NumberToStringConvertor", "ExpenseReimbursement")';
+        //to calculate amount in words
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            async: false,
+            data: { balance: balance },
+            success: function (data) {
+                bal = data.balance;
+                $("#ExpenseReimbursementForm #AmountInWords").val(bal);
+            }
+        });
+        $("#BalanceAmount").val(balance);
+    }
+
+    function IsExpenseCategorySelected(value, colname) {
+        if (value == "0") {
+            $("#RequiredFeildForExpenseCategory").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	          {
+	              "Ok": function () {
+	                  $(this).dialog("close");
+	              }
+	          }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function isValidAmount(value, Colname) {
+        var pattern = new RegExp(/^\+?[0-9]*\.?[0-9]+$/);
+
+        var valid = pattern.test(value);
+
+        if (!valid) {
+            $("#ValidAmountDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+	            {
+	                "Ok": function () {
+	                    $(this).dialog("close");
+	                }
+	            }
+            });
+            $.preventDefault();
+        }
+        else {
+            return [true, ""];
+        }
+    }
+
+    function SaveExpenseDetails() {
+        $("#addExpenseSuccessMessege").dialog({
+            height: 140,
+            width: 300,
+            modal: true,
+            title: "Expense Details",
+            dialogClass: "noclose",
+            open: function () {
+                setTimeout(function () { $("#addExpenseSuccessMessege").dialog("destroy") }, 1000);
+            },
+            close: function () {
+                $("#addExpenseSuccessMessege").dialog("destroy");
+            }
+        });
+
+        jQuery("#ReimbursementTable").trigger("reloadGrid");
+        $.ajax({
+            url: '@Url.Action("CalcuateTotalExpense", "ExpenseReimbursement")',
+            data: { expenseEmployeeId: '@ViewBag.reimbursementHRMSEmployeeId', encryptedExpenseId: '@ViewBag.encryptedReimbursementExpenseId' },
+            type: "GET",
+            Async: false,
+            success: function (results) {
+                if (results.status == true) {
+                    $("#TotalAmount").val(results.total);
+                    CalBalance();
+                }
+            }
+        });
+    }
+    function AddVerifyChkBox(cellValue, options, rowdata, action) {
+        return '<input type="checkbox" class="chkVerify" id=exp' + rowdata["ExpenseDetailsId"] + '>'+'<label class="LabelForCheckbox" for=exp' + rowdata["ExpenseDetailsId"] + '>';
+    }
+    natureofExpList = @(Html.Raw(Json.Encode(Model.NatureOfExpenseList)));
+    persponList = [];
+    persponList.push("Select");
+    $.each(natureofExpList, function (index,value) {
+        persponList.push(value.NatureOfExpensevalue);
+    });
+
+    //window.onload=function(){
+    //$('#ReimbursementTable_ilcancel').hide();
+    //}
+
+    function uploadReceiptButton(cellvalue, options, rowobject) {
+        var uplaodBtn = "<input type='button' value='Upload Receipt' id=" + rowobject['ExpenseDetailsId'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenExpenseUploadPopup() />"
+        return uplaodBtn;
+    }
+
+    function viewReceiptButton(cellvalue, options, rowobject) {
+        if((rowobject['FileName'] != "" && rowobject['FileName'] != null) && (rowobject['FilePath'] != "" && rowobject['FilePath'] != null))
+        {
+            var viewBtn = "<input type='button' value='View Receipt' id=" + rowobject['ExpenseDetailsId'] + " class='" + options['rowId'] + "_ViewLink" + " ButtonGray' onClick=ViewExpenseFile(this.id) />"
+            return viewBtn;
+        }
+        else return "";
+    }
+
+    function OpenExpenseUploadPopup()
+    {
+        DisplayLoadingDialog();
+        $.ajax({
+            url: '@Url.Action("UploadFile", "Uploads")',
+            data: {ModuleName: '@ViewBag.ExpenseModule', FormName: "ExpenseReimbursementForm", FileNameProp: "uploadedFileName", FilePathProp: "uploadedFilePath" },
+            type: "GET",
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#FileUploadDialog").html("").append(results);
+                $("#FileUploadDialog").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 500,
+                    //dialogClass: "noclose",
+                });
+            },
+            error: function (results)
+            {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+            }
+        });
+    }
+
+    function ViewExpenseFile(rowId)
+    {
+        window.location = 'DownloadExpenseFile/Expense?ExpenseDetailsId='+ rowId;
+    }
+</script>
+<section class="ExpenseContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading" id="Heading">
+                Expense Reimbursement
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement")" class="selected" id="expenseNewRequest">
+                New Request
+            </a> <a href="@Url.Action("GetExpenseReimbursementStatus", "ExpenseReimbursement", new { expenseEmployeeId = ViewBag.encryptedReimbursementEmployeeId, encryptedExpenseId = ViewBag.encryptedReimbursementExpenseId })" id="expenseSavedRequest">
+                Saved/Submitted Requests
+            </a>
+        </nav>
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ExpenseReimbursementForm" }))
+        {
+            <div id="PrintContent1" style="width: auto" class="btnPrint">
+                <div class="clearfix">
+                    <a class="LinkBrown floatL Expensewrap" href="#" id="BackPrevious">Back</a> <span id="guide" class="">
+                        <a href="#" onclick="printDiv()" class="LinkBlue floatR expenseG mrgnR4"
+                           id="printbtnfrm" style="display: none">Print</a><a id="anchor_guidelinesExpenseForRoles"
+                                                                              class="floatR LinkBlue expenseG" href="#">Guidelines</a>
+                    </span>
+                </div>
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(x => x.ReimbursementEmployeeId)
+                @Html.HiddenFor(x => x.ExpenseId)
+                @Html.HiddenFor(x => x.StageID)
+                @Html.HiddenFor(x => x.ExpenseDetails)
+                @Html.HiddenFor(x => x.AmountInWords)
+                @Html.HiddenFor(x => x.RejectComments)
+                @Html.HiddenFor(x => x.EncryptedExpenseId)
+                @Html.HiddenFor(x => x.Total)
+                @Html.HiddenFor(x => x.Advances)
+                @Html.HiddenFor(x => x.Balance)
+                @Html.HiddenFor(x => x.IsAdvanceApproved)
+                @Html.HiddenFor(x => x.uploadedFileName)
+                @Html.HiddenFor(x => x.uploadedFilePath)
+                <div class="emp-details">
+                    <div class="clearfix">
+                        <div class="floatL">
+                            @Html.Label("Employee Name:", new { @class = "prefix" })
+                            @Html.LabelFor(model => model.ReimbursementEmployeeName, Model.ReimbursementEmployeeName, new { @class = "suffix" })
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Employee Code:", new { @class = "prefix" })
+                            @Html.LabelFor(model => model.ReimbursementEmployeeCode, Model.ReimbursementEmployeeCode.ToString(), new { @class = "suffix" })
+                            @Html.HiddenFor(model => model.ReimbursementEmployeeCode)
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Reimbursement Form Code:", new { @class = "prefix" })
+                            @Html.LabelFor(model => model.FormCode, Model.FormCode.ToString(), new { @class = "suffix", @id = "formCode" })
+                            @Html.HiddenFor(model => model.FormCode, new { @id = "formCode" })
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Location:", new { @class = "prefix expenselocation" })
+                            @Html.LabelFor(model => model.Location, Model.Location, new { @class = "suffix expenseLoc" })
+                        </div>
+                        <div class="floatL">
+                            @Html.Label("Date Of Submission:", new { @class = "prefix" })
+                            @Html.LabelFor(model => model.DateOfSubmission, String.Format("{0:MM/dd/yyyy}", Model.DateOfSubmission), new { @class = "suffix datealign" })
+                        </div>
+                    </div>
+                </div>
+                <div class="finance-middle clearfix">
+                    <div class="colOneThird">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Client-Reimbursment:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+                                    if (Model.ClientReimbursement != null)
+                                    {
+                                        ClientReimbursementList clientReimbursement = new ClientReimbursementList();
+                                        clientReimbursement = (from client in Model.ClientReimbursementList
+                                                               where client.ClientReimbursementId == Model.ClientReimbursement
+                                                               select new ClientReimbursementList
+                                                               {
+                                                                   ClientReimbursementValue = client.ClientReimbursementValue
+                                                               }).FirstOrDefault();
+
+                                    @Html.LabelFor(model => model.ClientReimbursement, clientReimbursement.ClientReimbursementValue);
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.ClientReimbursement, new SelectList(Model.ClientReimbursementList, "ClientReimbursementId", "ClientReimbursementValue", "Select"), "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                }
+
+                                <p class="qualif-detail" id="validationMsgClientReimbursement">@Html.ValidationMessageFor(model => model.ClientReimbursement)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Primary Approver:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+                                    if ((string)ViewBag.PrimaryApproverName != null)
+                                    {
+                                    @Html.LabelFor(model => model.PrimaryApprover, (string)ViewBag.PrimaryApproverName);
+
+                                    }
+                                    else
+                                    {
+                                    @Html.LabelFor(model => model.PrimaryApprover, "N/A");
+                                    }
+                                }
+                                else if (Model.StageID == 0)
+                                {
+                                    if (ViewBag.RequestorRole == UserRoles.Management)
+                                    {
+                                    @Html.LabelFor(model => model.PrimaryApprover, "N/A");
+                                    }
+                                    else
+                                    {
+                                    @Html.DropDownListFor(model => model.PrimaryApprover, (SelectList)ViewBag.primaryApprovers, "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.PrimaryApprover, (SelectList)ViewBag.primaryApprovers, "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+
+                                }
+
+                                <p class="qualif-detail" id="validationMsgPrimaryApprover">@Html.ValidationMessageFor(model => model.PrimaryApprover)</p>
+                                @Html.HiddenFor(model => model.PrimaryApprover, new { id = "PrimaryApprover" })
+                                <span id="PrimaryApproverErrorMessage" style="display: none; color: red">
+                                    This Field
+                                    cannot be same as secondary approver.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Client-Name:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+                                    if (Model.ProjectName != null)
+                                    {
+                                        ProjectNameList projectName = new ProjectNameList();
+                                        projectName = (from types in Model.ProjectNameList
+                                                       where types.ProjectNameID == Model.ProjectName
+                                                       select new ProjectNameList
+                                                       {
+                                                           ProjectName = types.ProjectName
+                                                       }).FirstOrDefault();
+                                    @Html.LabelFor(model => model.ProjectName, projectName.ProjectName);
+                                    }
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.ProjectName, new SelectList(Model.ProjectNameList, "ProjectNameID", "ProjectName", "Select"), "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                }
+
+                                <p class="qualif-detail" id="validationMsgProjectName">@Html.ValidationMessageFor(model => model.ProjectName)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird" id="SecondApproveContain">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Secondary Approver:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+                                    if ((string)ViewBag.SecondaryApproverName != null)
+                                    {
+                                    @Html.LabelFor(model => model.SecondaryApprover, (string)ViewBag.SecondaryApproverName);
+                                    }
+                                    else
+                                    {
+                                    @Html.LabelFor(model => model.SecondaryApprover, "N/A");
+                                    }
+
+                                }
+                                else if (Model.StageID == 0)
+                                {
+                                    if (ViewBag.RequestorRole == UserRoles.Management)
+                                    {
+                                    @Html.LabelFor(model => model.SecondaryApprover, "N/A");
+                                    }
+                                    else if (ViewBag.RequestorRole == UserRoles.GroupHead || ViewBag.RequestorRole == UserRoles.AccountOwner || ViewBag.RequestorRole == UserRoles.DeliveryManager || ViewBag.RequestorRole == UserRoles.Manager)
+                                    {
+                                    @Html.LabelFor(model => model.SecondaryApprover, "N/A");
+                                    }
+                                    else
+                                    {
+                                    @Html.DropDownListFor(model => model.SecondaryApprover, (SelectList)ViewBag.secondaryApprovers, "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.SecondaryApprover, (SelectList)ViewBag.secondaryApprovers, "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                }
+
+                                <p class="qualif-detail" id="validationMsgSecondaryApprover">@Html.ValidationMessageFor(model => model.SecondaryApprover)</p>
+                                @Html.HiddenFor(model => model.SecondaryApprover, new { id = "SecondaryApprover" })
+                                <span id="SecondaryApproverErrorMessage" style="display: none; color: red">
+                                    This Field
+                                    cannot be same as primary approver.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Cost-Center:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+
+                                    if (Model.CostCentre != null)
+                                    {
+                                        CostCentreList costcentre = new CostCentreList();
+                                        costcentre = (from c in Model.CostCentreList
+                                                      where c.CostCentreID == Model.CostCentre
+                                                      select new CostCentreList
+                                                      {
+                                                          CostCentreName = c.CostCentreName
+                                                      }).FirstOrDefault();
+
+                                    @Html.LabelFor(model => model.CostCentre, costcentre.CostCentreName);
+                                    }
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.CostCentre, new SelectList(Model.CostCentreList, "CostCentreID", "CostCentreName", "Select"), "-Select", new { @class = "DDtoReplace ValidationDropDown" })
+                                }
+
+                                <p class="qualif-detail" id="validationMsgCostCentre">@Html.ValidationMessageFor(model => model.CostCentre)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird currencycol">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Currency:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" || Model.StageID >= 1)
+                                {
+
+                                    if (Model.Currency != null)
+                                    {
+                                        CurrencyList currency = new CurrencyList();
+                                        currency = (from c in Model.CurrencyList
+                                                    where c.CurrencyID == Model.Currency
+                                                    select new CurrencyList
+                                                    {
+                                                        CurrencyName = c.CurrencyName
+                                                    }).FirstOrDefault();
+                                    @Html.LabelFor(model => model.Currency, currency.CurrencyName);
+                                    }
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.Currency, new SelectList(Model.CurrencyList, "CurrencyID", "CurrencyName", Model.CurrencyList.FirstOrDefault()), new { @class = "DDtoReplace ValidationDropDown", @id = "CurrencyExpense" })
+                                }
+
+                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Currency)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird forFinanceApprover" style="display: none">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Finance Reimbursement Form Code:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" && Model.StageID == 4)
+                                {
+                                    @Html.LabelFor(model => model.ReimbursementFormCode, Model.ReimbursementFormCode);
+                                }
+                                @if ((ViewBag.viewDetailClick == "fillForm" || ViewBag.viewDetailClick == null) && ViewBag.IsExpenseAdmin == UserRoles.ExpenseAdmin)
+                                {
+                                    @Html.TextBoxFor(model => model.ReimbursementFormCode, new { @class = "forFinanceApprover" })
+                                }
+                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ReimbursementFormCode)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colOneThird forFinanceApprover" style="display: none">
+                        <div class="clearfix formcol">
+                            <div class="LabelDiv">
+                                @Html.Label("*Cheque Details:", new { @class = "middle-label" })
+                            </div>
+                            <div class="InputDiv">
+                                @if (ViewBag.viewDetailClick == "yes" && Model.StageID == 4)
+                                {
+                                    @Html.LabelFor(model => model.ChequeDetails, Model.ChequeDetails);
+                                }
+                                @if ((ViewBag.viewDetailClick == "fillForm" || ViewBag.viewDetailClick == null) && ViewBag.IsExpenseAdmin == UserRoles.ExpenseAdmin)
+                                {
+                                    @Html.TextBoxFor(model => model.ChequeDetails, new { @class = "forFinanceApprover" })
+                                }
+                                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ChequeDetails)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div id="PrintContent" class="btnPrint">
+            <div class="tablestyle3 mrgnT33">
+                <table id="ReimbursementTable" class="scroll"></table>
+            </div>
+            <div id="ReimbursementTablePager">
+            </div>
+        </div>
+        <div id="SubmitConfirmationMessageExp" style="display: none;">
+        </div>
+        <!-- Rima -->
+        <div class="TotalExpenseDiv clearfix btnPrint" id="Print2">
+            @Html.Label("Total Expenses :")
+            @Html.TextBoxFor(model => model.Total, new { @readonly = "readonly", disabled = "disabled", id = "TotalAmount" })
+            @Html.Label("Advances :")
+            @Html.TextBoxFor(model => model.Advances, new { id = "AdvancesAmount" })
+            @Html.Label("Amount Reimbursed :")
+            @Html.TextBoxFor(model => model.Balance, new { @readonly = "readonly", disabled = "disabled", id = "BalanceAmount" })
+            @Html.CheckBoxFor(model => model.IsAdvanceApproved, new { @class = "chkVerify", id = "IsApproved" })
+            <label class="LabelForCheckbox" for="IsApproved">
+            </label>
+        </div>
+        <div class="ButtonContainer1">
+            <input id="btnSubmitExpenseReimursementForm" type="button" value="Submit" class="ButtonGray mrgnR11" />
+            <input id="btnRejectExpenseReimursementForm" type="button" value="Reject" class="ButtonGray mrgnR11" />
+            <input id="btnCancelExpenseReimursementForm" type="button" value="Cancel Expense Reimbursement"
+                   class="ButtonGray mrgnR11" />
+        </div>
+    </div>
+    <div id="deleteExpenseDialogConfirmation" style="display: none">
+        <p>
+            Are you sure you want to delete the selected record?
+        </p>
+    </div>
+    <div id="expenseRecordSuccess" style="display: none;">
+        <p>
+            Expense details has been saved successfully.
+        </p>
+    </div>
+    <div id="deleteExpenseRecord" style="display: none;">
+        <p>
+            Record has been deleted successfully.
+        </p>
+    </div>
+    <div id="mailSendSuccess" style="display: none" title="Mail Sent">
+        <center class="LoadingWrap">
+            Mail Sent Succesfully.
+        </center>
+    </div>
+    <div id="RejectConfirmationMessage" style="display: none">
+        Are you sure, you want to move process to the requestor?
+    </div>
+    <div id="RejectCommnentDialog" style="display: none">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.Label("Enter Comment")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                <textarea rows="3" cols="20" id="txtComment"></textarea>
+            </div>
+        </div>
+        <div style="display: none" id="ErrorComment">
+            Please Enter commment
+        </div>
+    </div>
+    <div id="RejectSuccessMessage" style="display: none">
+        <center>
+            Expense process has been moved to requestor.
+        </center>
+    </div>
+    <div id="CancelMessage" style="display: none">
+        <center>
+            Record has been deleted Successfully.
+        </center>
+    </div>
+    <div id="SubmitSuccessMessage" style="display: none">
+        <center>
+            Mail sent successfully and Expense process has been moved to next stage.
+        </center>
+    </div>
+    <div id="DuplicateFormname" style="display: none">
+        This Reimbursement Form Name already Exists.
+    </div>
+    <div id="DuplicateFormCode" style="display: none">
+        This Reimbursement Form Code already Exists.<br />
+        Click OK to Update it.
+    </div>
+    <div id="ErrorIsVerified" style="display: none">
+        Kindly Verify all the Expense Receipts.
+    </div>
+    <div id="ExpenseCancelConfirmationDialog" style="display: none">
+        <p>
+            Are you sure you want to cancel the process?
+        </p>
+    </div>
+    <div id="CancelAllExpDelDialog" style="display: none">
+        <p>
+            Are you sure you want to cancel all records?
+        </p>
+    </div>
+    <div id="CancelCommentDialog" style="display: none">
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL" style="width:130px;">
+                <span class="mandatory">*</span>@Html.Label("Enter Comment ")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                <textarea rows="3" cols="20" id="txtExpCancelCommnet"></textarea>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL" style="width:130px;">
+                &nbsp;
+            </div>
+            <div class="editor-field fieldwidth floatL" style="display: none; color: red" id="ErrorCancelComment">
+                Please Enter Comment
+            </div>
+        </div>
+    </div>
+    <div id="failedRecipient" title="Sending Failed" style="display: none">
+        <center>
+            <span>Could not send mail to </span><span id="span_failedRecipient"></span>
+        </center>
+    </div>
+    <div id="ErrorExpenseDetails" style="display: none">
+        <center>
+            Add atleast one record for the Expense Reimbursement Details.
+        </center>
+    </div>
+    <div id="ErrorForselfFinanceApprove" style="display: none">
+        <center>
+            Finance Admin Approver cannot Approve self Request.
+        </center>
+    </div>
+    <div id="PrintContentExp" style="display: none">
+    </div>
+    <div id="guideLinesExpenseForRoles" style="display: none">
+        @Html.Partial("_ExpenseGuidelineForRoles")
+    </div>
+    <div id="addExpenseSuccessMessege" title="Expense details" style="display: none;">
+        <p>
+            Expense details have been saved.
+        </p>
+    </div>
+    <div id="errorDialog" title="Expense details" style="display: none;">
+        <p>
+            Mail not sent, but process has been moved to next stage.
+        </p>
+    </div>
+    <div id="mailError" title="Expense details" style="display: none;">
+        <p>
+            Some error occured.
+        </p>
+    </div>
+    <div id="RequiredFeildForExpenseCategory" style="display: none;" title="Required Feild">
+        <p>
+            Please select Expense Category.
+        </p>
+    </div>
+    <div id="ValidAmountDialog" title="Expense Details Details" style="display: none">
+        <p>
+            Amount can not contain alphabets.
+        </p>
+    </div>
+    <div class="reportClass" id="iframesrc">
+        <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
+    </div>
+    <div id="RowinAddEditModeDialog" title="Expense Details Details" style="display: none">
+        <p>
+            Kindly first Save the row open for Add/Edit,<br />
+            then Submit the Expense Form.
+        </p>
+    </div>
+</section>

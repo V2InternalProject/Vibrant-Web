@@ -1,0 +1,390 @@
+
+2016-02-08 @ 14:09:46  Informational , App start Global.asax App_Start  
+2016-02-08 @ 14:09:59  Informational , App start finished Global.asax App_Start  
+2016-02-08 @ 14:10:36  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 14:10:36  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 14:10:37  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 14:10:37  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 14:10:37  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 14:11:17  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'ReportIssue.aspx' was not found on controller 'HRMS.Controllers.HelpDeskController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-08 @ 14:11:17  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-08 @ 14:11:51  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpRequestValidationException (0x80004005): A potentially dangerous Request.Form value was detected from the client (ctl00$MainContent$txtDescription="<a>sad<a>").
+   at System.Web.HttpRequest.ValidateString(String value, String collectionKey, RequestValidationSource requestCollection)
+   at System.Web.HttpRequest.ValidateHttpValueCollection(HttpValueCollection collection, RequestValidationSource requestCollection)
+   at System.Web.HttpRequest.get_Form()
+   at System.Web.HttpRequest.get_HasForm()
+   at System.Web.UI.Page.GetCollectionBasedOnMethod(Boolean dontReturnNull)
+   at System.Web.UI.Page.DeterminePostBackMode()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\rahul.r\AppData\Local\Temp\Temporary ASP.NET Files\root\7efda58e\547b78e6\App_Web_vqlww5xj.2.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-08 @ 14:11:51  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-08 @ 14:13:39  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpRequestValidationException (0x80004005): A potentially dangerous Request.Form value was detected from the client (ctl00$MainContent$txtDescription="<a>d<a>").
+   at System.Web.HttpRequest.ValidateString(String value, String collectionKey, RequestValidationSource requestCollection)
+   at System.Web.HttpRequest.ValidateHttpValueCollection(HttpValueCollection collection, RequestValidationSource requestCollection)
+   at System.Web.HttpRequest.get_Form()
+   at System.Web.HttpRequest.get_HasForm()
+   at System.Web.UI.Page.GetCollectionBasedOnMethod(Boolean dontReturnNull)
+   at System.Web.UI.Page.DeterminePostBackMode()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_reportissue_aspx.ProcessRequest(HttpContext context) in c:\Users\rahul.r\AppData\Local\Temp\Temporary ASP.NET Files\root\7efda58e\547b78e6\App_Web_hht3up2u.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-08 @ 14:13:39  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-02-08 @ 15:11:13  Informational , App start Global.asax App_Start  
+2016-02-08 @ 15:11:18  Informational , App start finished Global.asax App_Start  
+2016-02-08 @ 15:36:27  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 15:36:27  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 15:36:27  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 15:36:27  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 15:36:27  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 16:11:33  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 16:11:33  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 16:11:34  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 16:11:34  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 16:11:34  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 16:37:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 16:37:08  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 16:37:08  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 16:37:08  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 16:37:08  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 17:44:53  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 17:44:53  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 17:44:53  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 17:44:53  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 17:44:53  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:10:31  FATAL ERROR   , Object reference not set to an instance of an object. ViewSelectedIssueBySuperAdmin.aspx Page_Load     at V2.Helpdesk.web.admin.ViewSelectedIssueBySuperAdmin.SendMail() in d:\rahul\New folder\src\HRMS.WebSite\HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.cs:line 1037
+2016-02-08 @ 18:16:31  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:16:31  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:16:31  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:16:31  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:16:31  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:28:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:28:08  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:28:08  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:28:08  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:28:08  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:28:25  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:28:25  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:28:25  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:28:25  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:28:25  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:29:47  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:29:47  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:29:47  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:29:47  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:29:47  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:34:33  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:34:33  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:34:34  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:34:34  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:34:34  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:44:16  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:44:16  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:44:16  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:44:16  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:44:16  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:44:32  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:44:32  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:44:33  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:44:33  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:44:33  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:51:46  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:51:46  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:51:48  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:51:48  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:51:48  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:52:07  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:52:07  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:52:07  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:52:07  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:52:07  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:53:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:53:15  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:53:15  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:53:15  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:53:15  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 18:58:12  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 18:58:12  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 18:58:13  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 18:58:13  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 18:58:13  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 19:08:30  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-08 @ 19:08:30  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-08 @ 19:08:30  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-08 @ 19:08:30  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-08 @ 19:08:30  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145
+2016-02-08 @ 19:10:48  FATAL ERROR   , Object reference not set to an instance of an object. ViewSelectedIssueBySuperAdmin.aspx Page_Load     at V2.Helpdesk.web.admin.ViewSelectedIssueBySuperAdmin.SendMail() in d:\rahul\New folder\src\HRMS.WebSite\HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.cs:line 1037
+2016-02-08 @ 19:11:50  FATAL ERROR   , Object reference not set to an instance of an object. ViewSelectedIssueBySuperAdmin.aspx Page_Load     at V2.Helpdesk.web.admin.ViewSelectedIssueBySuperAdmin.SendMail() in d:\rahul\New folder\src\HRMS.WebSite\HelpDesk\admin\ViewSelectedIssueBySuperAdmin.aspx.cs:line 1037
+2016-02-09 @ 11:58:29  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-09 @ 11:58:29  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-09 @ 11:58:30  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-09 @ 11:58:30  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-09 @ 11:58:30  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 145

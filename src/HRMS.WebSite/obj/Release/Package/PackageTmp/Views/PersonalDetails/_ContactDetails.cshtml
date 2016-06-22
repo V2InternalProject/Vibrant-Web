@@ -1,0 +1,715 @@
+﻿@model HRMS.Models.ContactDetailsViewModel
+@{
+    ViewBag.Title = "Contact Details";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/PersonalDetails/_ContactDetails.js")" type="text/javascript"></script>
+<script src="~/Scripts/Global.min.js"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        $(".ClassDisplayLabel").hide();
+        $('#contactDetails #EmployeeId').val('@Model.EmployeeId');
+        isContactRowInAddEditMode = false;
+        //$("#btnAddEmergencyContactDetails").click(function () {
+        //    AddemergencyContactDetails();
+        //});
+
+        $('#contactDetails').submit(function () {
+            $('#contactDetails #EmployeeId').val('@ViewBag.SearchedUserID');
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+            $("#personalEmail").val($("#PersonalEmailId").val());
+            $("#altEmail").val($("#AlternateEmailId").val());
+            $("#mobNumber").val($("#MobileNumber").val());
+            $("#altContact").val($("#AlternateContactNumber").val());
+            $("#resNumber").val($("#ResidenceNumber").val());
+            $("#resVoip").val($("#ResidenceVoip").val());
+            $("#skypeId").val($("#SkypeId").val());
+            $("#gtalkId").val($("#GtalkId").val());
+            $("#yimId").val($("#YIMId").val());
+            $("#officeVoip").val($("#OfficeVoip").val());
+            $("#seatLocation").val($("#SeatingLocation").val());
+            if ($("#contactDetails").valid()) {
+                DisplayLoadingDialog();  //checked
+
+                $.ajax({
+                    url: '@Url.Action("ContactDetails", "PersonalDetails")',
+                    type: 'POST',
+                    data: $('#contactDetails').serialize(),
+                    success: function (results) {
+                        if (results.status == true) {
+
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#contactDetailsSuccessDialog").dialog({
+                                title: 'Contact Details',
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Contact Details',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#contactDetailsErrorDialog").dialog({
+                                title: 'Contact Details',
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+        var deletionIdSelected = 0;
+        SelectedContactRowId = "";
+        stringRelationList = @(Html.Raw(Json.Encode(ViewBag.RelationTypeList)));
+        var relation = [];
+        relation.push("Select");
+        $.each(stringRelationList, function (index,value) {
+            relation.push(value.Relation);
+        });
+        // Set up the jquery grid
+        $("#jqEmergencyContactTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("EmergencyContactLoadGrid", "PersonalDetails")',
+            postData: { employeeId: '@ViewBag.ContactEmployeeId' },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["EmergencyContact Id", "EmployeeId", "Name", "Address", "Contact No.", "Email Id", "", "Relationship", ""],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeEmergencyContactId", index: "EmployeeEmergencyContactId", width: 50, editable: true, hidden: true, align: "left", visible: "false" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 25, align: "left" },
+                { name: "Name", index: "Name", editable: true, editrules: { required: true },  width: 50,editoptions: { maxlength: 1000}, align: "left" },
+                { name: "EmgAddress", index: "EmgAddress", editable: true, editoptions: { maxlength: 4000}, width: 50, align: "left" },
+                { name: "ContactNo", index: "ContactNo", editable: true, align: "left", width: 25, editrules: { required: true, custom: true, custom_func: isValidContactNo }, editoptions: { maxlength: 100} },
+                { name: "EmailId", index: "EmailId", editable: true, align: "left", width: 80, editrules: { custom: true, custom_func: isValidContactEmailAddress}, editoptions: { maxlength: 50} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left",  width: 25,visible: "false" },
+                { name: "Relation", index: "Relation", editable: true, align: "left", width: 30, editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeContactRelation(e); } }]} },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 22,
+                    align: "center",
+                    formatter: function () {
+                        @*if ($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' && $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' && ('@Model.EmpStatusMasterID' != 2)) {*@
+                        if (((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') || ('@Model.EmpStatusMasterID' == 2)) {
+                            return '';
+                        } else {
+                            return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+                        }
+                    }
+                }
+            ],
+            // Grid total width and height
+            width: 750,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqEmergencyContactTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "EmployeeEmergencyContactId",
+            sortorder: "asc",
+            editurl: '@Url.Action("AddEmployeeEmergencyContact", "PersonalDetails")',
+            // Grid caption
+            //caption: "Employee - Emergency Contact Details",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqEmergencyContactTable").jqGrid('getGridParam', 'records');
+                //if (count == 0) {
+                //    $('#gbox_jqEmergencyContactTable').hide();
+                //}
+                //else {
+                //    $('#gbox_jqEmergencyContactTable').show();
+                //    if (count > 20) {
+
+                //        $('#jqEmergencyContactTablePager').show();
+                //    }
+                //    else {
+                //        $('#jqEmergencyContactTablePager').hide();
+                //    }
+                //}
+            },
+            onCellSelect: function (rowid, iCol) {
+                SelectedContactRowId = rowid;
+                var rowData = $(this).getRowData(rowid);
+                if(isContactRowInAddEditMode == false){
+                    var deleteId = rowData['EmployeeEmergencyContactId'];
+                    $('#contactDetails #uniqueID').val(rowData['uniqueID']);
+                    if (iCol == 8 && rowid != "new_row") {
+                        @*if ((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') {*@
+                        if (((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') || ('@Model.EmpStatusMasterID' == 2)) {
+                            return false;
+                        }
+                        else {
+                            DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                        }
+                    }
+                } @*else {
+                    if ((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') {
+                        return false;
+                    }
+                    else {
+                        EditEmergencyContactDetails(rowData);
+                    }
+                }*@
+            },
+        }).navGrid("#jqEmergencyContactTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqEmergencyContactTable").jqGrid('inlineNav', "#jqEmergencyContactTablePager",
+{
+    edit: true,
+    editicon: "ui-icon-pencil",
+    edittext: "Edit",
+    add: true,
+    addicon: "ui-icon-plus",
+    addtext: "Add",
+    save: true,
+    saveicon: "ui-icon-disk",
+    savetext: "Save",
+    cancle: true,
+    cancelicon: "ui-icon-cancel",
+    canceltext: "Cancel",
+    addParams: {
+        useFormatter: false,
+        addRowParams: {
+            oneditfunc: function (rowid) {
+                isContactRowInAddEditMode = true;
+                SelectedContactRowId = rowid;
+            }
+        }
+    },
+    editParams: {
+        keys: false,
+        oneditfunc: function (rowid) {
+            isContactRowInAddEditMode = true;
+        },
+        sucessfunc: function (data) {
+        },
+        url: null,
+        extraparam: {
+            RelationId: function () {
+                return $('#contactDetails #uniqueID').val();
+            },
+            EmployeeID: function() {
+                return  $('#contactDetails #EmployeeId').val();
+            }
+            //ProjectID: function () {
+            //    return $('#addProjectModule #ProjectID').val();
+            //},
+            //SelectedModuleName: function () {
+            //    return $("#addProjectModule #SelectedModuleName").val();
+            //}
+        },
+        aftersavefunc: function (data, response) {
+            isContactRowInAddEditMode = false;
+            var results = $.parseJSON(response.responseText);
+            $("#jqEmergencyContactTable").trigger("reloadGrid");
+            if (results.status == true) {
+                $("#AddEmergencyContactSuccessMessege").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: 'Emergency Contact Details',
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+            } // if close
+            else if (results.status == "Error") {
+                DisplayErrorDialog("Emergency Contact Details");
+            }
+            else {
+                $("#AddEmergencyContactErrorMessege").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    title: 'Emergency Contact Details',
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //dialog close
+            } //else close
+
+        },
+        errorfunc: null,
+        afterrestorefunc: function(){
+            isContactRowInAddEditMode = false;
+        },
+        restoreAfterError: true,
+        mtype: "POST"
+    }
+});
+
+        if ((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') {
+            //$("#btnAddEmergencyContactDetails").hide();
+            $("#jqEmergencyContactTablePager_left").css("visibility","hidden");
+            $('#contactDetails #btnSave').hide();
+            $('#contactDetails #btnReset').hide();
+            $("#gview_jqEmergencyContactTable").find('input,select').attr("disabled", true);
+            $("#contactDetails").find('input,textarea,select').attr("disabled", true);
+            $(".exampleNumber").hide();
+        }
+        else {
+            //$("#btnAddEmergencyContactDetails").show();
+            $("#jqEmergencyContactTablePager_left").css("visibility","visible");
+            $('#contactDetails #btnSave').show();
+            $('#contactDetails #btnReset').show();
+            $(".exampleNumber").show();
+        }
+
+        DisplayLabel();
+    });               // End of jQuery document.ready()
+
+    var obj = "@ViewBag.UserName";
+    $("#OfficeEmailId").val(obj + '@@v2solutions.com');
+
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                $(this).hide().next().show();
+            }
+        });
+    }//end function
+</script>
+<section class="EmployeeContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Personal Details
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @if (Model.UserRole == "RMG" && ViewBag.SearchedUserID != ViewBag.loggedinEmployeeID)
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Personal
+                </a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Education
+                </a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Certification
+                </a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Skill
+                </a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })" class="selected">
+                    Contact
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Personal
+                </a>
+                <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Dependent
+                </a>
+                <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Declaration
+                </a>
+                <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Residence
+                </a>
+                <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })" class="selected">
+                    Contact
+                </a>
+                <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Education
+                </a>
+                <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Certification
+                </a>
+                <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Skill
+                </a>
+                <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.ContactEmployeeId })">
+                    Medical History
+                </a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody ContactMainbody">
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { id = "contactDetails" }))
+        {
+            @Html.HiddenFor(m => m.UserRole)
+            @Html.HiddenFor(m => m.EmployeeId)
+            @Html.HiddenFor(m => m.uniqueID)
+            @Html.ValidationSummary(true)
+            <div class="FormContainerBox  addcontact clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>* Personal Email ID:</label>*@ * @Html.LabelFor(x => x.PersonalEmailId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.PersonalEmailId, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.PersonalEmailId, Model.PersonalEmailId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.PersonalEmailId)</p>
+                            @Html.HiddenFor(x => x.PersonalEmailId, new { id = "personalEmail" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Alternate Email ID:</label>*@
+                            @Html.LabelFor(x => x.AlternateEmailId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.AlternateEmailId, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.AlternateEmailId, Model.AlternateEmailId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AlternateEmailId)</p>
+                            @Html.HiddenFor(x => x.AlternateEmailId, new { id = "altEmail" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>* Mobile Number:</label>*@ * @Html.LabelFor(model => model.MobileNumber):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />
+                                <p>e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)</p>*@
+                            @Html.TextBoxFor(x => x.MobileNumber, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.MobileNumber, Model.MobileNumber, new { @class = "ClassDisplayLabel" })
+                            <p class="exampleNumber">
+                                e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)
+                            </p>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.MobileNumber)</p>
+                            @Html.HiddenFor(x => x.MobileNumber, new { id = "mobNumber" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Alternate Contact Number:</label>*@
+                            @Html.LabelFor(x => x.AlternateContactNumber):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />
+                                <p>e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)</p>*@
+                            @Html.TextBoxFor(x => x.AlternateContactNumber, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.AlternateContactNumber, Model.AlternateContactNumber, new { @class = "ClassDisplayLabel" })
+                            <p class="exampleNumber">
+                                e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)
+                            </p>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AlternateContactNumber)</p>
+                            @Html.HiddenFor(x => x.AlternateContactNumber, new { id = "altContact" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>Residence Number:</label>*@ * @Html.LabelFor(model => model.ResidenceNumber):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" placeholder="Datepicker" />
+                                <p>e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)</p>*@
+                            @Html.TextBoxFor(x => x.ResidenceNumber, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ResidenceNumber, Model.ResidenceNumber, new { @class = "ClassDisplayLabel" })
+                            <p class="exampleNumber">
+                                e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)
+                            </p>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ResidenceNumber)</p>
+                            @Html.HiddenFor(x => x.ResidenceNumber, new { id = "resNumber" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label> Residence Voip:</label>*@
+                            @Html.LabelFor(x => x.ResidenceVoip):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />
+                                <p>e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)</p>*@
+                            @Html.TextBoxFor(x => x.ResidenceVoip, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.ResidenceVoip, Model.ResidenceVoip, new { @class = "ClassDisplayLabel" })
+                            <p class="exampleNumber">
+                                e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)
+                            </p>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.ResidenceVoip)</p>
+                            @Html.HiddenFor(x => x.ResidenceVoip, new { id = "resVoip" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Skype ID:</label>*@
+                            @Html.LabelFor(x => x.SkypeId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.SkypeId, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SkypeId, Model.SkypeId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.SkypeId)</p>
+                            @Html.HiddenFor(x => x.SkypeId, new { id = "skypeId" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Gtalk ID:</label>*@
+                            @Html.LabelFor(x => x.GtalkId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.GtalkId, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.GtalkId, Model.GtalkId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.GtalkId)</p>
+                            @Html.HiddenFor(x => x.GtalkId, new { id = "gtalkId" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>YIM ID:</label>*@
+                            @Html.LabelFor(x => x.YIMId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.YIMId, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.YIMId, Model.YIMId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.YIMId)</p>
+                            @Html.HiddenFor(x => x.YIMId, new { id = "yimId" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Office Extension:</label>*@
+                            @Html.LabelFor(x => x.OfficeVoip):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.OfficeVoip, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.OfficeVoip, Model.OfficeVoip, new { @class = "ClassDisplayLabel" })
+                            <p class="exampleNumber">
+                                e.g.(+44 (0161) 8721661/408.550.2340/+91-22-66733201)
+                            </p>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.OfficeVoip)</p>
+                            @Html.HiddenFor(x => x.OfficeVoip, new { id = "officeVoip" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            @*<label>Offfice Email ID:</label>*@ * @Html.LabelFor(model => model.OfficeEmailId):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(m => m.OfficeEmailId, new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.OfficeEmailId, Model.OfficeEmailId, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.OfficeEmailId)</p>
+                            @Html.HiddenFor(x => x.OfficeEmailId, new { id = "officeEmail" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @*<label>Seating Location:</label>*@
+                            @Html.LabelFor(x => x.SeatingLocation):
+                        </div>
+                        <div class="InputDiv">
+                            @*<input type="text" />*@
+                            @Html.TextBoxFor(x => x.SeatingLocation, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.SeatingLocation, Model.SeatingLocation, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.SeatingLocation)</p>
+                            @Html.HiddenFor(x => x.SeatingLocation, new { id = "seatLocation" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1">
+                <input type="submit" id="btnSave" value="Save" class="ButtonGray mrgnR11" />
+                <input type="button" id="btnReset" value="Reset" onclick="RestoreValues()" class="ButtonGray" />
+            </div>
+            <div class="commondivider mrgnL30 mrgnR30">
+            </div>
+
+        }
+        <h4>
+            Emergency Contact Details:
+        </h4>
+        <div class="tablestyle3">
+            <table id="jqEmergencyContactTable"></table>
+        </div>
+        <div id="jqEmergencyContactTablePager">
+        </div>
+        @*<h4>Add Emergency Contact:</h4>
+            <div class="FormContainerBox addemer clearfix">
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Name:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Email ID:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" placeholder="datepicker" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Address:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <textarea></textarea>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <label>* Contact Number:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol clearfix">
+                        <div class="LabelDiv">
+                            <label>* Relation:</label>
+                        </div>
+                        <div class="InputDiv">
+                            <select>
+                                <option>abc</option>
+                                <option>abc</option>
+                                <option>abc</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fill-dtls clearfix">
+                <input type="button" value="Save" class="ButtonGray" />
+            </div>*@
+    </div>
+</section>
+<div id="contactDetailsSuccessDialog" title="Contact Details" style="display: none">
+    <p>
+        Contact Details have been saved.
+    </p>
+</div>
+<div id="contactDetailsErrorDialog" title="Error" style="display: none">
+    <p>
+        There are some errors.
+    </p>
+</div>
+<div id="EmerRelationRequiredDialog" title="Dependant details" style="display: none">
+    <p>
+        Please select value of Relation.
+    </p>
+</div>
+<div id="ContactEmailValid" style="display: none;">
+    <p>
+        Please Enter Valid Email Id.
+    </p>
+</div>
+<div id="ValidContactNoDialog" title="Module details" style="display: none">
+    <p>
+        Contact No. can not contain alphabets.
+    </p>
+</div>
+<div id="AddEmergencyContactSuccessMessege" style="display: none">
+    <p>
+        Emergency contact Details have been saved.
+    </p>
+</div>
+<div id="AddEmergencyContactErrorMessege" style="display: none">
+    <p>
+        Unable to save details.
+    </p>
+</div>
+<div id="deleteEmergencyContactDialogConfirmation" style="display: none">
+    <p>
+        Are you sure you want to delete the record?
+    </p>
+</div>
+<div id="deleteEmergencyContact" style="display: none">
+    Record has been deleted
+</div>

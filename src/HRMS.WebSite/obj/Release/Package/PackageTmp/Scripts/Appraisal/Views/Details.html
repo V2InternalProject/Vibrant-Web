@@ -1,0 +1,59 @@
+﻿<link href="../../../Content/AppraisalMaster/AppraisalMaster.css" rel="stylesheet" />
+<div ng-init="Init()">
+    <div id="mydiv" ng-show="myDiv">
+        <img src="~/Images/New Design/loader.GIF" class="ajax-loader" />
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="SmallHeading pull-left">{{questionConfig.sectionName}}</h4>
+        </div>
+    </div>
+
+    <div class="table-responsive section-grid ngGrid">
+        <table class="table table-striped table-bordered table-font-style">
+
+            <tr>
+                <td class="section-grid-header header-bg-table">Review Period From</td>
+                <td>{{data.PeriodFrom}}</td>
+                <td class="section-grid-header header-bg-table">To</td>
+                <td>{{data.PeriodTo}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Employee Name</td>
+                <td>{{data.Employeename}}</td>
+                <td class="header-bg-table">Employee Code</td>
+                <td>{{data.EmployeeCode}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Delivery Unit</td>
+                <td>{{data.DeliveryUnit}}</td>
+                <td class="header-bg-table">Designation</td>
+                <td>{{data.Designation}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Location</td>
+                <td>{{data.Location}}</td>
+                <td class="header-bg-table">Date Of Joining</td>
+                <td>{{data.DateOfJoining}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Appraiser 1</td>
+                <td>{{data.Appraiser1}}</td>
+                <td class="header-bg-table">Appraiser 2</td>
+                <td>{{data.Appraiser2}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Reviewer 1</td>
+                <td>{{data.Reviewer1}}</td>
+                <td class="header-bg-table">Reviewer 2</td>
+                <td>{{data.Reviewer2}}</td>
+            </tr>
+            <tr>
+                <td class="header-bg-table">Group Head</td>
+                <td>{{data.GroupHead}}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>

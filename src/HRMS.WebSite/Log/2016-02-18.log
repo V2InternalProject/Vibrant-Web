@@ -1,0 +1,538 @@
+
+2016-02-18 @ 12:10:41  Informational , App start Global.asax App_Start  
+2016-02-18 @ 12:10:48  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 12:23:22  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 12:23:22  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 12:23:23  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 12:23:23  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 12:23:24  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 12:40:10  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 12:40:10  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 12:40:11  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 12:40:11  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 12:40:11  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 12:59:51  FATAL ERROR   , App Error Global.asax App_Error  System.ArgumentException: The parameters dictionary contains a null entry for parameter 'TaskId' of non-nullable type 'System.Int32' for method 'System.Web.Mvc.ActionResult GetSelectedProjectTaskDescription(Int32)' in 'HRMS.Controllers.TaskTimesheetController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+Parameter name: parameters
+   at System.Web.Mvc.ActionDescriptor.ExtractParameterFromDictionary(ParameterInfo parameterInfo, IDictionary`2 parameters, MethodInfo methodInfo)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.ActionInvocation.InvokeSynchronousActionMethod()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3d()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass46.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-18 @ 12:59:51  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-18 @ 13:13:43  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'LogOn' was not found on controller 'HRMS.Controllers.TaskTimesheetController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-18 @ 13:13:43  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-18 @ 13:13:53  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 13:13:53  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 13:13:55  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 13:13:55  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 13:13:55  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 13:56:09  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 13:56:09  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 13:56:09  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 13:56:09  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 13:56:09  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 14:11:10  Informational , App start Global.asax App_Start  
+2016-02-18 @ 14:11:18  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 14:20:28  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 14:20:28  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 14:20:29  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 14:20:29  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 14:20:29  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 14:21:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 14:21:08  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 14:21:08  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 14:21:08  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 14:21:08  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 14:53:40  Informational , App start Global.asax App_Start  
+2016-02-18 @ 14:53:44  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 14:54:10  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 14:54:10  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 14:54:11  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 14:54:11  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 14:54:11  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 15:13:47  Informational , App start Global.asax App_Start  
+2016-02-18 @ 15:13:49  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 15:14:09  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 15:14:09  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 15:14:10  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 15:14:10  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 15:14:10  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 15:28:57  Informational , App start Global.asax App_Start  
+2016-02-18 @ 15:28:59  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 15:32:22  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 15:32:22  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 15:32:23  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 15:32:23  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 15:32:24  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 15:36:44  Informational , App start Global.asax App_Start  
+2016-02-18 @ 15:36:46  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 15:38:13  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 15:38:13  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 15:38:14  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 15:38:14  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 15:38:14  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 15:55:48  Informational , App start Global.asax App_Start  
+2016-02-18 @ 15:55:51  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 15:56:12  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 15:56:12  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 15:56:12  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 15:56:12  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 15:56:12  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 16:23:05  Informational , App start Global.asax App_Start  
+2016-02-18 @ 16:23:11  Informational , App start finished Global.asax App_Start  
+
+2016-02-18 @ 16:23:13  Informational , App start Global.asax App_Start  
+2016-02-18 @ 16:23:18  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 16:25:58  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 16:25:58  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 16:25:59  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 16:25:59  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 16:25:59  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 16:49:12  Informational , App start Global.asax App_Start  
+2016-02-18 @ 16:49:15  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 16:49:35  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 16:49:35  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 16:49:36  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 16:49:36  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 16:49:36  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 17:17:43  Informational , App start Global.asax App_Start  
+2016-02-18 @ 17:17:45  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 17:18:56  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 17:18:56  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 17:18:56  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 17:18:56  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 17:18:56  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 17:42:06  FATAL ERROR   , App Error Global.asax App_Error  System.InvalidOperationException: The result of a query cannot be enumerated more than once.
+   at HRMS.DAL.TaskTimesheetDAL.TimesheetEntryRecords(Nullable`1 ProjectID, Nullable`1 TaskID, Nullable`1 SelectedFromDate, Nullable`1 SelectedToDate, Nullable`1 StatusID, Nullable`1 EmployeeId, Int32 page, Int32 rows, Int32& totalCount) in d:\rahul\New folder\src\DAL\TaskTimesheetDAL.cs:line 643
+   at HRMS.Controllers.TaskTimesheetController.ExportToExcelTimeSheetData(Nullable`1 ProjectID, Nullable`1 TaskID, Nullable`1 StatusID, Nullable`1 StartDate, Nullable`1 EndDate, Int32 page, Int32 rows) in d:\rahul\New folder\src\HRMS.WebSite\Controllers\TaskTimesheetController.cs:line 794
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.<>c__DisplayClass1.<WrapVoidAction>b__0(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.ActionInvocation.InvokeSynchronousActionMethod()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3d()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass46.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-18 @ 17:42:06  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-02-18 @ 17:48:36  Informational , App start Global.asax App_Start  
+2016-02-18 @ 17:48:38  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 17:49:31  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 17:49:31  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 17:49:32  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 17:49:32  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 17:49:32  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 19:38:32  Informational , App start Global.asax App_Start  
+2016-02-18 @ 19:38:41  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 19:40:12  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 19:40:12  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 19:40:13  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 19:40:13  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 19:40:13  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-02-18 @ 19:52:13  FATAL ERROR   , App Error Global.asax App_Error  System.InvalidOperationException: The result of a query cannot be enumerated more than once.
+   at HRMS.DAL.TaskTimesheetDAL.TimesheetEntryRecords(Nullable`1 ProjectID, Nullable`1 TaskID, Nullable`1 SelectedFromDate, Nullable`1 SelectedToDate, Nullable`1 StatusID, Nullable`1 EmployeeId, Int32 page, Int32 rows, Int32& totalCount) in d:\rahul\New folder\src\DAL\TaskTimesheetDAL.cs:line 646
+   at HRMS.Controllers.TaskTimesheetController.ExportToExcelTimeSheetData(Nullable`1 ProjectID, Nullable`1 TaskID, Nullable`1 StatusID, Nullable`1 StartDate, Nullable`1 EndDate, Int32 page, Int32 rows) in d:\rahul\New folder\src\HRMS.WebSite\Controllers\TaskTimesheetController.cs:line 794
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.<>c__DisplayClass1.<WrapVoidAction>b__0(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.ActionInvocation.InvokeSynchronousActionMethod()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3d()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass46.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-02-18 @ 19:52:13  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-02-18 @ 19:53:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 19:53:15  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 19:53:16  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 19:53:16  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 19:53:16  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-02-18 @ 20:33:24  Informational , App start Global.asax App_Start  
+2016-02-18 @ 20:33:30  Informational , App start finished Global.asax App_Start  
+2016-02-18 @ 20:36:53  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-02-18 @ 20:36:53  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-02-18 @ 20:36:53  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-02-18 @ 20:36:53  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-02-18 @ 20:36:53  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\rahul\New folder\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155

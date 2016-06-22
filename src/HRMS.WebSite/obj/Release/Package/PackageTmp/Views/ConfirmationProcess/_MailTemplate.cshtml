@@ -1,0 +1,163 @@
+﻿@model HRMS.Models.MailTemplateViewModel
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "MailDetails" }))
+{
+    @Html.HiddenFor(model => model.employeeId, new { @id = "hdnformailEmployeeId" })
+    @Html.ValidationSummary(true)
+
+    <div class="MailPopUp">
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("From")<span class="mandatory">*</span>
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.From, new { @disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.From)
+                @Html.HiddenFor(model => model.From, new { id = "hdFrom" })
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("To")<span class="mandatory">*</span>
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.To)
+                @Html.ValidationMessageFor(model => model.To)
+                @Html.HiddenFor(model => model.To, new { id = "hdTo" })
+                <span id="ToErrorMessage" style="display: none; color: red">
+                    Please enter proper Email ID
+                </span>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Cc")
+            </div>
+            <div class="InputDiv">
+                <span class="top-txtarea">@Html.TextAreaFor(model => model.Cc)</span>
+                @Html.HiddenFor(model => model.Cc, new { id = "hdCc" })
+                <span id="CCErrorMessage" style="display: none; color: red">
+                    Please enter proper Email IDs
+                </span>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Subject")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(model => model.Subject)
+                @Html.ValidationMessageFor(model => model.Subject)
+                @Html.HiddenFor(model => model.Subject, new { @id = "hdSubject" })
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Note")
+            </div>
+            <div class="InputDiv">
+                <p>
+                    The valid separators for the Email IDs are space(" "), comma(",") and semi-colon(";")."
+                </p>
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                @Html.Label("Message")
+            </div>
+            <div class="InputDiv">
+                @Html.TextAreaFor(model => model.Message)
+                @Html.ValidationMessageFor(model => model.Message)
+                @Html.HiddenFor(model => model.Message, new { @id = "txtAgeDependant" })
+            </div>
+        </div>
+    </div>
+
+    <div class="mrgnB18" id="abcd">
+        <input id="sendInitiateMailconfirmation" type="button" value="Send" class="ButtonGray" />
+        @*<input id="cancel" type="button" value="Reset" onclick="emptyDialogdependant()" class="button " />*@
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$.validator.unobtrusive.parse($("#MailDetails"));
+        $('#MailDetails #sendInitiateMailconfirmation').click(function () {
+            $("#CCErrorMessage").hide();
+            $("#ToErrorMessage").hide();
+            if ($('#MailDetails').valid()) {
+                DisplayLoadingDialog();  //checked
+                var SendMailUrl = '@Url.Action("SendEmail", "ConfirmationProcess")';
+                $.ajax({
+                    url: SendMailUrl,
+                    type: 'POST',
+                    data: $('#MailDetails').serialize(),
+                    async: false,
+                    success: function (data) {
+                        if (data.validCcId == true && data.validtoId == true) {
+                            if (data.status == true) {
+                                $('#loading').dialog('destroy');
+                                $('#MailTemplateDialog').dialog('destroy');
+                                window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
+                            }
+                            else if (data.status == false) {
+                                $("#MailIDError").dialog({
+                                    title: 'Mail Error',
+                                    resizable: false,
+                                    height: 'auto',
+                                    width: 'auto',
+                                    modal: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    },
+                                    close: function () {
+                                        $(this).dialog("destroy");
+                                    }
+                                }); //end dialog
+                            }
+                        }
+                        else if (data.status == "Error") {
+                            $("#errorDialog").dialog({
+                                title: 'Mail Error',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+
+                            if (data.validCcId == false)
+                                $("#CCErrorMessage").show();
+                            if (data.validtoId == false)
+                                $("#ToErrorMessage").show();
+                            return false;
+                        }
+                    },
+                    error: function () {
+                        //                                                            $("#loading").dialog("close");
+                        //                                                            $("#loading").dialog("destroy");
+                        $("#errorDialog").dialog({
+                            title: 'Mail Error',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,115 @@
+﻿<div class="AddTask">
+    <div class="fieldwidth title-bgcolor">
+        <h4 class="displayI">
+            Add/Modify task list for the date</h4>
+        <input type="text" class="headingTB" /><img class="ui-datepicker-trigger" src="../../Content/themes/base/images/calendar.gif" />
+    </div>
+</div>
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+       <span class="mandatory">*</span> @Html.Label("Select Project:")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <select>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+        </select>
+    </div>
+</div>
+<div class="clearfix">
+    <div class="TaskRadioContainer floatL">
+        <input id="GeneralTask" type="radio" checked="checked" value="Yes" name="radioQone">
+        @Html.Label("General Tasks")
+    </div>
+    <div class="TaskRadioContainer floatL">
+        <input id="MPPTask" type="radio" value="Yes" name="radioQone">
+        @Html.Label("MPP Tasks")
+    </div>
+    <div class="TaskRadioContainer floatL">
+        <input id="AssignedTask" type="radio" value="Yes" name="radioQone">
+        @Html.Label("Assigned Tasks")
+    </div>
+    <div class="TaskRadioContainer floatL">
+        <input id="Issues" type="radio" value="Yes" name="radioQone">
+        @Html.Label("Issues Assigned")
+    </div>
+</div>
+
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+       <span class="mandatory">*</span> @Html.Label("Select Task:")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <select>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+        </select>
+    </div>
+</div>
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+        @Html.Label("Select Activity:")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <select>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+        </select>
+    </div>
+</div>
+
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+        @Html.Label("Actual Work (hrs):")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <select>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+        </select>
+    </div>
+</div>
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+        @Html.Label("Actual % Complete:")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <select>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+            <option>abc</option>
+        </select>
+    </div>
+</div>
+
+<div class="TimesheetNote">
+    <p><span class="mrgnR20">Allocated Work (hrs): 20.00</span> Actual Work (hrs): 0.00</p>
+    <p>Do you need more than the allocated time to complete the task?</p>
+    <p><span class="mrgnR10">If yes, enter the additional estimated time to complete (ETC):</span> <input type="text" class="ETCtext"/></p>
+    <p><span class="mrgnR20">Start Date: 03/03/2014</span> End Date: 03/03/2014</p>
+</div>
+
+<div class="formcol clearfix">
+    <div class="editor-label labelwidth floatL">
+        @Html.Label("Description:")
+    </div>
+    <div class="editor-field fieldwidth floatL">
+        <textarea></textarea>
+    </div>
+</div>
+
+<div class="clear popup_button">
+    <div class="floatR">
+        <input class="button floatR" type="button" value="Save" />
+    </div>
+</div>
+

@@ -1,0 +1,276 @@
+﻿@model HRMS.Models.ExpenseReimbursementViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@*<script src="../../Scripts/ExpenseReimbursement/ExpenseReimbursementForm.js" type="text/javascript"></script>*@
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addExpenseReimbursementDetails" }))
+{
+    <span id="guide"><a id="anchor_guidelinesExpense" class="floatR LinkBlue" href="#">Guidelines </a></span>
+    <br />
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        @Html.HiddenFor(x => x.ReimbursementEmployeeId)
+        @Html.HiddenFor(x => x.ExpenseDetailsId)
+        @Html.HiddenFor(x => x.EncryptedEmployeeId)
+        @Html.HiddenFor(x => x.EncryptedExpenseId)
+        @Html.HiddenFor(x => x.ExpenseId)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Receipt No")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.ReceiptNo)
+                <p class="qualif-detail">
+                @Html.ValidationMessageFor(model => model.ReceiptNo)
+                @Html.HiddenFor(model => model.ReceiptNo, new { id = "receiptNo" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Date of Expense")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.DateOfExpense, String.Format("{0:MM/dd/yyyy}", Model.DateOfExpense))
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.DateOfExpense)
+                    @Html.HiddenFor(model => model.DateOfExpense, new { id = "dateOfExpense" })
+                    <label id="ErrorMessage" style="display:none">
+                    </label>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Expense Category")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.NatureOfExpense, new SelectList(Model.NatureOfExpenseList, "NatureOfExpenseId", "NatureOfExpensevalue", "Select"), "Select")
+                <p class="qualif-detail">
+                @Html.ValidationMessageFor(model => model.NatureOfExpense)
+                @Html.HiddenFor(model => model.NatureOfExpense, new { id = "natureOfExpense" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Expense Sub-Category")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.Details)
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.Details)</p>
+                @Html.HiddenFor(model => model.Details, new { id = "details" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Amount")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.Amount)
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.Amount)</p>
+                @Html.HiddenFor(model => model.Amount, new { id = "amount" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Comments")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.Comments)
+                <p class="qualif-detail">
+                    @Html.ValidationMessageFor(model => model.Comments)</p>
+                @Html.HiddenFor(model => model.Comments, new { id = "comments" })
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="btnSaveExpenseReimursementDetails" type="button" value="Save" class="button" />
+            <input id="btnReset" type="Reset" value="Reset" class="button " />
+        </div>
+    </div>
+}
+<div id="guideLinesExpense" style="display: none">
+    @Html.Partial("_ExpenseGuidelines")
+</div>
+<script type="text/javascript">
+
+    $('#anchor_guidelinesExpense').click(function () {
+        $('#guideLinesExpense').dialog({
+            autoOpen: false,
+            modal: true,
+            width: 500,
+            height: 400,
+            resizable: false,
+            title: "Guidelines"
+        });
+        $('#guideLinesExpense').dialog('open');
+    });
+
+    $(document).ready(function () {
+        $('#DateOfExpense').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-100:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+
+        //        $('#btnReset').click(function () {
+        //            $('#addExpenseDetails').formReset();
+        //        });
+        $('#ErrorMessage').hide();
+        var amount = null;
+//        $("#Amount").bind("keypress", function (event) {
+//            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+//            if (amount !=null) {
+//                var unitCostDec = $(amount.split('.'));
+//            }
+//            if (unitCostDec[1].length >= 10) {
+//                event.preventDefault();
+//            }
+//            else {
+//                amount = amount + key;
+//            }
+
+//            // }
+//        });
+
+    });
+
+    $('#DateOfExpense').change(function () {
+        var d = new Date();
+        d.setDate(d.getDate() - 45);
+        var dd = d.getDate();
+        var mm = d.getMonth() + 1; //January is 0!
+        var yyyy = d.getFullYear();
+        var minDate;
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm }
+        minDate = mm + '/' + dd + '/' + yyyy;
+        if (new Date(document.getElementById("DateOfExpense").value) < new Date(minDate)) {
+            $('#ErrorMessage').show();
+            document.getElementById("ErrorMessage").innerHTML = "<span class='mandatory'>Expenses more than 45 days old has to be carried out offline with Finance department.</span>";
+            //            $('#validationMessage').innerHtml('Expenses more than 45 days old has to be carried out offline with Finance department.');
+            //$('#DateOfExpense').val('');
+            return false;
+        }
+        else {
+            $('#ErrorMessage').hide();
+            return true;
+        }
+    });
+    function CalBalance() {
+        var bal;
+        var balance;
+        var totalAmount = parseInt($("#expenseDetailsRecords #Total").val());
+        var advanceAmount = $("#expenseDetailsRecords #AdvancesAmount").val();
+        balance = $("#expenseDetailsRecords #Total").val() - $("#expenseDetailsRecords #AdvancesAmount").val();
+        balance = balance.toFixed(2);
+        var postUrl = '@Url.Action("NumberToStringConvertor", "ExpenseReimbursement")';
+        //to calculate amount in words
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            async: false,
+            data: { balance: balance },
+            success: function (data) {
+                bal = data.balance;
+                $("#ExpenseReimbursementForm #AmountInWords").val(bal);
+            }
+        });
+        $("#expenseDetailsRecords #Balance").val(balance);
+    }
+
+    $('#btnSaveExpenseReimursementDetails').off('click').on('click', function () {
+        var postUrl = '@Url.Action("SaveExpenseDetails", "ExpenseReimbursement")';
+        if ($('#addExpenseReimbursementDetails').valid()) {
+            $.ajax({
+                url: postUrl,
+                async: 'true',
+                type: 'POST',
+                data: $('#addExpenseReimbursementDetails').serialize(),
+                success: function (results) {
+                    if (results.status == true) {
+                        $('#addExpenseDetailDialog').dialog("close");
+                        jQuery("#ReimbursementTable").trigger("reloadGrid");
+                        $("#addExpenseSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            closeOnEscape: false,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $.ajax({
+                                        url: '@Url.Action("CalcuateTotalExpense", "ExpenseReimbursement")',
+                                        data: { expenseEmployeeId: $('#addExpenseReimbursementDetails #EncryptedEmployeeId').val(), encryptedExpenseId: $('#addExpenseReimbursementDetails #EncryptedExpenseId').val() },
+                                        type: "GET",
+                                        Async: false,
+                                        success: function (results) {
+                                            if (results.status == true) {
+                                                $("#expenseDetailsRecords #Total").val(results.total);
+                                                CalBalance();
+                                                //$("#expenseDetailsRecords #Advances").val(results.total);
+                                                //$("#Advances").blur();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        $('#addExpenseDetailDialog').dialog("close");
+                        $("#errorDialog").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            title: 'Expense Details',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#ReimbursementTable").trigger("reloadGrid");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $('#addExpenseDetailDialog').dialog("close");
+                        $("#addExpenseErrorMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    jQuery("#ReimbursementTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            return true;
+        }
+        else
+            return false;
+    });
+</script>
+<div id="addExpenseSuccessMessege" title="Expense details" style="display: none;">
+    <p>
+        Expense details have been saved.
+    </p>
+</div>
+<div id="addExpenseErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="expenseDeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>

@@ -1,0 +1,132 @@
+﻿@model HRMS.Models.ExitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+        Joining Separation Reasons
+    </h2>
+    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmaddCheckList" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(s => s.QuestionnaireID)
+        @Html.HiddenFor(s => s.RevisionNo)
+        <div class="reason">
+            <div class="reason-detail"><span class="mandatory">*</span> @Html.Label("CheckList:")</div>
+            <div class="reason-details">@Html.TextBoxFor(model => Model.QuestionnaireName, new { @for = Model.QuestionnaireID })
+                @Html.ValidationMessageFor(x => x.QuestionnaireName)</div>
+        </div>
+        <div class="reason">
+            <div class="reason-detail"><span class="mandatory">*</span> @Html.Label("CheckList Description:")</div>
+            <div class="reason-details">@Html.TextBoxFor(model => Model.QuestionnaireDescription, new { @for = Model.QuestionnaireID })
+                @Html.ValidationMessageFor(x => x.QuestionnaireDescription)</div>
+        </div>
+        <div class="reason">
+            <div class="reason-detail"><span class="mandatory">*</span> @Html.Label("Reason:")</div>
+            <div class="reason-details">@Html.DropDownListFor(x => x.RevisionID, new SelectList(Model.ReasonList, "RevisionID", "Reason"), "")
+                @Html.ValidationMessageFor(x => x.RevisionID)</div>
+        </div>
+    }
+    <br />
+    <br />
+    <div class="reason popup_button">
+        <input class="button" type="button" id="SaveEditCheckList" value="Save" />
+        <input class="button" type="button" id="back_CheckList" value="Back" />
+    </div>
+    <div id="SavecheckListSuccess" style="display: none" title="Record Saved">
+        <center class="LoadingWrap">
+            The record is successfully Saved.
+        </center>
+    </div>
+    <div id="ErrorSaveCheckList" style="display: none" title="Error">
+        <center class="LoadingWrap">
+          There is some error.
+    </center>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#back_CheckList").click(function () {
+        parent.history.back();
+        return false;
+    });
+
+    $("#SaveEditCheckList").click(function () {
+        $('#QuestionnaireID').val('@Model.QuestionnaireID');
+        $("#RevisionID").val($("#RevisionID").val());
+        $('#RevisionNo').val('@Model.RevisionNo');
+        if ($("#frmaddCheckList").valid()) {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $.ajax({
+                url: '@Url.Action("EditCheckList", "ExitConfiguration")',
+                type: 'POST',
+                data: $('#frmaddCheckList').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        $("#SavecheckListSuccess").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    window.location.href = '@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")';
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorSaveCheckList").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    } //end else
+                }, // success
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveCheckList").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

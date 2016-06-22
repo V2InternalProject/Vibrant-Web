@@ -1,0 +1,601 @@
+﻿@model HRMS.Models.AppraisalStatusReport
+@{
+    ViewBag.Title = "Appraisal Rating Report";
+}
+<h3>Appraisal Rating Report</h3>
+<div>
+    @using (Html.BeginForm("ExportAppraisalRatingReportToExcel", "ConfigurationAppraisal"))
+    {
+        @Html.HiddenFor(x => x.YearID)
+        <div id="AllEmployeeDiv">
+            <div style="float: left">
+                <input class="button" type="submit" id="exportToExcel" value="Export to Excel" />
+            </div>
+            <br />
+            <br />
+            <table cellpadding="0" cellspacing="0" border="0" width="2500px" id="tbl_middlelevel">
+                <thead>
+                    @*this is main header row*@
+                    <tr class="bluebgtable1">
+                        <td width="4%">
+                            Employee Code
+                        </td>
+                        <td class="bluebgtable1" width="6%">
+                            Employee Name
+                        </td>
+                        <td class="bluebgtable1" width="5%">
+                            Parent DU
+                        </td>
+                        <td class="bluebgtable1" width="5%">
+                            Current DU
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Delivery Team
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Designation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Joining Date
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Confirmation Date
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Probation Review Date
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Appraiser 1 Name
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Appraiser 1 Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Appraiser 1 Comments
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Appraiser 2 Name
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Appraiser 2 Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Appraiser 2 Comments
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 1 Name
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Reviewer 1 Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 1 OverAll Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Reviewer 1 Comments
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 1 OverAll Comment
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Promotion Recommendation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Next Designation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 2 Name
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Reviewer 2 Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 2 OverAll Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%" colspan="@Model.ParameterList.Count">
+                            Reviewer 2 Comments
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Reviewer 2 OverAll Comment
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Promotion Recommendation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Next Designation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Group Head Name
+                        </td>
+                        <td class="bluebgtable1" width="6%" colspan="@Model.ParameterList.Count">
+                            Group Head Rating
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Group Head OverAll Rating
+                        </td>
+                        <td class="bluebgtable1" width="6%" colspan="@Model.ParameterList.Count">
+                            Group Head Comments
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            GroupHead OverAll Comment
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Promotion Recommendation
+                        </td>
+                        <td class="bluebgtable1" width="4%">
+                            Next Designation
+                        </td>
+                    </tr>
+                    @* 2nd header row *@
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        @for (var i = 0; i < Model.ParameterList.Count; i++)
+                        {
+                            <td class="bluebgtable1">
+                                @Model.ParameterList[i].ParameterName
+                            </td>
+                        }
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </thead>
+                <div>
+                    @for (var i = 0; i < Model.AppraisalRatingsReportList.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Employeecode, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Employeecode)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].EmployeeName, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].EmployeeName)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ParentDu, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ParentDu)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CurrentDu, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CurrentDu)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].DeliveryTeamName, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].DeliveryTeamName)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].DesignationName, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].DesignationName)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].JoiningDate, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].JoiningDate)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ConfirmationDate, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ConfirmationDate)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ProbationReviewDate, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ProbationReviewDate)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Appraiser1Name, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Appraiser1Name)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingOneAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingOneAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingTwoAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingTwoAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingThreeAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingThreeAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFourAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFourAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFiveAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFiveAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingSixAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingSixAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentOneAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentOneAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentTwoAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentTwoAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentThreeAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentThreeAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFourAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFourAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFiveAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFiveAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentSixAppraiserOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentSixAppraiserOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Appraiser2Name, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Appraiser2Name)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingOneAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingOneAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingTwoAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingTwoAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingThreeAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingThreeAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFourAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFourAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFiveAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFiveAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingSixAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingSixAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentOneAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentOneAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentTwoAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentTwoAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentThreeAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentThreeAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFourAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFourAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFiveAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFiveAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentSixAppraiserTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentSixAppraiserTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer1Name, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer1Name)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingOneReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingOneReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingTwoReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingTwoReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingThreeReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingThreeReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFourReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFourReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFiveReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFiveReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingSixReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingSixReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer1OverAllRating, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer1OverAllRating)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentOneReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentOneReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentTwoReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentTwoReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentThreeReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentThreeReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFourReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFourReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFiveReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFiveReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentSixReviewerOne, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentSixReviewerOne)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer1OverAllComment, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer1OverAllComment)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationReviewer1, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationReviewer1)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].NextDesignationReviewer1, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].NextDesignationReviewer1)
+                            </td>
+                            @*    reviewer 2*@
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer2Name, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer2Name)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingOneReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingOneReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingTwoReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingTwoReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingThreeReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingThreeReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFourReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFourReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFiveReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFiveReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingSixReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingSixReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer2OverAllRating, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer2OverAllRating)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentOneReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentOneReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentTwoReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentTwoReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentThreeReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentThreeReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFourReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFourReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFiveReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFiveReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentSixReviewerTwo, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentSixReviewerTwo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].Reviewer2OverAllComment, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].Reviewer2OverAllComment)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationReviewer2, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationReviewer2)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].NextDesignationReviewer2, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].NextDesignationReviewer2)
+                            </td>
+                            @*Group Head*@
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].GroupHeadName, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].GroupHeadName)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingOneGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingOneGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingTwoGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingTwoGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingThreeGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingThreeGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFourGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFourGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingFiveGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingFiveGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].ratingSixGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].ratingSixGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].GroupHeadOverAllRating, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].GroupHeadOverAllRating)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentOneGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentOneGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentTwoGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentTwoGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentThreeGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentThreeGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFourGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFourGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentFiveGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentFiveGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].CommentSixGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].CommentSixGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].GroupHeadOverAllComment, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].GroupHeadOverAllComment)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].PromotionRecommentationGroupHead)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.AppraisalRatingsReportList[i].NextDesignationGroupHead, new { style = "display: none;" })
+                                @Html.DisplayFor(x => Model.AppraisalRatingsReportList[i].NextDesignationGroupHead)
+                            </td>
+                        </tr>
+                    }
+                </div>
+            </table>
+        </div>
+    }
+</div>

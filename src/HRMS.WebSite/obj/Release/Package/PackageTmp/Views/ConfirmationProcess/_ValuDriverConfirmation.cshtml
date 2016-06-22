@@ -1,0 +1,204 @@
+﻿@model List<HRMS.Models.ConfirmationParameter>
+@using HRMS.DAL
+@section HeaderLinks{
+}
+<input type="hidden" id="valueCountConfirmation" value="@Model.Count()" />
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmValueDriverConfirmation" }))
+{
+    if (this.Model.Any())
+    {
+        var counter = 1;
+    <table cellpadding="0" cellspacing="0" class="ConfirmationRatingTable TableJqgrid" border="0" width="100%">
+        <thead>
+            <tr>
+                <th class="tableHeaders" width="35%">
+                    Parameter
+                </th>
+                <th class="tableHeaders" width="31%">
+                    Rating
+                </th>
+                <th class="tableHeaders" width="31%">
+                    Comments
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="tableRows">
+                <td id="employee_ID_@counter" style="display: none">
+                    <input type="hidden" id="employeeID_@counter" name="employeeID" class="clsEmployeeID" value="@item.employeeID" />
+                </td>
+                <td id="confirmation_ID_@counter" style="display: none">
+                    <input type="hidden" id="confirmationID_@counter" name="confirmationID" value="@item.confirmationID" />
+                </td>
+                <td id="parameter_ID_@counter" style="display: none">
+                    <input type="hidden" id="parameterID_@counter" name="confirmationID" value="@item.parameterID" />
+                </td>
+                <td id="competency_ID_@counter" style="display: none">
+                    <input type="text" id="competencyID_@counter" name="competencyID" class="competency ratingInput" value="@item.competencyID" />
+                </td>
+                <td id="Parameter_Description_@counter">
+                    @*<input type="text" id="ParameterDescription_@counter" name="ParameterDescription" value="@item.ParameterDescription" class="paramDescription confic-parameter ratingInput" readonly="readonly" />*@
+                    <label>*</label>@Html.DisplayFor(x => item.ParameterDescription, new { @id = "ParameterDescription_" + @counter, @name = "ParameterDescription", @class = "paramDescription confic-parameter ratingInput" })
+                </td>
+                <td id="Self_Rating_@counter">
+                    @*<input type="text" class="requiredField clsSelfRating clsnumber ratingInput " id="SelfRating_@counter" maxlength="3" name="SelfRating" value="@item.ManagerRating1" />*@
+                    @Html.DropDownListFor(model => item.ManagerRating1, new SelectList(@ViewBag.sectionTwoRatingList, item.ManagerRating1), new { @id = "ManagerRating1_" + @counter, @class = "DDtoReplace requiredField clsManagerRating1 clsnumber ratingInput App1IDF AssignDDToDiv ClassDisabledFields", @maxlength = "3", @name = "ManagerRating1" })
+                    @Html.LabelFor(emp => item.ManagerRating1, new { @class = "ClassDisplayLabel managerRating" })
+                    <label style="color: #E80C4D; display: none;font-size:0.9em;" id="Label_SelfRating_@counter" class="hide">
+                        Rating is required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;font-size:0.9em;" id="Span_SelfRating_@counter" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="Emp_Comments_@counter">
+                    <textarea rows="2" cols="20" class="requiredField clsEmpComments commentTxtBox ClassDisabledFields CharactersLeftTextarea" id="EmpComments_@counter" name="EmpComments" value="@item.MngrComments1" >@item.MngrComments1</textarea>
+                    <div class="replaceDD ClassTextareaDiv">
+                    @Html.LabelFor(emp => item.MngrComments1, item.MngrComments1, new { @class = "ClassDisplayLabel" })
+                    </div>
+                    <label style="color: #E80C4D; display: none;font-size:0.9em;" id="Label_EmpComments_@counter" class="hide">
+                        Comment is required.
+                    </label>
+                </td>
+            </tr>
+            if (Model.Count == counter)
+            {
+            <tr class="tableRows">
+                <td id="OverallRating">
+                    <label>
+                        <b>*Overall Rating (Which is not average of the above parameters)</b>
+                    </label>
+                    <input type="hidden" id="employeeID" name="employeeID" value="@Model[0].employeeID" />
+                </td>
+
+                <td id="OverallManager_RatingConfirmation" class="revViewDetails">
+                    @*<input type="number" id="ManagerOverallRating" maxlength="3"  name="ManagerOverallRating" value="@Model[0].OverallManagerRating" class="requiredField clsnumber footer-rating-class" />*@
+                    @Html.DropDownListFor(model => item.OverallManagerRating, new SelectList(@ViewBag.sectionTwoRatingList, item.OverallManagerRating), new { @id = "ManagerOverallRating", @class = "DDtoReplace requiredField clsnumber footer-rating-class AssignDDToDiv ClassDisabledFields", @maxlength = "3", @name = "ManagerOverallRating" })
+                    @Html.LabelFor(emp => item.OverallManagerRating, new { @class = "ClassDisplayLabel", @id = "Txt_OverallManagerRating" })
+                    <label style="color: #E80C4D; display: none;font-size:0.9em;" id="Label_ManagerOverallRating" class="hide">
+                        Rating required.
+                    </label>
+                    <span style="color: #E80C4D; display: none;font-size:0.9em;" id="Span_ManagerOverallRating" class="hide">
+                        Invalid range.</span>
+                </td>
+                <td id="OverallReview_RatingComments" class="revViewDetails">
+                    <textarea rows="2" cols="20" id="OverallReviewRatingComments"  name="OverallReviewRatingComments" value="@Model[0].OverallManagerRatingComments" class="requiredField  footer-comment-TxtBox ClassDisabledFields CharactersLeftTextarea">@Model[0].OverallManagerRatingComments</textarea>
+                    <div class="replaceDD ClassTextareaDiv">
+                        @Html.LabelFor(emp => Model[0].OverallManagerRatingComments, Model[0].OverallManagerRatingComments, new { @class = "ClassDisplayLabel" })
+                    </div>
+                    <label style="color: #E80C4D; display: none;font-size:0.9em;" id="Label_OverallReviewRatingComments"
+                        class="hide">
+                        Comment is required.</label>
+                </td>
+            </tr>
+            }
+            counter = counter + 1;
+        }
+        </tbody>
+    </table>
+    }
+    else
+    {
+    @Html.Label("Value Driver not present", new { @class = "mandatory" })
+    }
+
+    @*<input type="hidden" type="submit" id="btnValueDriverConfirmationSubmit" />*@
+}
+
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" class="ConfirmationRatingTable TableJqgrid" style="display: none">
+            <thead>
+                <tr>
+                    <th class="tableHeaders" width="35%">Parameter</th>
+                    <th class="tableHeaders" width="31%">Rating</th>
+                    <th class="tableHeaders" width="31%">Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="tableRows">
+                    <td>
+                        <label>Parameter 1</label>
+                    </td>
+                    <td>
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>dgfh</label>
+                    </td>
+                    <td>
+                        <textarea class="text2"></textarea>
+                        <div>shgfd</div>
+                    </td>
+                </tr>
+                <tr class="tableRows">
+                    <td>
+                        <label>Parameter 2</label>
+                    </td>
+                    <td>
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>dgfh</label>
+                    </td>
+                    <td>
+                        <textarea class="text2"></textarea>
+                        <div>shgfd</div>
+                    </td>
+                </tr>
+                <tr class="tableRows">
+                    <td>
+                        <label>Parameter 3</label>
+                    </td>
+                    <td>
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>dgfh</label>
+                    </td>
+                    <td>
+                        <textarea class="text2"></textarea>
+                        <div>shgfd</div>
+                    </td>
+                </tr>
+                <tr class="tableRows">
+                    <td>
+                        <label>Parameter 4</label>
+                    </td>
+                    <td>
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>dgfh</label>
+                    </td>
+                    <td>
+                        <textarea class="text2"></textarea>
+                        <div>shgfd</div>
+                    </td>
+                </tr>
+                <tr class="tableRows">
+                    <td>
+                        <label>Overall Rating</label>
+                    </td>
+                    <td>
+                        <select>
+                            <option>abc</option>
+                            <option>abc</option>
+                            <option>abc</option>
+                        </select>
+                        <label>dgfh</label>
+                    </td>
+                    <td>
+                        <textarea class="text2"></textarea>
+                        <div>shgfd</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>

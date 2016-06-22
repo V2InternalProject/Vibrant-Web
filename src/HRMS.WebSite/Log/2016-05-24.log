@@ -1,0 +1,399 @@
+
+2016-05-24 @ 11:38:30  Informational , App start Global.asax App_Start  
+2016-05-24 @ 11:38:46  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 11:39:17  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-24 @ 12:29:48  Informational , App start Global.asax App_Start  
+2016-05-24 @ 12:29:55  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 12:30:06  FATAL ERROR   , Thread was being aborted. AdminApproval Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.AdminApproval.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 56
+
+2016-05-24 @ 12:36:07  Informational , App start Global.asax App_Start  
+2016-05-24 @ 12:36:10  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 12:36:20  FATAL ERROR   , Thread was being aborted. LeaveApplicationForm.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.LeaveApplicationForm.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 66
+
+2016-05-24 @ 12:39:52  Informational , App start Global.asax App_Start  
+2016-05-24 @ 12:39:54  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 12:40:06  FATAL ERROR   , Thread was being aborted. CompensationApproval.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.CompensationApproval.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApproval.aspx.cs:line 65
+2016-05-24 @ 12:42:10  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 13:11:48  FATAL ERROR   , SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM. HolidayMasterDAL .cs bindHolidaysForLeaveApprovals     at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+2016-05-24 @ 13:11:53  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149 ---> System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 160
+   at V2.Orbit.BusinessLayer.HolidayMasterBOL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\BusinessLayer\HolidayMasterBOL.cs:line 74
+   at HRMS.Orbitweb.CompensationApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApplicationForm.aspx.cs:line 497
+   at System.Web.UI.WebControls.Button.OnClick(EventArgs e)
+   at System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_compensationapplicationform_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\vs\631035c4\e3a00b06\App_Web_ovmd2ale.4.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 13:11:53  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-24 @ 13:22:05  Informational , App start Global.asax App_Start  
+2016-05-24 @ 13:22:08  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 13:22:26  FATAL ERROR   , Thread was being aborted. CompensationApplicationForm.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.CompensationApplicationForm.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApplicationForm.aspx.cs:line 67
+2016-05-24 @ 13:25:20  FATAL ERROR   , SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM. HolidayMasterDAL .cs bindHolidaysForLeaveApprovals     at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+2016-05-24 @ 13:25:23  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149 ---> System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 160
+   at V2.Orbit.BusinessLayer.HolidayMasterBOL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\BusinessLayer\HolidayMasterBOL.cs:line 74
+   at HRMS.Orbitweb.CompensationApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApplicationForm.aspx.cs:line 497
+   at System.Web.UI.WebControls.Button.OnClick(EventArgs e)
+   at System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_compensationapplicationform_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\vs\631035c4\e3a00b06\App_Web_ls0y3fx3.3.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 13:25:23  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-05-24 @ 14:08:38  FATAL ERROR   , Thread was being aborted. CompensationApplicationForm.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.CompensationApplicationForm.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApplicationForm.aspx.cs:line 67
+
+2016-05-24 @ 14:27:40  Informational , App start Global.asax App_Start  
+2016-05-24 @ 14:27:47  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 14:28:03  FATAL ERROR   , Thread was being aborted. CompensationApplicationForm.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.CompensationApplicationForm.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApplicationForm.aspx.cs:line 67
+2016-05-24 @ 14:36:53  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 14:38:41  FATAL ERROR   , SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM. HolidayMasterDAL .cs bindHolidaysForLeaveApprovals     at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+2016-05-24 @ 14:39:09  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149 ---> System.Data.SqlTypes.SqlTypeException: SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+   at System.Data.SqlClient.TdsParser.TdsExecuteRPC(_SqlRPC[] rpcArray, Int32 timeout, Boolean inSchema, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, Boolean isCommandProc, Boolean sync, TaskCompletionSource`1 completion, Int32 startRpc, Int32 startParam)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 149
+   --- End of inner exception stack trace ---
+   at V2.Orbit.DataLayer.HolidayMasterDAL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\DataLayer\HolidayMasterDAL.cs:line 160
+   at V2.Orbit.BusinessLayer.HolidayMasterBOL.bindHolidaysForLeaveApprovals(HolidayMasterModel objHolidayMasterModel) in d:\VB\src\BusinessLayer\HolidayMasterBOL.cs:line 74
+   at HRMS.Orbitweb.CompensationApproval.gvCompensationApprovals_RowUpdating(Object sender, GridViewUpdateEventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApproval.aspx.cs:line 641
+   at System.Web.UI.WebControls.GridView.OnRowUpdating(GridViewUpdateEventArgs e)
+   at System.Web.UI.WebControls.GridView.HandleUpdate(GridViewRow row, Int32 rowIndex, Boolean causesValidation)
+   at System.Web.UI.WebControls.GridView.HandleEvent(EventArgs e, Boolean causesValidation, String validationGroup)
+   at System.Web.UI.WebControls.GridView.OnBubbleEvent(Object source, EventArgs e)
+   at System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args)
+   at System.Web.UI.WebControls.GridViewRow.OnBubbleEvent(Object source, EventArgs e)
+   at System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args)
+   at System.Web.UI.WebControls.LinkButton.OnCommand(CommandEventArgs e)
+   at System.Web.UI.WebControls.LinkButton.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.WebControls.LinkButton.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_compensationapproval_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\vs\631035c4\e3a00b06\App_Web_0t4s52zi.1.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 14:39:09  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-24 @ 14:43:10  Informational , App start Global.asax App_Start  
+2016-05-24 @ 14:43:12  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 14:43:21  FATAL ERROR   , Thread was being aborted. CompensationApproval.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.CompensationApproval.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\CompensationApproval.aspx.cs:line 65
+2016-05-24 @ 15:11:07  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:12:34  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 15:14:16  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:23:42  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 15:31:28  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:32:23  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:33:54  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:36:11  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:36:40  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:39:18  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:45:56  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:56:11  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 15:59:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:00:41  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 16:02:09  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:05:50  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:08:07  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:11:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:12:24  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 16:13:49  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:14:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:15:02  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:18:24  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:18:38  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> System.ArgumentException: Invalid postback or callback argument.  Event validation is enabled using <pages enableEventValidation="true"/> in configuration or <%@ Page EnableEventValidation="true" %> in a page.  For security purposes, this feature verifies that arguments to postback or callback events originate from the server control that originally rendered them.  If the data is valid and expected, use the ClientScriptManager.RegisterForEventValidation method in order to register the postback or callback data for validation.
+   at System.Web.UI.ClientScriptManager.ValidateEvent(String uniqueId, String argument)
+   at System.Web.UI.WebControls.TextBox.LoadPostData(String postDataKey, NameValueCollection postCollection)
+   at System.Web.UI.WebControls.TextBox.System.Web.UI.IPostBackDataHandler.LoadPostData(String postDataKey, NameValueCollection postCollection)
+   at System.Web.UI.Page.ProcessPostData(NameValueCollection postData, Boolean fBeforeLoad)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_bulkentries_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\vs\631035c4\e3a00b06\App_Web_sgdbbymn.0.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 16:18:38  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-05-24 @ 16:18:48  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 16:33:27  FATAL ERROR   , Value cannot be null.
+Parameter name: address EmailActivity.cs ActivityExecutionStatus     at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.MailAddress..ctor(String address)
+   at V2.Orbit.Workflow.Activities.MailActivity.EmailActivity.Execute(ActivityExecutionContext context)
+2016-05-24 @ 16:35:21  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-24 @ 17:17:18  Informational , App start Global.asax App_Start  
+2016-05-24 @ 17:17:28  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 17:17:44  FATAL ERROR   , Thread was being aborted. AdminApproval Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.AdminApproval.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\AdminApproval.aspx.cs:line 56
+
+2016-05-24 @ 17:29:09  Informational , App start Global.asax App_Start  
+2016-05-24 @ 17:29:11  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 17:29:12  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/01ef98b89e2d4f27a361da54efabd303' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 17:29:12  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-05-24 @ 17:29:21  FATAL ERROR   , Thread was being aborted. BulkEntries.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.BulkEntries.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\BulkEntries.aspx.cs:line 53
+2016-05-24 @ 17:35:56  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 17:37:54  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 17:46:24  FATAL ERROR   , Index was outside the bounds of the array. LeaveApplicationForm.aspx.cs btnSubmit     at HRMS.Orbitweb.LeaveApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 369
+2016-05-24 @ 17:46:48  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at HRMS.Orbitweb.LeaveApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 369 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at HRMS.Orbitweb.LeaveApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 369
+   --- End of inner exception stack trace ---
+   at HRMS.Orbitweb.LeaveApplicationForm.btnSubmit_Click(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 564
+   at System.Web.UI.WebControls.Button.OnClick(EventArgs e)
+   at System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument)
+   at System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.orbitweb_leaveapplicationform_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\vs\631035c4\e3a00b06\App_Web_om5hga1l.2.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-24 @ 17:46:48  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-05-24 @ 17:47:07  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-24 @ 17:53:29  Informational , App start Global.asax App_Start  
+2016-05-24 @ 17:53:31  Informational , App start finished Global.asax App_Start  
+2016-05-24 @ 17:53:43  FATAL ERROR   , Thread was being aborted. LeaveApplicationForm.aspx.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.HRMSPageLevelAccess.PageLevelAccess(String PageName) in d:\VB\src\HRMS.WebSite\common\HRMSPageLevelAccess.cs:line 54
+   at HRMS.Orbitweb.LeaveApplicationForm.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\LeaveApplicationForm.aspx.cs:line 66
+2016-05-24 @ 17:54:01  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-24 @ 18:00:27  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-24 @ 18:49:10  Informational , App start Global.asax App_Start  
+2016-05-24 @ 18:49:29  Informational , App start finished Global.asax App_Start  

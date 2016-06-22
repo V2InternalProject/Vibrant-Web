@@ -1,0 +1,354 @@
+﻿@model HRMS.Models.PhasesPracticeMappingModel
+@{
+    ViewBag.Title = "Phases & Practice Mapping";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Configurations</h2>
+        </div>
+        <nav class="sub-menu-colored">
+          <a href="@Url.Action("PhaseManagement", "SEM")" >Phase Management</a>
+          <a href="@Url.Action("PhasesPracticeMapping", "SEM")" class="selected">Phases and Practice mapping</a>
+          <a href="@Url.Action("SalesPeriod", "Invoice")">Sales Period</a>
+               
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+         <div class="FormContainerBox clearfix ProjectIndexFliter">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("Select Practice:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(model => model.PracticeDetailsList, new SelectList(Model.PracticeDetailsList, "PracticeID", "PracticeName", "select"), "Select")
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="ButtonContainer2 clearfix">
+                 <input type="button" value="Save" class="ButtonGray mrgnR8" id="btnSave" />
+                <input type="button" value="Select All" class="ButtonGray mrgnR8" id="btnSelectAll" />
+                <input type="button" value="Deselect All" class="ButtonGray mrgnR8" id="btnDeselectAll" />
+            </div>
+            <div id="PhasePracticeMappingDiv" class="InnerContainer">
+                @{Html.RenderPartial("_PhasePracticeMapping", Model);}
+            </div>
+        </div>
+</section>
+<script type="text/javascript">
+    var arrayFinalValuesForUpdate = [];
+    var arrayPercentEffortsValidation = [];
+    var arrayOrderNumberValidation = [];
+    var counter = 0;
+    $(document).ready(function () {
+        if ($("#PracticeDetailsList option:selected").val() == "") {
+            //$('#PhasePracticeMappingDiv').hide();
+        }
+    });   //End of Ready Function
+
+    $('#PracticeDetailsList').change(SelectPracticeChange); //End of Change Function
+
+    function SelectPracticeChange() {
+        var seltext = $("#PracticeDetailsList option:selected").text();
+        var selvalue = $("#PracticeDetailsList option:selected").val();
+        if (selvalue == "") {
+            //$('#PhasePracticeMappingDiv').hide();
+            $('#tblPhasePracticeMapping #tblPhasePracticeMappingtbody').hide();
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("LoadPhasesPracticeMapping", "SEM")',
+                type: 'POST',
+                data: { practiceID: selvalue },
+                success: function (results) {
+                    $('#PhasePracticeMappingDiv').html();
+                    $('#PhasePracticeMappingDiv').html(results);
+                    $('#PhasePracticeMappingDiv').show();
+                },
+                error: function (results) {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+    $('#btnSelectAll').on('click', function () {
+        if (PracticeNotSelectedValidation()) {
+            $(".chkIsSelected").each(function (i, val) {
+                $(".chkIsSelected").attr("checked", true);
+                var intTRID = $(this).closest('td').parent().prop("id");
+                $("#" + intTRID).find("td:eq(1)").find('input:text:eq(0)').removeAttr("disabled");
+                $("#" + intTRID).find("td:eq(2)").find('input:text:eq(0)').removeAttr("disabled");
+            });
+        }
+    });  //END OF FUNCTION btnSelectAll
+
+    $('#btnDeselectAll').on('click', function () {
+        if (PracticeNotSelectedValidation()) {
+            SelectedPhaseId = [];
+            $(".chkIsSelected").each(function (i, val) {
+                $(".chkIsSelected:visible").attr("checked", false);
+            });
+        }
+    });  //END OF FUNCTION btnDeselectAll
+
+    function PracticeNotSelectedValidation() {
+        if ($("#PracticeDetailsList option:selected").val() == "") {
+            $("#SelectPracticeMessage").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else
+            return true;
+    }   //END OF FUNCTION PracticeNotSelectedValidation
+
+    $('#btnSave').on('click', function () {
+        if (PracticeNotSelectedValidation()) {
+            if (ValidatePercentEfforts()) {
+                if (ValidateOrderNumber())
+                    UpdateData();
+            }
+        }
+    });
+
+    function GetValuesForUpdate() {
+        arrayFinalValuesForUpdate = [];
+        arrayPercentEffortsValidation = [];
+        arrayOrderNumberValidation = [];
+        $(".chkIsSelected").each(function (i, val) {
+            var trID = $(this).closest('td').parent().prop("id");
+            if (this.checked == true) {
+                arrayFinalValuesForUpdate.push($("#PracticeDetailsList option:selected").val());
+                arrayFinalValuesForUpdate.push($(this).closest('td').parent().prop("id"));
+                arrayFinalValuesForUpdate.push("1");
+                arrayFinalValuesForUpdate.push($("#" + trID).find("td:eq(1)").find('input:text:eq(0)').val());
+                arrayPercentEffortsValidation.push($("#" + trID).find("td:eq(1)").find('input:text:eq(0)').val());
+                arrayFinalValuesForUpdate.push($("#" + trID).find("td:eq(2)").find('input:text:eq(0)').val());
+                arrayOrderNumberValidation.push($("#" + trID).find("td:eq(2)").find('input:text:eq(0)').val());
+            }
+            else {
+                arrayFinalValuesForUpdate.push($("#PracticeDetailsList option:selected").val());
+                arrayFinalValuesForUpdate.push($(this).closest('td').parent().prop("id"));
+                arrayFinalValuesForUpdate.push("0");
+                arrayFinalValuesForUpdate.push("0");
+                arrayFinalValuesForUpdate.push("0");
+            }
+        });
+    }   //END OF FUNCTION GetValuesForUpdate
+
+    function ValidatePercentEfforts() {
+        var totalPercentEfforts = 0;
+        GetValuesForUpdate();
+        for (var i = 0; i < arrayPercentEffortsValidation.length; i++) {
+            totalPercentEfforts = totalPercentEfforts + parseInt(arrayPercentEffortsValidation[i]);
+        }
+        if (totalPercentEfforts > 100) {
+            $("#TotalPercentErrorDialog").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else if (arrayPercentEffortsValidation.indexOf('0') != -1) {
+            $("#PercentageErrorZeroErrorDialog").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else
+            return true;
+    }   //END OF FUNCTION ValidatePercentEfforts
+
+    function ValidateOrderNumber() {
+        GetValuesForUpdate();
+        var orderNumberArray_Sorted = "";
+        var results = [];
+        orderNumberArray_Sorted = arrayOrderNumberValidation.sort();
+        for (var i = 0; i < arrayOrderNumberValidation.length - 1; i++) {
+            if (orderNumberArray_Sorted[i + 1] == orderNumberArray_Sorted[i]) {
+                results.push(orderNumberArray_Sorted[i]);
+            }
+        }
+        if (results.length > 0) {
+            $("#OrderNumberErrorDialog").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else if (arrayOrderNumberValidation.indexOf('0') != -1) {
+            $("#OrderNumberZeroErrorDialog").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else if (arrayOrderNumberValidation.length > 0) {
+            counter = 0;
+            for (var i = 1; i <= arrayOrderNumberValidation.length; i++) {
+                if (arrayOrderNumberValidation.indexOf('' + i + '') == -1) {
+                    counter = counter + 1;
+                }
+            }
+            if (counter > 0) {
+                $("#OrderNumberErrorDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }
+            else
+                return true;
+        }
+        else
+            return true;
+    }   //END OF FUNCTION ValidateOrderNumber
+
+    function UpdateData() {
+        GetValuesForUpdate();
+        $.ajax({
+            url: '@Url.Action("AddUpdateProjectTypePhaseData", "SEM")',
+            data: JSON.stringify(arrayFinalValuesForUpdate),
+            contentType: "application/json",
+            type: 'POST',
+            success: function (results) {
+                if (results.status == true) {
+                    $("#DataSavedSuccessMessage").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                SelectPracticeChange();
+                            }
+                        }
+                    });
+                }
+            },
+            error: function (results) {
+                if (results.status == false) {
+                    $("#DataNotSavedSuccessMessage").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    } //End of Function UpdateData
+</script>
+<div id="TotalPercentErrorDialog" title="Error" style="display: none">
+    <p>
+        Percentage Efforts summation cannot exceed 100.</p>
+</div>
+<div id="OrderNumberErrorDialog" title="Error" style="display: none">
+    <p>
+        Please maintain the proper sequence for Order Number</p>
+</div>
+<div id="OrderNumberZeroErrorDialog" title="Error" style="display: none">
+    <p>
+        Order Number cannot start with zero.</p>
+</div>
+<div id="PercentageErrorZeroErrorDialog" title="Error" style="display: none">
+    <p>
+        Percentage effort cannot be zero.</p>
+</div>
+<div id="DataSavedSuccessMessage" title="Error" style="display: none">
+    <p>
+        Data Saved Successfully.</p>
+</div>
+<div id="DataNotSavedSuccessMessage" title="Error" style="display: none">
+    <p>
+        There are some errors.</p>
+</div>
+<div id="SelectPracticeMessage" title="Error" style="display: none">
+    <p>
+        Please select practice.</p>
+</div>

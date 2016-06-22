@@ -1,0 +1,418 @@
+﻿@model HRMS.Models.ManagePhasesModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Manage Phases";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+
+
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Project
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+             @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="FormContainerBox clearfix">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        @Html.Label("Select Project:")
+                    </div>
+                    <div class="InputDiv">
+                        @Html.DropDownListFor(x => x.projectnameId, new SelectList(Model.ProjectApprovedList, "Projectids", "ProjectName"), "Select", new { @class = "" })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ButtonContainer2 clearfix">
+            <input type="button" value="Add Phase" class="ButtonGray mrgnR8" id="BtnAddNewPhase" />
+            <span id="hidewithNoProject">
+                <input type="button" value="Select All" class="ButtonGray mrgnR8" id="BtnSelectAllChk" />
+                <input type="button" value="Deselect All" class="ButtonGray mrgnR8" id="BtnDeselectAll" />
+                <input type="button" value="Delete" class="ButtonGray mrgnR8" id="btnDeletePhase" />
+            </span>
+        </div>
+
+        <div class="tablestyle3">
+            <table id="jqManagePhasesTable"></table>
+        </div>
+        <div id="jqManagePhasesTablePager">
+        </div>
+        <div class="TotalRecordsDiv">
+            <div class="bluebgtable1" id="showRecordCountForPhase">
+            </div>
+        </div>
+
+        <div id="deleteIBPhaseConfirmation" style="display: none">
+            <p>
+                Are you sure you want to delete the selected record?
+            </p>
+        </div>
+        <div id="deleteIBPhaseRecordSucess" style="display: none;">
+            <p>
+                Record has been deleted successfully.
+            </p>
+        </div>
+        <div id="ErrroSelectProject" style="display: none;">
+            <p>
+                Please Select Project.
+            </p>
+        </div>
+        <div id="ErrroDeleteSelectProject" style="display: none;">
+            <p>
+                Please select atleast one record to delete.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#hidewithNoProject').hide();
+
+        //     var SessionPrjID ='@Session["ProjectId"]';
+        //     alert(SessionPrjID);
+        //     if (SessionPrjID != null || SessionPrjID != '' )
+        //       {
+        //         $('#projectnameId').val(SessionPrjID);
+        //         GetProjectSelectedDtls();
+        //       }
+
+        var ProjectId=0;
+        var searchval = "";
+        $("#jqManagePhasesTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ManagePhaseLoadGrid", "SEM")',
+            postData: { projectID: function () { return ProjectId },searchText :function(){return searchval} },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Order No.", "Phases", "Start Date", "End Date", "Work (Hours)", "Peak Team Size", "Responsible Person", "Current Phase", "Percentage Efforts", "Delete"],
+            // Configure the columns
+            colModel: [
+            { name: "ProjectPhaseId", index: "ProjectPhaseId", align: "left", width: 30,hidden:true},
+            { name: "ProjectId", index: "ProjectId", align: "left", width: 30,hidden:true},
+                { name: "OrderNumber", index: "OrderNumber", align: "left", width: 32, sorttype:"int"},
+                { name: "Phases", index: "Phases", align: "left", width: 140,formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                { name: "StartDate", index: "StartDate", align: "left", width: 70, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} , sorttype:"date" , sortable: false},
+                { name: "EndDate", index: "EndDate", align: "left", width: 70, formatter: 'date', formatoptions: { newformat: 'm/d/Y'} , sorttype:"date", sortable: false},
+                { name: "WorkHours", index: "WorkHours", align: "left", width: 50 , sortable:false},
+                { name: "PeakTeamSize", index: "PeakTeamSize", align: "left", width: 60 , sortable:false},
+                { name: "ResponsiblePersonGridName", index: "ResponsiblePersonGridName", align: "left", width: 140 , sortable:false},
+                { name: "Currentphase", index: "Currentphase", align: "left", width: 60 ,formatter: PhaseStausformatter, sortable:false},
+                { name: "PercentageEfforts", index: "PercentageEfforts", align: "left", width: 60 , sortable:false},
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 40,
+                    align: "center",
+                    formatter: ForAppendCheckboxID
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            loadonce:true,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqManagePhasesTablePager"),
+            //rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            // Grid caption
+            //caption: "Manage Phases",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqManagePhasesTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    //$('#gbox_jqManagePhasesTable').hide();
+                    $('.TotalRecordsDiv').hide();
+                }
+                else {
+                    $('.TotalRecordsDiv').show();
+                    $('#showRecordCountForPhase').text("Total Records : " + count);
+                    //$('#gbox_jqManagePhasesTable').show();
+                    if (count > 20) {
+
+                        $('#jqManagePhasesTablePager').show();
+                    }
+                    else {
+                        $('#jqManagePhasesTablePager').hide();
+                    }
+                }
+                if ($('#projectnameId option:selected').text() == 'Select') {
+                    $('#jqManagePhasesTablePager').show();
+                }
+            },
+            onCellSelect: function(rowid, iCol) {
+                $('#jqManagePhasesTable').jqGrid('setGridParam', {sortorder: 'desc'});
+                $('#jqManagePhasesTable').jqGrid('sortGrid', 'id');
+            }
+        }).navGrid("#jqManagePhasesTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $('#projectnameId').change(function(){
+            GetProjectSelectedDtls();
+        });
+
+
+        function GetProjectSelectedDtls(){
+            var seltext = $("#projectnameId option:selected").text();
+            var value =   $("#projectnameId option:selected").val();
+            var ProList = @(Html.Raw(Json.Encode(Model.ProjectApprovedList)));
+            if(seltext != 'Select')
+            {
+                $.each(ProList, function (index,value) {
+                    if(value.ProjectName == seltext)
+                    {
+                        ProjectId = value.projectIdList;
+
+                    }
+                });
+                if(ProjectId != '')
+                {
+                    $('#hidewithNoProject').show();
+                    $("#jqManagePhasesTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                }
+            }
+            else{
+                $('#hidewithNoProject').hide();
+                ProjectId = 0;
+                $("#jqManagePhasesTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            }
+        }
+
+
+        $('#BtnSelectAllChk').on('click', function () {
+            SelectedPhaseId = [];
+            $(".chkForIBDelete").each(function (i, val) {
+                $(".chkForIBDelete").attr("checked", true);
+                SelectedPhaseId.push($(this).prop("id"));
+            });
+        });
+        $('#BtnDeselectAll').on('click', function () {
+            SelectedPhaseId = [];
+            $(".chkForIBDelete").each(function (i, val) {
+                $(".chkForIBDelete").attr("checked", false);
+            });
+        });
+
+        $('#btnDeletePhase').on('click', function () {
+            var Count = GetSelectedCheckbox();
+
+            if(Count == 1)
+            {
+                DeletePhaseDetails(SelectedPhaseId,ProjectId);
+            }
+            else
+            {
+                $("#ErrroDeleteSelectProject").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Delete Phase",
+                    dialogClass: "noclose",
+                    buttons:
+                    {
+                        "Ok": function () {
+                            $(this).dialog("close");
+
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+        });
+
+        $('#BtnAddNewPhase').on('click', function () {
+            var seltext = $("#projectnameId option:selected").text();
+            var ProList = @(Html.Raw(Json.Encode(Model.ProjectApprovedList)));
+            if(seltext != 'Select')
+            {
+                $.each(ProList, function (index,value) {
+                    if(value.ProjectName == seltext)
+                    {
+                        ProjectId = value.projectIdList;
+                    }
+                });
+                window.location.href='@Url.Action("PhasesView", "SEM")?ProjectPhaseId='+0+ '&PhaseID='+ProjectId;
+            }
+            else{
+
+                $("#ErrroSelectProject").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    title: "Project Name",
+                    dialogClass: "noclose",
+                    buttons:
+                    {
+                        "Ok": function () {
+                            $(this).dialog("close");
+
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+
+        });
+
+    });
+
+    function returnPhaseLink(cellValue, options, rowdata, action) {
+        return "<a href='/SEM/PhasesView/?ProjectPhaseId=" + rowdata['ProjectPhaseId'] + "&PhaseID=" + rowdata['ProjectId'] + "' >" + cellValue + "</a>";
+
+    }
+
+    function ForAppendCheckboxID(cellValue, options, rowdata, action) {
+        var A = '<input type="checkbox" class="chkForIBDelete" id=' + rowdata["ProjectPhaseId"] + '>';
+        var B= '<label for=' + rowdata["ProjectPhaseId"] + ' class="LabelForCheckbox"></label>';
+        return A+B;
+    }
+    function PhaseStausformatter(cellValue, options, rowdata, action) {
+        if(rowdata["Currentphase"] == false)
+        {
+            return "No"
+        }
+        else
+        {
+            return "Yes"
+        }
+    }
+
+    var SelectedPhaseId = [];
+    function GetSelectedCheckbox() {
+        SelectedPhaseId = [];
+        $("#jqManagePhasesTable :checked").each(function (i, val) {
+            SelectedPhaseId.push($(this).prop("id"));
+        });
+        var Count;
+        if(SelectedPhaseId.length == 0)
+        {
+            Count = 0;
+            return Count;
+        }
+        else
+        {
+            Count = 1;
+            return Count;
+        }
+    }
+
+    function DeletePhaseDetails(SelectedPhaseId,ProjectId) {
+        $('#deleteIBPhaseConfirmation').dialog(
+			{
+			    autoOpen: false,
+			    modal: true,
+			    width: 300,
+			    height: 'auto',
+			    resizable: false,
+			    title: "Delete Phase Record",
+			    dialogClass: "noclose",
+			    buttons:
+					{
+					    Ok: function () {
+					        $.ajax({
+					            url: '@Url.Action("DeleteIBGridPhaseDetails", "SEM")',
+					            dataType: "json",
+					            traditional: true,
+					            data: {SelectedPhaseIds:SelectedPhaseId, ProjectID:ProjectId},
+					            type: 'POST',
+					            success: function (data) {
+					                if (data.status == true) {
+					                    $("#deleteIBPhaseConfirmation").dialog("close");
+					                    $("#deleteIBPhaseRecordSucess").dialog({
+					                        modal: true,
+					                        resizable: false,
+					                        height: 140,
+					                        width: 300,
+					                        title: "Deleted",
+					                        dialogClass: "noclose",
+					                        buttons:
+					                        {
+					                            "Ok": function () {
+					                                $(this).dialog("close");
+					                                $("#jqManagePhasesTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                            }
+					                        }
+					                    });
+					                }
+					                else if (data.status == "Error") {
+					                    $("#deleteIBPhaseConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Error',
+					                        dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                $("#jqManagePhasesTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					                else {
+					                    $("#deleteIBPhaseConfirmation").dialog("close");
+					                    $("#errorDialog").dialog({
+					                        resizable: false,
+					                        height: 'auto',
+					                        width: 'auto',
+					                        modal: true,
+					                        title: 'Error',
+					                        dialogClass: "noclose",
+					                        buttons: {
+					                            Ok: function () {
+					                                $(this).dialog("close");
+					                                $("#jqManagePhasesTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					                            }
+					                        }
+					                    }); //end dialog
+					                }
+					            }
+					        });
+					    },
+					    Cancel: function () {
+					        $(this).dialog('close');
+					    }
+					}
+			    }
+			);
+        $('#deleteIBPhaseConfirmation').dialog('open');
+    }
+
+</script>

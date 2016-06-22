@@ -1,0 +1,170 @@
+﻿@model HRMS.Models.SkillsAquired
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "addSkillsAquiredDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25">
+        @Html.HiddenFor(x => x.SkillEmployeeID)
+        @Html.HiddenFor(x => x.SkillsAquiredID)
+        @Html.HiddenFor(x => x.ConfirmationID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Skill Name")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.SkillName)
+                @Html.ValidationMessageFor(model => model.SkillName)
+                @Html.HiddenFor(model => model.SkillName, new { id = "txtSkillName" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Acquired Through ( Training, Certification, On the job, Self Learning)")<span
+                    class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextBoxFor(model => model.AquiredThrough)
+                @Html.ValidationMessageFor(model => model.AquiredThrough)
+                @Html.HiddenFor(model => model.AquiredThrough, new { @id = "txtAquiredThrough" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth-achie floatL">
+                @Html.Label("Usefulness to the project")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth-achie floatL">
+                @Html.TextAreaFor(model => model.ProjectUsefulness)
+                @Html.ValidationMessageFor(model => model.ProjectUsefulness)
+                @Html.HiddenFor(model => model.ProjectUsefulness, new { @id = "txtProjectUsefulness" })
+            </div>
+        </div>
+    </div>
+    <div class="clear popup_button ">
+        <div class="floatR">
+            <input id="saveSkillDetail" type="button" value="Save" class="button btnSkill" />
+            <input id="cancel" type="button" value="Reset" onclick="emptyDialogSkillAquired()"
+                class="button btnSkillReset " />
+        </div>
+    </div>
+
+}
+<div id="SkillAquiredSuccessMessege" title="Skill Aquired details" style="display: none;">
+    <p>
+        Skill Aquired details have been saved.
+    </p>
+</div>
+<div id="AddSkillAquiredErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteSkillAquired" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteSkillAquiredDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>
+<script type="text/javascript">
+    if ('@ViewBag.IsManagerOrEMployee' != "Employee") {
+        $('#SkillName').attr('disabled', true);
+        $('#AquiredThrough').attr('disabled', true);
+        $('#ProjectUsefulness').attr('disabled', true);
+        $('.btnSkill').hide();
+        $('.btnSkillReset').hide();
+    }
+    $('#SkillName').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+			{
+			    required: "Skill Name is required."
+			}
+    });
+    $('#AquiredThrough').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+			{
+			    required: "Aquired Through is required."
+			}
+    });
+
+    $('#ProjectUsefulness').rules("add", {
+        required: function () {
+            return ('@ViewBag.IsManagerOrEMployee' == "Employee");
+        },
+        messages:
+			{
+			    required: "Project Usefulness is required."
+			}
+    });
+
+    var postUrl = '@Url.Action("SaveSkillAquiredInfo", "ConfirmationProcess")';
+    $('#saveSkillDetail').off('click').on('click', function () {
+        if ($('#addSkillsAquiredDetails').valid()) {
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#addSkillsAquiredDetails').serialize(),
+                success: function (results) {
+                    if (results.status == true) {
+                        $('#addSkillAquiredDialog').dialog("close");
+                        jQuery("#SkillAquiredTable").trigger("reloadGrid");
+                        $("#SkillAquiredSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        $("#errorDialog").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#AddSkillAquiredErrorMessege").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        return false;
+    });
+    var emptyDialogSkillAquired = function () {
+        $(".field-validation-error").empty();
+        $('input').removeClass("input-validation-error");
+        $("#SkillName").val($('#txtSkillName').val());
+        $("#AquiredThrough").val($('#txtAquiredThrough').val());
+        $("#ProjectUsefulness").val($('#txtProjectUsefulness').val());
+    }
+</script>

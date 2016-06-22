@@ -1,0 +1,459 @@
+﻿@model HRMS.Models.EmployeeChangesApprovalViewModel
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var comments;
+        $("#AdminApprovalQualificationTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("AdminApprovalQualificationsLoadGrid", "Approvals")',
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["Type", "Value", "Employee ID", "EmployeeQualificationHistoryId", "Qualification", "QualificationID", "EmployeeQualificationId",
+                "Degree", "DegreeID", "Specialization", "Institute", "University", "Year", "Type", "TypeID", "Percentage/Grade",
+                "hidenradio", "Status", "ApprovedComments", "Comments"],
+
+            postData: { employeeId: function () { return $("#SelectedParentID").val(); }, module: function () { return $("#SelectedParentModule").val(); } },
+
+            // Configure the columns
+            colModel: [
+                { name: "ApprovedType", index: "ApprovedType", width: 70, align: "left" },
+                { name: "ApprovedValue", index: "ApprovedValue", width: 70, align: "left" },
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, align: "left" },
+                { name: "EmployeeQualificationHistoryId", index: "EmployeeQualificationHistoryId", hidden: true, align: "left" },
+                { name: "Qualification", index: "Qualification", width: 200, align: "left" },
+                { name: "QualificationID", index: "QualificationID", hidden: true, align: "left" },
+                { name: "EmployeeQualificationID", index: "EmployeeQualificationID", hidden: true, align: "left" },
+                { name: "Degree", index: "Degree", width: 100, align: "left" },
+                { name: "DegreeID", index: "DegreeID", align: "left", hidden: true },
+                { name: "Specialization", index: "Specialization", width: 150, align: "left" },
+                { name: "Institute", index: "Institute", width: 150, align: "left" },
+                { name: "University", index: "University", width: 150, align: "left" },
+            //                { name: "Course", index: "Course", width: 50, align: "left" },
+                { name: "Year", index: "Year", width: 50, align: "left" },
+                { name: "Type", index: "Type", width: 100, align: "left" },
+                { name: "TypeID", index: "TypeID", align: "left", hidden: true },
+                { name: "Percentage", index: "Percentage", width: 70, align: "left" },
+                { name: "ApprovalStatusMasterID", index: "ApprovalStatusMasterID", hidden: true, align: "left" },
+                { name: "ChildRadioSelect", index: "ChildApprovalStatusMasterID", formatter: RadioFormatter, width: 400, align: "left" },
+                { name: "ApprovedComments", index: "ApprovedComments", hidden: true },
+                { name: "HrComment", index: "HrComment", width: 70, align: "left", formatter: textboxFormatter, hidden: true }
+            ],
+
+            width: 'auto',
+            height: 'auto',
+
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#AdminApprovalQualificationTablePager"),
+            rowNum: 10,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+
+            autowidth: true,
+            shrinkToFit: false,
+            //caption: "Employees - Qualification Changed Field Details",
+            afterInsertRow: function (rowid, rowdata) {
+
+            },
+
+            gridComplete: function () {
+                $(".radioQualification").on("change", function () {
+                    var myGrid = $('#AdminApprovalQualificationTable');
+                    var radioId = $(this).val();
+                    var selectedRowId = $(this).closest('tr').attr("id");
+                    myGrid.jqGrid('setCell', selectedRowId, 'ApprovalStatusMasterID', radioId);
+                });
+
+            }
+        }).navGrid("#AdminApprovalQualificationTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {},
+            {},
+            {}
+        );
+
+    });
+
+    function RadioFormatter(cellvalue, options, rowObject) {
+        var thisrowValue = rowObject["ApprovedValue"];
+        if (thisrowValue == "Old") {
+            return "";
+        } else {
+            var obj = "";
+            for (var i = 1; i <= 3; i++) {
+                if (i == 1) {
+                    if (rowObject['ApprovalStatusMasterID'] != null) {
+                        obj += "<input type='radio' name='" + rowObject['EmployeeQualificationID'] + "'id='" + rowObject['EmployeeQualificationID'] + i + "' class='radioQualification' value='" + i + "' checked='checked'>" + "<label for='" + rowObject['EmployeeQualificationID'] + i + "'class='LabelForRadio'></label>";
+                        obj = obj + "On Hold";
+                    }
+                    else {
+                        obj += "<input type='radio' name='" + rowObject['EmployeeQualificationID'] + "'id='" + rowObject['EmployeeQualificationID'] + i + "' class='radioQualification' value='" + i + "' >" + "<label for='" + rowObject['EmployeeQualificationID'] + i + "'class='LabelForRadio'></label>";
+                        obj = obj + "On Hold";
+                    }
+                } else if (i == 2) {
+                    obj += "<input type='radio' name='" + rowObject['EmployeeQualificationID'] + "'id='" + rowObject['EmployeeQualificationID'] + i + "' class='radioQualification' value='" + i + "' >" + "<label for='" + rowObject['EmployeeQualificationID'] + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Approve";
+                } else {
+                    obj += "<input type='radio' name='" + rowObject['EmployeeQualificationID'] + "'id='" + rowObject['EmployeeQualificationID'] + i + "' class='radioQualification' value='" + i + "' >" + "<label for='" + rowObject['EmployeeQualificationID'] + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Reject";
+                }
+            }
+            return obj;
+        }
+    }
+
+    function textboxFormatter(cellvalue, options, rowObject) {
+        var thisrowValue = rowObject["ApprovedValue"];
+        if (thisrowValue == "Old") {
+            return "";
+        }
+        else {
+            if (rowObject["ApprovedComments"] != null) {
+                var myInput = $('#txtAdminApporvalComments');
+                var comment = rowObject["ApprovedComments"];
+                myInput.val(myInput.val() + comment + "\n");
+                return cellvalue;
+            }
+        }
+    }
+
+    $("#SaveQualification").click(function (e) {
+        var CommentL = $("#txtAdminApporvalComments").val().trim();
+        var ComLength = CommentL.length;
+
+        if (ComLength <= 0) {
+            $("#ZeroComment").dialog({
+                title: 'Qualification Approval',
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                    $(this).parent().css('z-index', '33');
+                }
+            }); //end dialog
+            return false;
+        }
+        var count = 0;
+        var localGridData;
+        var HrComments = $("#txtAdminApporvalComments").val().trim();
+        localGridData = jQuery("#AdminApprovalQualificationTable").getRowData();
+
+        if (localGridData.length > 0) {
+            for (var i = 0; i < localGridData.length; i++) {
+                var radioVal = localGridData[i].ApprovalStatusMasterID;
+                var radiovalue = radioVal.trim().length;
+                var oldRow = localGridData[i].ApprovedValue;
+                if (oldRow != "Old") {
+                    if (radiovalue > 0) {
+                        count = 1;
+                    }
+                    else {
+                        if (radiovalue <= 0) {
+                            $("#ZeroRecord").dialog({
+                                title: 'Qualification Approval',
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                open: function () {
+                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                    $(this).parent().css('z-index', '33');
+                                }
+                            }); //end dialog
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count == 0) {
+            $("#ZeroRecord").dialog({
+                title: 'Qualification Approval',
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                    $(this).parent().css('z-index', '33');
+                }
+            }); //end dialog
+            return false;
+        }
+
+        var EmpID = '@Model.EmployeeID';
+
+        var EmployeeChangesApprovalViewModel = {
+            EmployeeID: $("#SelectedParentID").val()
+        }
+        DisplayLoadingDialog();  //checked
+        $.ajax({
+            url: '@Url.Action("SaveEmployeeQualificationStatus", "Approvals")',
+            type: 'POST',
+            data: JSON.stringify({ model: localGridData, Comments: HrComments }),
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                if (result.status == true) {
+                    $("#ApprovedataSaveSuccessMessage").dialog({
+                        title: 'Data Approval Process',
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                DisplayLoadingDialog();  //checked
+
+                                QualificationSendMail();
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                    $("#adminQualificationApprovalDialog").dialog('destroy');
+                    jQuery("#employeeApprovalTable").trigger("reloadGrid");
+                    jQuery("#employeeApprovalOnholdTable").trigger("reloadGrid");
+
+                }
+                else if (result.status == "Error") {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Data Approval Process',
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                }
+                else {
+                    $("#errorDialog").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        title: 'Data Approval Process',
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }); //end dialog
+                }
+
+            },
+            error: function (result) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+                $("#errorDialog").dialog({
+                    title: 'Data Approval Process',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+            }
+        });
+        function QualificationSendMail() {
+
+            $.ajax({
+                url: '@Url.Action("QualificationSendMail", "Approvals")',
+                type: 'POST',
+                data: JSON.stringify({ EmpID: EmpID, model: EmployeeChangesApprovalViewModel }),
+                contentType: "application/json; charset=utf-8",
+
+                success: function (data) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (data) {
+
+                        $("#MailDialog").html(data);
+                        $("#MailDialog").dialog({
+
+                            resizable: false,
+                            height: 520,
+                            width: 800,
+                            modal: true,
+                            title: "Send Mail",
+                            close: function () {
+                                $(this).dialog('close');
+                            }
+
+                        });
+
+                        $.validator.unobtrusive.parse($("#MailDetails"));
+                        $('#sendSeparationMail').click(function () {
+
+                            $("#CCErrorMessage").hide();
+                            $("#ToErrorMessage").hide();
+                            if ($('#MailDetails').valid()) {
+
+                                $("#loading").dialog(
+                                {
+                                    closeOnEscape: false,
+                                    resizable: false,
+                                    height: 140,
+                                    width: 300,
+                                    modal: true,
+                                    dialogClass: "noclose",
+                                    open: function () {
+                                        $('#loading').parent().css('background-color', 'transparent');
+                                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                        $(this).parent().css('z-index', '33');
+                                    }
+                                });
+                                var SendMailUrl = '@Url.Action("SendEmail", "Approvals")'
+
+                                $.ajax(
+                                {
+
+                                    url: SendMailUrl,
+                                    type: 'POST',
+                                    data: $('#MailDetails').serialize(),
+                                    success: function (data) {
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+
+                                        if (data.validCcId == true && data.validtoId == true) {
+                                            if (data.status == true) {
+
+                                                $("#MailDialog").dialog('destroy');
+
+                                            }
+                                        }
+                                        else if (data.status == "Error") {
+                                            $("#errorDialog").dialog({
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                title: 'Mail Error',
+                                                dialogClass: "noclose",
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                },
+                                                open: function () {
+                                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                                    $(this).parent().css('z-index', '33');
+                                                }
+                                            }); //end dialog
+                                        }
+                                        else {
+                                            if (data.validCcId == false)
+                                                $("#CCErrorMessage").show();
+
+                                            if (data.validtoId == false)
+                                                $("#ToErrorMessage").show();
+                                            return false;
+
+                                        }
+
+                                    },
+                                    error: function () {
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $("#errorDialog").dialog({
+                                            title: 'Mail Error',
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            modal: true,
+                                            dialogClass: "noclose",
+                                            buttons:
+                                                {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                },
+                                            open: function () {
+                                                $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                                $(this).parent().css('z-index', '33');
+                                            }
+                                        }); //end dialog
+
+                                    }
+
+                                }); //end ajax
+
+                            }
+                        });
+                    }
+                }
+            }); //end Mail
+
+        }
+
+    });
+</script>
+<div class="tablestyle3">
+    <table id="AdminApprovalQualificationTable" class="scroll"></table>
+    <div id="AdminApprovalQualificationTablePager" />
+</div>
+<div class="clearfix ProjectIndexFliter mrgnT20">
+    <div class="leftcol">
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">*</span> @Html.Label("Comments ")
+            </div>
+            <div class="InputDiv">
+                @Html.TextAreaFor(m => m.Comments, new { @id = "txtAdminApporvalComments" })
+                @Html.HiddenFor(m => m.Comments, new { @id = "txtAdminApporvalComments" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ButtonContainer3">
+    <input id="SaveQualification" type="submit" value="Save" class="ButtonGray mrgnR8" />
+</div>
+<div id="ApprovedataSaveSuccessMessage" style="display: none">
+    <p>
+        Data saved successfully.
+    </p>
+</div>
+<div id="ZeroRecord" style="display: none">
+    Please Perform Approve/Reject/On Hold Action On All Records
+</div>
+<div id="ZeroComment" style="display: none">
+    Please Enter Comments.
+</div>

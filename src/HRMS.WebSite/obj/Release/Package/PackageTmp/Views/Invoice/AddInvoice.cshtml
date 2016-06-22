@@ -1,0 +1,3727 @@
+﻿@model HRMS.Models.AddInvoiceModel
+@{
+    ViewBag.Title = "Add Invoice";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Invoicing
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @*<a id="invoiceIRGenerator" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRGenerator" class="selected">
+                    Generate Invoice
+                </a> <a id="invoiceIRApproval" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRApproval">
+                    Invoice Approvals
+                </a> <a id="invoiceFinanceApproval" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=FinanceApproval">
+                    Invoice (Finance)
+                </a> <a href="@Url.Action("FinancePaymentTracking", "Invoice")">
+                    Payment
+                    Data
+                </a> <a href="@Url.Action("FinanceTrackingSummary", "Invoice")">Outstanding Data</a>*@
+
+            @if ((HttpContext.Current.User.IsInRole("Account Owners")) || (HttpContext.Current.User.IsInRole("Delivery Manager")))
+            {
+                <a id="invoiceIRGenerator" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRGenerator" class="selected">
+                    Generate Invoice
+                </a>
+            }
+            @if (ViewBag.IsIRApprover == true)
+            {
+                <a id="invoiceIRApproval" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=IRApproval">
+                    Invoice Approvals
+                </a>
+            }
+            @if (ViewBag.IsIRFinanceApprover == true)
+            {
+                <a id="invoiceFinanceApproval" href="@Url.Action("GenerateInvoice", "Invoice")?TextLink=FinanceApproval">
+                    Invoice (Finance)
+                </a>
+            }
+            @if ((HttpContext.Current.User.IsInRole("Expense_Admin")))
+            {
+                <a href="@Url.Action("FinancePaymentTracking", "Invoice")">
+                    Payment
+                    Data
+                </a> <a href="@Url.Action("FinanceTrackingSummary", "Invoice")">Outstanding Data</a>
+            }
+        </nav>
+    </div>
+    <div class="MainBody ProjectIndexbody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmInvoiceDetails" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(x => x.ProjectID)
+            @Html.HiddenFor(x => x.RFIRaisedBy)
+            @Html.HiddenFor(x => x.ButtonClicked)
+            @Html.HiddenFor(x => x.Action)
+            @Html.HiddenFor(x => x.Comments)
+            @Html.HiddenFor(x => x.IsViewDetails)
+            @Html.HiddenFor(x => x.CurrentStatus)
+            @Html.HiddenFor(x => x.CustomerAddressID)
+            @Html.HiddenFor(x => x.IsProforma)
+            @Html.HiddenFor(x => x.SelectedResourcePoolType)
+            <div class="marg30 clearfix">
+                <a class="LinkBrown floatL BackLink BackIRGenerator" id="addInvoiceBackBtn">
+                    Back
+                </a>
+                <a class="LinkBlue floatR topLink PrintInvoiceGenerator" href="#">Print</a> @*<a class="LinkBlue floatR topLink ViewCheckListInvoiceGenerator"
+                    id="anchor_viewChecklist" href="#">View Checklist</a>*@ <a id="lnkShowPIRHistory" class="LinkBlue floatR topLink"
+                                                                               href="#" style="display: none">Show History</a>
+            </div>
+            <h4 class="subHead">
+                IR / PIR
+            </h4>
+            <div class="FormContainerBox radioBtnForm clearfix ProjectIndexFliter">
+                <div class="leftcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @Html.Label("IR/PIR ID:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.IrPirID, new { @id = "txtIrPirID", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.IrPirID, Model.IrPirID.ToString(), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv boldFont">
+                            <input type="radio" name="Proforma" value="IR" id="IsProformaIR" checked="checked">
+                            <label for="IsProformaIR" class="LabelForRadio">
+                                IR (Invoice Request)
+                            </label>
+                        </div>
+                        <div class="InputDiv">
+                            <input type="radio" name="Proforma" value="PIR" id="IsProformaPIR">
+                            <label for="IsProformaPIR" class="LabelForRadio">
+                                PIR (Proforma Invoice Request)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("* Type:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.TypeID, new SelectList(Model.TypeList, "TypeID", "TypeName", ""), "Select", new { @class = "ClassDisabledFields DisplayforDropdown" })
+                            @Html.LabelFor(emp => emp.TypeID, Model.TypeID.ToString(), new { @class = "ClassDisplayLabel", @id = "txt_TypeID" })
+                            @Html.HiddenFor(x => x.TypeID, new { @id = "hdnTypeID" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("* Customer:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.LabelFor(x => x.CustomerName, Model.CustomerName, new { @id = "txtCustomerName" })
+                            @Html.HiddenFor(x => x.CustomerID, new { @id = "hdnCustomerID" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * <a id="AddCustomerAddressDetails" href="#">Customer Address: </a>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.CustomerAddress, new { @id = "txtCustomerAddress", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.CustomerAddress, Model.CustomerAddress, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.CustomerAddressID, new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("* Contact Person:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.CustomerContactID, new SelectList(Model.CustomerContactPerson, "CustomerContactID", "ContactPerson"), "Select", new { @class = "ClassDisabledFields DisplayforDropdown" })
+                            @Html.LabelFor(x => x.CustomerContactID, Model.CustomerContactID.ToString(), new { @class = "ClassDisplayLabel", @id = "txt_CustomerContactID" })
+                        </div>
+                    </div>
+                </div>
+                <div class="rightcol">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @Html.Label("Contact Email:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.CustomerEmail, new { @id = "txtCustomerEmail", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.CustomerEmail, Model.CustomerEmail, new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.Label("* Credit Days:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.CreditDays, new { @id = "txtCreditDays", @Value = "30", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.CreditDays, Model.CreditDays.ToString(), new { @class = "ClassDisplayLabel" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>
+                            @Html.Label("Currency:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.CurrencyName, new { @id = "txtCurrencyName", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.CurrencyName, Model.CurrencyName, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.CurrencyID, new { @id = "hdnCurrencyID" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * <a id="AddContractDetails" href="#">Contract:</a>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.Contract, new { @id = "txtAddContractDetails", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.Contract, Model.Contract, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.ContractID, new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            * <a id="AddSalesPeriod" href="#">Sales Period:</a>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.SalesPeriod, new { @id = "txtSalesPeriod", @readonly = "readonly", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(x => x.SalesPeriod, Model.SalesPeriod, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.SalesPeriodID, new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix mrgnT15">
+                <div class="leftcol">
+                    <div class="ButtonContainer1 clearfix">
+                        <input type="button" value="Save" class="ButtonGray mrgnR8 clsbtn" id="btnSave" />
+                    </div>
+                </div>
+            </div>
+            <div id="IRFiXGridDiv" style="display: none;">
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" value="Clear All" class="ButtonGray mrgnR8 clsbtn IRHide" id="DeselectAllForIRFiXGridDiv" />
+                    <input type="button" value="Select All" class="ButtonGray mrgnR8 clsbtn IRHide" id="selectAllForIRFiXGridDiv" />
+                    <input type="button" value="Delete" class="ButtonGray mrgnR8 clsbtn IRHide" id="DeleteForIRFiXGridDiv" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqIRFiXGridTable"></table>
+                </div>
+                <div id="jqIRFiXGridTablePager">
+                </div>
+            </div>
+            <div id="IRFiXBidDiv" style="display: none;">
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" value="Clear All" class="ButtonGray mrgnR8 clsbtn" id="DeselectAllForIRFiXBidDiv" />
+                    <input type="button" value="Select All" class="ButtonGray mrgnR8 clsbtn" id="selectAllForIRFiXBidDiv" />
+                    <input type="button" value="Delete" class="ButtonGray mrgnR8 clsbtn" id="DeleteForIRFiXBidDiv" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqIRFiXBidTable"></table>
+                </div>
+                <div id="jqIRFiXBidTablePager">
+                </div>
+            </div>
+            <div id="IRHybridDiv" style="display: none;">
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" value="Clear All" class="ButtonGray clsbtn" id="DeselectAllForIRHybridDiv" />
+                    <input type="button" value="Select All" class="ButtonGray clsbtn" id="selectAllForIRHybridDiv" />
+                    <input type="button" value="Delete" class="ButtonGray clsbtn" id="DeleteForIRHybridDiv" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqIRHybridTable"></table>
+                </div>
+                <div id="jqIRHybridTablePager">
+                </div>
+            </div>
+            <div id="IRManhrsDiv" style="display: none;">
+                <div class="ButtonContainer2 clearfix">
+                    <input type="button" value="Clear All" class="ButtonGray clsbtn" id="DeselectAllForIRManHoursDiv" />
+                    <input type="button" value="Select All" class="ButtonGray clsbtn" id="selectAllForIRManHoursDiv" />
+                    <input type="button" value="Delete" class="ButtonGray clsbtn" id="DeleteForIRManHoursDiv" />
+                </div>
+                <div class="tablestyle3">
+                    <table id="jqIRManhrsTable"></table>
+                </div>
+                <div id="jqIRManhrsTablePager">
+                </div>
+            </div>
+            <div id="CheckListPopUp" style="display: none">
+            </div>
+
+        }
+        <div class="ButtonContainer1">
+            <input type="button" value="Submit for Approval" class="ButtonGray mrgnR8" id="btnSubmit" style="display: none" />
+            <input type="button" id="btnApproveIR" value="Approve" class="ButtonGray mrgnR8"
+                   style="display: none" />
+            <input type="button" id="btnRejectIR" value="Reject" class="ButtonGray mrgnR8" style="display: none" />
+            <input type="button" id="btnCancelInvoice" value="Cancel" class="ButtonGray mrgnR8"
+                   style="display: none" />
+        </div>
+    </div>
+</section>
+<div id="ContractDetails" style="display: none">
+</div>
+<div id="SalesPeriodDetails" style="display: none">
+</div>
+<div id="CustomerAddressDetails" style="display: none">
+</div>
+<div id="errorRequestTypeNotSelected" style="display: none">
+    Please Select Type.
+</div>
+<div id="CancelInvoiceCommentDialog" style="display: none">
+    <div class="floatL">
+        Enter Comment<span class="mandatory">*</span>:
+    </div>
+    <div class="floatL">
+        <textarea rows="3" cols="25" id="txtCancelComment" style="width: 160px; height: 45px;"></textarea>
+    </div>
+    <div style="display: none" id="ErrorCancelComment">
+        Please Enter Comment
+    </div>
+</div>
+<div id="ConfirmInvoiceCancel" style="display: none">
+    <center>
+        Are you sure you want to Cancel Invoice ?
+    </center>
+</div>
+<div id="RejectInvoiceCommentDialog" style="display: none">
+    <div class="floatL">
+        Enter Comment<span class="mandatory">*</span>:
+    </div>
+    <div class="floatL">
+        <textarea rows="3" cols="25" id="txtRejectComment" style="width: 160px; height: 45px;"></textarea>
+    </div>
+    <div style="display: none" id="ErrorRejectComment">
+        Please Enter Comment
+    </div>
+</div>
+<div id="ConfirmInvoiceReject" style="display: none">
+    <center>
+        Are you sure you want to Reject Invoice ?
+    </center>
+</div>
+<div id="CancelInvoiceErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="InvoiceCancelledSuccess" style="display: none">
+    <center>
+        Invoice has been cancelled successfully.
+    </center>
+</div>
+<div id="InvoiceRejectedSuccess" style="display: none">
+    <center>
+        Invoice has been Rejected successfully.
+    </center>
+</div>
+<div id="AddRfiidSuccessMessege" title="Success" style="display: none;">
+    <p>
+        Data Saved Successfully.
+    </p>
+</div>
+<div id="RfiidSubmitSuccessMessege" title="Success" style="display: none;">
+    <p>
+        Data Submitted Successfully.
+    </p>
+</div>
+<div id="ApproveIRSuccessMsg" title="Success" style="display: none;">
+    <p>
+        Approved Successfully.
+    </p>
+</div>
+<div id="RejectIRSuccessMsg" title="Success" style="display: none;">
+    <p>
+        Rejected Successfully.
+    </p>
+</div>
+<div id="NextIDSuccessMessege" title="Invoice details" style="display: none;">
+    <p>
+        Ir/PIR ID already exist.Hence ID incremented
+    </p>
+</div>
+<div id="AddRfiidErrorMessege" title="Invoice details" style="display: none;">
+    <p>
+        There are some errors.
+    </p>
+</div>
+<div id="InvoiceMailDialog" style="display: none;">
+    @{Html.RenderPartial("_InvoiceCreationEmail", Model.Mail);}
+</div>
+<div id="CreditDaysErrorMessage" title="Add invoice details" style="display: none;">
+    <p>
+        Kindly verify credit days.
+    </p>
+</div>
+<div id="GridNoRecordAddedError" title="Add invoice details" style="display: none;">
+    <p>
+        Please add atleast one record in grid.
+    </p>
+</div>
+<div id="CustomerAddressErrorMessege" title="Add invoice details" style="display: none;">
+    <p>
+        Please select customer address
+    </p>
+</div>
+<div id="ContractErrorMessege" title="Add invoice details" style="display: none;">
+    <p>
+        Please select Contract.
+    </p>
+</div>
+<div id="CreditDaysErrorMessege" title="Add invoice details" style="display: none;">
+    <p>
+        Please input Credit days.
+    </p>
+</div>
+<div id="SalesPeriodErrorMessege" title="Add invoice details" style="display: none;">
+    <p>
+        Please select Sales Period.
+    </p>
+</div>
+<div id="ContactPersonErrorMessege" title="Add invoice details" style="display: none;">
+    <p>
+        Please select Contact person.
+    </p>
+</div>
+<div id="ShowHistoryDialog" style="display: none;">
+</div>
+<div id="PrintContentExp" style="display: none">
+</div>
+<div id="Heading" style="display: none">
+    <h2 class="mrgnT30 title-bgcolor">
+        Add new IR/PIR
+    </h2>
+</div>
+<div id="AddIntegerOnly" title="Invalid Input" style="display: none;">
+    <p>
+        Please insert Numeric value only.
+    </p>
+</div>
+<div id="SelectpositiveValue" title="Invalid Input" style="display: none;">
+    <p>
+        If discount is not present, Rate should have a positive value.
+    </p>
+</div>
+<div id="SelectNegativeValue" title="Invalid Input" style="display: none;">
+    <p>
+        If discount is present, Rate should have a negative value.
+    </p>
+</div>
+<div id="selectDiscountFirst" title="Invalid Input" style="display: none;">
+    <p>
+        Please select Discount field prior to rate.
+    </p>
+</div>
+<div id="SaveRecordsDetails" title="Record Saved" style="display: none;">
+    <p>
+        Record save successfully.
+    </p>
+</div>
+<div id="NoRecordSelected" title="Delete details" style="display: none">
+    <p>
+        Please select atleast one record to delete.
+    </p>
+</div>
+<div id="DeleteDetailsConfirmation" style="display: none;" title="Delete Details">
+    <p>
+        Are yor sure you want to delete the record ?
+    </p>
+</div>
+<div id="DeleteDetails" style="display: none;" title="Delete Details">
+    <p>
+        Record has been Deleted successfully.
+    </p>
+</div>
+<div id="RequiredFeildForDiscount" style="display: none;" title="Required Feild">
+    <p>
+        Please select Discount.
+    </p>
+</div>
+<div id="RequiredFeildForResourcePool" style="display: none;" title="Required Feild">
+    <p>
+        Please select ResourcePool.
+    </p>
+</div>
+<div id="RequiredFeildForIRType" style="display: none;" title="Required Feild">
+    <p>
+        Please select IR Type.
+    </p>
+</div>
+<div id="RequiredFeildForBillingType" style="display: none;" title="Required Feild">
+    <p>
+        Please select Billing Type.
+    </p>
+</div>
+<div id="ErrorFeildForBillingType" style="display: none;" title="Required Feild">
+    <p>
+        Billing Type must be same as previous rows.
+    </p>
+</div>
+<div id="AddCheckList" style="display: none;" title="CheckList">
+</div>
+<script type="text/javascript">
+    function ChangeResourcePoolType(e) {
+        var resourcePoolName = e.target[e.target.selectedIndex].text;
+        var ID = 0;
+        $.each(ResoucePools, function (index, value) {
+            if (value.ResourcePoolName == resourcePoolName) {
+                ID = value.ResourcePoolId;
+            }
+        });
+        $('#frmInvoiceDetails #SelectedResourcePoolType').val(ID);
+    }//end function
+
+    var TypeID;
+    $(document).ready(function () {
+        if('@ViewBag.IsNewFrom' != 'NewForm')
+        {
+            $('#txtIrPirID').attr("disabled","disabled");
+        }
+        if('@ViewBag.TextLink' == 'IRGenerator')
+        {
+            $('#invoiceIRGenerator').addClass('selected');
+            $('#invoiceIRApproval').removeClass('selected');
+            $('#invoiceFinanceApproval').removeClass('selected');
+        }
+        else if('@ViewBag.TextLink' == 'IRApproval')
+        {
+            $('#invoiceIRApproval').addClass('selected');
+            $('#invoiceIRGenerator').removeClass('selected');
+            $('#invoiceFinanceApproval').removeClass('selected');
+        }
+        else if('@ViewBag.TextLink' == 'FinanceApproval')
+        {
+            $('#invoiceFinanceApproval').addClass('selected');
+            $('#invoiceIRApproval').removeClass('selected');
+            $('#invoiceIRGenerator').removeClass('selected');
+        }
+
+        $('.ClassDisplayLabel').hide();
+
+        if('@Model.IsProforma' == 'True')
+        {
+            $('#IsProformaPIR').attr('checked', true);
+        }
+        else
+        {
+            $('#IsProformaIR').attr('checked', true);
+        }
+        $('#TypeID').change(function () {
+            var selecttext =$('#TypeID option:selected').text();
+            $('#hdnTypeID').val($('#TypeID').val());
+            TypeID = $('#TypeID option:selected').val();
+        });
+        if('@ViewBag.RFIID' > 0 && '@Model.IsProforma' == 'True')
+            $("#lnkShowPIRHistory").show();
+
+        $("#txtCreditDays").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });
+        var selecttext =$('#TypeID option:selected').text();
+        TypeID = $('#TypeID option:selected').val();
+        if (selecttext == 'IR Fix Fee') {
+            $('#IRFiXGridDiv').show();
+            $('#IRFiXBidDiv').hide();
+            $('#IRHybridDiv').hide();
+            $('#IRManhrsDiv').hide();
+        }
+        if (selecttext == 'IR Fix Bid') {
+            $('#IRFiXBidDiv').show();
+            $('#IRFiXGridDiv').hide();
+            $('#IRHybridDiv').hide();
+            $('#IRManhrsDiv').hide();
+        }
+        if (selecttext == 'IR Hybrid') {
+            $('#IRHybridDiv').show();
+            $('#IRFiXBidDiv').hide();
+            $('#IRFiXGridDiv').hide();
+            $('#IRManhrsDiv').hide();
+        }
+        if (selecttext == 'IR Manhours') {
+            $('#IRManhrsDiv').show();
+            $('#IRFiXBidDiv').hide();
+            $('#IRFiXGridDiv').hide();
+            $('#IRHybridDiv').hide();
+        }
+        if (selecttext == 'Select') {
+            $('#IRManhrsDiv').hide();
+            $('#IRFiXBidDiv').hide();
+            $('#IRFiXGridDiv').hide();
+            $('#IRHybridDiv').hide();
+        }
+
+        stringList = @(Html.Raw(Json.Encode(ViewBag.IsDiscount)));
+        var IsDiscount = [];
+        //IsDiscount.push("Select");
+        $.each(stringList, function (index,value) {
+            IsDiscount.push(value.SalesPeriodIsOpen);
+        });
+
+        ResoucePools = @(Html.Raw(Json.Encode(ViewBag.ResourcePoolType)));
+        var ResoucePool = [];
+        ResoucePool.push("Select");
+        $.each(ResoucePools, function (index,value) {
+            ResoucePool.push(value.ResourcePoolName);
+        });
+
+        BillingTypes = @(Html.Raw(Json.Encode(ViewBag.BillingType)));
+        var BillingType = [];
+        BillingType.push("Select");
+        $.each(BillingTypes, function (index,value) {
+            BillingType.push(value.BillingType);
+        });
+        IRTypes = @(Html.Raw(Json.Encode(ViewBag.TypeOfIR)));
+        var IRType = [];
+        IRType.push("Select");
+        $.each(IRTypes, function (index,value) {
+            IRType.push(value.IRDescription);
+        });
+
+        $("#jqIRFiXGridTable").jqGrid({
+            // Ajax related configurations // IR FiX Free
+            url: '@Url.Action("FixBidLoadGrid", "Invoice")',
+            postData: { RFIID : $('#txtIrPirID').val() },//hardcoded for testing
+            datatype: "json", mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Description", "Discount", "Quantity - Resources","Rate(USD)", "Amount(USD)", "Billable Resources", "Billing Type Advance/Post", "Resource Pool Type", "Equiv.USD Amount<br />(Corporate Base)","Equiv. USD Amount<br />(Company Base)", "Delete"],
+            // Configure the columns
+            colModel: [
+                { name: "RFIItemID", index: "RFIItemID", align: "left", width: 10,hidden:true,editable: true },
+                { name: "RFIID", index: "RFIID", align: "left", width: 10,hidden:true},
+                { name: "ItemDescription",edittype: "textarea", index: "ItemDescription",classes:"TextareaFix", align: "left", width: 70, editable:true, editrules: { required: true } },
+                { name: "IsDiscountItem", index: "IsDiscountItem", align: "left", width: 50, editable:true, editrules: { required: true },edittype: "select", editoptions :{ value: IsDiscount, dataEvents: [{ type: 'change', fn: function(e) {checkRateValueForDiscount(e); } }]} },
+                { name: "Quantity", index: "Quantity", align: "left", width: 50, editable:true, editrules: { required: true },
+                    editoptions: {maxlength: 8, dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForQuantity(e); } }] }
+                },
+                { name: "Rate", index: "Rate", align: "left", width: 50, editable:true, editrules: { required: true }, editoptions: {maxlength: 8,
+                    dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForRate(e); } },{type: 'keypress', fn: function(e) {
+                        if((e.charCode >=48 && e.charCode <=57)||e.charCode==45 || e.charCode==46||e.charCode==0) {
+                            // allow digits
+                            return true;
+                        } else {
+                            // disallow the key
+                            return false;
+                        }
+                    }}]
+                }
+                },
+                { name: "Amount", index:"Amount", align: "left", width: 60, editable:true, editoptions: { readonly: 'readonly' } },
+                { name: "BillableResources", index: "BillableResources", align: "left", width: 60, editable:true, editrules: { required: true },editoptions: {maxlength: 8,
+                    dataEvents: [{ type: 'change', fn: function(e) {CheckifValue(e); } }]
+                }
+                },
+                { name: "Billing_Type_Adv_1_Post_2", index: "Billing_Type_Adv_1_Post_2", align: "left", width:75, editable:true,editrules: { required: true, custom: true, custom_func: IsBillingTypeSelected }, edittype: "select", editoptions :{ value: BillingType} },
+                { name: "ResourcePoolType", index: "ResourcePoolType", align: "left", width:75, editable:true, edittype: "select", editoptions :{ value: ResoucePool,dataEvents: [{ type: 'change', fn: function(e) {ChangeResourcePoolType(e); } }]} },
+                { name: "CorporateBaseAmount", index: "CorporateBaseAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+                { name: "CompanyBaseCurrencyAmount", index: "CompanyBaseCurrencyAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 50,
+                    align: "center",
+                    formatter: DeleteItemForFixFree
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false, jsonReader: { repeatitems: false },
+            bottompager:false,
+            pager: $("#jqIRFiXGridTablePager"),
+            rowNum: 500,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "", sortorder: "asc", // Grid caption
+            editurl: '@Url.Action("SaveFixBidDetails", "Invoice")',
+            //caption: "Fix Fee",
+            gridComplete: function () {
+                if('@Model.IsViewDetails'== "yes"){
+                    $("#jqIRFiXGridTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                    $("#jqIRFiXGridTable").jqGrid('hideCol', 'Delete');
+                }
+                $('#jqIRFiXGridTablePager_center').hide();
+            },
+            loadComplete :function () {
+                for(var i = 0; i < 1 ; i++) {
+                    $("#jqIRFiXGridTable").jqGrid("addRowData", "new_row", { Id: "new_row"});
+                }
+                var AmountInitial = 0;
+                var ids = $("#jqIRFiXGridTable").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRFiXGridTable").getRowData(itemId);
+                    var CurrentAmount = rowData["Amount"];
+                    if(CurrentAmount != "") {
+                        AmountInitial = parseFloat(AmountInitial) + parseFloat(CurrentAmount);
+                    }
+                }
+                $('#jqIRFiXGridTable').jqGrid('setCell', "new_row", 'ItemDescription', "Total Amount");
+                $('#jqIRFiXGridTable').jqGrid('setCell', "new_row", 'Amount', AmountInitial.toFixed(2));
+                $('#jqIRFiXGridTable').jqGrid('setCell', "new_row", 'CorporateBaseAmount', AmountInitial.toFixed(2));
+                $('#jqIRFiXGridTable').jqGrid('setCell', "new_row", 'CompanyBaseCurrencyAmount', AmountInitial.toFixed(2));
+                $('#jqIRFiXGridTable').find('#undefined').hide();
+
+                $('#jqIRFiXGridTable_iledit').css('visibility','visible');
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var RFIItemID = rowData['RFIItemID'];
+                var RFIID=rowData['RFIID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                if (rowid == "new_row") {
+                    $('#jqIRFiXGridTable_iledit').css('visibility','hidden');
+                }
+                else {
+                    $('#jqIRFiXGridTable_iledit').css('visibility','visible');
+                }
+
+                var resourcePoolName = rowData['ResourcePoolType'];
+                var ID = 0;
+                $.each(ResoucePools, function (index, value) {
+                    if (value.ResourcePoolName == resourcePoolName) {
+                        ID = value.ResourcePoolId;
+                    }
+                });
+                $('#frmInvoiceDetails #SelectedResourcePoolType').val(ID);
+            },
+        }).navGrid("#jqIRFiXGridTablePager", {
+            search: false, refresh: false, add: false,
+            edit: false, del: false }, {},
+               // settings for edit
+               {},
+               {}
+               );
+
+        $("#jqIRFiXGridTable").jqGrid('inlineNav', "#jqIRFiXGridTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        $("#new_row_CompanyBaseCurrencyAmount").parent().next().find('label[class="LabelForCheckbox"]').hide();
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").removeAttr("disabled");
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("enabled","enabled");
+
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Quantity").val(0);
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Rate").val(0);
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Amount").val(0);
+                        jQuery('#jqIRFiXGridTable').find('#'+rowid+"_BillableResources").val(0);
+
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function(rowid){
+                    jQuery('#jqIRFiXGridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("disabled","disabled");
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    TypeID: function () {
+                        return $('#TypeID option:selected').val();
+                    },
+                    RFIID : function() {
+                        return $('#txtIrPirID').val();
+                    },
+                    SelectedResourcepool : function(){
+                        return $('#frmInvoiceDetails #SelectedResourcePoolType').val();
+                    }
+                },
+                beforeSaveRow: function(options, rowid) {
+                },
+                aftersavefunc: function (result) {
+                    $("#SaveRecordsDetails").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+
+                                $(this).dialog("close");
+                                jQuery("#jqIRFiXGridTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+        $("#jqIRFiXBidTable").jqGrid({
+            // Ajax related configurations // IR FiX Bid
+            url: '@Url.Action("FixBidLoadGrid", "Invoice")',
+            postData: { RFIID : $('#txtIrPirID').val() },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Description", "Discount", "Quantity","Rate(USD)", "Amount(USD)", "Billable Resources", "Billing Type Advance/Post", "Resource Pool Type", "Equiv.USD Amount<br />(Corporate Base)","Equiv. USD Amount<br />(Company Base)", "Delete"],
+            // Configure the columns
+            colModel: [
+             { name: "RFIItemID", index: "RFIItemID", align: "left", width: 10,hidden:true,editable: true },
+            { name: "RFIID", index: "RFIID", align: "left", width: 10,hidden:true},
+            { name: "ItemDescription",edittype: "textarea", index: "ItemDescription", align: "left", width: 90, editable:true, editrules: { required: true } },
+            { name: "IsDiscountItem", index: "IsDiscountItem", align: "left", width: 50, editable:true, editrules: { required: true },edittype: "select", editoptions :{ value: IsDiscount, dataEvents: [{ type: 'change', fn: function(e) {checkRateValueForDiscount(e); } }] } },
+            { name: "Quantity", index: "Quantity", align: "left", width: 50, editable:true,
+                editoptions: {maxlength: 8, dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForQuantityForFixBid(e); } }] }
+            },
+            { name: "Rate", index: "Rate", align: "left", width: 50, editable:true, editrules: { required: true }, editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForRateOfFixBid(e); } },{type: 'keypress', fn: function(e) {
+                    if((e.charCode >=48 && e.charCode <=57)||e.charCode==45|| e.charCode==46||e.charCode==0) {
+                        // allow digits
+                        return true;
+                    } else {
+                        // disallow the key
+                        return false;
+                    }
+                }}]
+            }
+            },
+            { name: "Amount", index:"Amount", align: "left", width: 60, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "BillableResources", index: "BillableResources", align: "left", width: 60, editable:true, editrules: { required: true },editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {CheckifValue(e); } }]
+            }
+            },
+            { name: "Billing_Type_Adv_1_Post_2", index: "Billing_Type_Adv_1_Post_2", align: "left", width:75, editable:true,editrules: { required: true, custom: true, custom_func: IsBillingTypeSelectedForFixBid }, edittype: "select", editoptions :{ value: BillingType} },
+            { name: "ResourcePoolType", index: "ResourcePoolType", align: "left", width:75, editable:true, edittype: "select", editoptions :{ value: ResoucePool,dataEvents: [{ type: 'change', fn: function(e) {ChangeResourcePoolType(e); } }]},editrules: { required: true, custom: true, custom_func: IsResourcePoolSelected } },
+            { name: "CorporateBaseAmount", index: "CorporateBaseAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "CompanyBaseCurrencyAmount", index: "CompanyBaseCurrencyAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            {
+                name: "Delete",
+                index: "Delete",
+                width: 50,
+                align: "center",
+                formatter: DeleteItemForFixBid
+            }
+            ],
+            // Grid total width andheight
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqIRFiXBidTablePager"),
+            rowNum: 500,
+            rowList: [],
+            viewrecords: true,
+            // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            // caption: "Fix Bid",
+            editurl: '@Url.Action("SaveFixBidDetails", "Invoice")',
+            gridComplete: function () {
+                if('@Model.IsViewDetails'== "yes"){
+                    $("#jqIRFiXBidTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                    $("#jqIRFiXBidTable").jqGrid('hideCol', 'Delete');
+                }
+                $('#jqIRFiXBidTablePager_center').hide();
+            },
+            loadComplete :function () {
+                for(var i = 0; i < 1 ; i++) {
+                    $("#jqIRFiXBidTable").jqGrid("addRowData", "new_row", { Id: "new_row"});
+                }
+                var AmountInitial = 0;
+                var ids = $("#jqIRFiXBidTable").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRFiXBidTable").getRowData(itemId);
+                    var CurrentAmount = rowData["Amount"];
+                    if(CurrentAmount != "") {
+                        AmountInitial = parseFloat(AmountInitial) + parseFloat(CurrentAmount);
+                    }
+                }
+                $('#jqIRFiXBidTable').jqGrid('setCell', "new_row", 'ItemDescription', "Total Amount");
+                $('#jqIRFiXBidTable').jqGrid('setCell', "new_row", 'Amount', AmountInitial.toFixed(2));
+                $('#jqIRFiXBidTable').jqGrid('setCell', "new_row", 'CorporateBaseAmount', AmountInitial.toFixed(2));
+                $('#jqIRFiXBidTable').jqGrid('setCell', "new_row", 'CompanyBaseCurrencyAmount', AmountInitial.toFixed(2));
+                $('#jqIRFiXBidTable').find('#undefined').hide();
+
+                $('#jqIRFiXBidTable_iledit').css('visibility','visible');
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var RFIItemID = rowData['RFIItemID'];
+                var RFIID=rowData['RFIID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+
+                if (rowid == "new_row") {
+                    $('#jqIRFiXBidTable_iledit').css('visibility','hidden');
+                }
+                else {
+                    $('#jqIRFiXBidTable_iledit').css('visibility','visible');
+                }
+                var resourcePoolName = rowData['ResourcePoolType'];
+                var ID = 0;
+                $.each(ResoucePools, function (index, value) {
+                    if (value.ResourcePoolName == resourcePoolName) {
+                        ID = value.ResourcePoolId;
+                    }
+                });
+                $('#frmInvoiceDetails #SelectedResourcePoolType').val(ID);
+            },
+        }).navGrid("#jqIRFiXBidTablePager", {
+            search: false, refresh: false, add: false,edit: false, del: false },
+       {},
+       // settings for edit
+       {},
+       {}
+     );
+
+        $("#jqIRFiXBidTable").jqGrid('inlineNav', "#jqIRFiXBidTablePager",
+            {
+                edit: true,
+                editicon: "ui-icon-pencil",
+                add: true,
+                addicon: "ui-icon-plus",
+                save: true,
+                saveicon: "ui-icon-disk",
+                cancle: true,
+                cancelicon: "ui-icon-cancel",
+                addtext: "Add",
+                edittext: "Edit",
+                canceltext: "Cancel",
+                savetext: "Save",
+                addParams: {
+                    useFormatter: false,
+                    addRowParams: {
+                        oneditfunc: function (rowid) {
+                            $("#new_row_CompanyBaseCurrencyAmount").parent().next().find('label[class="LabelForCheckbox"]').hide();
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").removeAttr("disabled");
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("enabled","enabled");
+
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Quantity").val(0);
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Rate").val(0);
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Amount").val(0);
+                            jQuery('#jqIRFiXBidTable').find('#'+rowid+"_BillableResources").val(0);
+                        }
+                    }
+                },
+                editParams: {
+                    keys: false,
+                    oneditfunc: function(rowid){
+                        jQuery('#jqIRFiXBidTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("disabled","disabled");
+                    },
+                    sucessfunc: function (data) {
+                    },
+                    url: null,
+                    extraparam: {
+                        TypeID: function () {
+                            return $('#TypeID option:selected').val();
+                        },
+                        RFIID : function() {
+                            return $('#txtIrPirID').val();
+                        },
+                        SelectedResourcepool : function(){
+                            return $('#frmInvoiceDetails #SelectedResourcePoolType').val();
+                        }
+                    },
+                    beforeSaveRow: function(options, rowid) {
+
+                    },
+                    aftersavefunc: function (result) {
+                        $("#SaveRecordsDetails").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+
+                                    $(this).dialog("close");
+                                    jQuery("#jqIRFiXBidTable").trigger("reloadGrid");
+                                }
+                            }
+                        });
+                    },
+                    errorfunc: null,
+                    afterrestorefunc: null,
+                    restoreAfterError: true,
+                    mtype: "POST"
+                }
+            }
+            );
+
+        $("#jqIRHybridTable").jqGrid({
+            // Ajax related configurations // IR Hybrid
+            url: '@Url.Action("FixBidLoadGrid", "Invoice")',
+            postData: { RFIID : $('#txtIrPirID').val() },//hardcoded for testing
+            datatype: "json", mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Description", "Discount", "Quantity","Rate(USD)", "Amount(USD)", "Billable Resources", "Billing Type Advance/Post","Type Fix Bid / Fix Fee / Transaction", "Resource Pool Type", "Equiv.USD Amount<br />(Corporate Base)","Equiv. USD Amount<br />(Company Base)", "Delete"],
+            // Configure the columns
+            colModel: [
+             { name: "RFIItemID", index: "RFIItemID", align: "left", width: 10,hidden:true,editable: true },
+            { name: "RFIID", index: "RFIID", align: "center", width: 10,hidden:true},
+            { name: "ItemDescription", edittype: "textarea",index: "ItemDescription", align: "left", width: 90, editable:true, editrules: { required: true } },
+            { name: "IsDiscountItem", index: "IsDiscountItem", align: "left", width: 50, editable:true, editrules: { required: true },edittype: "select", editoptions :{ value: IsDiscount, dataEvents: [{ type: 'change', fn: function(e) {checkRateValueForDiscount(e); } }] } },
+            { name: "Quantity", index: "Quantity", align: "left", width: 50, editable:true,
+                editoptions: {maxlength: 8, dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForQuantityForHybrid(e); } }] }
+            },
+            { name: "Rate", index: "Rate", align: "left", width: 50, editable:true, editrules: { required: true }, editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForRateOfHybrid(e); } },{type: 'keypress', fn: function(e) {
+                    if((e.charCode >=48 && e.charCode <=57)||e.charCode==45|| e.charCode==46||e.charCode==0) {
+                        // allow digits
+                        return true;
+                    } else {
+                        // disallow the key
+                        return false;
+                    }
+                }}]
+            }
+            },
+            { name: "Amount", index:"Amount", align: "left", width: 60, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "BillableResources", index: "BillableResources", align: "left", width: 60, editable:true, editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {CheckifValue(e); } }]
+            }
+            },
+            { name: "Billing_Type_Adv_1_Post_2", index: "Billing_Type_Adv_1_Post_2", align: "left", width:75, editable:true,editrules: { required: true, custom: true, custom_func: IsBillingTypeSelectedForHybrid }, edittype: "select", editoptions :{ value: BillingType} },
+            { name: "Type_FB_1_FF_2_Trans_3", index: "Type_FB_1_FF_2_Trans_3", align: "left", width:75, editable:true,editrules: { required: true, custom: true, custom_func: IsIRTypeSelectedForHybrid }, edittype: "select", editoptions :{ value: IRType} },
+            { name: "ResourcePoolType", index: "ResourcePoolType", align: "left", width:75, editable:true, edittype: "select", editoptions :{ value: ResoucePool,dataEvents: [{ type: 'change', fn: function(e) {ChangeResourcePoolType(e); } }]},editrules: { required: true, custom: true, custom_func: IsResourcePoolSelected } },
+            { name: "CorporateBaseAmount", index: "CorporateBaseAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "CompanyBaseCurrencyAmount", index: "CompanyBaseCurrencyAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            {
+                name: "Delete",
+                index: "Delete",
+                width: 50,
+                align: "center",
+                formatter: DeleteItemForHybrid
+            }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqIRHybridTablePager"),
+            rowNum: 500,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Hybrid",
+            editurl: '@Url.Action("SaveFixBidDetails", "Invoice")',
+            gridComplete: function () {
+                if('@Model.IsViewDetails'== "yes"){
+                    $("#jqIRHybridTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                    $("#jqIRHybridTable").jqGrid('hideCol', 'Delete');
+                }
+                $('#jqIRHybridTablePager_center').hide();
+            },
+            loadComplete :function () {
+                for(var i = 0; i < 1 ; i++) {
+                    $("#jqIRHybridTable").jqGrid("addRowData", "new_row", { Id: "new_row"});
+                }
+                var AmountInitial = 0;
+                var ids = $("#jqIRHybridTable").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRHybridTable").getRowData(itemId);
+                    var CurrentAmount = rowData["Amount"];
+                    if(CurrentAmount != "") {
+                        AmountInitial = parseFloat(AmountInitial) + parseFloat(CurrentAmount);
+                    }
+                }
+                $('#jqIRHybridTable').jqGrid('setCell', "new_row", 'ItemDescription', "Total Amount");
+                $('#jqIRHybridTable').jqGrid('setCell', "new_row", 'Amount', AmountInitial.toFixed(2));
+                $('#jqIRHybridTable').jqGrid('setCell', "new_row", 'CorporateBaseAmount', AmountInitial.toFixed(2));
+                $('#jqIRHybridTable').jqGrid('setCell', "new_row", 'CompanyBaseCurrencyAmount', AmountInitial.toFixed(2));
+                $('#jqIRHybridTable').find('#undefined').hide();
+
+                $('#jqIRHybridTable_iledit').css('visibility','visible');
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var RFIItemID = rowData['RFIItemID'];
+                var RFIID=rowData['RFIID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                if (rowid == "new_row") {
+                    $('#jqIRHybridTable_iledit').css('visibility','hidden');
+                }
+                else {
+                    $('#jqIRHybridTable_iledit').css('visibility','visible');
+                }
+                var resourcePoolName = rowData['ResourcePoolType'];
+                var ID = 0;
+                $.each(ResoucePools, function (index, value) {
+                    if (value.ResourcePoolName == resourcePoolName) {
+                        ID = value.ResourcePoolId;
+                    }
+                });
+                $('#frmInvoiceDetails #SelectedResourcePoolType').val(ID);
+            },
+        }).navGrid("#jqIRHybridTablePager", {
+            search: false, refresh: false, add: false, edit: false, del: false }, {}, // settings for edit
+          {},
+          {}
+        );
+
+        $("#jqIRHybridTable").jqGrid('inlineNav', "#jqIRHybridTablePager",
+          {
+              edit: true,
+              editicon: "ui-icon-pencil",
+              add: true,
+              addicon: "ui-icon-plus",
+              save: true,
+              saveicon: "ui-icon-disk",
+              cancle: true,
+              cancelicon: "ui-icon-cancel",
+              addtext: "Add",
+              edittext: "Edit",
+              canceltext: "Cancel",
+              savetext: "Save",
+              addParams: {
+                  useFormatter: false,
+                  addRowParams: {
+                      oneditfunc: function (rowid) {
+                          $("#new_row_CompanyBaseCurrencyAmount").parent().next().find('label[class="LabelForCheckbox"]').hide();
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").removeAttr("disabled");
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("enabled","enabled");
+
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_Quantity").val(0);
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_Rate").val(0);
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_Amount").val(0);
+                          jQuery('#jqIRHybridTable').find('#'+rowid+"_BillableResources").val(0);
+
+                      }
+                  }
+              },
+              editParams: {
+                  keys: false,
+                  oneditfunc: function(rowid){
+                      jQuery('#jqIRHybridTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("disabled","disabled");
+                  },
+                  sucessfunc: function (data) {
+                  },
+                  url: null,
+                  extraparam: {
+                      TypeID: function () {
+                          return $('#TypeID option:selected').val();
+                      },
+                      RFIID : function() {
+                          return $('#txtIrPirID').val();
+                      },
+                      SelectedResourcepool : function(){
+                          return $('#frmInvoiceDetails #SelectedResourcePoolType').val();
+                      }
+                  },
+                  beforeSaveRow: function(options, rowid) {
+
+                  },
+                  aftersavefunc: function (result) {
+                      $("#SaveRecordsDetails").dialog({
+                          resizable: false,
+                          autoOpen: true,
+                          height: 140,
+                          width: 300,
+                          modal: true,
+                          dialogClass: "noclose",
+                          buttons: {
+                              Ok: function () {
+
+                                  $(this).dialog("close");
+                                  jQuery("#jqIRHybridTable").trigger("reloadGrid");
+                              }
+                          }
+                      });
+                  },
+                  errorfunc: null,
+                  afterrestorefunc: null,
+                  restoreAfterError: true,
+                  mtype: "POST"
+              }
+          }
+          );
+
+        $("#jqIRManhrsTable").jqGrid({ // Ajax related configurations
+            // IR Manhours
+            url: '@Url.Action("FixBidLoadGrid", "Invoice")',
+            postData: { RFIID : $('#txtIrPirID').val() }, //hardcoded for testing
+            datatype: "json",
+            mtype: "POST", // Specify the column names
+            colNames: ["","","Description", "Discount", "Quantity - Hours","Rate(USD)", "Amount(USD)", "Billable Resources", "Billing Type Advance/Post", "Resource Pool Type", "Equiv.USD Amount<br />(Corporate Base)","Equiv. USD Amount<br />(Company Base)", "Delete"],
+            // Configure the columns
+            colModel: [
+             { name: "RFIItemID", index: "RFIItemID", align: "left", width: 10,hidden:true,editable: true },
+            { name: "RFIID", index: "RFIID", align: "left", width: 10,hidden:true},
+            { name: "ItemDescription",edittype: "textarea",index: "ItemDescription", align: "left", width: 90, editable:true, editrules: { required: true } },
+            { name: "IsDiscountItem", index: "IsDiscountItem", align: "left", width: 50, editable:true, editrules: { required: true },edittype: "select", editoptions :{ value: IsDiscount,dataEvents: [{ type: 'change', fn: function(e) {checkRateValueForDiscount(e); } }] } },
+            { name: "Quantity", index: "Quantity", align: "left", width: 50, editable:true,editrules: { required: true },
+                editoptions: {maxlength: 8, dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForQuantityForManHours(e); } }] }
+            },
+            { name: "Rate", index: "Rate", align: "left", width: 50, editable:true, editrules: { required: true }, editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {SetOnlyIntegerValueForRateOfManHours(e); } },{type: 'keypress', fn: function(e) {
+                    if((e.charCode >=48 && e.charCode <=57)||e.charCode==45|| e.charCode==46||e.charCode==0) {
+                        // allow digits
+                        return true;
+                    } else {
+                        // disallow the key
+                        return false;
+                    }
+                }}]
+            }
+            },
+            { name: "Amount", index:"Amount", align: "left", width: 60, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "BillableResources", index: "BillableResources", align: "left", width: 60, editable:true, editrules: { required: true },editoptions: {maxlength: 8,
+                dataEvents: [{ type: 'change', fn: function(e) {CheckifValue(e); } }]
+            }
+            },
+            { name: "Billing_Type_Adv_1_Post_2", index: "Billing_Type_Adv_1_Post_2", align: "left", width:75, editable:true,editrules: { required: true, custom: true, custom_func: IsBillingTypeSelectedForManHours }, edittype: "select", editoptions :{ value: BillingType} },
+            { name: "ResourcePoolType", index: "ResourcePoolType", align: "left", width:75, editable:true, edittype: "select", editoptions :{ value: ResoucePool,dataEvents: [{ type: 'change', fn: function(e) {ChangeResourcePoolType(e); } }]},editrules: { required: true, custom: true, custom_func: IsResourcePoolSelected } },
+            { name: "CorporateBaseAmount", index: "CorporateBaseAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            { name: "CompanyBaseCurrencyAmount", index: "CompanyBaseCurrencyAmount", align: "left", width: 70, editable:true, editoptions: { readonly: 'readonly' } },
+            {
+                name: "Delete",
+                index: "Delete",
+                width: 50,
+                align: "center",
+                formatter: DeleteItemForManHours
+            }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqIRManhrsTablePager"),
+            rowNum: 500,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false, // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "ManHours",
+            editurl: '@Url.Action("SaveFixBidDetails", "Invoice")',
+            gridComplete: function () {
+                if('@Model.IsViewDetails'== "yes"){
+                    $("#jqIRManhrsTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                    $("#jqIRManhrsTable").jqGrid('hideCol', 'Delete');
+                }
+                $('#jqIRManhrsTablePager_center').hide();
+            },
+            loadComplete :function () {
+                for(var i = 0; i < 1 ; i++) {
+                    $("#jqIRManhrsTable").jqGrid("addRowData", "new_row", { Id: "new_row"});
+                }
+                var AmountInitial = 0;
+                var ids = $("#jqIRManhrsTable").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRManhrsTable").getRowData(itemId);
+                    var CurrentAmount = rowData["Amount"];
+                    if(CurrentAmount != "") {
+                        AmountInitial = parseFloat(AmountInitial) + parseFloat(CurrentAmount);
+                    }
+                }
+                $('#jqIRManhrsTable').jqGrid('setCell', "new_row", 'ItemDescription', "Total Amount");
+                $('#jqIRManhrsTable').jqGrid('setCell', "new_row", 'Amount', AmountInitial.toFixed(2));
+                $('#jqIRManhrsTable').jqGrid('setCell', "new_row", 'CorporateBaseAmount', AmountInitial.toFixed(2));
+                $('#jqIRManhrsTable').jqGrid('setCell', "new_row", 'CompanyBaseCurrencyAmount', AmountInitial.toFixed(2));
+                $('#jqIRManhrsTable').find('#undefined').hide();
+
+                $('#jqIRManhrsTable_iledit').css('visibility','visible');
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var RFIItemID = rowData['RFIItemID'];
+                var RFIID=rowData['RFIID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                if (rowid == "new_row") {
+                    $('#jqIRManhrsTable_iledit').css('visibility','hidden');
+                }
+                else {
+                    $('#jqIRManhrsTable_iledit').css('visibility','visible');
+                }
+                var resourcePoolName = rowData['ResourcePoolType'];
+                var ID = 0;
+                $.each(ResoucePools, function (index, value) {
+                    if (value.ResourcePoolName == resourcePoolName) {
+                        ID = value.ResourcePoolId;
+                    }
+                });
+                $('#frmInvoiceDetails #SelectedResourcePoolType').val(ID);
+            },
+        }).navGrid("#jqIRManhrsTablePager", { search: false, refresh: false, add: false, edit: false, del: false }, {}, // settings for edit
+        {},
+        {}
+      );
+
+        $("#jqIRManhrsTable").jqGrid('inlineNav', "#jqIRManhrsTablePager",
+           {
+               edit: true,
+               editicon: "ui-icon-pencil",
+               add: true,
+               addicon: "ui-icon-plus",
+               save: true,
+               saveicon: "ui-icon-disk",
+               cancle: true,
+               cancelicon: "ui-icon-cancel",
+               addtext: "Add",
+               edittext: "Edit",
+               canceltext: "Cancel",
+               savetext: "Save",
+               addParams: {
+                   useFormatter: false,
+                   addRowParams: {
+                       oneditfunc: function (rowid) {
+                           $("#new_row_CompanyBaseCurrencyAmount").parent().next().find('label[class="LabelForCheckbox"]').hide();
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").removeAttr("disabled");
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("enabled","enabled");
+
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_Quantity").val(0);
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_Rate").val(0);
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_Amount").val(0);
+                           jQuery('#jqIRManhrsTable').find('#'+rowid+"_BillableResources").val(0);
+                       }
+                   }
+               },
+               editParams: {
+                   keys: false,
+                   oneditfunc: function(rowid){
+                       jQuery('#jqIRManhrsTable').find('#'+rowid+"_Billing_Type_Adv_1_Post_2").prop("disabled","disabled");
+                   },
+                   sucessfunc: function (data) {
+                   },
+                   url: null,
+                   extraparam: {
+                       TypeID: function () {
+                           return $('#TypeID option:selected').val();
+                       },
+                       RFIID : function() {
+                           return $('#txtIrPirID').val();
+                       },
+                       SelectedResourcepool : function(){
+                           return $('#frmInvoiceDetails #SelectedResourcePoolType').val();
+                       }
+                   },
+                   beforeSaveRow: function(options, rowid) {
+
+                   },
+                   aftersavefunc: function (result) {
+                       $("#SaveRecordsDetails").dialog({
+                           resizable: false,
+                           autoOpen: true,
+                           height: 140,
+                           width: 300,
+                           modal: true,
+                           dialogClass: "noclose",
+                           buttons: {
+                               Ok: function () {
+
+                                   $(this).dialog("close");
+                                   jQuery("#jqIRManhrsTable").trigger("reloadGrid");
+                               }
+                           }
+                       });
+                   },
+                   errorfunc: null,
+                   afterrestorefunc: null,
+                   restoreAfterError: true,
+                   mtype: "POST"
+               }
+           }
+           );
+
+        $('#AddContractDetails').click(function(){
+            OpenLoadingPopup();
+            $.ajax({
+                url: '@Url.Action("GetContractDetails", "Invoice")',
+                data: { CustomerID : $('#hdnCustomerID').val() },
+                type: 'GET',
+                success: function (result) {
+                    $("#ContractDetails").empty().append(result);
+                    $("#ContractDetails").dialog({
+                        closeOnEscape: false,
+                        //resizable: false,
+                        height: 'auto',
+                        width: 930,
+                        modal: true,
+                        title: "Contract Details"
+                    });
+                    CloseLoadingPopup();
+                }
+            });
+        });
+
+        //------start view details section
+
+        if('@Model.IsViewDetails'=="yes")
+        {
+
+            $("#frmInvoiceDetails").find('input,tr,td, a, textarea, button, select, checkbox').attr("disabled", "disabled");
+            $('.clsbtn').hide();
+            $("#btnSubmit").hide();
+            $('#btnCancelInvoice').show();
+            $('#btnCancelInvoice').removeAttr('disabled');
+            $('.BackIRGenerator').removeAttr('disabled');
+            $('.PrintInvoiceGenerator').removeAttr('disabled');
+            $('.ViewCheckListInvoiceGenerator').removeAttr('disabled');
+            //$("#btnCancel").removeAttr("disabled","disabled");
+            if('@Model.CurrentStatus'=="Cancelled")
+                $('#btnCancelInvoice').hide();
+        }
+
+        //----- end view details section
+        if('@ViewBag.TextLink'=='IRApproval' || '@ViewBag.TextLink'=='FinanceApproval')
+        {
+            $('#btnApproveIR').show();
+            $('#btnRejectIR').show();
+            $('#btnCancelInvoice').show();
+            $('#frmInvoiceDetails').find('input,tr,td,a,textarea,select').prop("disabled",true);
+            $('.IRHide').hide();
+            //  $("#AddSalesPeriod").removeAttr("href");
+            $("#AddContractDetails").unbind('click');
+            $("#AddCustomerAddressDetails").unbind('click');
+            $('#AddSalesPeriod').unbind('click');
+            $('#btnSubmit').hide();
+        }
+        if('@Model.CurrentStatus'=='Cancelled')
+        {
+            $('#btnApproveIR').hide();
+            $('#btnRejectIR').hide();
+            $('#btnCancelInvoice').hide();
+        }
+        if('@Model.IsViewDetails' == 'yes')
+        {
+            $('#btnApproveIR').hide();
+            $('#btnRejectIR').hide();
+        }
+
+        if('@ViewBag.RFIID' >0 && '@Model.CurrentStatus'=='Draft')
+        {
+
+            $('#btnSave').hide();
+            $('#btnSubmit').show();
+            //$('#TypeID').next().attr("disabled","disabled");
+            var a = $('#TypeID').val();
+            $('#TypeID').attr("disabled", "disabled");
+
+            $('#txt_TypeID').text($('#TypeID').find(":selected").text());
+            if('@Model.IsViewDetails'=="yes")
+            {
+                $('#btnSubmit').hide();
+            }
+        }
+
+        $('#txt_CustomerContactID').text($('#CustomerContactID').find(":selected").text());
+
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                if ($(val).hasClass("clsManagerRating1") || val.id == "ManagerOverallRating" || $(val).hasClass("DisplayforDropdown")) {
+                    if(val.id == "TypeID")
+                    {
+                        $('#txt_TypeID').text($('#TypeID').find(":selected").text());
+                    }
+                    $(this).next().hide().next().show();
+                }
+                else if (val.id == "txtCurrentAddress" || val.id == "TrainingProgramComments" || val.id == "BehaviourComments" || val.id == "AreaOfContributionComments" || val.id == "ReportingManagerComments" || val.id == "OverallReviewRatingComments" || $(val).hasClass("clsEmpComments") || val.id == "Text_HRComments" || $(val).hasClass("DisplayforHR")) {
+
+                    $(this).hide().next().show().children().show();
+                }
+                    //                else if (val.id == "txtIrPirID" || val.id == "txtCustomerName" || val.id == "txtCustomerAddress" || val.id == "txtCustomerEmail" || val.id == "txtCreditDays" || val.id == "txtCurrencyName" || val.id == "txtAddContractDetails" || val.id == "txtSalesPeriod") {
+                    //                    $(this).hide().next().hide().next().show();
+                    //                }
+                else {
+                    $(this).hide().next().show();
+                }
+            }
+        });
+
+        $('#btnApproveIR').click(function(){
+            $("#CurrentStatus").val("Approver");
+            $("#Action").val("Move Ahead");
+            $('#frmInvoiceDetails').find('input,tr,td,a,textarea,select').prop("disabled",false);
+            var flag = $('#IsProforma').val();
+            //var flag = $('input:radio[name=IsProforma]:checked').val()
+            var postUrl = '@Url.Action("SaveInvoiceDetails", "Invoice")?textLink='+'@ViewBag.TextLink';
+            //if ($('#frmInvoiceDetails').valid()) {
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmInvoiceDetails').serialize(),
+                success: function (results) {
+
+                    if (results.status == true || results.submitstatus == true) {
+                        $("#ApproveIRSuccessMsg").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+
+                                    $(this).dialog("close");
+                                    // var flag = $('#IsProforma').val();
+                                    //window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+                                    SendMailForInvoiceModule(this.id,'@ViewBag.IsPIRRequest','@ViewBag.TextLink','@Model.ProjectID');
+                                }
+                            }
+                        });
+                    }
+                    if (results.status == false) {
+                        $("#AddRfiidErrorMessege").dialog({
+                            title: 'Invoice Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            }); //end of ajax call
+            //}//end of form valid
+        });
+
+        $("#addInvoiceBackBtn").bind("click",function(){
+            window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+        });
+
+    }); // document.ready end
+
+    window.onload=function(){
+        if('@ViewBag.RFIID' >0 && '@Model.CurrentStatus'!='Draft')
+        {
+            $('#btnSave').hide();
+            $("#AddContractDetails").attr('onclick','').unbind('click');
+            $("#AddCustomerAddressDetails").unbind();
+            $('#AddSalesPeriod').unbind();
+            $('#jqIRFiXGridTablePager_left').hide();
+            $('#jqIRFiXBidTablePager_left').hide();
+            $('#jqIRHybridTablePager_left').hide();
+            $('#jqIRManhrsTablePager_left').hide();
+        }
+        if('@ViewBag.TextLink' == 'IRApproval'){
+            $("#jqIRFiXGridTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRFiXBidTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRHybridTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRManhrsTable").jqGrid('hideCol', 'Delete');
+
+            $('#DeselectAllForIRFiXGridDiv').hide();
+            $('#selectAllForIRFiXGridDiv').hide();
+            $('#DeleteForIRFiXGridDiv').hide();
+
+            $('#DeselectAllForIRFiXBidDiv').hide();
+            $('#selectAllForIRFiXBidDiv').hide();
+            $('#DeleteForIRFiXBidDiv').hide();
+
+            $('#DeselectAllForIRHybridDiv').hide();
+            $('#selectAllForIRHybridDiv').hide();
+            $('#DeleteForIRHybridDiv').hide();
+
+            $('#DeselectAllForIRManHoursDiv').hide();
+            $('#selectAllForIRManHoursDiv').hide();
+            $('#DeleteForIRManHoursDiv').hide();
+        }
+        else if('@ViewBag.TextLink' == 'FinanceApproval'){
+            $("#jqIRFiXGridTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRFiXBidTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRHybridTable").jqGrid('hideCol', 'Delete');
+            $("#jqIRManhrsTable").jqGrid('hideCol', 'Delete');
+
+            $('#DeselectAllForIRFiXGridDiv').hide();
+            $('#selectAllForIRFiXGridDiv').hide();
+            $('#DeleteForIRFiXGridDiv').hide();
+
+            $('#DeselectAllForIRFiXBidDiv').hide();
+            $('#selectAllForIRFiXBidDiv').hide();
+            $('#DeleteForIRFiXBidDiv').hide();
+
+            $('#DeselectAllForIRHybridDiv').hide();
+            $('#selectAllForIRHybridDiv').hide();
+            $('#DeleteForIRHybridDiv').hide();
+
+            $('#DeselectAllForIRManHoursDiv').hide();
+            $('#selectAllForIRManHoursDiv').hide();
+            $('#DeleteForIRManHoursDiv').hide();
+        }
+
+    };
+
+    $('#AddSalesPeriod').click(function() {
+        OpenLoadingPopup();
+        $.ajax({
+            url: '@Url.Action("GetSalesPeriodDetails", "Invoice")',
+            //data: { CustomerID : $('#hdnCustomerID').val() },
+            type: 'GET',
+            success: function (result) {
+                $("#SalesPeriodDetails").empty().append(result);
+                $("#SalesPeriodDetails").dialog({
+                    closeOnEscape: false,
+                    //resizable: false,
+                    height: 'auto',
+                    width: 930,
+                    modal: true,
+                    title: "Sales Period Details"
+                });
+                CloseLoadingPopup();
+            }
+        });
+    });
+
+    $('#AddCustomerAddressDetails').click(function() {
+        OpenLoadingPopup();
+        $.ajax({
+            url: '@Url.Action("GetCustomerAddressDetails", "Invoice")',
+            data: { CustomerID : $('#hdnCustomerID').val() },
+            type: 'GET',
+            success: function (result) {
+                $("#CustomerAddressDetails").empty().append(result);
+                $("#CustomerAddressDetails").dialog({
+                    closeOnEscape: false,
+                    //resizable: false,
+                    height: 'auto',
+                    width: 930,
+                    modal: true,
+                    title: "Customer Address Details"
+                });
+                CloseLoadingPopup();
+            }
+        });
+    });
+
+    $('#anchor_viewChecklist').click(function () {
+        var RFIID = $('#txtIrPirID').val();
+        OpenLoadingPopup();
+        if(RFIID !='')
+        {
+            $.ajax({
+                url: '@Url.Action("LoadInvoiceCheckList", "Invoice")',
+                data: { RFIID : RFIID },
+                type: 'GET',
+                success: function (result) {
+                    $("#CheckListPopUp").empty().append(result);
+                    $('#CheckListPopUp').dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 930,
+                        modal: true,
+                        title: "Checklist"
+                    });
+                    CloseLoadingPopup();
+                }
+            });
+        }
+    });
+
+    function OpenLoadingPopup() {
+        $("#loading").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 140,
+            width: 300,
+            modal: true,
+            dialogClass: "noclose",
+            open: function () {
+                $('#loading').parent().css('background-color', 'transparent');
+                $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                $(this).parent().css('z-index', '33');
+            }
+        });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+    function SaveData(){
+        $("#ButtonClicked").val("Save");
+        if($('#TypeID option:selected').val()==""){
+            $("#errorRequestTypeNotSelected").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else
+        {
+            OpenLoadingPopup();
+            $('#btnSubmit').show();
+            var postUrl = '@Url.Action("SaveInvoiceDetails", "Invoice")';
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmInvoiceDetails').serialize(),
+                success: function (results) {
+                    CloseLoadingPopup();
+                    if (results.results == true) {
+                        $("#NextIDSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    var val=$('#txtIrPirID').val();
+                                    $('#txtIrPirID').val((val*1)+1);
+                                    OpenLoadingPopup();
+                                    $.ajax({
+                                        url: postUrl,
+                                        type: 'POST',
+                                        data: $('#frmInvoiceDetails').serialize(),
+                                        success: function (results) {
+                                            CloseLoadingPopup();
+                                            if (results.status == true) {
+                                                $("#AddRfiidSuccessMessege").dialog({
+                                                    resizable: false,
+                                                    height: 140,
+                                                    width: 300,
+                                                    modal: true,
+                                                    closeOnEscape: false,
+                                                    dialogClass: 'noclose',
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                            $('#btnSave').hide();
+                                                            var selecttext =$('#TypeID option:selected').text();
+                                                            $('#hdnTypeID').val($('#TypeID').val());
+                                                            $('#TypeID').attr("disabled","disabled");
+                                                            $('#txtIrPirID').attr("disabled","disabled");
+                                                            $.each($(".ClassDisabledFields"), function (l, val) {
+                                                                if ($(val).is(':disabled')) {
+                                                                    if ($(val).hasClass("clsManagerRating1") || val.id == "ManagerOverallRating" || $(val).hasClass("DisplayforDropdown")) {
+                                                                        if(val.id == "TypeID")
+                                                                        {
+                                                                            $('#txt_TypeID').text($('#TypeID').find(":selected").text());
+                                                                        }
+                                                                        $(this).next().hide().next().show();
+                                                                    }
+                                                                    else if(val.id == "txtIrPirID")
+                                                                    {
+                                                                        $(this).hide().next().show();
+                                                                    }
+                                                                }
+                                                            });
+                                                            TypeID = $('#TypeID option:selected').val();
+                                                            if (selecttext == 'IR Fix Fee') {
+                                                                $('#IRFiXGridDiv').show();
+                                                                $('#IRFiXBidDiv').hide();
+                                                                $('#IRHybridDiv').hide();
+                                                                $('#IRManhrsDiv').hide();
+                                                            }
+                                                            if (selecttext == 'IR Fix Bid') {
+                                                                $('#IRFiXBidDiv').show();
+                                                                $('#IRFiXGridDiv').hide();
+                                                                $('#IRHybridDiv').hide();
+                                                                $('#IRManhrsDiv').hide();
+                                                            }
+                                                            if (selecttext == 'IR Hybrid') {
+                                                                $('#IRHybridDiv').show();
+                                                                $('#IRFiXBidDiv').hide();
+                                                                $('#IRFiXGridDiv').hide();
+                                                                $('#IRManhrsDiv').hide();
+                                                            }
+                                                            if (selecttext == 'IR Manhours') {
+                                                                $('#IRManhrsDiv').show();
+                                                                $('#IRFiXBidDiv').hide();
+                                                                $('#IRFiXGridDiv').hide();
+                                                                $('#IRHybridDiv').hide();
+                                                            }
+                                                            if (selecttext == 'Select') {
+                                                                $('#IRManhrsDiv').hide();
+                                                                $('#IRFiXBidDiv').hide();
+                                                                $('#IRFiXGridDiv').hide();
+                                                                $('#IRHybridDiv').hide();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            if (results.status == false)
+                                                $("#AddRfiidErrorMessege").dialog({
+                                                    title: 'Invoice Process',
+                                                    resizable: false,
+                                                    height: 140,
+                                                    width: 300,
+                                                    modal: true,
+                                                    dialogClass: "noclose",
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    if (results.status == true) {
+                        $("#AddRfiidSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            closeOnEscape: false,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    $('#btnSave').hide();
+                                    var selecttext =$('#TypeID option:selected').text();
+                                    $('#hdnTypeID').val($('#TypeID').val());
+                                    $('#TypeID').attr("disabled","disabled");
+                                    $('#txtIrPirID').attr("disabled","disabled");
+                                    $.each($(".ClassDisabledFields"), function (l, val) {
+                                        if ($(val).is(':disabled')) {
+                                            if ($(val).hasClass("clsManagerRating1") || val.id == "ManagerOverallRating" || $(val).hasClass("DisplayforDropdown")) {
+                                                if(val.id == "TypeID")
+                                                {
+                                                    $('#txt_TypeID').text($('#TypeID').find(":selected").text());
+                                                }
+                                                $(this).next().hide().next().show();
+                                            }
+                                            else if(val.id == "txtIrPirID")
+                                            {
+                                                $(this).hide().next().show();
+                                            }
+                                        }
+                                    });
+                                    TypeID = $('#TypeID option:selected').val();
+                                    if (selecttext == 'IR Fix Fee') {
+                                        $('#IRFiXGridDiv').show();
+                                        $('#IRFiXBidDiv').hide();
+                                        $('#IRHybridDiv').hide();
+                                        $('#IRManhrsDiv').hide();
+                                    }
+                                    if (selecttext == 'IR Fix Bid') {
+                                        $('#IRFiXBidDiv').show();
+                                        $('#IRFiXGridDiv').hide();
+                                        $('#IRHybridDiv').hide();
+                                        $('#IRManhrsDiv').hide();
+                                    }
+                                    if (selecttext == 'IR Hybrid') {
+                                        $('#IRHybridDiv').show();
+                                        $('#IRFiXBidDiv').hide();
+                                        $('#IRFiXGridDiv').hide();
+                                        $('#IRManhrsDiv').hide();
+                                    }
+                                    if (selecttext == 'IR Manhours') {
+                                        $('#IRManhrsDiv').show();
+                                        $('#IRFiXBidDiv').hide();
+                                        $('#IRFiXGridDiv').hide();
+                                        $('#IRHybridDiv').hide();
+                                    }
+                                    if (selecttext == 'Select') {
+                                        $('#IRManhrsDiv').hide();
+                                        $('#IRFiXBidDiv').hide();
+                                        $('#IRFiXGridDiv').hide();
+                                        $('#IRHybridDiv').hide();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    if (results.status == false) {
+                        $("#AddRfiidErrorMessege").dialog({
+                            title: 'Invoice Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            }); //end of ajax call
+        }//end of else
+    }//end of function
+
+    $('#btnSave').on('click',function(){
+        SaveData();
+    });
+
+    $('#btnSubmit').on('click',function(){
+        if($('#TypeID option:selected').val()==""){
+            $("#errorRequestTypeNotSelected").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }//end of if statement
+        else {
+            TypeID = $('#TypeID option:selected').val();
+        }
+        if($('#txtCreditDays').val()=="" ||$('#txtCreditDays').val()=="0"){
+            $("#CreditDaysErrorMessage").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }//end of if statement
+
+        //commented by nikhil for removing validation for customer address
+//        if($('#txtCustomerAddress').val()==""){
+//            $("#CustomerAddressErrorMessege").dialog({
+//                resizable: false,
+//                height: 140,
+//                width: 300,
+//                modal: true,
+//                dialogClass: "noclose",
+//                buttons: {
+//                    Ok: function () {
+//                        $(this).dialog("close");
+//                    }
+//                }
+//            });
+//            return false;
+//        }//end of if statement
+        if($('#txtAddContractDetails').val()==""){
+            $("#ContractErrorMessege").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }//end of if statement
+        if($('#txtSalesPeriod').val()==""){
+            $("#SalesPeriodErrorMessege").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }//end of if statement
+        if($('#CustomerContactID').val()==""){
+            $("#ContactPersonErrorMessege").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }//end of if statement
+        var selecttext =$('#TypeID option:selected').text();
+        if (selecttext == 'IR Fix Fee') {
+            var count = jQuery("#jqIRFiXGridTable").jqGrid('getGridParam', 'records');
+            if(count<=1){
+                $("#GridNoRecordAddedError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    closeOnEscape: false,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }//end of if statement
+        }
+        if (selecttext == 'IR Fix Bid') {
+            var count = jQuery("#jqIRFiXBidTable").jqGrid('getGridParam', 'records');
+            if(count<=1){
+                $("#GridNoRecordAddedError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    closeOnEscape: false,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }//end of if statement
+        }
+        if (selecttext == 'IR Hybrid') {
+            var count = jQuery("#jqIRHybridTable").jqGrid('getGridParam', 'records');
+            if(count<=1){
+                $("#GridNoRecordAddedError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    closeOnEscape: false,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }//end of if statement
+        }
+        if (selecttext == 'IR Manhours') {
+            var count = jQuery("#jqIRManhrsTable").jqGrid('getGridParam', 'records');
+            if(count<=1){
+                $("#GridNoRecordAddedError").dialog({
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    modal: true,
+                    closeOnEscape: false,
+                    dialogClass: 'noclose',
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            }//end of if statement
+        }
+        if(selecttext=='Dummy'){
+            //added this if statement to maintain if-else logic properly.
+        }
+        else
+        {
+            if($('#IsProformaPIR').is(':checked'))
+            {
+                $('#IsProforma').val(true);
+            }
+            else
+                $('#IsProforma').val(false);
+            $.ajax({
+                url: '@Url.Action("CheckInvoiceGridDetailsExistorNot", "Invoice")',
+                data: { RFIID : $('#txtIrPirID').val()},
+                type: 'GET',
+                success: function (result) {
+                    if(result.count!=0){
+                        $("#ButtonClicked").val("Submit");
+                        $("#Action").val("Move Ahead");
+                        $("#IsViewDetails").val(null);
+                        var postUrl = '@Url.Action("SaveInvoiceDetails", "Invoice")?textLink='+'@ViewBag.TextLink';
+                        $('#txtIrPirID').attr("disabled",false);
+                        $("#txtIrPirID").attr("readonly", false);
+                        if ($('#frmInvoiceDetails').valid()) {
+                            OpenLoadingPopup();
+                            $.ajax({
+                                url: postUrl,
+                                type: 'POST',
+                                data: $('#frmInvoiceDetails').serialize(),
+                                success: function (results) {
+                                    CloseLoadingPopup();
+                                    if (results.submitstatus == true) {
+                                        $.ajax({
+                                            url: '@Url.Action("SendMailInvoiceModule", "Invoice")',
+                                            type: 'POST',
+                                            data: { successEmpIDs: '@ViewBag.loginUserId', RFIID: $('#txtIrPirID').val(), BtnClick: "Submit", IsPIRRequest: $('#IsProforma').val(), TextLink: "", projectId: $('#ProjectID').val() },
+                                            datatype: "json",
+                                            success: function (data) {
+                                                // CloseLoadingPopup();
+                                                if (data) {
+                                                    //CloseLoadingPopup();
+                                                    $("#InvoiceMailDialog").html(data);
+                                                    $("#InvoiceMailDialog").dialog({
+                                                        resizable: false,
+                                                        height: 520,
+                                                        width: 800,
+                                                        modal: true,
+                                                        title: "Send Mail",
+                                                        close: function () {
+                                                            window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?textLink=' + '@ViewBag.TextLink';
+                                                            $(this).dialog('close');
+                                                        }
+                                                    });
+
+                                                    $.validator.unobtrusive.parse($("#MailDetails"));
+                                                    $('#sendInvoiceMail').click(function () {
+
+                                                        $("#CCErrorMessage").hide();
+                                                        $("#ToErrorMessage").hide();
+                                                        if ($('#InvoiceMailDetails').valid()) {
+                                                            OpenLoadingPopup();
+                                                            var sendMailUrl = '@Url.Action("SendEmail", "Invoice")';
+                                                            $.ajax({
+                                                                url: sendMailUrl,
+                                                                type: 'POST',
+                                                                data: $('#InvoiceMailDetails').serialize(),
+                                                                success: function (serverData) {
+
+                                                                    CloseLoadingPopup();
+                                                                    if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                                        if (serverData.status == true) {
+                                                                            $("#InvoiceMailDialog").dialog('destroy');
+                                                                            window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink=' + '@ViewBag.TextLink';
+                                                                        }
+                                                                    }
+                                                                    else if (serverData.status == "Error") {
+                                                                        $("#errorDialog").dialog({
+                                                                            resizable: false,
+                                                                            height: 'auto',
+                                                                            width: 'auto',
+                                                                            modal: true,
+                                                                            title: 'Mail Error',
+                                                                            buttons: {
+                                                                                OK: function () {
+                                                                                    $(this).dialog("close");
+                                                                                }
+                                                                            }
+                                                                        }); //end dialog
+                                                                    }
+                                                                    else {
+                                                                        if (serverData.validCcId == false)
+                                                                            $("#CCErrorMessage").show();
+                                                                        if (serverData.validtoId == false)
+                                                                            $("#ToErrorMessage").show();
+                                                                        return false;
+                                                                    }
+                                                                },
+                                                                error: function () {
+
+                                                                    CloseLoadingPopup();
+
+                                                                    $("#errorDialog").dialog({
+                                                                        title: 'Mail Error',
+                                                                        resizable: false,
+                                                                        height: 'auto',
+                                                                        width: 'auto',
+                                                                        modal: true,
+                                                                        buttons:
+                                                                     {
+                                                                         OK: function () {
+                                                                             $(this).dialog("close");
+                                                                         }
+                                                                     }
+                                                                    }); //end dialog
+                                                                }
+                                                            }); //end ajax
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                    if (results.submitstatus == false) {
+                                        $("#AddRfiidErrorMessege").dialog({
+                                            title: 'Invoice Process',
+                                            resizable: false,
+                                            height: 140,
+                                            width: 300,
+                                            modal: true,
+                                            dialogClass: "noclose",
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }); //end of ajax call
+                        }//end of form valid
+
+                    }
+                    else
+                    {
+                        $("#GridNoRecordAddedError").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            closeOnEscape: false,
+                            dialogClass: 'no-close',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                }
+            });
+
+        }
+    });//end of submit function
+
+    $('#CustomerContactID').change(function () {
+        var selectedValue =$('#CustomerContactID option:selected').val();
+        if(selectedValue=="")
+        {
+            $('#txtCustomerEmail').val(" ");
+        }
+        var Emailids=@(Html.Raw(Json.Encode(Model.CustomerContactPerson)));
+        $.each(Emailids, function (index,value) {
+            if(value.CustomerContactID==selectedValue)
+            {
+                $('#txtCustomerEmail').val(value.EmailID);
+            }
+        });
+
+    });
+
+    function checkRateValueForDiscount(e) {
+        selectedValue = e.target.value;
+        if(selectedValue == "0") {
+            if(e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0].value > 0 || e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0].value == "") {
+                //do nothing
+            }
+            else {
+                $("#SelectpositiveValue").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $(e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0]).val("");
+                        }
+                    }
+                });
+            }
+        }
+        else if(selectedValue == "1") {
+            if(e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0].value == "") {
+                // do nothing
+            }
+            else if(e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0].value > 0) {
+                //do nothing
+                $("#SelectNegativeValue").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $(e.currentTarget.parentNode.nextSibling.nextSibling.childNodes[0]).val("");
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function SetOnlyIntegerValueForQuantity(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var RateValue = e.currentTarget.parentNode.nextSibling.childNodes[0].value;
+            if(RateValue == "") {
+                RateValue = 1;
+            }
+            var AmountValue = $(e.target).val() * RateValue;
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    //for fixBid
+    function SetOnlyIntegerValueForQuantityForFixBid(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var RateValue = e.currentTarget.parentNode.nextSibling.childNodes[0].value;
+            if(RateValue == "") {
+                RateValue = 1;
+            }
+            var AmountValue = $(e.target).val() * RateValue;
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    //quantity for Hybrid
+    function SetOnlyIntegerValueForQuantityForHybrid(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var RateValue = e.currentTarget.parentNode.nextSibling.childNodes[0].value;
+            if(RateValue == "") {
+                RateValue = 1;
+            }
+            var AmountValue = $(e.target).val() * RateValue;
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    //Man Hours
+    function SetOnlyIntegerValueForQuantityForManHours(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var RateValue = e.currentTarget.parentNode.nextSibling.childNodes[0].value;
+            if(RateValue == "") {
+                RateValue = 1;
+            }
+            var AmountValue = $(e.target).val() * RateValue;
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    function SetOnlyIntegerValueForRate(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var QuantityValue = e.currentTarget.parentNode.previousSibling.childNodes[0].value;
+            if(QuantityValue == "") {
+                QuantityValue = 1;
+            }
+            if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "1") {
+                if($(e.target).val() > 0 ) {
+                    $("#SelectNegativeValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+                if($(e.target).val() < 0 ) {
+                    $("#SelectpositiveValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            //else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+            //    $("#selectDiscountFirst").dialog({
+            //        resizable: false,
+            //        height: 140,
+            //        width: 300,
+            //        modal: true,
+            //        dialogClass: "noclose",
+            //        buttons: {
+            //            Ok: function () {
+            //                $(this).dialog("close");
+            //                $(e.target).val("");
+            //                $(e.target).focus();
+            //            }
+            //        }
+            //    });
+            //    return false;
+            //}
+            var AmountValue = $(e.target).val() * QuantityValue;
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRFiXGridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+    //for FixBid
+    function SetOnlyIntegerValueForRateOfFixBid(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var QuantityValue = e.currentTarget.parentNode.previousSibling.childNodes[0].value;
+            if(QuantityValue == "") {
+                QuantityValue = 1;
+            }
+            if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "1") {
+                if($(e.target).val() > 0 ) {
+                    $("#SelectNegativeValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+                if($(e.target).val() < 0 ) {
+                    $("#SelectpositiveValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            //else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+            //    $("#selectDiscountFirst").dialog({
+            //        resizable: false,
+            //        height: 140,
+            //        width: 300,
+            //        modal: true,
+            //        dialogClass: "noclose",
+            //        buttons: {
+            //            Ok: function () {
+            //                $(this).dialog("close");
+            //                $(e.target).val("");
+            //                $(e.target).focus();
+            //            }
+            //        }
+            //    });
+            //    return false;
+            //}
+            var AmountValue = $(e.target).val() * QuantityValue;
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRFiXBidTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    //rate for Hybrid
+    function SetOnlyIntegerValueForRateOfHybrid(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var QuantityValue = e.currentTarget.parentNode.previousSibling.childNodes[0].value;
+            if(QuantityValue == "") {
+                QuantityValue = 1;
+            }
+            if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "1") {
+                if($(e.target).val() > 0 ) {
+                    $("#SelectNegativeValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+                if($(e.target).val() < 0 ) {
+                    $("#SelectpositiveValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            //else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+            //    $("#selectDiscountFirst").dialog({
+            //        resizable: false,
+            //        height: 140,
+            //        width: 300,
+            //        modal: true,
+            //        dialogClass: "noclose",
+            //        buttons: {
+            //            Ok: function () {
+            //                $(this).dialog("close");
+            //                $(e.target).val("");
+            //                $(e.target).focus();
+            //            }
+            //        }
+            //    });
+            //    return false;
+            //}
+            var AmountValue = $(e.target).val() * QuantityValue;
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRHybridTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    //for ManHours
+    function SetOnlyIntegerValueForRateOfManHours(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+        else {
+            //Rate
+            var QuantityValue = e.currentTarget.parentNode.previousSibling.childNodes[0].value;
+            if(QuantityValue == "") {
+                QuantityValue = 1;
+            }
+            if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "1") {
+                if($(e.target).val() > 0 ) {
+                    $("#SelectNegativeValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+                if($(e.target).val() < 0 ) {
+                    $("#SelectpositiveValue").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $(e.target).val("");
+                                $(e.target).focus();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+            //else if(e.currentTarget.parentNode.previousSibling.previousSibling.childNodes[0].options.selectedIndex == "0") {
+            //    $("#selectDiscountFirst").dialog({
+            //        resizable: false,
+            //        height: 140,
+            //        width: 300,
+            //        modal: true,
+            //        dialogClass: "noclose",
+            //        buttons: {
+            //            Ok: function () {
+            //                $(this).dialog("close");
+            //                $(e.target).val("");
+            //                $(e.target).focus();
+            //            }
+            //        }
+            //    });
+            //    return false;
+            //}
+            var AmountValue = $(e.target).val() * QuantityValue;
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'Amount', AmountValue.toFixed(2));
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CorporateBaseAmount', AmountValue.toFixed(2));
+            $('#jqIRManhrsTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'CompanyBaseCurrencyAmount', AmountValue.toFixed(2));
+        }
+    }
+
+    function isDiscountSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForDiscount").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function IsResourcePoolSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForResourcePool").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function IsBillingTypeSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForBillingType").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            var selectedIndex = value;
+            var SelectedValue="";
+            BillingList = @(Html.Raw(Json.Encode(ViewBag.BillingType)));
+            $.each(BillingList, function (index,value) {
+                if(BillingList[index].BillingID ==  parseInt(selectedIndex)) {
+                    SelectedValue = value.BillingType;
+                }
+            });
+            var ids = $("#jqIRFiXGridTable").jqGrid('getDataIDs');
+            if(ids.length > 2) {
+                for (var i = 0; i < 2; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRFiXGridTable").getRowData(itemId);
+                    if((rowData["Billing_Type_Adv_1_Post_2"]).indexOf("<") == -1 || (rowData["Billing_Type_Adv_1_Post_2"]).indexOf(">") == -1) {
+                        var CurrentAmount = rowData["Billing_Type_Adv_1_Post_2"];
+                    }
+                }
+                if(CurrentAmount == SelectedValue) {
+                    return [true,""];
+                }
+                else {
+                    //return [false,""];
+                    $("#ErrorFeildForBillingType").dialog({
+                        modal: true,
+                        resizable: false,
+                        height:'auto',
+                        width: 300,
+                        dialogClass: "noclose",
+                        buttons:
+	                    {
+	                        "Ok": function () {
+	                            $(this).dialog("close");
+	                        }
+	                    }
+                    });
+                    $.preventDefault();
+                }
+            }
+            else {
+                return [true,""];
+            }
+
+        }
+    }
+    //forFixBid
+    function IsBillingTypeSelectedForFixBid(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForBillingType").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            var selectedIndex = value;
+            var SelectedValue="";
+            BillingList = @(Html.Raw(Json.Encode(ViewBag.BillingType)));
+            $.each(BillingList, function (index,value) {
+                if(BillingList[index].BillingID ==  parseInt(selectedIndex)) {
+                    SelectedValue = value.BillingType;
+                }
+            });
+            var ids = $("#jqIRFiXBidTable").jqGrid('getDataIDs');
+            if(ids.length > 2) {
+                for (var i = 0; i < 2; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRFiXBidTable").getRowData(itemId);
+                    if((rowData["Billing_Type_Adv_1_Post_2"]).indexOf("<") ==-1 || (rowData["Billing_Type_Adv_1_Post_2"]).indexOf(">") == -1) {
+                        var CurrentAmount = rowData["Billing_Type_Adv_1_Post_2"];
+                    }
+                }
+                if(CurrentAmount == SelectedValue) {
+                    return [true,""];
+                }
+                else {
+                    //return [false,""];
+                    $("#ErrorFeildForBillingType").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        dialogClass: "noclose",
+                        buttons:
+	                    {
+	                        "Ok": function () {
+	                            $(this).dialog("close");
+	                        }
+	                    }
+                    });
+                    $.preventDefault();
+                }
+            }
+            else {
+                return [true,""];
+            }
+
+        }
+    }
+
+    //Billing type for Hybrid
+    function IsBillingTypeSelectedForHybrid(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForBillingType").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            var selectedIndex = value;
+            var SelectedValue="";
+            BillingList = @(Html.Raw(Json.Encode(ViewBag.BillingType)));
+            $.each(BillingList, function (index,value) {
+                if(BillingList[index].BillingID ==  parseInt(selectedIndex)) {
+                    SelectedValue = value.BillingType;
+                }
+            });
+            var ids = $("#jqIRHybridTable").jqGrid('getDataIDs');
+            if(ids.length > 2) {
+                for (var i = 0; i < 2; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRHybridTable").getRowData(itemId);
+                    if((rowData["Billing_Type_Adv_1_Post_2"]).indexOf("<") == -1 || (rowData["Billing_Type_Adv_1_Post_2"]).indexOf(">") == -1) {
+                        var CurrentAmount = rowData["Billing_Type_Adv_1_Post_2"];
+                    }
+                }
+                if(CurrentAmount == SelectedValue) {
+                    return [true,""];
+                }
+                else {
+                    //return [false,""];
+                    $("#ErrorFeildForBillingType").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        dialogClass: "noclose",
+                        buttons:
+	                    {
+	                        "Ok": function () {
+	                            $(this).dialog("close");
+	                        }
+	                    }
+                    });
+                    $.preventDefault();
+                }
+            }
+            else {
+                return [true,""];
+            }
+
+        }
+    }
+
+    //for Hybrid
+    function IsIRTypeSelectedForHybrid(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForIRType").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    //for manhours
+    function IsBillingTypeSelectedForManHours(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForBillingType").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            var selectedIndex = value;
+            var SelectedValue="";
+            BillingList = @(Html.Raw(Json.Encode(ViewBag.BillingType)));
+            $.each(BillingList, function (index,value) {
+                if(BillingList[index].BillingID ==  parseInt(selectedIndex)) {
+                    SelectedValue = value.BillingType;
+                }
+            });
+            var ids = $("#jqIRManhrsTable").jqGrid('getDataIDs');
+            if(ids.length > 2) {
+                for (var i = 0; i < 2; i++) {
+                    var itemId = ids[i];
+                    var rowData = $("#jqIRManhrsTable").getRowData(itemId);
+                    if((rowData["Billing_Type_Adv_1_Post_2"]).indexOf("<") == -1 || (rowData["Billing_Type_Adv_1_Post_2"]).indexOf(">") == -1) {
+                        var CurrentAmount = rowData["Billing_Type_Adv_1_Post_2"];
+                    }
+                }
+                if(CurrentAmount == SelectedValue) {
+                    return [true,""];
+                }
+                else {
+                    //return [false,""];
+                    $("#ErrorFeildForBillingType").dialog({
+                        modal: true,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        dialogClass: "noclose",
+                        buttons:
+	                    {
+	                        "Ok": function () {
+	                            $(this).dialog("close");
+	                        }
+	                    }
+                    });
+                    $.preventDefault();
+                }
+            }
+            else {
+                return [true,""];
+            }
+
+        }
+    }
+
+    function DeleteItemForFixFree(cellValue, options, rowdata, action) {
+        if(rowdata.Id != "new_row")
+        {
+            var A = '<input type="checkbox" class="ModuleChkRFIItemIDForFiXGrid" id='+"FixFree_"+rowdata['RFIItemID'] + '>';
+            var B= '<label for=' +"FixFree_"+ rowdata['RFIItemID'] + ' class="LabelForCheckbox"></label>';
+            return A+B;
+        }
+        else
+            return "";
+    }
+
+    function DeleteItemForFixBid(cellValue, options, rowdata, action) {
+        if(rowdata.Id != "new_row")
+        {
+            var A =  '<input type="checkbox" class="ModuleChkRFIItemIDForFiXBid" id='+"FixBid_"+rowdata['RFIItemID'] + '>';
+            var B= '<label for=' +"FixBid_"+ rowdata['RFIItemID'] + ' class="LabelForCheckbox"></label>';
+            return A+B;
+        }
+        else
+            return "";
+    }
+    function DeleteItemForManHours(cellValue, options, rowdata, action) {
+        if(rowdata.Id != "new_row")
+        {
+            var A =  '<input type="checkbox" class="ModuleChkRFIItemIDForManHours" id='+"ManHrs_"+rowdata['RFIItemID']+'>';
+            var B= '<label for=' +"ManHrs_"+ rowdata['RFIItemID'] + ' class="LabelForCheckbox" ></label>';
+            return A+B;
+        }
+        else
+            return "";
+    }
+
+    function DeleteItemForHybrid(cellValue, options, rowdata, action) {
+        if(rowdata.Id != "new_row")
+        {
+            var A =  '<input type="checkbox" class="ModuleChkRFIItemIDForHybrid" id='+"Hybrid_"+rowdata['RFIItemID'] + '>';
+            var B= '<label for=' +"Hybrid_"+ rowdata['RFIItemID'] + ' class="LabelForCheckbox"></label>';
+            return A+B;
+        }
+        else
+            return "";
+    }
+
+    function CheckifValue(e) {
+        if(isNaN($(e.target).val()) == true) {
+            $("#AddIntegerOnly").dialog({
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                        $(e.target).val("");
+                        $(e.target).focus();
+                    }
+                }
+            });
+        }
+    }
+
+    var SelectedRFIItemID = [];
+    function GetSelectedCheckboxForRFIItemID() {
+        SelectedRFIItemID = [];
+        $("#jqIRFiXGridTable :checked").each(function (i, val) {
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    }
+    $('#selectAllForIRFiXGridDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForFiXGrid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForFiXGrid").attr("checked", true);
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    });
+    $('#DeselectAllForIRFiXGridDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForFiXGrid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForFiXGrid").attr("checked", false);
+        });
+    });
+
+    $('#DeleteForIRFiXGridDiv').on('click', function () {
+        GetSelectedCheckboxForRFIItemID();
+        DeleteSelectedRFIItemIDDetails(SelectedRFIItemID,"jqIRFiXGridTable");
+    });
+
+    function GetSelectedCheckboxForRFIItemIDForFixBid() {
+        SelectedRFIItemID = [];
+        $("#jqIRFiXBidTable :checked").each(function (i, val) {
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    }
+    $('#selectAllForIRFiXBidDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForFiXBid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForFiXBid").attr("checked", true);
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    });
+    $('#DeselectAllForIRFiXBidDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForFiXBid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForFiXBid").attr("checked", false);
+        });
+    });
+
+    $('#DeleteForIRFiXBidDiv').on('click', function () {
+        GetSelectedCheckboxForRFIItemIDForFixBid();
+        DeleteSelectedRFIItemIDDetails(SelectedRFIItemID,"jqIRFiXBidTable");
+    });
+
+    //for manhors
+    function GetSelectedCheckboxForRFIItemIDForManHours() {
+        SelectedRFIItemID = [];
+        $("#jqIRManhrsTable :checked").each(function (i, val) {
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    }
+    $('#selectAllForIRManHoursDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForManHours").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForManHours").attr("checked", true);
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    });
+    $('#DeselectAllForIRManHoursDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForManHours").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForManHours").attr("checked", false);
+        });
+    });
+
+    $('#DeleteForIRManHoursDiv').on('click', function () {
+        GetSelectedCheckboxForRFIItemIDForManHours();
+        DeleteSelectedRFIItemIDDetails(SelectedRFIItemID,"jqIRManhrsTable");
+    });
+
+    //for Hybrid
+    function GetSelectedCheckboxForRFIItemIDForHybrid() {
+        SelectedRFIItemID = [];
+        $("#jqIRHybridTable :checked").each(function (i, val) {
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    }
+    $('#selectAllForIRHybridDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForHybrid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForHybrid").attr("checked", true);
+            SelectedRFIItemID.push($(this).prop("id"));
+        });
+    });
+    $('#DeselectAllForIRHybridDiv').on('click', function () {
+        SelectedRFIItemID = [];
+        $(".ModuleChkRFIItemIDForHybrid").each(function (i, val) {
+            $(".ModuleChkRFIItemIDForHybrid").attr("checked", false);
+        });
+    });
+
+    $('#DeleteForIRHybridDiv').on('click', function () {
+        GetSelectedCheckboxForRFIItemIDForHybrid();
+        DeleteSelectedRFIItemIDDetails(SelectedRFIItemID,"jqIRHybridTable");
+    });
+
+    function DeleteSelectedRFIItemIDDetails(SelectedRFIItemID,gridName) {
+        if(SelectedRFIItemID.length == 0)
+        {
+            $("#NoRecordSelected").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else {
+            $("#DeleteDetailsConfirmation").dialog({
+                resizable: false,
+                autoOpen: true,
+                height: 'auto',
+                width: 305,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    OK: function () {
+                        $.ajax({
+                            url:'@Url.Action("DeleteInvoiceTypeDetails", "Invoice")',
+                            data: JSON.stringify(SelectedRFIItemID),
+                            contentType: "application/json",
+                            type: 'POST',
+                            success:function(results) {
+                                if(results.status == true) {
+                                    $('#DeleteDetailsConfirmation').dialog('close');
+                                    $('#DeleteDetailsConfirmation').dialog('destroy');
+                                    $("#DeleteDetails").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                jQuery("#"+ gridName).trigger("reloadGrid");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    Cancel:function() {
+                        $('#DeleteDetailsConfirmation').dialog('close');
+                    }
+                }
+            });
+        }
+    }
+
+    $("#btnCancelInvoice").click(function () {
+
+        $("#ConfirmInvoiceCancel").dialog({
+            resizable: false,
+            height: 'auto',
+            width: 300,
+            modal: true,
+            title: "Invoicing",
+            dialogClass: "noclose",
+            buttons: {
+                Yes: function () {
+                    //---------------- //added
+                    $('#CancelInvoiceCommentDialog').dialog(
+			         {
+			             autoOpen: false,
+			             modal: true,
+			             width: 300,
+			             height: 'auto',
+			             resizable: false,
+			             title: "Cancel Comment",
+			             dialogClass: "noclose",
+			             buttons:
+					    {
+					        Ok: function () {
+
+					            var comments = $("#txtCancelComment").val();
+					            if (comments.length <= 0) {
+					                $('#ErrorCancelComment').show();
+					                return false;
+					            }
+					            else {
+					                $('#ErrorComment').hide();
+					                $("#CancelInvoiceCommentDialog").dialog("close");
+					                // var status =  '@HRMS.Models.InvoiceStages.CancelledStage';
+					                //result = $.trim(status);
+					                //("#frmInvoiceDetails #CurrentStatus").val(status);
+					                // ("#frmInvoiceDetails #CurrentStatusInvoice").val("Demo");
+					                //var stringCountryList = @(Html.Raw(Json.Encode(HRMS.Models.InvoiceStages.CancelledStage)));
+					                //var Url = '@Url.Action("SaveInvoiceDetails", "Invoice")?Status='+stringCountryList;
+					                // DisplayLoadingDialog();
+
+					                $("#ButtonClicked").val("Cancelled");
+					                $("#Action").val("Cancelled");
+					                $("#Comments").val(comments);
+					                $("#ButtonClicked").val("Cancelled");
+					            }
+					            $("#frmInvoiceDetails").find('input,tr,td, a, textarea, button, select').removeAttr("disabled",false );
+					            //----------------
+
+					            var postUrl = '@Url.Action("SaveInvoiceDetails", "Invoice")';
+					            $.ajax({
+					                type: 'POST',
+					                url: postUrl,
+					                async: false,
+					                data: $('#frmInvoiceDetails').serialize(),
+					                success: function (resultApprove) {
+					                    $("#frmInvoiceDetails").find('input,tr,td, a, textarea, button, select').removeAttr("disabled",true);
+					                    if (resultApprove.submitstatus == true) {
+
+					                        $("#ConfirmInvoiceCancel").dialog("close");
+					                        $("#ConfirmInvoiceCancel").dialog("destroy");
+					                        //					                        $("#loading").dialog("close");
+					                        //					                        $("#loading").dialog("destroy");
+					                        $("#InvoiceCancelledSuccess").dialog({
+					                            resizable: false,
+					                            height: 'auto',
+					                            width: 300,
+					                            modal: true,
+					                            title: "Cancelled",
+					                            dialogClass: "noclose",
+					                            buttons: {
+					                                Ok: function () {
+
+					                                    $(this).dialog("close");
+					                                    SendMailForInvoiceModule(this.id,'@ViewBag.IsPIRRequest','@ViewBag.TextLink','@Model.ProjectID');
+
+					                                }
+					                            }
+					                        });
+					                    } else if (resultApprove.submitstatus == "Error") {
+					                        $("#loading").dialog("close");
+					                        $("#loading").dialog("destroy");
+					                        $("#ConfirmInvoiceCancel").dialog("close");
+					                        $("#ConfirmInvoiceCancel").dialog("destroy");
+					                        DisplayErrorDialog("Invoicing");
+					                    } else {
+					                        $("#loading").dialog("close");
+					                        $("#loading").dialog("destroy");
+					                        $("#ConfirmInvoiceCancel").dialog("close");
+					                        $("#ConfirmInvoiceCancel").dialog("destroy");
+					                        $("#CancelInvoiceErrorMessege").dialog({
+					                            title: 'Invoicing',
+					                            resizable: false,
+					                            height: 'auto',
+					                            width: 300,
+					                            modal: true,
+					                            dialogClass: "noclose",
+					                            buttons: {
+					                                Ok: function () {
+					                                    $(this).dialog("close");
+					                                }
+					                            }
+					                        });
+					                    }
+					                }
+					            });
+					        },
+					        Cancel: function () {
+					            $(this).dialog('close');
+					        }
+					    }
+			         });
+                    $('#CancelInvoiceCommentDialog').dialog('open');
+                },
+                No: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });//End of Cancel Button
+
+    function printDiv() {
+        var oldData=document.body.innerHTML;
+        var divToPrint = document.getElementById('PrintContent').innerHTML;
+        var HeadDiv = document.getElementById('Heading').innerHTML;
+        var combined = document.createElement('div');
+        combined.innerHTML = "</br></br></br>" + HeadDiv + divToPrint + "</br></br>";
+        combined.id = 'newPrintDiv';
+        document.getElementById('PrintContentExp').appendChild(combined);
+        var printContents = document.getElementById('PrintContentExp').innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        //window.close();
+        //window.history.back();
+        //document.body.innerHTML=oldData;
+        window.location.href ='@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+    }
+
+    $("#btnRejectIR").click(function () {
+
+        $("#ConfirmInvoiceReject").dialog({
+            resizable: false,
+            height: 'auto',
+            width: 300,
+            modal: true,
+            title: "Invoicing",
+            dialogClass: "noclose",
+            buttons: {
+                Yes: function () {
+                    //---------------- //added
+                    $('#RejectInvoiceCommentDialog').dialog(
+			         {
+			             autoOpen: false,
+			             modal: true,
+			             width: 300,
+			             height: 'auto',
+			             resizable: false,
+			             title: "Cancel Comment",
+			             dialogClass: "noclose",
+			             buttons:
+					    {
+					        Ok: function () {
+
+					            var comments = $("#txtRejectComment").val();
+					            if (comments.length <= 0) {
+					                $('#ErrorRejectComment').show();
+					                return false;
+					            }
+					            else {
+					                $('#ErrorComment').hide();
+					                $("#RejectInvoiceCommentDialog").dialog("close");
+					                $("#CurrentStatus").val("Rejected");
+					                $("#Action").val("Rejected");
+					                $("#Comments").val(comments);
+					            }
+					            $("#frmInvoiceDetails").find('input,tr,td, a, textarea, button, select').removeAttr("disabled",false );
+					            //----------------
+
+					            var postUrl = '@Url.Action("RejectInvoiceDetails", "Invoice")';
+					            $.ajax({
+					                type: 'POST',
+					                url: postUrl,
+					                async: false,
+					                data: $('#frmInvoiceDetails').serialize(),
+					                success: function (resultApprove) {
+					                    $("#frmInvoiceDetails").find('input,tr,td, a, textarea, button, select').prop("disabled",true);
+					                    if (resultApprove.status == true) {
+					                        $("#ConfirmInvoiceReject").dialog("close");
+					                        $("#ConfirmInvoiceReject").dialog("destroy");
+					                        //					                        $("#loading").dialog("close");
+					                        //					                        $("#loading").dialog("destroy");
+					                        $("#InvoiceRejectedSuccess").dialog({
+					                            resizable: false,
+					                            height: 'auto',
+					                            width: 300,
+					                            modal: true,
+					                            title: "Rejected",
+					                            dialogClass: "noclose",
+					                            buttons: {
+					                                Ok: function () {
+
+					                                    $(this).dialog("close");
+					                                    //window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+					                                    SendMailForInvoiceModule(this.id,'@ViewBag.IsPIRRequest','@ViewBag.TextLink','@Model.ProjectID');
+					                                }
+					                            }
+					                        });
+					                    } else if (resultApprove.status == "Error") {
+					                        $("#loading").dialog("close");
+					                        $("#loading").dialog("destroy");
+					                        $("#ConfirmInvoiceReject").dialog("close");
+					                        $("#ConfirmInvoiceReject").dialog("destroy");
+					                        DisplayErrorDialog("Invoicing");
+					                    } else {
+					                        $("#loading").dialog("close");
+					                        $("#loading").dialog("destroy");
+					                        $("#ConfirmInvoiceReject").dialog("close");
+					                        $("#ConfirmInvoiceReject").dialog("destroy");
+					                        $("#CancelInvoiceErrorMessege").dialog({
+					                            title: 'Invoicing',
+					                            resizable: false,
+					                            height: 'auto',
+					                            width: 300,
+					                            modal: true,
+					                            dialogClass: "noclose",
+					                            buttons: {
+					                                Ok: function () {
+					                                    $(this).dialog("close");
+					                                }
+					                            }
+					                        });
+					                    }
+					                }
+					            });
+					        },
+					        Cancel: function () {
+					            $(this).dialog('close');
+					        }
+					    }
+			         });
+                    $('#RejectInvoiceCommentDialog').dialog('open');
+                },
+                No: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });
+
+    function SendMailForInvoiceModule(BtnClick,IsPIRRequest,TextLink,projectId) {
+
+        var empId = '@ViewBag.loginUserId';
+        var RFIID = '@ViewBag.RFIID';
+        $.ajax({
+            url: '@Url.Action("SendMailInvoiceModule", "Invoice")',
+            type: 'POST',
+            data: { successEmpIDs: empId, RFIID: RFIID, BtnClick: BtnClick,IsPIRRequest:IsPIRRequest,TextLink:TextLink,projectId:projectId },
+            datatype: "json",
+            success: function (data) {
+                //                $("#loading").dialog("close");
+                //                $("#loading").dialog("destroy");
+
+                if (data) {
+                    $("#InvoiceMailDialog").html(data);
+                    $("#InvoiceMailDialog").dialog({
+                        resizable: false,
+                        height: 520,
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+                            $(this).dialog('close');
+                        }
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendInvoiceMail').click(function () {
+
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#InvoiceMailDetails').valid()) {
+                            OpenLoadingPopup();
+                            var sendMailUrl = '@Url.Action("SendEmail", "Invoice")';
+                            $.ajax(
+                                    {
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#InvoiceMailDetails').serialize(),
+
+                                        success: function (serverData) {
+                                            CloseLoadingPopup();
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    $("#InvoiceMailDialog").dialog('destroy');
+                                                    window.location.href = '@Url.Action("GenerateInvoice", "Invoice")?TextLink='+'@ViewBag.TextLink';
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+
+                                                $("#errorDialog").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    dialogClass: "noclose",
+                                                    buttons: {
+                                                        OK: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+                                            CloseLoadingPopup();
+                                            $("#errorDialog").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                dialogClass: "noclose",
+                                                buttons:
+                                                {
+                                                    OK: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                        }
+                    });
+                }
+            }
+        });   //end Mail
+    }//end of function SendMailForInvoiceModule
+
+    $("#lnkShowPIRHistory").click(function(){
+        DisplayLoadingDialog();
+        $.ajax({
+            url: "GetPIRHistoryDetails/Invoice",
+            type: 'GET',
+            async: false,
+            data: { RFIID: $("#txtIrPirID").val(), RFITypeID: $('#TypeID option:selected').val()},
+            success: function (results) {
+                $("#loading").dialog("destroy");
+                $("#ShowHistoryDialog").empty().append(results);
+                $("#ShowHistoryDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 1200,
+                    title: "Show History",
+                    modal: true,
+                    close: function (event, ui) {
+                        $("#ShowHistoryDialog").dialog("destroy");
+                    },
+                    create: function( event, ui ) {
+                        $(this).css("maxHeight", "550px");
+                    },
+                    open:function(event,ui){
+                        if(results.indexOf("NoRecordsError")>-1)
+                        {
+                            $(this).parent().css("width","330px");
+                            $(this).parent().css("margin-left","-165px");
+                            $(this).parent().css("left","50%");
+                        }
+                    }
+                });
+            },
+            error: function (results) {
+
+                $("#loading").dialog("destroy");
+                DisplayErrorDialog();
+            }
+        });
+    });
+</script>

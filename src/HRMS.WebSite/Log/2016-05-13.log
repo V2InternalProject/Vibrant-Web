@@ -1,0 +1,482 @@
+
+2016-05-13 @ 11:56:28  Informational , App start Global.asax App_Start  
+2016-05-13 @ 11:56:48  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 12:02:17  Informational , App start Global.asax App_Start  
+2016-05-13 @ 12:02:24  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 12:05:46  Informational , App start Global.asax App_Start  
+2016-05-13 @ 12:05:50  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 12:12:15  Informational , App start Global.asax App_Start  
+2016-05-13 @ 12:12:18  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 12:30:18  Informational , App start Global.asax App_Start  
+2016-05-13 @ 12:30:37  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 13:05:36  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-13 @ 13:28:24  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-05-13 @ 13:28:55  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-13 @ 13:29:07  FATAL ERROR   , Invalid object name 'helpdesk.vwEMPLOYEEMASTER'. clsDLSubCategoryAssignment.cs getEmployeeNames     at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+2016-05-13 @ 13:29:07  FATAL ERROR   , System.Data.SqlClient.SqlException (0x80131904): Invalid object name 'helpdesk.vwEMPLOYEEMASTER'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+ClientConnectionId:ed93202b-10b8-4357-a3f3-9bb4e5f6c4ba AddSubCategoryAssignMent.aspx bindEmployeeNames     at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 103
+   at V2.Helpdesk.BusinessLayer.clsBLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\BusinessLayerHelpDeskBranch\clsBLSubCategoryAssignment.cs:line 88
+   at V2.Helpdesk.web.admin.AddSubCategoryAssignMent.bindEmployeeNames() in d:\VB\src\HRMS.WebSite\HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs:line 124
+2016-05-13 @ 13:30:25  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlClient.SqlException (0x80131904): Invalid object name 'helpdesk.vwEMPLOYEEMASTER'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+ClientConnectionId:ed93202b-10b8-4357-a3f3-9bb4e5f6c4ba ---> System.Data.SqlClient.SqlException: Invalid object name 'helpdesk.vwEMPLOYEEMASTER'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 103
+   at V2.Helpdesk.BusinessLayer.clsBLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\BusinessLayerHelpDeskBranch\clsBLSubCategoryAssignment.cs:line 88
+   at V2.Helpdesk.web.admin.AddSubCategoryAssignMent.bindEmployeeNames() in d:\VB\src\HRMS.WebSite\HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs:line 124 ---> V2.CommonServices.Exceptions.V2Exceptions: System.Data.SqlClient.SqlException (0x80131904): Invalid object name 'helpdesk.vwEMPLOYEEMASTER'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+ClientConnectionId:ed93202b-10b8-4357-a3f3-9bb4e5f6c4ba ---> System.Data.SqlClient.SqlException: Invalid object name 'helpdesk.vwEMPLOYEEMASTER'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.FillInternal(DataSet dataset, DataTable[] datatables, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet, Int32 startRecord, Int32 maxRecords, String srcTable, IDbCommand command, CommandBehavior behavior)
+   at System.Data.Common.DbDataAdapter.Fill(DataSet dataSet)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(SqlConnection connection, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText, SqlParameter[] commandParameters)
+   at Microsoft.ApplicationBlocks.Data.SqlHelper.ExecuteDataset(String connectionString, CommandType commandType, String commandText)
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 90
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.DataLayer.clsDLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\DataLayerHelpDeskBranch\clsDLSubCategoryAssignment.cs:line 103
+   at V2.Helpdesk.BusinessLayer.clsBLSubCategoryAssignment.getEmployeeNames() in d:\VB\src\BusinessLayerHelpDeskBranch\clsBLSubCategoryAssignment.cs:line 88
+   at V2.Helpdesk.web.admin.AddSubCategoryAssignMent.bindEmployeeNames() in d:\VB\src\HRMS.WebSite\HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs:line 124
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.AddSubCategoryAssignMent.bindEmployeeNames() in d:\VB\src\HRMS.WebSite\HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs:line 143
+   at V2.Helpdesk.web.admin.AddSubCategoryAssignMent.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\AddSubCategoryAssignMent.aspx.cs:line 79
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_addsubcategoryassignment_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_boxlznhg.3.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 13:30:25  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 17:35:13  Informational , App start Global.asax App_Start  
+2016-05-13 @ 17:35:19  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 17:36:06  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+
+2016-05-13 @ 17:54:52  Informational , App start Global.asax App_Start  
+2016-05-13 @ 17:54:55  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 18:12:32  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:12:36  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:13:31  FATAL ERROR   , DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+2016-05-13 @ 18:13:40  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345 ---> System.Web.HttpException: DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 413
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_a4tj5p3r.6.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:13:40  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:15:01  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:15:03  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 18:27:24  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:27:35  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:28:58  FATAL ERROR   , There is no row at position 3. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 359
+2016-05-13 @ 18:29:05  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: There is no row at position 3.
+   at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 359 ---> System.IndexOutOfRangeException: There is no row at position 3.
+   at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 359
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 417
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_zpkf3uml.3.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:29:05  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:36:59  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:37:05  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:38:34  FATAL ERROR   , Cannot find table 10. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+2016-05-13 @ 18:38:46  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Cannot find table 10.
+   at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345 ---> System.IndexOutOfRangeException: Cannot find table 10.
+   at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 419
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_nrlws313.3.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:38:46  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:39:56  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:39:58  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:41:33  FATAL ERROR   , Cannot find table 10. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+2016-05-13 @ 18:41:36  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: Cannot find table 10.
+   at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345 ---> System.IndexOutOfRangeException: Cannot find table 10.
+   at System.Data.DataTableCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 419
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_kkqwlyzc.6.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:41:36  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:42:38  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:42:40  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:43:40  FATAL ERROR   , DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 348
+2016-05-13 @ 18:43:41  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 348 ---> System.Web.HttpException: DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 348
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 419
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_asmggg1n.9.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:43:41  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:44:32  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:44:34  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 18:50:04  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:50:06  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 18:51:26  FATAL ERROR   , There is no row at position 3. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 361
+2016-05-13 @ 18:51:27  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.IndexOutOfRangeException: There is no row at position 3.
+   at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 361 ---> System.IndexOutOfRangeException: There is no row at position 3.
+   at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at System.Data.DataRowCollection.get_Item(Int32 index)
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 361
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 420
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_xn2q0zfn.3.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 18:51:27  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 18:52:31  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:52:33  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 18:56:16  Informational , App start Global.asax App_Start  
+2016-05-13 @ 18:56:18  Informational , App start finished Global.asax App_Start  
+
+2016-05-13 @ 19:00:18  Informational , App start Global.asax App_Start  
+2016-05-13 @ 19:00:20  Informational , App start finished Global.asax App_Start  
+2016-05-13 @ 19:01:09  FATAL ERROR   , DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'. EditEmployeeDetail.aspx RepSubCategory_ItemDataBound     at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+2016-05-13 @ 19:01:12  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpUnhandledException (0x80004005): Exception of type 'System.Web.HttpUnhandledException' was thrown. ---> V2.CommonServices.Exceptions.V2Exceptions: System.Web.HttpException (0x80004005): DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345 ---> System.Web.HttpException: DataBinding: 'System.Data.DataRowView' does not contain a property with the name 'Subcategory'.
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName)
+   at System.Web.UI.DataBinder.GetPropertyValue(Object container, String propName, String format)
+   at System.Web.UI.WebControls.ListControl.PerformDataBinding(IEnumerable dataSource)
+   at System.Web.UI.WebControls.ListControl.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.ListControl.PerformSelect()
+   at System.Web.UI.WebControls.BaseDataBoundControl.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 345
+   --- End of inner exception stack trace ---
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.RepSubCategory_ItemDataBound(Object sender, RepeaterItemEventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 413
+   at System.Web.UI.WebControls.Repeater.OnItemDataBound(RepeaterItemEventArgs e)
+   at System.Web.UI.WebControls.Repeater.CreateItem(Int32 itemIndex, ListItemType itemType, Boolean dataBind, Object dataItem)
+   at System.Web.UI.WebControls.Repeater.CreateControlHierarchy(Boolean useDataSource)
+   at System.Web.UI.WebControls.Repeater.OnDataBinding(EventArgs e)
+   at System.Web.UI.WebControls.Repeater.DataBind()
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 229
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.FetchRecordForEdit1(clsSubCategoryAssignment objSubCategoryAssignment) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 208
+   at V2.Helpdesk.web.admin.EditEmployeeDetail.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\HelpDesk\admin\EditEmployeeDetail.aspx.cs:line 95
+   at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)
+   at System.Web.UI.Control.OnLoad(EventArgs e)
+   at System.Web.UI.Control.LoadRecursive()
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.HandleError(Exception e)
+   at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)
+   at System.Web.UI.Page.ProcessRequest()
+   at System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context)
+   at System.Web.UI.Page.ProcessRequest(HttpContext context)
+   at ASP.helpdesk_admin_editemployeedetail_aspx.ProcessRequest(HttpContext context) in c:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\631035c4\e3a00b06\App_Web_ytop45bt.9.cs:line 0
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-05-13 @ 19:01:12  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-05-13 @ 19:01:53  Informational , App start Global.asax App_Start  
+2016-05-13 @ 19:01:55  Informational , App start finished Global.asax App_Start  

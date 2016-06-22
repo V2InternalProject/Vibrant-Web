@@ -1,0 +1,50 @@
+﻿@model HRMS.Models.ExitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+@*<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+        Exit Process</h2>
+    <div class="blueBorderTop">
+        <div>
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")">
+                Configure Separation Reasons</a><br />
+        </div>
+        <div>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">
+                Configure Separation Checklist</a><br />
+        </div>
+        <div>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">
+                Configure Separation Process Stakeholders</a><br />
+        </div>
+        <div>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">
+                Set Separation Stages Approvers</a><br />
+        </div>
+    </div>
+</div>*@
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Stages Approvers</a>
+        </nav>
+    </div>
+    <div class="MainBody sep-configMainbody">
+    </div>
+</section>

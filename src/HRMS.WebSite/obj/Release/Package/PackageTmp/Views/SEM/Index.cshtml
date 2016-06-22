@@ -1,0 +1,211 @@
+﻿@model HRMS.Models.SEMViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Customer</h2>
+        </div>
+        <nav class="sub-menu-colored">
+               @* <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Personal</a>*@
+                
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="FormContainerBox clearfix">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                         @Html.Label("Customer Name:")
+                    </div>
+                    <div class="InputDiv">
+                        <input type="text" id="txtSearchCust" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="ButtonContainer2 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" value="Add Customer"/>
+        </div>*@
+        <div id="renderForAdd" class="ButtonContainer2 clearfix">
+        </div>
+        <div class="tablestyle3">
+            <table id="jqAddCustomerTable">
+            </table>
+        </div>
+        <div id="jqAddCustomerTablePager">
+        </div>
+
+        <div class="TotalRecordsDiv">
+            <div class="bluebgtable1" id="totalcount">
+            </div>
+        </div>
+    </div>
+</section>
+@*<div class="blueBorderNew clearfix NoTitleGridsContainer ">
+    <div class="clearfix">
+        <div class="colOneThird clearfix">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Customer Name:")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" id="txtSearchCust" />
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    
+    <div id="renderForAdd">
+    </div>
+    <div class="tablestyle3">
+        <table id="jqAddCustomerTable">
+        </table>
+    </div>
+    <div id="jqAddCustomerTablePager">
+    </div>
+    <div class="bluebutton1 clearB floatR">
+        <div class="bluebgtable1" id="totalcount">
+        </div>
+    </div>
+</div>*@
+<script type="text/javascript"> 
+
+
+
+    $(document).ready(function () {
+    $("#txtSearchCust").val("");
+    var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+
+         newB = document.getElementById('renderForAdd');
+                newInput = document.createElement('input');
+                newInput.setAttribute('class', 'ButtonGray mrgnR8');
+                newInput.setAttribute('value', 'Add Customer');
+                newInput.setAttribute('onclick', 'window.location.href="GetCustomerFormDetails?Customerid=0"');
+                newInput.setAttribute('type', 'button');
+                newB.appendChild(newInput);
+//         }
+//        }
+        str = "";
+        $('#txtSearchCust').keypress(function (e) {
+            if (e.keyCode == 13) {
+                str = $("#txtSearchCust").val();
+                //                jQuery("#jqAddCustomerTable").trigger("reloadGrid");
+                $("#jqAddCustomerTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            }
+        });
+        $("#txtSearchCust").autocomplete({
+        });
+
+
+
+        $("#jqAddCustomerTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("CustomerDetailLoadGrid", "SEM")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { searchText: function () { return str; } },
+            // Specify the column names
+            colNames: ["", "Customer Name", "Contract Effective Date", "Contract Validity Date", "Region"],
+            // Configure the columns
+            colModel: [
+                { name: "CustomerId", index: "CustomerNameID", align: "left", width: 200, editable: true, hidden: true },
+                { name: "CustomerName", index: "CustomerName", align: "left", width: 200, editable: true, formatter: returnMyLink },
+                { name: "ContractSigningDate", index: "ContractSigningDate", align: "left", width: 200, editable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }},
+                { name: "ContractValidityDate", index: "ContractValidityDate", align: "left", width: 100, editable: true, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "Region", index: "Region", align: "left", width: 100, editable: true }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddCustomerTablePager"),
+            rowNum: 20,
+            loadonce: true,
+            sortable: true,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            // Grid caption
+            //caption: "Add Customer",
+            editurl: '@Url.Action("UploadClientDetails", "SEM")',
+            gridComplete: function () {
+                var count = jQuery("#jqAddCustomerTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqAddCustomerTable').hide();
+                }
+                else {
+                    $('#gbox_jqAddCustomerTable').show();
+                    if (count > 20) {
+
+                        $('#jqAddCustomerTablePager').show();
+                    }
+                    else {
+                        $('#jqAddCustomerTablePager').hide();
+                    }
+                }
+                $('#totalcount').text("Total Records : " + count);
+            },
+            onCellSelect: function (rowid, iCol) {
+            }
+        }).navGrid("#jqAddCustomerTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        //        $("#jqAddCustomerTable").jqGrid('inlineNav', "#jqAddCustomerTablePager",
+        //        {
+        //            edit: true,
+        //            editicon: "ui-icon-pencil",
+        //            add: true,
+        //            addicon: "ui-icon-plus",
+        //            save: true,
+        //            saveicon: "ui-icon-disk",
+        //            cancle: true,
+        //            cancelicon: "ui-icon-cancel",
+        //            addParams: { useFormatter: false },
+        //            editParams: {
+        //                keys: false,
+        //                oneditfunc: null,
+        //                sucessfunc: null,
+        //                url: null,
+        //                extraparam: {
+        //                    RowIdContact: function () {
+        //                    }
+        //                },
+        //                aftersavefunc: null,
+        //                errorfunc: null,
+        //                afterrestorefunc: null,
+        //                restoreAfterError: true,
+        //                mtype: "POST"
+        //            }
+        //        });
+
+    });//end of ready function
+
+    function returnMyLink(cellValue, options, rowdata, action) {
+        return "<a href='/SEM/GetCustomerFormDetails?Customerid=" + rowdata['CustomerId'] + "' >" + cellValue + "</a>";
+
+    }
+
+</script>
+

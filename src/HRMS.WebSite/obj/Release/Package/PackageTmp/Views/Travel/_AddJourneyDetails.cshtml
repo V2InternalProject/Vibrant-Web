@@ -1,0 +1,256 @@
+﻿@model HRMS.Models.JourneyViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/jquery.form.js" type="text/javascript"></script>
+<script src="../../Scripts/Travel/JourneyDetails.js" type="text/javascript"></script>
+@using (Html.BeginForm("UploadJouneyUploadDetails", "Travel", FormMethod.Post, new { @id = "addTravelsJourneyDetails" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.JourneyDetail.TravelID)
+    @Html.HiddenFor(m => m.JourneyDetail.JourneyID, new { @id = "JourneyId" })
+    @Html.HiddenFor(m => m.JourneyDetail.TRFNo, new { @id = "TRFNo" })
+    @Html.HiddenFor(m => m.JourneyDetail.StageID, new { @id = "StageID" })
+    <div class="mrgnT25">
+        <div id="EmpJourneyUploadError" title="Error" style="display: none">
+            <p>
+                Please check the file you are uploading
+            </p>
+            <p>
+                '.exe' file is not allowed to upload
+            </p>
+        </div>
+       @* <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("From Place")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.JourneyDetail.FromPlace)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.FromPlace)
+                    @Html.HiddenFor(model => model.JourneyDetail.FromPlace, new { id = "fromPlace" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("To Place")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.JourneyDetail.ToPlace)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.ToPlace)
+                    @Html.HiddenFor(model => model.JourneyDetail.ToPlace, new { id = "ToPlace" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Journey Date")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(model => model.JourneyDetail.JourneyDate, String.Format("{0:dd-MMM-yyyy}", Model.JourneyDetail.JourneyDate), new { @readonly = "readonly", @id = "JourneyDate" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.JourneyDate)</p>
+                @Html.HiddenFor(x => x.JourneyDetail.JourneyDate, new { @id = "journeyDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Journey Mode")<span class="mandatory">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.DropDownListFor(model => model.JourneyDetail.JourneyMode, new SelectList(Model.JourneyModeList, "JourneyModeId", "JourneyModeDescription", "Select"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.JourneyMode)
+                    @Html.HiddenFor(model => model.JourneyDetail.JourneyMode, new { id = "JourneyModeId" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Additional Information")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.JourneyDetail.AdditionalInformation)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.AdditionalInformation)
+                    @Html.HiddenFor(model => model.JourneyDetail.AdditionalInformation, new { id = "additionalInformation" })</p>
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Journey Mode Details")<span class="mandatory hidefromRequstor">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.JourneyDetail.JourneyModeDetails)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.JourneyModeDetails)
+                    @Html.HiddenFor(model => model.JourneyDetail.JourneyModeDetails, new { id = "journeyModeDetails" })</p>
+            </div>
+        </div>*@
+       @* <div class="formcol clearfix uploadtkt">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Upload Ticket")<span class="mandatory hidefromRequstor">*</span>
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                <input type="file" name="doc" id="empTicket" size="24" data-val="true" data-val-required="please select a file to Upload" />
+                <p>
+                    <span id="JourneyUploadError" class="field-validation-error"></span>
+                    @Html.HiddenFor(model => model.JourneyDetail.TicketName, new { id = "ticketName" })
+                </p>
+            </div>
+        </div>*@
+          <div class="formrow clearfix">
+            <div class="LabelDiv">
+               @Html.Label("Upload Ticket: ")<span class="mandatory hidefromRequstor">*</span>
+            </div>
+            <div class="InputDiv positionR">
+                 <input type="file" name="doc" id="empTicket" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" style="width:100px"/>
+                <div class="BrowserVisible">
+                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text"
+                        id="FalseJourneyFileUploadBtn" class="FileField" value="No files selected" />
+                </div>
+                <p>
+                    <span id="JourneyUploadError" class="field-validation-error"></span>
+                    @Html.HiddenFor(model => model.JourneyDetail.TicketName, new { id = "ticketName" })
+                </p>
+            </div>
+        </div>
+@*        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                @Html.Label("Journey Feedback")
+            </div>
+            <div class="editor-field fieldwidth floatL">
+                @Html.TextBoxFor(model => model.JourneyDetail.JourneyFeedback)
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.JourneyDetail.JourneyFeedback)
+                    @Html.HiddenFor(model => model.JourneyDetail.JourneyFeedback, new { id = "journeyFeedback" })</p>
+            </div>
+        </div>
+*@    </div>       	
+    <div class="mrgnB18 floatR">
+            <input id="saveJourneyDetails" type="submit" value="Save" class="ButtonGray" />
+            <input id="resetJourney" type="button" value="Reset" onclick="resetJourneyDetails()" class="ButtonGray " />
+        </div>
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#TRFNo').val('@ViewBag.TRFNo');
+        $('#StageID').val('@Model.JourneyDetail.StageID');
+
+        var startDate = new Date($('#TravelStartDate').val());
+        var endDate = new Date($('#TravelEndDate').val());
+        $('#JourneyDate').val($('#TravelStartDate').val());
+        var ExtensionStartDate = new Date($('#TravelExtexsionStartDate').val());
+        var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+
+        if ('@ViewBag.StageID' == 0) {
+            $('.hidefromRequstor').hide();
+            $('#addTravelsJourneyDetails #empTicket').attr('disabled', 'disabled');
+        } else {
+            $('.hidefromRequstor').show();
+        }
+
+        if (ExtensionStartDate == 'Invalid Date' && ExtensionEndDate == 'Invalid Date') {
+
+            if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                $('#JourneyDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShowDay: OnselectDate
+                }).bind("mouseover", function () {
+                    var startDate1 = new Date($('#TravelStartDate').val());
+                    $('#JourneyDate').datepicker("option", "minDate", startDate1);
+                    $('#JourneyDate').trigger('change');
+                });
+            } else {
+                $('#JourneyDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+            }
+        } else {
+            $('#JourneyDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: ExtensionStartDate, maxDate: ExtensionEndDate, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+        }
+
+
+        function OnselectDate(date) {
+            var startDate = new Date($('#TravelStartDate').val());
+            var endDate;
+            if ('@ViewBag.Extension' == "Ext") {
+                endDate = new Date($('#TravelExtensionEndDate').val());
+            }
+            else {
+                endDate = new Date($('#TravelEndDate').val());
+            }
+
+            if (date >= new Date(startDate) && date <= new Date(endDate)) {
+                return [true, '', "Available"];
+            }
+            else {
+                return [false, '', "Unavailable"];
+            }
+        }
+
+        $("#saveJourneyDetails").click(function () {
+            if ($("#empTicket").val() != "")
+                SaveJourneyDetails();
+            else {
+                $("#JourneyUploadError").text("Please select File to upload").show();
+                return false;
+            }
+        });
+
+        $("#empTicket").bind('change', function () {
+            if ($("#empTicket").val() != "") {
+                $("#AdminAccomUploadError").hide();
+                var path = $(this).val().replace("C:\\fakepath\\", "");
+                $("#FalseJourneyFileUploadBtn").val(path);
+            }
+        });
+
+        $('#empTicket').attr('disabled', 'disabled');
+        $('#JourneyDetail_JourneyModeDetails').attr('disabled', 'disabled');
+        if ('@ViewBag.UserRole' == "Travel_Admin" && '@ViewBag.StageID' == 3) {
+
+            /// For Journey Mode Values are: Bus=5 , Cab=6, Shuttle=7 and Other=8
+            var selecttext = $('#JourneyDetail_JourneyMode').val();
+            if (selecttext == 5 || selecttext == 6 || selecttext == 7 || selecttext == 8) {
+                $('#empTicket').attr("disabled", "disabled");
+            }
+            else {
+                $('#empTicket').removeAttr("disabled");
+            }
+
+            $('#JourneyDetail_JourneyModeDetails').removeAttr("disabled");
+            $('#JourneyDetail_FromPlace').removeAttr("disabled");
+            $('#JourneyDetail_ToPlace').removeAttr("disabled");
+            $('#JourneyDetail_JourneyMode').removeAttr("disabled");
+            $('#JourneyDetail_AdditionalInformation').removeAttr("disabled");
+
+            $('#JourneyDetail_JourneyFeedback').prop("disabled", true);
+            $('#JourneyDate').removeAttr("disabled");
+        }
+        if ('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' != "True") {
+            $('#empTicket').removeAttr("disabled");
+            $('#JourneyDetail_JourneyFeedback').removeAttr("disabled");
+
+
+        }
+        if ('@ViewBag.UserRole' == "Travel_Admin" && '@ViewBag.IsLoggedInUser' == "True" && '@ViewBag.StageID' != 4 && '@ViewBag.StageID' != '') {
+
+            $('#empTicket').removeAttr("disabled");
+            $('#JourneyDetail_JourneyModeDetails').removeAttr("disabled");
+            $('#JourneyDetail_FromPlace').removeAttr("disabled");
+            $('#JourneyDetail_ToPlace').removeAttr("disabled");
+            $('#JourneyDetail_JourneyMode').removeAttr("disabled");
+            $('#JourneyDetail_AdditionalInformation').removeAttr("disabled");
+            $('#JourneyDetail_JourneyFeedback').removeAttr("disabled");
+            $('#JourneyDate').removeAttr("disabled");
+        }
+        if ('@ViewBag.UserRole' == "Travel_Admin" && ('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == '')) {
+            $('#JourneyDetail_JourneyModeDetails').attr('disabled', 'disabled');
+            $('#empTicket').attr('disabled', 'disabled');
+        }
+
+        $('#JourneyDetail_JourneyMode').change(function () {
+            var selecttext = $('#JourneyDetail_JourneyMode :selected').text();
+            if (selecttext == 'Bus' || selecttext == 'Cab' || selecttext == 'Shuttle' || selecttext == 'Other') {
+                $('#empTicket').attr('disabled', 'disabled');
+            }
+            else {
+                $('#empTicket').removeAttr("disabled");
+            }
+
+        });
+    });
+   
+    
+</script>

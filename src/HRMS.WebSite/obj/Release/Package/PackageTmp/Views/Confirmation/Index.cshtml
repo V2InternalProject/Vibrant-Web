@@ -1,0 +1,84 @@
+﻿@model HRMS.Models.ConfirmationViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+@*<div class="blueBorderNew">
+    <h2 class="title-bgcolor">
+        Confirmation and Appraisal Process</h2>
+    <div class="blueBorderTop">
+        <h3 class="mrgnT10">Confirmation Process</h3>
+        <div class="mrgnT5">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")">Configure Parameter</a>
+        </div>
+        <div>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">Configure Parameter
+                Categories</a>
+        </div>
+        <div>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+        </div>
+        <div>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })">
+                Configure Parameters for Roles</a>
+        </div>
+        <h3 class="mrgnT30">Appraisal Process</h3>
+        <div class="mrgnT5">
+            <a href="@Url.Action("ConfigureAppraisalYear", "ConfigurationAppraisal")">
+                Configure Appraisal Year</a>
+        </div>
+        <div>
+            <a href="@Url.Action("AppraisalStatus", "ConfigurationAppraisal")">
+                Appraisal Status</a>
+        </div>
+                <div>
+            <a href="@Url.Action("ConfigureAppraisalDetails", "ConfigurationAppraisal")">
+                Configuration</a>
+        </div>
+    </div>
+</div>*@
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")" class="selected">Configure Parameter</a>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">Configure Parameter Categories</a>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })">Configure Parameters for Roles</a>
+        </nav>
+    </div>
+    <div class="MainBody sepconfig-reasonMainbody">
+        <div class="clearfix">
+            <h3 class="clearfix">Configure Reasons</h3>
+        </div>
+        <div class="Hrmain clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="LabelDiv">
+                    <label for="From Date" class="select-type">Employee Name:</label>
+                </div>
+                <div class="InputDiv">
+                    <input type="text">
+                </div>
+
+                <div class="remain">
+                    <button type="button" class="ButtonGray">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="reason-part2">
+            <button type="button" class="ButtonGray">Delete</button>
+            <button type="button" class="ButtonGray">Select All</button>
+            <button type="button" class="ButtonGray">Deselect All</button>
+        </div>
+    </div>
+</section>

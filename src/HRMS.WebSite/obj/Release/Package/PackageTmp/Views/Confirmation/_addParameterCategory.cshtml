@@ -1,0 +1,202 @@
+﻿@model HRMS.Models.AddNewCategory
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")">Configure Parameter</a>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation", new { @class = "selected" })" class="selected">Configure Parameter Categories</a>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })">Configure Parameters for Roles</a>
+        </nav>
+    </div>
+
+    <div class="MainBody ProjectIndexbody SmartT">
+        <div class="clearfix">
+            <input type="button" class="BackLink" id="backcategory" value="Back" />
+        </div>
+        <div class="FormContainerBox clearfix ProjectIndexFliter">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmaddParametercategory" }))
+            {
+                @Html.ValidationSummary(true)
+                <div class="leftcol clearfix">
+                    @Html.HiddenFor(x => x.IsAddnew, new { id = "isAdded" })
+                    @Html.HiddenFor(x => x.CategoryID)
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.LabelFor(x => x.Category)<span class="mandatory">*</span>
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.Category)
+                            @Html.ValidationMessageFor(x => x.Category)
+                        </div>
+                    </div>
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv">
+                            @Html.LabelFor(x => x.Description)
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.Description)
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div id="Errorincatefory" style="display: none" title="Error">
+                <center class="LoadingWrap">
+                There is some error.
+            </center>
+            </div>
+            <div id="ErrorAddParametercategory" style="display: none" title="Error">
+                <center class="LoadingWrap">
+                The Order Number is already Exist.
+            </center>
+            </div>
+        </div>
+        <div class="ButtonContainer1 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" id="SaveParametercategory" value="Save" />
+            <input type="button" class="ButtonGray mrgnR8" id="SaveParametercategoryaddnew" value="Save and Add" />
+        </div>
+</div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $("#backcategory").click(function () {
+        parent.history.back();
+        return false;
+    });
+
+    $("#SaveParametercategory").click(function () {
+        var postUrl = '@Url.Action("AddParameterCompetency", "Confirmation")';
+        if ($("#frmaddParametercategory").valid()) {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmaddParametercategory').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        window.location.href = '@Url.Action("ConfigureParameterCategories", "Confirmation")';
+                    }
+                    else {
+                        $("#ErrorAddParametercategory").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Errorincatefory").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+    $("#SaveParametercategoryaddnew").click(function () {
+        var postUrl = '@Url.Action("AddParameterCompetency", "Confirmation")';
+        if ($("#frmaddParametercategory").valid()) {
+            $("#loading").dialog(
+            {
+                closeOnEscape: false,
+                resizable: false,
+                height: 140,
+                width: 300,
+                modal: true,
+                dialogClass: "noclose"
+            });
+            $("#isAdded").val(true);
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: $('#frmaddParametercategory').serialize(),
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.resultMesssage == "addnew") {
+                        window.location.href = '@Url.Action("AddParameterCompetency", "Confirmation")?employeeId=' + null;
+                    }
+                    else {
+                        $("#ErrorAddParametercategory").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#Errorincatefory").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

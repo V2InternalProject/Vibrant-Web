@@ -1,0 +1,252 @@
+﻿@model HRMS.Models.AssocieteDriverAndComepetency
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/settings.css" rel="stylesheet" type="text/css" />
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Confirmation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureParameter", "Confirmation")">Configure Parameter</a>
+            <a href="@Url.Action("ConfigureParameterCategories", "Confirmation")">Configure Parameter Categories</a>
+            <a href="@Url.Action("ConfigureRatingScales", "Confirmation")">Configure Rating Scale</a>
+            <a href="@Url.Action("ConfigureParametersRoles", "Confirmation", new { searchstring = string.Empty })" class="selected">Configure Parameters for Roles</a>
+        </nav>
+    </div>
+
+<div class="MainBody ProjectIndexbody SmartT">
+    <div class="clearfix">
+        <input type="button" class="BackLink" id="Back_CompetencyRole" value="Back" />
+    </div>
+    <div class="ButtonContainer3 clearfix">
+            <input type="button" class="ButtonGray mrgnR8" id="SelectCompetency" value="Select Parameter" onclick="SelectCompetency()" />
+            <input type="button" class="ButtonGray mrgnR8" id="DeleteCompetency" value="Delete" onclick="DeleteParameterForRole()" />
+            <input type="button" class="ButtonGray mrgnR8" id="selectAllCompetency" value="Select All" onclick="SelectAll()" />
+            <input type="button" class="ButtonGray mrgnR8" id="DeselectAllCompetency" value="Deselect All" onclick="DeselectAll()" />
+        </div>
+    <div class="tablestyle3 clearfix">
+        <table cellpadding="0" width="100%" cellspacing="0" border="0" class="TableJqgrid">
+            <thead>
+                <tr>
+                    <td width="10%" class="tableHeaders">
+                        Order No.
+                    </td>
+                    <td class="tableHeaders" width="15%">
+                        Parameter
+                    </td>
+                    <td  class="tableHeaders" width="55%">
+                        Description
+                    </td>
+                    <td  class="tableHeaders" width="10%" align="centre">
+                        Delete
+                    </td>
+                </tr>
+            </thead>
+            <div id="competencyMain">
+                @if (Model.CompetencyList.Count == 0)
+                {
+                    <tr class="tableRows">
+                        <td colspan="4">
+                            There are no items to show in this view.
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model.CompetencyList.OrderBy(x => x.OrderNo).ToList())
+                {
+                    <tr class="tableRows">
+                        <td id="OrderNo_type" align="center">
+                            @Html.DisplayFor(modelItem => item.OrderNo, new { @readonly = "readonly" })
+                        </td>
+                        <td id="Parameter_type">
+                            @Html.DisplayFor(modelItem => item.Parameter, new { @readonly = "readonly" })
+                        </td>
+                        <td id="Description_type">
+                            @Html.DisplayFor(modelItem => item.Description, new { @readonly = "readonly" })
+                        </td>
+                        <td id="Deletecompetency">
+                            @Html.CheckBoxFor(x => item.Checked, new { @class = "selectAllCompetencies", @data = item.CompetencyID, @for = item.RoleID })
+                        </td>
+                    </tr>
+                }
+            </div>
+        </table>
+        <div class="recordDivPopup">
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(x => x.RecordsCount)
+                            @Html.DisplayFor(x => x.RecordsCount)
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div id="DeleteCompetencySuccess" style="display: none" title="Record Deleted">
+            <center class="LoadingWrap">
+            The selected record is successfully deleted.
+        </center>
+        </div>
+        <div id="ErrorCompetency" style="display: none" title="Error">
+            <center class="LoadingWrap">
+            There is some error.
+        </center>
+        </div>
+        <div id="DeleteCompetencyConfirm" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Are you sure, you want to delete selected record ?
+        </center>
+        </div>
+        <div id="NoItemSelectedCompetency" style="display: none" title="Record Delete">
+            <center class="LoadingWrap">
+            Please select Atleast one record to delete.
+        </center>
+        </div>
+        <div id="SelectComptencyDialogparameter" style="display: none">
+        </div>
+    </div>
+</div>
+</section>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $('#Back_CompetencyRole').click(function () {
+        parent.history.back();
+        return false;
+    });
+
+    function SelectCompetency() {
+        var CompetencyID = "";
+        $.each($("input:checkbox"), function (i, val) {
+            CompetencyID = CompetencyID + $(val).attr("data") + ",";
+        });
+        $("#SelectComptencyDialogparameter").dialog({
+            closeOnEscape: false,
+            resizable: false,
+            height: 650,
+            width: 1100,
+            modal: true,
+            title: "Parameter Mapping",
+            open: function (event, ui) {
+                $('#SelectComptencyDialogparameter').load('@Url.Action("SelectNewCompetency", "Confirmation")', { CompetencyID: CompetencyID, searchstring: "" }).dialog('open');
+            },
+            close: function () {
+                location.reload();
+            }
+        });
+    }
+
+    function SelectAll() {
+        $(".selectAllCompetencies").prop("checked", true);
+    }
+    function DeselectAll() {
+        $(".selectAllCompetencies").prop("checked", false);
+    }
+    function DeleteParameterForRole() {
+        var collection = [];
+        var RoleID = '@Model.RoleID';
+        $.each($("input:checked"), function (i, val) {
+            collection.push($(val).attr("data"));
+        });
+        if (collection.length == 0) {
+            $("#NoItemSelectedCompetency").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteCompetencyConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $.ajax({
+                            url: '@Url.Action("DeleteNewCompetency", "Confirmation")',
+                            data: JSON.stringify({ collection: collection, RoleID: RoleID }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                if (results.status) {
+                                    $("#DeleteCompetencyConfirm").dialog("close");
+                                    $("#DeleteCompetencySuccess").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                location.reload();
+                                                $(".selectAllCompetencies").prop("checked", false);
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#DeleteCompetencyConfirm").dialog("close");
+                                    $("#ErrorCompetency").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {
+                        $("#DeleteCompetencyConfirm").dialog("close");
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    }
+</script>

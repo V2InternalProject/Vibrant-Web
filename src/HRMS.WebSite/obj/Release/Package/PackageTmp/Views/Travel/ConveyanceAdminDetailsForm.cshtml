@@ -1,0 +1,139 @@
+﻿@model HRMS.Models.ConveyanceAdminViewModel
+@{
+    ViewBag.Title = "ConveyanceAdminDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+//        SetPageTitle('Local Convayance Details');
+        var deletionIdSelected = 0;
+        // Set up the jquery grid
+        $("#ConveyanceDetailsTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("TravelConveynceLoadGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelId: '@ViewBag.travelEmployeeId' },
+            // Specify the column names
+            colNames: ["", "", "", "", "Conveyance Type", "City", "Travel Details", "From Date", "To Date", "Insurance Details(In case of care hire)", "Delete"],
+            // Configure the columns
+            colModel: [
+
+              { name: "LocalConveyanceID", index: "LocalConveyanceID", hidden: true, width: 50, align: "left" },
+              { name: "TravelID", index: "TravelID", hidden: true, width: 50, align: "left" },
+              { name: "ConveyanceType", index: "ConveyanceType", hidden: true, width: 50, align: "left" },
+              { name: "City", index: "City", hidden: true, width: 50, align: "left" },
+              { name: "ConvayName", index: "ConvayName", width: "7.25%", align: "left" },
+              { name: "CityName", index: "CityName", width: "7.25%", align: "left" },
+              { name: "TravelDetails", index: "TravelDetails", width: "19.4%", align: "left" },
+              { name: "FromDate", index: "FromDate", width: "11.37%", align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+              { name: "ToDate", index: "ToDate", width: "11.37%", align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+              { name: "InsuranceDetails", index: "InsuranceDetails", width: "22.44%", align: "left" },
+
+	        { name: "Delete", index: "Delete", width: "6.25%", align: "center", formatter: function () { return '<img src="../../Content/themes/base/images/delete-icon.png" width="15px" height="15px">'; } }
+            ],
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: true,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#ConveyanceDetailsTablePager"),
+            caption: "Visa Travel Details",
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var travelId = rowData['TravelID'];
+                var visattravelId = rowData['LocalConveyanceID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if (0 == 0) {
+                    if (colName['index'] == "Delete") {
+                        DeleteConveyanceDetail(visattravelId, travelId);
+                    }
+                    else
+                        EditConvaeyDetails(rowData);
+                }
+            }
+        }).navGrid("#VisaTravelDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+//        $("#btnAddConvdetails").click(function () {
+//            $(".field-validation-error").empty();
+//            $('input').removeClass("input-validation-error");
+
+//            $('#addConveyanceDetailsDialog #ddlConvayanaceType').val('');
+//            $("#addConveyanceDetailsDialog #ddlCity").val('');
+//            $("#addConveyanceDetailsDialog #TravelDetails").val('');
+//            $('#addConveyanceDetailsDialog #InsuranceDetails').val('');
+//            $('#addConveyanceDetailsDialog #conveyancefromdate').val('');
+//            $('#addConveyanceDetailsDialog #todate').val('');
+
+
+//            $('#addConveyanceDetailsDialog').dialog({
+//                autoOpen: false,
+//                modal: true,
+//                width: 500,
+//                resizable: false,
+//                title: "Travel Visa Details"
+//            });
+//            $('#addConveyanceDetailsDialog').dialog('open');
+//        });
+    });
+
+    
+</script>
+<div>
+    <h2 class="mrgnT15 title-bgcolor">
+        * Local Conveyance Details</h2>
+    <div class="clearfix blueBorder">
+        <div class="mrgnT10" style="clear:left;">
+        <div id="addConveyanceDetailsDialog" style="display: none">
+               @Html.Partial("_AddConveyanceDetails", Model)
+            </div>
+@*              <input type="button" value="Add Local Conveyance Details" id="btnAddConvdetails"
+                class="button" />*@
+            <div class="tablestyle3" style="width: 100%;">
+                <table id="ConveyanceDetailsTable" class="scroll">
+                </table>
+            </div>
+            <div id="ConveyanceDetailsTablePager">
+            </div>
+            
+        </div>
+
+        <div class="formcol clearfix" style="width:50%;">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Additional Information")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                       <textarea>
+                       </textarea>
+                </div>
+        </div>
+    </div>
+    <div class="mrgnT30">
+            <input type="button" class="button" value="Save and Continue"/>
+        </div>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?</p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>

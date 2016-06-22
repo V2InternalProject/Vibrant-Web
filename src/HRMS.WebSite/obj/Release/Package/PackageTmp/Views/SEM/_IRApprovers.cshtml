@@ -1,0 +1,69 @@
+﻿<h3>Project Owners</h3>
+<input type="button" value="Add IR Approver" class="button"/>
+<div class="tablestyle3">
+    <table id="jqAddIRApproverTable">
+    </table>
+</div>
+<div id="jqAddIRApproverTablePager">
+</div>
+
+
+
+
+<script type="text/javascript">
+     $(document).ready(function () {
+        $("#jqAddIRApproverTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("TravelEmergencyContactLoadGrid", "Travel")',
+            postData: { travelId: 12 },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Name", "Role", "Delete"],            
+            // Configure the columns
+            colModel: [
+                { name: "Name", index: "Name", align: "left", width: 350},
+                { name: "Role", index: "Role", align: "left", width: 325 },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 25,
+                    align: "center",
+                    formatter: function() {
+               
+                            return '<img src="../../Content/themes/base/images/delete-icon.png" width="15px" height="15px" class="HideinPrint">';
+                        
+                    }
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: true,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddIRApproverTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            caption: "IR Approvers",
+              gridComplete: function () {
+            },
+            onCellSelect: function(rowid, iCol) {
+			},
+        }).navGrid("#jqAddIRApproverTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+        
+        
+     
+     });
+</script>

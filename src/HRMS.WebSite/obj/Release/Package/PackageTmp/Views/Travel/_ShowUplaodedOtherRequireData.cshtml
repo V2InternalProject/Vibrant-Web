@@ -1,0 +1,19 @@
+﻿@model HRMS.Models.OtherAdminViewModel
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="tablestyle3">
+    <table border="1" cellpadding="10" cellspacing="10" class="infoDisplay">
+        <tr align="center">
+            <td align="right" width="30%" class="infoDisplayHead">
+                <div class="display-label">
+                    <b>File Name </b>
+                </div>
+            </td>
+            <td align="left" width="70%">
+                <div class="display-field">
+                    @Html.ActionLink(Model.FileName, "DownloadOtherRequireUploadedFile", "Travel", new { @Model.FileName, @Model.RequirementID, TravelID = @Model.ID }, null)
+                </div>
+            </td>
+        </tr>
+    </table>

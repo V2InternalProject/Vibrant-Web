@@ -1,0 +1,619 @@
+﻿@model HRMS.Models.AddCustomerModel 
+@{
+    ViewBag.Title = "Add Customer";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}*@
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<script type="text/javascript"> 
+    $(document).ready(function () {
+    $(".ClassDisplayLabel").hide();
+        $('#ContractSigningDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+        $('#ContractValidityDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px'});
+        });
+        if ('@ViewBag.CustomerId' != '') {
+            $('#CustomerAddDeatails').show();
+            window.glob = '@ViewBag.CustomerId';
+            $('#addCustomerAddress #CustomerId').val('@ViewBag.CustomerId');
+            $('#addCustomerContacts #CustomerIds').val('@ViewBag.CustomerId');
+            $('#addCustomerContracts #CustomerID').val('@ViewBag.CustomerId');
+            $("#AbbreviatedName").attr("disabled", "disabled");
+        }
+        if ('@ViewBag.CustomerId' == ''){
+            $('#BtnFinalSaveCustomerDetails').hide();
+            $('#ContractSigningDate').val($.datepicker.formatDate("mm/dd/yy", new Date()));
+            $('#ContractValidityDate').val($.datepicker.formatDate("mm/dd/yy", new Date()));
+        }
+
+       
+
+//        $('#BtnSavecustomerDeatails').click(function () {
+//            SaveCoustomerDetails("FirstSave");
+//        });
+        $('#BtnFinalSaveCustomerDetails').click(function () {
+            if ($("#jqAddInvoiceAddressTable").getGridParam("reccount") == 0) {
+                $("#NoRowAddedDialog p").html("").append("Atleast one Customer Invoice Address record should be present.");
+                $("#NoRowAddedDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        OK: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+            if ($("#jqAddCustomerContactTable").getGridParam("reccount") == 0) {
+                $("#NoRowAddedDialog p").html("").append("Atleast one Customer Contact record should be present.");
+                $("#NoRowAddedDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        OK: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+            if ($("#jqCustomerContractDetailTable").getGridParam("reccount") == 0) {
+                $("#NoRowAddedDialog p").html("").append("Atleast one Customer Contract record should be present.");
+                $("#NoRowAddedDialog").dialog({
+                    closeOnEscape: false,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        OK: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+
+            SaveCoustomerDetails("FinalSave");
+        });
+
+    $("#ExtMaktSegName").change(function () {
+        var selectedValue = $(this)[0].value;
+        if (selectedValue != "")
+            $("#ExtMaktSegNameValidation").hide();
+        else
+            $("#ExtMaktSegNameValidation").show();
+    });
+
+    $("#Countrynames").change(function () {
+        var selectedValue = $(this)[0].value;
+        if (selectedValue != "")
+            $("#CountryValidation").hide();
+        else
+            $("#CountryValidation").show();
+    });
+
+            DisplayCustomerLabel();
+}); //end of ready
+
+    //DisplayCustomerLabel() function is used to hide disabled fields and display respective value as Label.
+    function DisplayCustomerLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                    $(this).hide().next().show();
+            }
+        });
+    }//end function
+
+    function ShowHideForGrid(){
+    var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+//    if(stringNodeLevelAccessList==null)
+//        window.location.href='@Url.Action("LogOn", "Account")';
+        if(stringNodeLevelAccessList!=null){
+        if(stringNodeLevelAccessList.CanEdit==false){
+        $('#jqAddInvoiceAddressTable_iledit').hide();
+        $('#jqAddCustomerContactTable_iledit').hide();
+        }
+        if (stringNodeLevelAccessList.CanDelete==false){
+        $('#jqAddInvoiceAddressTable').hideCol("Delete");
+        $('#jqAddCustomerContactTable').hideCol("Delete");
+        $('#jqCustomerContractDetailTable').hideCol("Delete");
+        }
+        if (stringNodeLevelAccessList.CanAdd==false){
+        $('#jqAddInvoiceAddressTable_iladd').hide();
+        $('#jqAddCustomerContactTable_iladd').hide();
+        $('#btnAddContract').hide();
+        }
+
+        }//end of condtn !=null
+    }//end of function ShowHideForGrid
+
+     window.onload = function () {
+        var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["NodeLevelAccess"])));
+//        if(stringNodeLevelAccessList==null)
+//        window.location.href='@Url.Action("LogOn", "Account")';
+//        if(stringNodeLevelAccessList!=null){
+//        if(stringNodeLevelAccessList.CanEdit==true ||(stringNodeLevelAccessList.CanAdd==true &&'@Model.CutomerIds'=='0')){
+        newB = document.getElementById('renderForEdit');
+        newInput = document.createElement('input');
+        newInput.setAttribute('class', 'ButtonGray mrgnR11');
+        newInput.setAttribute('value', 'Save');
+        newInput.setAttribute('id', 'BtnSavecustomerDeatails');
+        newInput.setAttribute('type', 'button');
+        newB.appendChild(newInput);
+        $('#BtnSavecustomerDeatails').bind('click',function(){
+        SaveCoustomerDetails("FirstSave");
+        });
+        //$('#BtnFinalSaveCustomerDetails').show();
+//        }
+        if(stringNodeLevelAccessList.CanEdit==false && '@Model.CutomerIds'>'0'){
+        $('#jqAddInvoiceAddressTable_iledit').hide();
+        $('#jqAddCustomerContactTable_iledit').hide();
+        $('#BtnFinalSaveCustomerDetails').hide();
+        $('#AddCustomDeatil input').attr('readonly', 'readonly').attr('class','bg-gray');
+        $('#AddCustomDeatil select').attr("disabled", true); 
+        $('.ui-datepicker-trigger').hide();
+        $('#ContractSigningDate').attr("disabled", true);
+        $('#ContractValidityDate').attr("disabled", true);
+        }
+        if (stringNodeLevelAccessList.CanDelete==false){
+        $('#jqAddInvoiceAddressTable').hideCol("Delete");
+        $('#jqAddCustomerContactTable').hideCol("Delete");
+        $('#jqCustomerContractDetailTable').hideCol("Delete");
+        }
+        if (stringNodeLevelAccessList.CanAdd==false){
+        $('#jqAddInvoiceAddressTable_iladd').hide();
+        $('#jqAddCustomerContactTable_iladd').hide();
+        $('#btnAddContract').hide();
+        }
+//            }//end of != null
+    };//end of onload
+
+    function SaveCoustomerDetails(btnClicked) {
+            if ($('#AddCustomDeatil').valid()) {
+                $("#abbreviatedName").val($("#AbbreviatedName").val());
+                var postUrlnew = '@Url.Action("SaveCustomerDetails", "SEM")';
+                $.ajax({
+                    url: postUrlnew,
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: $('#AddCustomDeatil').serialize(),
+                    success: function (results) {
+                        if (results.AbbreviatedNameExist == true) {
+                            $("#AbbreviatedNameExistDialog").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                closeOnEscape: false,
+                                buttons: {
+                                    OK: function () {
+                                        $(this).dialog("close");
+
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == true) {
+                            var CustID = results.CutomerId;
+                            $('#AddCustomDeatil #CutomerIds').val(CustID);
+                            $('#addCustomerContracts #CustomerID').val(CustID);
+                            $("#AbbreviatedName").next().text($("#AbbreviatedName").val());
+                            $("#AbbreviatedName").attr("disabled", "disabled");
+                            DisplayCustomerLabel();
+                            $("#AddCustomerSuccessMessege").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                dialogClass: "noclose",
+                                buttons: {
+                                    OK: function () {
+                                        $(this).dialog("close");
+                                        $.ajax({
+                                            url: '@Url.Action("GetCustomerFormDetails", "SEM")',
+                                            data: { Customerid: CustID },
+                                            type: "GET",
+                                            success: function (results) {
+                                                IDCust = CustID;
+                                                window.glob = CustID;
+                                                $('#CustomerAddDeatails').show();
+                                                ShowHideForGrid();
+                                                $('#BtnFinalSaveCustomerDetails').show();
+                                                if (btnClicked == "FinalSave"){
+                                                    DisplayLoadingDialog();
+                                                    sendcallmailforCustomCreate();
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == false) {
+                            $("#AddCustomerErrorMessege").dialog({
+                                resizable: false,
+                                autoOpen: true,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    OK: function () {
+                                        $(this).dialog("close");
+
+                                    }
+                                }
+                            });
+
+                        }
+                        else {
+                            DisplayErrorDialog("Save Customer Details");
+                        }
+                    },
+                    error: function (results) {
+                        DisplayErrorDialog("Save Customer Details");
+                    }
+                });
+            }
+            else
+                return false;
+        }
+
+    function sendcallmailforCustomCreate() {
+        var empId = '@ViewBag.loginUserId';
+        var CustomerId = window.glob;
+        $.ajax({
+            url: '@Url.Action("CustomerSendMail", "SEM")',
+            type: 'POST',
+            data: { successEmpIDs: empId, CustomerId: CustomerId },
+            datatype: "json",
+            success: function (data) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
+
+                if (data) {
+
+                    $("#CustomerMailDialog").html(data);
+                    $("#CustomerMailDialog").dialog({
+                        resizable: false,
+                        height: 520,
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            window.location.href = 'javascript:window.history.go(-1)';
+                            $(this).dialog('close');
+                        }
+                    });
+
+                    $.validator.unobtrusive.parse($("#MailDetails"));
+                    $('#sendCustomerMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#CustMailDetails').valid()) {
+                            DisplayLoadingDialog();
+                            var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                            $.ajax(
+                                    {
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#CustMailDetails').serialize(),
+
+                                        success: function (serverData) {
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    $("#CustomerMailDialog").dialog('destroy');
+                                                    window.location.href ='javascript:window.history.go(-1)';
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+                                                $("#errorDialog").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    buttons: {
+                                                        OK: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+
+                                            $("#loading").dialog("close");
+                                            $("#loading").dialog("destroy");
+
+                                            $("#errorDialog").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                buttons:
+                                                {
+                                                    OK: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                        }
+                    });
+                }
+            }
+        });   //end Mail
+    }
+
+</script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Customer</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            @* <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.declarationEmployeeId })">
+                    Personal</a>*@
+        </nav>
+    </div>
+    <div class="MainBody CustomerIndexbody">
+        <div class="InnerContainer">
+            <a class="BackLink" href="javascript:window.history.go(-1)">Back</a>
+        </div>
+        @using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "AddCustomDeatil" }))
+        {
+            @Html.HiddenFor(x => x.CutomerIds)
+            <div class="FormContainerBox clearfix AddCustForm mrgnT58">
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            @Html.Label("* Abbreviated Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.AbbreviatedName, new { @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.AbbreviatedName, Model.AbbreviatedName, new { @class = "ClassDisplayLabel" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AbbreviatedName)</p>
+                            @Html.HiddenFor(model => model.AbbreviatedName, new { @id = "abbreviatedName" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            @Html.Label("* Customer Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.CustomerName, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CustomerName)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            @Html.Label("* External Market Segmentation:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ExtMaktSegName, new SelectList(Model.ExtMaktSegList, "ExtMaktSegID", "ExtMaktSeg", "Select"), "Select", new { @class = "ValidationDropDown" })
+                            <p class="qualif-detail" id="ExtMaktSegNameValidation">@Html.ValidationMessageFor(model => model.ExtMaktSegName)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Region:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.RegionName, new SelectList(Model.RegionTypeList, "RegionID", "RegionNames", "Select"), "Select", new { @class = "ValidationDropDown" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Contract Effective Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ContractSigningDate, String.Format("{0:MM/dd/yyyy}", Model.ContractSigningDate), new { @readonly = "readonly" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractSigningDate)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Contract Validity Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ContractValidityDate, String.Format("{0:MM/dd/yyyy}", Model.ContractValidityDate), new { @readonly = "readonly" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ContractValidityDate)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Address:")
+                        </div>
+                        <div class="InputDiv">
+                           @* @Html.TextBoxFor(model => model.Address, new { })*@
+                            @Html.TextAreaFor(model => model.Address, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.Address)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            @Html.Label("* Credit Period (In Days):")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.CreditPeriod, new { maxLength = "8"})
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CreditPeriod)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Country:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.Countrynames, new SelectList(Model.CurrentCountryListSEM, "CountryId", "CountryName", "Select"), "Select", new { @class = "ValidationDropDown" })
+                            <p class="qualif-detail" id="CountryValidation">@Html.ValidationMessageFor(model => model.Countrynames)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Phone Number:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.PhoneNumber, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.PhoneNumber)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("State:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.State, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.State)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Alternate Phone Number:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.AlternatePhoneNumber, new { })
+                             <p class="qualif-detail">@Html.ValidationMessageFor(model => model.AlternatePhoneNumber)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("City:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.City, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.City)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">* </span>@Html.Label("Fax Number:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.FaxNumber, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.FaxNumber)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Zip Code:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.ZipCode, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.ZipCode)</p>
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span> @Html.Label("Email Address:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.EmailAddress, new { })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmailAddress)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+       
+            <div id="renderForEdit" class="ButtonContainer1 clearfix">
+                @*<input type="button" value="Save" class="button mrgnT15 clearL" id="BtnSavecustomerDeatails" />*@
+            </div>
+        }
+        <div id="AddCustomerSuccessMessege" title="Customer Details" style="display: none;">
+            <p>
+                Customer details have been saved.
+            </p>
+        </div>
+        <div id="AddCustomerErrorMessege" title="Customer Details" style="display: none;">
+            <p>
+                Customer details not saved.
+            </p>
+        </div>
+        <div id="AbbreviatedNameExistDialog" title="Customer Details" style="display: none;">
+            <p>
+                Abbreviated Name already exists.
+            </p>
+        </div>
+        <div id="NoRowAddedDialog" title="Customer Details" style="display: none;">
+            <p>
+            </p>
+        </div>
+        <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+        </div>
+        <div id="CustomerAddDeatails" class="mrgnT10" style="display: none">
+            <div id="" class="clearfix">
+                @Html.Partial("_CustomerAddress", Model.CustomerAddress)
+            </div>
+            <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+            </div>
+            <div class="clearfix">
+                @Html.Partial("_CustomerContact", Model.CustomerContact)
+            </div>
+            <div class="commondivider mrgnL30 mrgnR30 mrgnT20">
+            </div>
+            <div class="clearfix">
+                @Html.Partial("_CustomerContract", Model.CustomerContract)
+            </div>
+        </div>
+        <div id="renderForFinalEdit" class="ButtonContainer1 clearfix">
+            <input type="button" value="Save" class="ButtonGray" id="BtnFinalSaveCustomerDetails" />
+        </div>
+    </div>
+    <div id="CustomerMailDialog" style="display: none;">
+        @{Html.RenderPartial("_CustomerCreationEmail", Model.Mail);}
+    </div>
+</section>
+

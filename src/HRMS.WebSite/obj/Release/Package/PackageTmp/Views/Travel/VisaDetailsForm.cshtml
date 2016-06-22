@@ -1,0 +1,136 @@
+﻿@model HRMS.Models.VisaViewModel
+<script src="@Url.Content("../../Scripts/Travel/_TravelVisaDetails.js")" type="text/javascript"></script>
+@{
+    ViewBag.Title = "VisaDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+
+//        SetPageTitle('Visa Travel Details');
+        var deletionIdSelected = 0;
+        // Set up the jquery grid
+        $("#VisaTravelDetailsTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("TravelVisaDetailLoadGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelId: "" },
+            // Specify the column names
+            colNames: ["", "", "", "", "Country", "Visa Type", "From Date", "To Date", "Description", "Additional Information", "Delete"],
+            // Configure the columns
+            colModel: [
+            //             { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'center' },
+              {name: "VisaTravelID", index: "VisaTravelID", hidden: true, width: 50, align: "left" },
+              { name: "ID", index: "ID", hidden: true, width: 50, align: "left" },
+             { name: "CountryID", index: "CountryID", hidden: true, width: 50, align: "left" },
+               { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 50, align: "left" },
+                { name: "CountryName", index: "CountryName", width: "7.25%", align: "left" },
+              { name: "VisaType", index: "VisaType", width: "19.4%", align: "left" },
+               { name: "FromDate", index: "FromDate", width: "11.37%", align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+               { name: "ToDate", index: "ToDate", width: "11.37%", align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+               { name: "Decription", index: "Decription", width: "22.44%", align: "left" },
+               { name: "AdditionalInfo", index: "AdditionalInfo", width: "22.44%", align: "left" },
+
+	        { name: "Delete", index: "Delete", width: "6.25%", align: "center", formatter: function () { return '<img src="../../Content/themes/base/images/delete-icon.png" width="15px" height="15px">'; } }
+            ],
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: true,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#VisaTravelDetailsTablePager"),
+            caption: "Visa Travel Details",
+            onCellSelect: function (rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                // var travelId = rowData['VisaTravelID'];
+                var travelId = rowData['ID'];
+                var visattravelId = rowData['VisaTravelID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                if ('@ViewBag.loginUserId' == '@Model.ID' || '@Model.ID' == 0) {
+                    if (colName['index'] == "Delete") {
+                        DeleteVisatravelDetail(visattravelId, travelId);
+                    }
+                    else
+                        EditTravelVisaDetails(rowData);
+                }
+            }
+        }).navGrid("#VisaTravelDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+        $("#btnAddTravelVisaDetails").click(function () {
+          
+            $(".field-validation-error").empty();
+            $('input').removeClass("input-validation-error");
+
+            $('#addTravelVisaDetailsDialog #VisaTravelID').val('');
+            $("#addTravelVisaDetailsDialog #VisaDetails_CountryID").val('');
+            $("#addTravelVisaDetailsDialog #Visa_VisaTypeID").val('');
+            $('#addTravelVisaDetailsDialog #visaCountry').val('');
+            $('#addTravelVisaDetailsDialog #VisaTypeName').val('');
+            $('#addTravelVisaDetailsDialog #fromdate').val('');
+            $('#addTravelVisaDetailsDialog #todateVisaDetails').val('');
+            $('#addTravelVisaDetailsDialog #Decription').val('');
+            $('#addTravelVisaDetailsDialog #AdditionalInfo').val('');
+
+
+            $('#addTravelVisaDetailsDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                width: 500,
+                resizable: false,
+                title: "Travel Visa Details"
+            });
+            $('#addTravelVisaDetailsDialog').dialog('open');
+        });
+    });
+
+    
+
+
+</script>
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Visa Details</h2>
+    <div class="clearfix blueBorder">
+        <div class="mrgnT10" style="clear: left;">
+            <div id="addTravelVisaDetailsDialog" style="display: none">
+                @Html.Partial("_AddVisaDetails", Model)
+            </div>
+            <input type="button" value="Add Visa Travel Details" id="btnAddTravelVisaDetails"
+                class="button" />
+            <div class="tablestyle3" style="width: 100%;">
+                <table id="VisaTravelDetailsTable" class="scroll">
+                </table>
+            </div>
+            <div id="VisaTravelDetailsTablePager">
+            </div>
+        </div>
+    </div>
+    <div class="mrgnT30">
+        <input type="button" class="button" value="Save and Continue" />
+    </div>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?</p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>

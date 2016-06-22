@@ -1,0 +1,116 @@
+
+2016-03-23 @ 10:48:39  Informational , App start Global.asax App_Start  
+2016-03-23 @ 10:49:03  Informational , App start finished Global.asax App_Start  
+2016-03-23 @ 10:49:06  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): A public action method 'ConfirmationForm' was not found on controller 'HRMS.Controllers.ConfirmationProcessController'.
+   at System.Web.Mvc.Controller.HandleUnknownAction(String actionName)
+   at System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   at System.Web.Mvc.Async.AsyncResultWrapper.End[TResult](IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.Async.AsyncResultWrapper.End(IAsyncResult asyncResult, Object tag)
+   at System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-03-23 @ 10:49:06  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-03-23 @ 11:19:31  Informational , App start Global.asax App_Start  
+2016-03-23 @ 11:20:11  Informational , App start finished Global.asax App_Start  
+
+2016-03-23 @ 12:53:34  Informational , App start Global.asax App_Start  
+2016-03-23 @ 12:53:42  Informational , App start finished Global.asax App_Start  
+
+2016-03-23 @ 14:27:41  Informational , App start Global.asax App_Start  
+2016-03-23 @ 14:27:50  Informational , App start finished Global.asax App_Start  
+2016-03-23 @ 14:30:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-23 @ 14:30:15  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-23 @ 14:30:17  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-23 @ 14:30:17  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-23 @ 14:30:17  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-23 @ 14:31:23  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-23 @ 14:31:23  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-23 @ 14:31:23  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-23 @ 14:31:23  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-23 @ 14:31:23  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-03-23 @ 14:58:24  Informational , App start Global.asax App_Start  
+2016-03-23 @ 14:58:35  Informational , App start finished Global.asax App_Start  
+2016-03-23 @ 14:58:55  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-23 @ 14:58:55  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-23 @ 14:58:56  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-23 @ 14:58:56  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-23 @ 14:58:56  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-03-23 @ 15:01:55  Informational , App start Global.asax App_Start  
+2016-03-23 @ 15:02:02  Informational , App start finished Global.asax App_Start  
+
+2016-03-23 @ 15:02:10  Informational , App start Global.asax App_Start  
+2016-03-23 @ 15:02:13  Informational , App start finished Global.asax App_Start  
+2016-03-23 @ 15:02:13  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/789db70520fe401a9616f8904c4ab4e2' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-03-23 @ 15:02:13  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+
+2016-03-23 @ 17:03:50  Informational , App start Global.asax App_Start  
+2016-03-23 @ 17:03:55  Informational , App start finished Global.asax App_Start  
+
+2016-03-23 @ 17:14:39  Informational , App start Global.asax App_Start  
+2016-03-23 @ 17:14:44  Informational , App start finished Global.asax App_Start  

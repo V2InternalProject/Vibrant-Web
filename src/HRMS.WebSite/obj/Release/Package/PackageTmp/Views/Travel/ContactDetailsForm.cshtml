@@ -1,0 +1,65 @@
+﻿@model HRMS.Models.ContactViewModel
+@{
+    ViewBag.Title = "ContactDetailsForm";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<div class="blueBorder">
+    <h2 class="mrgnT15 title-bgcolor">
+        Contact Details</h2>
+    <div class="clearfix blueBorder">
+        <div class="leftcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Contact Number (India)")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Personal Email Id")<span class="mandatory">*</span>
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Emergency Contact Details")
+                </div>
+            </div>
+        </div>
+
+        <div class="rightcol">
+            <div class="formcol clearfix">
+                <div class="editor-label labelwidth floatL">
+                    @Html.Label("Contact Number (Abroad)")
+                </div>
+                <div class="editor-field fieldwidth floatL">
+                    <input type="text" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mrgnT30" style="clear:left;">
+            <input type="button" value="Add" class="button"/>
+
+            @*grid*@
+            <div class="tablestyle3" style="width: 100%;">
+                <table>
+                </table>
+            </div>
+            <div>
+            </div>
+        </div>
+        
+        
+    </div>
+         <div class="mrgnT30">
+            <input type="button" class="button" value="Save and Continue"/>
+        </div>
+ </div>

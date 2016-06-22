@@ -1,0 +1,69 @@
+﻿<script type="text/javascript">
+     $(document).ready(function() {
+
+
+
+         @*$.ajax({
+             type: "POST",
+             url: '@Url.Action("GetUploadNameFromUploadById", "Account")',
+             data: { empcode: @User.Identity.Name },
+             success: function(data) {
+                 $("#spnDisplayUserName").text(data);
+             },
+             Error: function() {
+                 $("#spnDisplayUserName").text("");
+                 window.errorOccured();
+             }
+         });*@
+     });
+
+
+</script>
+@*Welcome <strong><span id="spnDisplayUserName"></span></strong>!*@
+@*@if (Request.IsAuthenticated)
+    {
+        <text> [ @Html.ActionLink("Log Off", "LogOff", "Account") ]</text>
+    }
+    else
+    {
+        @:[ @Html.ActionLink("Log On", "LogOn", "Account") ]
+    }*@
+@using HRMS.DAL
+@{
+     CommonMethodsDAL dal = new CommonMethodsDAL();
+     EmployeeDAL employeeDAL = new EmployeeDAL();
+     PersonalDetailsDAL personalDAL = new PersonalDetailsDAL();
+     int EmployeeId = employeeDAL.GetEmployeeID(Membership.GetUser().UserName);
+     string DPImagePath = "";
+     string FirstName = "";
+     Tuple<string, string> statusVal;
+     statusVal = personalDAL.GetEmployeeProfileImagePath(EmployeeId);
+     DPImagePath = statusVal.Item1;
+     FirstName = statusVal.Item2;
+
+     if (System.IO.File.Exists(DPImagePath) == false)
+     {
+         DPImagePath = Server.MapPath(Url.Content("/Images/New Design/user.png"));
+     }
+
+}
+@if (Request.IsAuthenticated)
+{
+    <div class="UserLogout">
+        <div class="ImgConBorderL">
+            <a href="@Url.Action("LogOff", "Account")">
+                <img src="../../Images/New Design/logout.png" alt="logout" />
+            </a>
+        </div>
+        <div class="ImgConBorderL">
+            <input type="image" src="@Url.Action("GetFileFromPath", "PersonalDetails", new { filepath = DPImagePath })" id="ImagePreview" width="48px" height="38px" />
+        </div>
+        <span id="spnDisplayUserName" class="floatR mrgnR15">@FirstName</span>
+        @* <p class="floatR mrgnR15">
+            Namrata</p>*@
+    </div>
+}
+else
+{
+    @:[ @Html.ActionLink("Log On", "LogOn", "Account") ]
+}

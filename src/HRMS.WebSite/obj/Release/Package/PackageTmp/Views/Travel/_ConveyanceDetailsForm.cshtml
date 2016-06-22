@@ -1,0 +1,483 @@
+﻿@model HRMS.Models.ConveyanceAdminViewModel
+@{
+    ViewBag.Title = "ConveyanceAdminDetailsForm";
+}
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        selectedRowId = 0;
+        selectedConvayanceType = "";
+        isConveyanceRowInEditMode = false;
+        //SetPageTitle('Local Convayance Details');
+        //var deletionIdSelected = 0;
+
+        stringConveyanceList = @(Html.Raw(Json.Encode(Model.ConavaytypeList)));
+        var c = [];
+        c.push("Select");
+        $.each(stringConveyanceList, function (index,value) {
+            c.push(value.ConvayListName);
+        });
+        // Set up the jquery grid
+        $("#ConveyanceDetailsTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("TravelConveynceLoadGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelId: '@ViewBag.travelEmployeeId' },
+            // Specify the column names
+            colNames: ["", "", "", "", "", "Conveyance Type", "", "City", "Reservation Number", "Travel Details", "From Address", "To Address", "Date of Travel", "To Date", "Insurance Details(Incase of care hire", "Travelling From", "Airport Name", "Hotel Name", ""],
+            // Configure the columns
+            colModel: [
+
+              { name: "LocalConveyanceID", index: "LocalConveyanceID", hidden: true, editable: true, width: 50, align: "left" },
+              { name: "TravelID", index: "TravelID", hidden: true, editable: true, width: 50, align: "left" },
+              { name: "AirporttoHotel", index: "AirporttoHotel", hidden: true, editable: true, width: 50, align: "left" },
+              { name: "ConveyanceType", index: "ConveyanceType", hidden: true, editable: true, width: 50, align: "left" },
+              { name: "City", index: "City", hidden: true, editable: true, width: 50, align: "left" },
+              { name: "ConvayName", index: "ConvayName", editable: true, width: 120, align: "left", edittype: "select", editrules: { required: true, custom: true, custom_func: isConveyanceSelected}, editoptions: { value: c, dataEvents: [{ type: 'change', fn: function(e) {ChangeConveyanceType(e); } }]} },
+              { name: "ConvayNameHidden", index: "ConvayNameHidden", hidden: true, width: 50, align: "left" },
+              { name: "CityName", index: "CityName", hidden: true, editable: true, width: "7.25%", align: "left" },
+              { name: "ReservationNumber", index: "ReservationNumber", editable: true, editrules: { custom: true, custom_func: isReservationNoRequired}, editoptions: { maxlength: 100 }, width: 120, align: "left" },
+              { name: "TravelDetails", index: "TravelDetails", hidden: true, editable: true, width: "19.4%", align: "left" },
+              { name: "FromAddress", index: "FromAddress", width: "19.4%", hidden: true, editable: true, align: "left" },
+              { name: "ToAddress", index: "ToAddress", width: "19.4%", hidden: true, editable: true, align: "left" },
+              { name: "FromDate", index: "FromDate", width: 110, align: "left", editable: true, editrules: { required: true }, sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'},
+                  editoptions:{
+                      readonly:true,
+                      //dataEvents: [{ type: 'change', fn: function(e) {ChangeEndDate(e); } }],
+                      dataInit: function(element) {
+                          $(element).datepicker({
+                              dateFormat: 'mm/dd/yy',
+                              changeMonth: true,
+                              changeYear: true
+                          }).bind("mouseover", function () {
+                              var startDate = new Date($('#TravelStartDate').val());
+                              var endDate = new Date($('#TravelEndDate').val());
+                              var ValidationExtensionStartDate = $('#TravelEndDate').datepicker('getDate');
+                              ValidationExtensionStartDate.setDate(ValidationExtensionStartDate.getDate() + 1);
+                              var ExtensionStartDate = ValidationExtensionStartDate;
+                              var ExtensionEndDate = new Date($('#TravelExtensionEndDate').val());
+                              if (ExtensionEndDate == 'Invalid Date') {
+                                  if (startDate != 'Invalid Date' && endDate != 'Invalid Date') {
+                                      var startDate11 = new Date($('#TravelStartDate').val());
+                                      var endDate11 = new Date($('#TravelEndDate').val());
+                                      $(this).datepicker("option", "minDate", startDate11);
+                                      $(this).datepicker("option", "maxDate", endDate11);
+                                      // $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: startDate11, maxDate: endDate11, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+                                  }
+                                  else {
+                                      $(this).datepicker("option", "yearRange", "-60:+10");
+                                      // $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+                                  }
+                              }
+                              else {
+                                  $(this).datepicker("option", "minDate", ExtensionStartDate);
+                                  $(this).datepicker("option", "maxDate", ExtensionEndDate);
+                                  // $('#conveyancefromdate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: ExtensionStartDate, maxDate: ExtensionEndDate, showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+                              }
+                          });
+                      }
+                  }
+              },
+              { name: "ToDate", index: "ToDate", width: 110, align: "left", editable: true, sorttype: 'date', formatter: 'date', hidden: true, formatoptions: { newformat: 'm/d/Y'} },
+              { name: "InsuranceDetails", index: "InsuranceDetails", editable: true, width: "22.44%", hidden: true, align: "left" },
+              { name: "TravelingFrom", index: "ToAddress", editable: true, edittype: 'select', editoptions:{value: getAllSelectOptions(), dataEvents: [{ type: 'change', fn: function(e) {ChangeTravellingFrom(e); } }]}, editrules: { custom: true, custom_func: isTravellingSelected}, width: 120, align: "left" },
+              { name: "AirportName", index: "ToAddress", editable: true, editrules: { required: true }, editoptions: { maxlength: 100 }, width: 120, align: "left" },
+              { name: "HotelName", index: "ToAddress", editable: true, editrules: { required: true }, editoptions: { maxlength: 100 }, width: 102, align: "left" },
+
+	        { name: "Delete", index: "Delete", width: 25, align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
+            ],
+
+            width: 700,
+            shrinkToFit: true,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#ConveyanceDetailsTablePager"),
+            editurl: '@Url.Action("SaveConvaynanceDetailsInfo", "Travel")',
+            //caption: "Local Conveyance Details",
+            gridComplete: function () {
+                if ('@ViewBag.viewDetailClick' == 'yes') {
+                    $("#ConveyanceDetailsTable").hideCol("Delete");
+                    $("#ConveyanceDetailsTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+                selectedRowId = rowid;
+                var rowData = $(this).getRowData(rowid);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                var viewstatus = '@ViewBag.StageID';
+                var IsloggedUser = '@ViewBag.IsLoggedInUser';
+                if(isConveyanceRowInEditMode == false)
+                {
+                    var travelId = rowData['TravelID'];
+                    var visattravelId = rowData['LocalConveyanceID'];
+                    selectedConvayanceType = rowData['ConvayNameHidden'];
+                    var travellingName = rowData['TravelingFrom'];
+                    if(travellingName == "Airport to Hotel")
+                        $('#AdminLocalCon #SelectedHoteltoAirport').val("True");
+                    else if(travellingName == "Hotel to Airport")
+                        $('#AdminLocalCon #SelectedHoteltoAirport').val("False");
+
+                    $('#AdminLocalCon #ConvayanceListID').val(rowData['ConveyanceType']);
+                
+                    if (colName['index'] == "Delete") {
+                        if (viewstatus == "4" || viewstatus <= 2) {
+                            return false;
+                        }
+                        else
+                            if(rowid != "new_row")
+                                DeleteConveyanceDetail(visattravelId, travelId);
+
+                    }
+                    else
+                        if (viewstatus == "4" || viewstatus <= 2) {
+                            $("#ConveyanceDetailsTablePager_left").css("visibility","hidden");
+                            //return false;
+                        }
+                        else
+                            $("#ConveyanceDetailsTablePager_left").css("visibility","visible");
+                }
+                //EditConvaeyDetails(rowData);
+            }
+
+        }).navGrid("#ConveyanceDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+
+        $("#ConveyanceDetailsTable").jqGrid('inlineNav', "#ConveyanceDetailsTablePager",
+    {
+        edit: true,
+        editicon: "ui-icon-pencil",
+        edittext:"Edit",
+        add: true,
+        addicon: "ui-icon-plus",
+        addtext:"Add",
+        save: true,
+        saveicon: "ui-icon-disk",
+        savetext:"Save",
+        cancle: true,
+        cancelicon: "ui-icon-cancel",
+        canceltext:"Cancel",
+        addParams: {
+            useFormatter: false,
+            addRowParams: {
+                oneditfunc: function (rowid) {
+                    isConveyanceRowInEditMode = true;
+                    $("#" + rowid + "_HotelName").parent().next().find('img').hide();
+                    selectedRowId = rowid;
+                    $("#new_row_ReservationNumber").val("");
+                    $("#new_row_ReservationNumber").addClass("bg-gray");
+                    $("#new_row_ReservationNumber").attr("disabled","disabled");
+                }
+            }
+        },
+        editParams: {
+            keys: false,
+            oneditfunc: function(rowId){
+                isConveyanceRowInEditMode = true;
+                var rowData = $("#ConveyanceDetailsTable").getRowData(rowId);
+                var conveyanceType = rowData["ConvayNameHidden"];
+                if (conveyanceType != "Shuttle") {
+                    $("#new_row_ReservationNumber").val("");
+                    $("#"+rowId+"_ReservationNumber").addClass("bg-gray");
+                    $("#"+rowId+"_ReservationNumber").attr("disabled","disabled");
+                }
+                else
+                {
+                    $("#"+rowId+"_ReservationNumber").removeClass("bg-gray");
+                    $("#"+rowId+"_ReservationNumber").removeAttr("disabled");
+                }
+            },
+            sucessfunc: function (data) {
+            },
+            url: null,
+            extraparam: {
+                ConveyanceTypeId: function () {
+                    return $('#AdminLocalCon #ConvayanceListID').val();
+                },
+                HotelToAirport: function () {
+                    return $('#AdminLocalCon #SelectedHoteltoAirport').val();
+                }
+            },
+            aftersavefunc: function (data, response) {
+                isConveyanceRowInEditMode = false;
+                var result = $.parseJSON(response.responseText);
+                jQuery("#ConveyanceDetailsTable").trigger("reloadGrid");
+                if (result.status == true) {
+                    $("#AddTravelConveyanceDetailsSuccessMessege").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        title: 'Local Conveyance Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if (result.status == false) {
+                    $("#AddTravelConveyanceDetailsErrorMessege").dialog({
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        title: 'Local Conveyance Details',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else if (result.status == "Error") {
+                    DisplayErrorDialog("Local Conveyance Details");
+                }
+                else {
+                    DisplayErrorDialog("Local Conveyance Details");
+                }
+
+            },
+            errorfunc: null,
+            afterrestorefunc: function(){
+                isConveyanceRowInEditMode = false;
+            },
+            restoreAfterError: true,
+            mtype: "POST"
+        }
+    });
+
+        //        $("#btnAddConvdetails").click(function () {
+        //            $(".field-validation-error").empty();
+        //            $('input').removeClass("input-validation-error");
+        //            $('#addConveyanceDetailsDialog #LocalConveyanceID').val('');
+        //            $('#addConveyanceDetailsDialog #ddlConvayanaceType').val('');
+        //            $("#addConveyanceDetailsDialog #ddlCity").val('');
+        //            $("#addConveyanceDetailsDialog #TravelDetails").val('');
+        //            $('#addConveyanceDetailsDialog #InsuranceDetails').val('');
+        //            $('#addConveyanceDetailsDialog #conveyancefromdate').val('');
+        //            $('#addConveyanceDetailsDialog #todate').val('');
+
+        //            $('#addConveyanceDetailsDialog #ReservationNumber').val('');
+        //            $('#addConveyanceDetailsDialog #FromAddress').val('');
+        //            $('#addConveyanceDetailsDialog #ToAddress').val('');
+
+        //            $('#addConveyanceDetailsDialog #AirportName').val('');
+        //            $('#addConveyanceDetailsDialog #HotelName').val('');
+        //            $('#addConveyanceDetailsDialog #txtAirporttoHotel').attr('checked', true);
+        //            $('#addConveyanceDetailsDialog').dialog({
+        //                autoOpen: false,
+        //                modal: true,
+        //                width: 500,
+        //                resizable: false,
+        //                title: "Local Conveyance Details"
+        //            });
+        //            $('#addConveyanceDetailsDialog').dialog('open');
+        //        });
+
+        if ('@ViewBag.IsLoggedInUser' != "True" && '@ViewBag.UserRole' != 'Travel_Admin') {
+            //$("#btnAddConvdetails").hide();
+            $("#ConveyanceDetailsTablePager_left").css("visibility","hidden");
+        }
+        var viewstatus = '@ViewBag.StageID';
+        var IsloggedUser = '@ViewBag.IsLoggedInUser';
+
+        if (viewstatus == "4" || viewstatus <= 2) {
+            //$("#btnAddConvdetails").hide();
+            $("#ConveyanceDetailsTablePager_left").css("visibility","hidden");
+        }
+    });
+
+    function ChangeConveyanceType(e) {
+        var conveyanceName = e.target[e.target.selectedIndex].text;
+        selectedConvayanceType = conveyanceName;
+        var cm = $('#ConveyanceDetailsTable').jqGrid('getColProp','ReservationNumber');
+        if(conveyanceName != "Shuttle"){
+            $("#new_row_ReservationNumber").val("").addClass("bg-gray").attr("disabled","disabled");
+            $("#"+selectedRowId+"_ReservationNumber").val("").addClass("bg-gray").attr("disabled","disabled");
+        }
+        else{
+            $("#new_row_ReservationNumber").removeClass("bg-gray").removeAttr("disabled");
+            $("#"+selectedRowId+"_ReservationNumber").removeClass("bg-gray").removeAttr("disabled");
+        }
+        var ID=0;
+        $.each(stringConveyanceList,function(index, value) {
+            if(value.ConvayListName == conveyanceName)
+            {
+                ID=value.ConvayListID;
+            }
+        });
+        $('#AdminLocalCon #ConvayanceListID').val(ID);
+    }
+
+    function ChangeTravellingFrom(e){
+        var TravellingName = e.target[e.target.selectedIndex].text;
+        var ID="";
+        if(TravellingName == "Airport to Hotel")
+            ID = "True";
+        else if(TravellingName == "Hotel to Airport")
+            ID = "False";
+        $('#AdminLocalCon #SelectedHoteltoAirport').val(ID);
+    }
+
+    function isConveyanceSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#ConveyanceRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+
+    function isReservationNoRequired(value,colname)
+    {
+        if(selectedConvayanceType == "Shuttle" && $.trim(value) == "")
+        {
+            $("#ReservationRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function getAllSelectOptions(){
+        var destination = { '': 'Select', 'True': 'Airport to Hotel', 'False': 'Hotel to Airport' };
+        return destination;
+    }
+
+    function isTravellingSelected(value,colname)
+    {
+        if(value == "")
+        {
+            $("#travellingRequiredDialog").dialog({
+                modal: true,
+                resizable: false,
+                height: 140,
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+
+</script>
+<div id="ConveyanceAdmin">
+    <h4 class="SmallHead">
+        * Local Conveyance Details
+    </h4>
+    <div id="addConveyanceDetailsDialog" style="display: none">
+        @Html.Partial("_AddConveyanceDetails", Model)
+    </div>
+    <div class="tablestyle3">
+        <table id="ConveyanceDetailsTable" class="scroll"></table>
+    </div>
+    <div id="ConveyanceDetailsTablePager">
+    </div>
+    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "AdminLocalCon" }))
+    {
+        @Html.HiddenFor(x => x.ConvayanceListID)
+        @Html.HiddenFor(x => x.SelectedHoteltoAirport)
+    }
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="SaveInfoSucess" style="display: none;">
+    <p>
+        Record has been Saved successfully and Move to next step.
+    </p>
+</div>
+<div id="ErroMsg" style="display: none;">
+    <p>
+        There is Some Error.
+    </p>
+</div>
+<div id="ConveyanceRequiredDialog" title="Local Conveyance Details" style="display: none">
+    <p>
+        Please select value of Conveyance type.
+    </p>
+</div>
+<div id="ReservationRequiredDialog" title="Local Conveyance Details" style="display: none">
+    <p>
+        Please Enter Reservation Number.
+    </p>
+</div>
+<div id="travellingRequiredDialog" title="Local Conveyance Details" style="display: none">
+    <p>
+        Please Enter Travelling From value.
+    </p>
+</div>
+<div id="AddTravelConveyanceDetailsSuccessMessege" title="Local Conveyance details"
+     style="display: none;">
+    <p>
+        Local Conveyance details have been saved.
+    </p>
+</div>
+<div id="AddTravelConveyanceDetailsErrorMessege" style="display: none;">
+    <p>
+        Unable to add record.
+    </p>
+</div>

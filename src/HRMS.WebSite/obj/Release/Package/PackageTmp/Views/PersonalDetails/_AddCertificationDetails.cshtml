@@ -1,0 +1,194 @@
+﻿@model HRMS.Models.CertificationDetailsViewModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="../../Scripts/PersonalDetails/_CertificationDetails.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+
+    $(document).ready(function () {
+        $('#NewCertification_CertificationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: 0, yearRange: "-60:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true });
+    });
+</script>
+@using (Html.BeginForm("AddCertificationDetails", "PersonalDetails", FormMethod.Post, new { id = "frmAddCertificationDetails" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="mrgnT25 NoNegMrgnContainer">
+        @Html.HiddenFor(x => x.NewCertification.EmployeeCertificationID)
+        @Html.HiddenFor(x => x.NewCertification.EmployeeID)
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Certification Name:")
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.DropDownListFor(x => x.NewCertification.CertificationName, new SelectList(Model.CertificationNameList, "CertificationID", "CertificationName"), "Select")
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewCertification.CertificationName)</p>
+                @Html.HiddenFor(x => x.NewCertification.CertificationName, new { @id = "certificationName" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.Label("Certification Number:")
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.NewCertification.CertificationNo)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewCertification.CertificationNo)</p>
+                @Html.HiddenFor(x => x.NewCertification.CertificationNo, new { @id = "certificationNo" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.LabelFor(x => x.NewCertification.Institution):
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.NewCertification.Institution)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewCertification.Institution)</p>
+                @Html.HiddenFor(x => x.NewCertification.Institution, new { @id = "institution" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Certification Date:")
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.NewCertification.CertificationDate, String.Format("{0:dd-MMM-yyyy}", Model.NewCertification.CertificationDate), new { @readonly = "readonly" })
+                <p class="qualif-detail">@Html.ValidationMessageFor(model => model.NewCertification.CertificationDate)</p>
+                @Html.HiddenFor(x => x.NewCertification.CertificationDate, new { @id = "certificationDate" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+                <span class="mandatory">*</span> @Html.Label("Certification Score:")
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.NewCertification.CertificationScore)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewCertification.CertificationScore)</p>
+                @Html.HiddenFor(x => x.NewCertification.CertificationScore, new { @id = "certificationScore" })
+            </div>
+        </div>
+        <div class="formcol clearfix">
+            <div class="editor-label labelwidth floatL">
+               <span class="mandatory">*</span> @Html.Label("Certification Grade:")
+            </div>
+            <div class="editor-field fieldwidth floatL ">
+                @Html.TextBoxFor(x => x.NewCertification.CertificationGrade)
+                <p class="qualif-detail">@Html.ValidationMessageFor(x => x.NewCertification.CertificationGrade)</p>
+                @Html.HiddenFor(x => x.NewCertification.CertificationGrade, new { @id = "certificationGrade" })
+            </div>
+        </div>
+        <div class="clear popup_button ">
+            <div class="floatR">
+                <input id="save" type="submit" value="Save" class="button mrgnR5" />
+                <input id="cancel" type="button" value="Reset" onclick=" emptyDialog()" class="button " />
+            </div>
+        </div>
+    </div>
+}
+@*<div id="AddCertificationSuccessMessege" title="Certification details" style="display: none;">
+    <p>
+        Certification details have been saved.
+    </p>
+</div>
+<div id="AddCertificationErrorMessege" style="display: none;">
+    <p>
+        Unable to add record
+    </p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted.
+    </p>
+</div>
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the records?</p>
+</div>
+<div id="mailError" title="Mail Error" style="display: none">
+    <p>
+        Mail Sending Failed.</p>
+</div>
+<div id="failedRecipient" title="Sending Failed" style="display: none">
+    <center><span>Could not send mail to </span><span id="span_failedRecipient"></span></center>
+</div>*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        var postUrl = '@Url.Action("SaveCertificationDetails", "PersonalDetails")';
+        $('#frmAddCertificationDetails').submit(function () {
+            if ($(this).valid()) {
+                DisplayLoadingDialog(); // Checked global.js
+                $.ajax({
+                    url: postUrl,
+                    type: 'POST',
+                    data: $('#frmAddCertificationDetails').serialize(),
+                    success: function (results) {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+
+                        if (results.status == true) {
+                            $('#certificationDialog').dialog("close");
+                            $($('#btnCertSendEmail')).removeAttr('disabled');
+                            jQuery("#certificationTable").trigger("reloadGrid");
+                            $("#AddCertificationSuccessMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        emptyDialog();
+                                        if ('@Model.UserRole' != 'HR Admin') {
+                                            DisplayLoadingDialog(); // Checked global.js
+
+                                            //CallforSendMail('@ViewBag.CertificationEmployeeID');
+                                        }
+                                        $("#loading").dialog("close");
+                                        $("#loading").dialog("destroy");
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == "Error") {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $('#certificationDialog').dialog("close");
+                            $("#errorDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Certification Details',
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        jQuery("#certificationTable").trigger("reloadGrid");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else {
+                            $("#loading").dialog("close");
+                            $("#loading").dialog("destroy");
+                            $("#AddCertificationErrorMessege").dialog({
+                                resizable: false,
+                                height: 140,
+                                width: 300,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    } //end success
+                });
+            }
+            return false;
+        });
+    });
+</script>

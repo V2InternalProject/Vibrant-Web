@@ -1,0 +1,88 @@
+﻿@model HRMS.Models.AppraisalStatusReport
+<div>
+    <div class="clearfix">
+       <div class="leftcol">
+            <div class="formcol clearfix mrgnT15">
+                <div class="labelwidth floatL editor-label">
+                    @Html.Label("Appraisal Year:")
+                </div>
+                <div class="fieldwidth floatL editor-field">
+                  @Html.DropDownListFor(model => model.InitiateIndividualDevelopmentYearID, new SelectList(Model.InitiateIndividualDevelopmentYear, "AppraisalYearID", "AppraisalYearDesc"), "Select")
+                </div>
+            </div>
+        </div>
+
+        <div class="rightcol">
+            <div class="formcol clearfix mrgnT15">
+                <div class="floatL editor-field fieldwidth">
+                    @Html.TextBoxFor(model => model.IndividualDevelopmentInitiatedOn, String.Format("{0:MM/dd/yyyy}", Model.IndividualDevelopmentInitiatedOn))
+                </div>
+                <div class="floatR editor-field">
+                    <input type="button" value="Initiate" class="button" onclick="initiateIndividualDevelopment()" />
+                </div>
+            </div>
+        </div>
+     </div>
+
+        <div class="clearL mrgnT15 smalltablestyle3 NoTitleGridsContainer">
+
+             <table id="InitiateIndividualDevelopmentRecords" class="scroll">
+            </table>
+            <div id="initiateDevelopTablePager"></div>
+        </div>
+</div>
+
+<script  type="text/javascript">
+    $(document).ready(function () {
+
+        $('#IndividualDevelopmentInitiatedOn').val('');
+        $('#IndividualDevelopmentInitiatedOn').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: 0, yearRange: "0:+10", showOn: "both", buttonImage: "../../Content/themes/base/images/calendar.gif", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
+
+        $("#InitiateIndividualDevelopmentRecords").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("InitiateIndividualDevelopmentLoadGrid", "ConfigurationAppraisal")',
+            datatype: "json",
+            mtype: "POST",
+
+            // Specify the column names
+            colNames: ["Appraisal Year", "Initiated On", "Initiated By"],
+
+            // Configure the columns
+            colModel: [
+                { name: "InitiatedYear", index: "InitiatedYear", width: 50, align: "left" },
+                { name: "InitiatedOn", index: "InitiatedOn", width: 70, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y'} },
+                { name: "AppraisalInitiatedBy", index: "AppraisalInitiatedBy", width: 170, align: "left" }
+            ],
+
+            width: 800,
+            height: 200,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#initiateDevelopTablePager"),
+            //caption: "Records",
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#InitiateIndividualDevelopmentRecords").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_InitiateIndividualDevelopmentRecords').hide();
+                }
+                else {
+                    $('#gbox_InitiateIndividualDevelopmentRecords').show();
+                    if (count > 20) {
+
+                        $('#initiateDevelopTablePager').show();
+                    }
+                    else {
+                        $('#initiateDevelopTablePager').hide();
+                    }
+                }
+            }
+        }).navGrid("#initiateDevelopTablePager", { search: false, refresh: false, add: false, edit: false, del: false }, {}, {}, {});
+    });
+</script>

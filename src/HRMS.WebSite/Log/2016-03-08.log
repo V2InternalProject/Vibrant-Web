@@ -1,0 +1,1128 @@
+
+2016-03-08 @ 11:26:56  Informational , App start Global.asax App_Start  
+2016-03-08 @ 11:27:04  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 11:40:28  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 11:40:28  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 11:40:47  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 11:40:47  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 11:40:47  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 12:15:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 12:15:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 12:15:39  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 12:15:39  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 12:15:39  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 12:24:00  Informational , App start Global.asax App_Start  
+2016-03-08 @ 12:24:13  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 12:25:33  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 12:25:33  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 12:25:33  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 12:25:33  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 12:25:34  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 12:40:00  Informational , App start Global.asax App_Start  
+2016-03-08 @ 12:40:13  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 12:40:57  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 12:40:57  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 12:40:58  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 12:40:58  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 12:40:58  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 12:47:43  Informational , App start Global.asax App_Start  
+2016-03-08 @ 12:47:48  Informational , App start finished Global.asax App_Start  
+
+2016-03-08 @ 12:47:58  Informational , App start Global.asax App_Start  
+2016-03-08 @ 12:48:07  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 12:48:07  FATAL ERROR   , App Error Global.asax App_Error  System.Web.HttpException (0x80004005): The controller for path '/__browserLink/requestData/2232de15c0234a529a18bcdb09ff60eb' was not found or does not implement IController.
+   at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
+   at System.Web.Mvc.DefaultControllerFactory.CreateController(RequestContext requestContext, String controllerName)
+   at System.Web.Mvc.MvcHandler.ProcessRequestInit(HttpContextBase httpContext, IController& controller, IControllerFactory& factory)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContextBase httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.BeginProcessRequest(HttpContext httpContext, AsyncCallback callback, Object state)
+   at System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext context, AsyncCallback cb, Object extraData)
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2016-03-08 @ 12:48:07  FATAL ERROR   , App Error Global.asax App_Error  ---------Error Block End---------
+2016-03-08 @ 12:54:25  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 12:54:25  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 12:54:25  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 12:54:25  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 12:54:25  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 13:03:15  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:03:15  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:03:15  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:03:15  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:03:15  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 13:03:27  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:03:27  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:03:27  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:03:27  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:03:27  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 13:03:49  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:03:49  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:03:49  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:03:49  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:03:49  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 13:04:19  Informational , App start Global.asax App_Start  
+2016-03-08 @ 13:04:22  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 13:05:03  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:05:03  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:05:03  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:05:03  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:05:03  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 13:31:44  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:31:44  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:31:44  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:31:44  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:31:44  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 13:52:22  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 13:52:22  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 13:52:30  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 13:52:30  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 13:52:30  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 14:07:54  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 14:07:54  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 14:07:54  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 14:07:54  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 14:07:54  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 14:16:36  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 14:16:36  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 14:16:37  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 14:16:37  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 14:16:37  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 15:38:46  Informational , App start Global.asax App_Start  
+2016-03-08 @ 15:39:00  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 15:40:49  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 15:40:49  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 15:40:49  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 15:40:49  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 15:40:50  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 15:52:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 15:52:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 15:52:38  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 15:52:38  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 15:52:38  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+2016-03-08 @ 15:55:11  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 15:55:11  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 15:55:11  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 15:55:11  Informational ,  signinsignout.aspx.cs   responsedata: <!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+	<meta name="id" content="polLoginRedirect" >
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Policy Login Redirect</title>
+	<script type="text/JavaScript" src="jquery-5.0.0.0o-3287920670.js"></script>
+	<script type="text/javascript">
+	<!--
+	var strPolicyRequir = "The policy set up by your network administrator requires that ";
+	var strAuthYourself = "you authenticate yourself with this firewall before you can have access.";
+	var strAuthYourselfInDomain = "only authenticated users are allowed access through this firewall. You do not appear to be logged into the domain, and so must authenticate yourself before you can have access.";
+	var strAuthIntro = "To authenticate yourself click on the following link and enter your user name and password to log in to the firewall.";
+	var strClickLogin = "Click here to log in";
+	// -->
+	</script>
+	<script type="text/JavaScript" src="polLoginRedirect.js"></script>
+	<link rel=stylesheet href="swl_login-5.0o-586369509.css" TYPE="text/css">
+</head>
+<body class="popup_error_bg">
+	<div id="popup_branding_bar"><img src="clear.gif" class="logo_popup" width="280" height="39" alt=""></div>
+	<div align="center">
+		<br>
+		<div id="popup_error_box">
+			<div id="popup_box_header">
+				<div id="alert_icon"></div>
+				<div id="popup_box_header_text">
+					Authentication Required
+				</div>
+			</div>
+			<div id="popup_box_text">
+				<br><br>
+				<a href="https://10.10.10.1/auth.html"></a>
+				<br><br>
+			</div>
+		</div>
+		<div id="popup_box_reflection"></div>
+	</div>
+</body>
+</html>
+
+2016-03-08 @ 15:55:11  FATAL ERROR   , 'doctype' is an unexpected token. The expected token is 'DOCTYPE'. Line 1, position 3. SignInSignOut.cs Page_Load     at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args)
+   at System.Xml.XmlTextReaderImpl.ThrowUnexpectedToken(String expectedToken1, String expectedToken2)
+   at System.Xml.XmlTextReaderImpl.ParseDoctypeDecl()
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlTextReaderImpl.Read()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at HRMS.Orbitweb.SignInSignOut.FilterData(String Data) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 206
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 138
+
+2016-03-08 @ 17:13:57  Informational , App start Global.asax App_Start  
+2016-03-08 @ 17:14:07  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 17:16:08  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:16:08  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:16:08  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:16:08  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:16:09  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-08 @ 17:18:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:18:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:18:39  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:18:39  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:18:39  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-03-08 @ 17:19:00  Informational , App start Global.asax App_Start  
+2016-03-08 @ 17:19:02  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 17:19:18  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:19:18  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:19:18  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:19:18  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:19:18  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-08 @ 17:23:32  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:23:32  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:23:32  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:23:32  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:23:32  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-08 @ 17:24:13  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:24:13  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:24:14  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:24:14  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:24:14  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-08 @ 17:31:44  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:31:44  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:31:45  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:31:45  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:31:45  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+
+2016-03-08 @ 17:56:41  Informational , App start Global.asax App_Start  
+2016-03-08 @ 17:56:44  Informational , App start finished Global.asax App_Start  
+2016-03-08 @ 17:57:38  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 17:57:38  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 17:57:39  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 17:57:39  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 17:57:39  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155
+2016-03-08 @ 19:21:09  Informational ,  SignInSignOut.aspx.cs   User IP: ::1
+2016-03-08 @ 19:21:09  Informational ,  signinsignout.aspx.cs   dynamic url: http://api.ipinfodb.com/v3/ip-country/?key=989f1374dc528a8ea159064430a19d2e0756c05b46f6943a75b03257ce8b88a2&ip=::1&format=xml
+2016-03-08 @ 19:21:09  Informational ,  signinsignout.aspx.cs   response: System.Net.HttpWebResponse
+2016-03-08 @ 19:21:09  Informational ,  signinsignout.aspx.cs   responsedata: <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<statusCode>OK</statusCode>
+	<statusMessage></statusMessage>
+	<ipAddress>::1</ipAddress>
+	<countryCode>-</countryCode>
+	<countryName>-</countryName>
+</Response>
+2016-03-08 @ 19:21:10  FATAL ERROR   , Thread was being aborted. SignInSignOut.cs Page_Load     at System.Threading.Thread.AbortInternal()
+   at System.Threading.Thread.Abort(Object stateInfo)
+   at System.Web.HttpResponse.AbortCurrentThread()
+   at System.Web.HttpResponse.End()
+   at System.Web.HttpResponse.Redirect(String url, Boolean endResponse, Boolean permanent)
+   at System.Web.HttpResponse.Redirect(String url)
+   at HRMS.Orbitweb.SignInSignOut.Page_Load(Object sender, EventArgs e) in d:\VB\src\HRMS.WebSite\Orbitweb\SignInSignOut.aspx.cs:line 155

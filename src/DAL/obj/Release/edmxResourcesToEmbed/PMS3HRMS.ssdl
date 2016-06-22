@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PMS3_HRMSModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="PMS3_HRMSModelStoreContainer">
+    <EntitySet Name="Project_Resource_Mapping" EntityType="PMS3_HRMSModel.Store.Project_Resource_Mapping" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ProjectMaster" EntityType="PMS3_HRMSModel.Store.ProjectMaster" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Project_Resource_Mapping_ProjectMaster" Association="PMS3_HRMSModel.Store.FK_Project_Resource_Mapping_ProjectMaster">
+      <End Role="ProjectMaster" EntitySet="ProjectMaster" />
+      <End Role="Project_Resource_Mapping" EntitySet="Project_Resource_Mapping" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProjectMaster_ProjectMaster" Association="PMS3_HRMSModel.Store.FK_ProjectMaster_ProjectMaster">
+      <End Role="ProjectMaster" EntitySet="ProjectMaster" />
+      <End Role="ProjectMaster1" EntitySet="ProjectMaster" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Project_Resource_Mapping">
+    <Key>
+      <PropertyRef Name="Project_ResourceID" />
+    </Key>
+    <Property Name="Project_ResourceID" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="ProjectID" Type="bigint" />
+    <Property Name="UserID" Type="bigint" />
+    <Property Name="DesignationID" Type="bigint" />
+    <Property Name="StartDate" Type="datetime" />
+    <Property Name="EndDate" Type="datetime" />
+    <Property Name="IsConnected" Type="int" />
+    <Property Name="ResourceTypeID" Type="bigint" />
+    <Property Name="AllocatedPercentage" Type="decimal" Scale="4" />
+    <Property Name="Comments" Type="nvarchar" MaxLength="1500" />
+    <Property Name="RoleID" Type="int" />
+  </EntityType>
+  <EntityType Name="ProjectMaster">
+    <Key>
+      <PropertyRef Name="ProjectID" />
+    </Key>
+    <Property Name="ProjectID" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="ProcessID" Type="bigint" />
+    <Property Name="ProjectName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="ProjectCode" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="IsProjectFixed" Type="bit" />
+    <Property Name="ProjectStartDate" Type="datetime" />
+    <Property Name="ProjectEndDate" Type="datetime" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="DeliveryUnitID" Type="int" />
+    <Property Name="DeliveryTeamID" Type="int" />
+    <Property Name="ProjectHours" Type="float" />
+  </EntityType>
+  <Association Name="FK_Project_Resource_Mapping_ProjectMaster">
+    <End Role="ProjectMaster" Type="PMS3_HRMSModel.Store.ProjectMaster" Multiplicity="0..1" />
+    <End Role="Project_Resource_Mapping" Type="PMS3_HRMSModel.Store.Project_Resource_Mapping" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProjectMaster">
+        <PropertyRef Name="ProjectID" />
+      </Principal>
+      <Dependent Role="Project_Resource_Mapping">
+        <PropertyRef Name="ProjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProjectMaster_ProjectMaster">
+    <End Role="ProjectMaster" Type="PMS3_HRMSModel.Store.ProjectMaster" Multiplicity="1" />
+    <End Role="ProjectMaster1" Type="PMS3_HRMSModel.Store.ProjectMaster" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="ProjectMaster">
+        <PropertyRef Name="ProjectID" />
+      </Principal>
+      <Dependent Role="ProjectMaster1">
+        <PropertyRef Name="ProjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

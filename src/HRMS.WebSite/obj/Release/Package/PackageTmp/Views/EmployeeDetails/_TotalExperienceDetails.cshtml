@@ -1,0 +1,136 @@
+﻿@model HRMS.Models.EmployeeExperienceDetails
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var HRAdmin = '@HRMS.Models.UserRoles.HRAdmin';
+    var userRole = '@Model.UserRole';
+    var empStatusId = '@Model.EmpStatusMasterID';
+    var totalExperinceEmployeeId = '@Model.EmployeeId';
+    var updateTotalDetailUrl = '@Url.Action("UpdateTotalExperienceDetails", "EmployeeDetails")';
+
+    $(document).ready(function () {
+
+        if (window.userRole != HRAdmin) {
+            $("#frmAddTotalEmployeeExperienceDetails :input").attr("disabled", true);
+            $('#frmAddTotalEmployeeExperienceDetails #btnSaveEmployeeExperienceDetails').hide();
+            $('#frmAddTotalEmployeeExperienceDetails #btnCancelEmployeeExperienceDetails').hide();
+        }
+
+        if (empStatusId == 2) {
+            $("#frmAddTotalEmployeeExperienceDetails").find('input').attr("disabled", true);
+            $('#frmAddTotalEmployeeExperienceDetails #btnSaveEmployeeExperienceDetails').hide();
+            $('#frmAddTotalEmployeeExperienceDetails #btnCancelEmployeeExperienceDetails').hide();
+        }
+
+        $('.ClassDisplayLabel').hide();
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative','visibility':'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+        DisplayLabel();
+    });
+
+    function DisplayLabel() {
+        $.each($(".ClassDisabledFields"), function (l, val) {
+            if ($(val).is(':disabled')) {
+                $(this).hide().next().show();
+            }
+        });
+    }
+</script>
+<script src="@Url.Content("../../Scripts/EmployeeDetails/ExperienceDetails/TotalExperienceDetails.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm("UpdateTotalExperienceDetails", "EmployeeDetails", FormMethod.Post, new { id = "frmAddTotalEmployeeExperienceDetails" }))
+{
+    @Html.HiddenFor(m => m.EmployeeId)
+    @*<h4 class="mrgnT15">
+        Experience Details</h4>*@
+    @*<fieldset>*@
+    @*Start Of passport Details div*@
+
+    <table cellpadding="0" cellspacing="0" border="0" width="96%" class="TableJqgrid ExperienceTable">
+        <thead>
+            <tr>
+                <th class="tableHeaders" width="19%"></th>
+                <th class="tableHeaders" width="18%">Years</th>
+                <th class="tableHeaders" width="62%">Months</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="tableRows">
+                <td>
+                    V2 Experience
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.V2ExperienceYears, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.V2ExperienceYears, Model.V2ExperienceYears.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.V2ExperienceMonths, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.V2ExperienceMonths, Model.V2ExperienceMonths.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+            </tr>
+            <tr class="tableRows">
+                <td>
+                    Past Experience
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.PastExperienceYears, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.PastExperienceYears, Model.PastExperienceYears.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.PastExperienceMonths, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.PastExperienceMonths, Model.PastExperienceMonths.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+            </tr>
+            <tr class="tableRows">
+                <td>
+                    Total Experience
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.TotalExperienceYears, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.TotalExperienceYears, Model.TotalExperienceYears.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(x => x.TotalExperienceMonths, new { disabled = "disabled", @readonly = "readonly", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.TotalExperienceMonths, Model.TotalExperienceMonths.ToString(), new { @class = "ClassDisplayLabel" })
+                </td>
+            </tr>
+            <tr class="tableRows">
+                <td>
+                    Relevant Experience
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.RelevantExperienceYears, new { @id = "RelevantExperienceYears", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.RelevantExperienceYears, Model.RelevantExperienceYears.ToString(), new { @class = "ClassDisplayLabel" })
+                         @Html.ValidationMessageFor(m => m.RelevantExperienceYears)
+                    @Html.HiddenFor(m => m.RelevantExperienceYears, new { @id = "hdnRelevantExperienceYears" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.RelevantExperienceMonths, new { @id = "RelevantExperienceMonths", @class = "bg-gray ClassDisabledFields" })
+                    @Html.LabelFor(x => x.RelevantExperienceMonths, Model.RelevantExperienceMonths.ToString(), new { @class = "ClassDisplayLabel" })
+                    @Html.ValidationMessageFor(m => m.RelevantExperienceMonths)
+                    @Html.HiddenFor(m => m.RelevantExperienceMonths, new { @id = "hdnRelevantExperienceMonths" })
+                </td>
+            </tr>
+            <tr class="FooterRow">
+                <td colspan="3"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    @*</fieldset>*@
+    <div class="ButtonContainer1">
+        <input type="submit" value="Save" id="btnSaveEmployeeExperienceDetails" class="ButtonGray mrgnR11" />
+        @*<input type="button" value="Reset" id="btnCancelEmployeeExperienceDetails" class="ButtonGray" onclick="cancel()" />*@
+    </div>
+<div class="commondivider mrgnL30 mrgnR30"></div>
+    <div id="AddTotalExperienceDetailsSuccessErrorDialog" style="display: none">
+    </div>
+
+}

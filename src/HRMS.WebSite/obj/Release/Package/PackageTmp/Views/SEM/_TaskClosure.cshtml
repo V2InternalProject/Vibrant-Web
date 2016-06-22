@@ -1,0 +1,408 @@
+﻿@model HRMS.Models.ManageMilestonesModel
+@{
+    ViewBag.Title = "Task Closure";
+}
+<div>
+    @using (Html.BeginForm("", "", new { @id = "frmTaskClosure" }))
+    {
+        @Html.HiddenFor(x => x.TaskClosureComplitionList)
+        @Html.HiddenFor(x => x.TaskClosureVoidList)
+                          
+        <br />
+        <p>
+            Kindly close or void the below tasks to close the Milestone.</p>
+        <br />
+        <div id="TaskClosureCompletion">
+            <div class="floatR">
+                <input type="button" class="button hide" id="Complitionsave" value="Close Tasks for Completion" onclick="Save(1)" />
+                <input type="button" class="button hide" id="selectAll" value="Select All" onclick="ComplitionSelectAll()" />
+                <input type="button" class="button hide" id="Deselect All" value="Clear All" onclick="ComplitionDeselectAll()" />
+            </div>
+            <h3>
+                Tasks for Completion</h3>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_Emp" class="mrgnT10">
+                <thead>
+                    <tr>
+                        <td>
+                            <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders tablescrollhead"
+                                width="99%">
+                                <tr>
+                                    <th width="23%" class="bluebgtable1">
+                                        Task Name
+                                    </th>
+                                    <th class="bluebgtable1" width="24%">
+                                        Resource Name
+                                    </th>
+                                    <th width="6%" class="bluebgtable1">
+                                        Start Date
+                                    </th>
+                                    <th class="bluebgtable1" width="6%">
+                                        End Date
+                                    </th>
+                                    <th width="10%" class="bluebgtable1">
+                                        Actual Start Date
+                                    </th>
+                                    <th width="7%" class="bluebgtable1">
+                                        Work (hrs)
+                                    </th>
+                                    <th width="10%" class="bluebgtable1">
+                                        Actual Work (hrs)
+                                    </th>
+                                    <th width="11%" class="bluebgtable1">
+                                        Actual % Complete
+                                    </th>
+                                    <th width="3%" class="bluebgtable1">
+                                        Select
+                                    </th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>
+                        <div style="width: 100%; height: 200px; overflow: auto; border-bottom: solid 1px #60B7DD;">
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%" class="TablesBlueHeaders tablescrollbody">
+                                @foreach (var item in Model.TaskClosureComplitionList)
+                                {  
+                  
+                                    <tr>
+                                        <td width="23%">
+                                            @Html.DisplayFor(modelItem => item.TaskName, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="24%">
+                                            @Html.DisplayFor(modelItem => item.ResponsiblePerson, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="6%" align="center">
+                                            @Html.DisplayFor(modelItem => item.StartDate, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="6%" align="center">
+                                            @Html.DisplayFor(modelItem => item.EndDate, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="10%" align="center">
+                                            @Html.DisplayFor(modelItem => item.ActualStartDate, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="7%" align="center">
+                                            @Html.DisplayFor(modelItem => item.PlannedWork, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="10%" align="center">
+                                            @Html.DisplayFor(modelItem => item.ActualWork, new { @readonly = "readonly" })
+                                        </td>
+                                        <td width="11%" align="center">
+                                            @Html.DisplayFor(modelItem => item.ActualPercentComplete, new { @readonly = "readonly" })
+                                        </td>
+                                        @*<td width="3%" align="center">
+                                            <input type="checkbox" />
+                                        </td>*@
+                                        <td id="Delete" align="center" class="confiremation-td">
+                                            @Html.CheckBoxFor(x => item.TaskClosureComplitionChecked, new { @class = "complitionSelectAll", @data = item.TaskID })
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</div>
+<div class="clearfix mrgnT15">
+    <div class="floatR">
+     <input type="button" class="button hide" id="save" value="Close Tasks to be voided" onclick="Save(2)" />
+        <input type="button" class="button hide" id="VoidSelectAll" value="Select All" onclick="VoidSelectAll()" />
+        <input type="button" class="button hide" id="VoidDeselect All" value="Clear All" onclick="VoidDeselectAll()" />   
+    </div>
+    <h3>
+        Tasks to be voided</h3>
+</div>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" id="tbl_Emp" class="mrgnT10">
+    <tr>
+        <td>
+            <table cellspacing="0" cellpadding="0" border="0" class="TablesBlueHeaders tablescrollhead"
+                width="99%">
+                <tr>
+                    <th width="23%" class="bluebgtable1">
+                        Task Name
+                    </th>
+                    <th class="bluebgtable1" width="24%">
+                        Resource Name
+                    </th>
+                    <th width="6%" class="bluebgtable1">
+                        Start Date
+                    </th>
+                    <th class="bluebgtable1" width="6%">
+                        End Date
+                    </th>
+                    <th width="10%" class="bluebgtable1">
+                        Actual Start Date
+                    </th>
+                    <th width="7%" class="bluebgtable1">
+                        Work (hrs)
+                    </th>
+                    <th width="10%" class="bluebgtable1">
+                        Actual Work (hrs)
+                    </th>
+                    <th width="11%" class="bluebgtable1">
+                        Actual % Complete
+                    </th>
+                    <th width="3%" class="bluebgtable1">
+                        Select
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width: 100%; height: 200px; overflow: auto; border-bottom: solid 1px #60B7DD;">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" class="TablesBlueHeaders tablescrollbody">
+                    @foreach (var item in Model.TaskClosureVoidList)
+                    {  
+                  
+                        <tr>
+                            <td width="23%">
+                                @Html.DisplayFor(modelItem => item.TaskName, new { @readonly = "readonly" })
+                            </td>
+                            <td width="24%">
+                                @Html.DisplayFor(modelItem => item.ResponsiblePerson, new { @readonly = "readonly" })
+                            </td>
+                            <td width="6%" align="center">
+                                @Html.DisplayFor(modelItem => item.StartDate, new { @readonly = "readonly" })
+                            </td>
+                            <td width="6%" align="center">
+                                @Html.DisplayFor(modelItem => item.EndDate, new { @readonly = "readonly" })
+                            </td>
+                            <td width="10%" align="center">
+                                @Html.DisplayFor(modelItem => item.ActualStartDate, new { @readonly = "readonly" })
+                            </td>
+                            <td width="7%" align="center">
+                                @Html.DisplayFor(modelItem => item.PlannedWork, new { @readonly = "readonly" })
+                            </td>
+                            <td width="10%" align="center">
+                                @Html.DisplayFor(modelItem => item.ActualWork, new { @readonly = "readonly" })
+                            </td>
+                            <td width="11%" align="center">
+                                @Html.DisplayFor(modelItem => item.ActualPercentComplete, new { @readonly = "readonly" })
+                            </td>
+                            <td width="3%" align="center">
+                                @Html.CheckBoxFor(x => item.TaskClosureVoidChecked, new { @class = "voidSelectAll", @data = item.TaskID })
+                                @*@Html.CheckBoxFor(x => item.TaskClosureComplitionChecked, new { @class = "complitionSelectAll", @data = item.TaskID })*@
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="NoItemSelected" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+        Please select Atleast one Task record.
+    </center>
+</div>
+<div id="SaveConfirm" style="display: none" title="Record Delete">
+    <center class="LoadingWrap">
+        Are you sure, you want to close selected Task(s) ?
+    </center>
+</div>
+<div id="SaveSuccess" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+        The selected Task(s) is successfully closed.
+    </center>
+</div>
+<div id="MilestoneClosedSuccess" style="display: none" title="Record Deleted">
+    <center class="LoadingWrap">
+        selected Task(s) and Milestone has been successfully closed.
+    </center>
+</div>
+@*<div id="ErrorCloseTask" style="display: none" title="Error">
+            <center class="LoadingWrap">
+                The Parameter/s: <b></b> can't be delete as some designations are associated with it.
+            </center>
+        </div>*@
+<script src="@Url.Content("~/Scripts/Common.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    ProjectID = '@Model.ProjectID';
+    MilestoneID = '@Model.MilestoneID';
+
+    function ComplitionSelectAll() {
+        $(".complitionSelectAll").prop("checked", "checked");
+    }
+
+    function ComplitionDeselectAll() {
+        $(".complitionSelectAll").prop("checked", false);
+    }
+
+
+
+    function VoidSelectAll() {
+        $(".voidSelectAll").prop("checked", "checked");
+    }
+
+    function VoidDeselectAll() {
+        $(".voidSelectAll").prop("checked", false);
+    }
+
+
+    //$('#btnSelectAll').on('click', function () {
+    //    SelectedTaskForComplitionId = [];
+    //    $(".chkForDelete").each(function (i, val) {
+    //        $(".chkForDelete:visible").attr("checked", true);
+    //        SelectedTaskForComplitionId.push($(this).prop("id"));
+    //    });
+    //});
+
+
+    function Save(Flag) {
+        var collection = [];
+        if (Flag == 1) {            
+            $.each($('input[class=complitionSelectAll]:checked'), function (i, val) {          
+                collection.push($(val).attr("data"));
+            });
+        }
+        else if (Flag == 2) {
+            $.each($('input[class=voidSelectAll]:checked'), function (i, val) {
+                collection.push($(val).attr("data"));
+            });
+        }
+
+        if (collection.length == 0) {
+            $("#NoItemSelected").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        } else {
+            $("#SaveConfirm").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        //DisplayLoadingDialog();
+                        $.ajax({
+                            url: '@Url.Action("CloseTask", "SEM")',
+                            data: JSON.stringify({ Flag: Flag, ProjectID: ProjectID, MilestoneID: MilestoneID, TaskID: collection }),
+                            type: 'post',
+                            datatype: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (results) {
+                                //$("#loading").dialog("close");
+                                // $("#loading").dialog("destroy");                          
+                                $("#SaveConfirm").dialog("close");
+
+                                if (results.status == true) {
+                                    if (results.IsMilestoneClosed == true) {
+                                        $("#SaveConfirm").dialog("close");
+                                        $("#SaveConfirm").dialog("distroy");
+
+                                        $("#MilestoneClosedSuccess").dialog({
+                                            closeOnEscape: false,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 300,
+                                            modal: true,
+                                            dialogClass: 'noclose',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                    location.reload();
+                                                    $(".complitionSelectAll").prop("checked", false);
+                                                    $(".voidSelectAll").prop("checked", false); 
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        $("#SaveConfirm").dialog("close");
+                                        $("#SaveConfirm").dialog("distroy");
+                                        $("#SaveSuccess").dialog({
+                                            closeOnEscape: false,
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 300,
+                                            modal: true,
+                                            dialogClass: 'noclose',
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                    //location.reload();
+                                                    $("#SaveConfirm").dialog("close");
+                                                    $(".complitionSelectAll").prop("checked", false);
+                                                    TaskClosureListShow(ProjectID, MilestoneID)
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                                else if (results.status == false) {
+                                    //                                    if (results.ParamterwithDesignation.length > 0) {
+                                    //                                        var parameterName = "";
+                                    //                                        $.each($(results.ParamterwithDesignation), function (i, val) {
+                                    //                                            parameterName = parameterName + val + ", ";
+                                    //                                        });
+
+                                    //                                        $("#ErrorDeleteParameter b").html("");
+                                    //                                        $("#ErrorDeleteParameter b").append(parameterName.replace(/,([^,]*)$/, '$1'));
+                                    // }
+                                    $("#ErrorDeleteParameter").dialog({
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: 'noclose',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                location.reload();
+                                                $(".selectAll").removeAttr("checked");
+                                            }
+                                        }
+                                    });
+                                }
+                                else if (results.status == "Error") {
+                                    $("#errorDialog").dialog({
+                                        closeOnEscape: false,
+                                        dialogClass: 'noclose',
+                                        resizable: false,
+                                        height: 'auto',
+                                        width: 'auto',
+                                        modal: true,
+                                        title: 'Close Task',
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                window.location.reload();
+                                                $(".complitionSelectAll").removeAttr("checked");
+                                            }
+                                        }
+                                    }); //end dialog
+                                }                                
+                            }
+                        }); // ajax End
+                    },
+                    Cancel: function () {                                          
+                        $("#SaveConfirm").dialog("close");
+                        $("#SaveConfirm").dialog("destroy");
+                        //$("#loading").dialog("close");
+                        //$("#loading").dialog("destroy");
+                    }
+                }
+            });
+        }
+    }
+</script>

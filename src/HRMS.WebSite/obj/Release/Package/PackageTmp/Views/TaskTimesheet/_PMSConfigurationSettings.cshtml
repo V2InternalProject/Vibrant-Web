@@ -1,0 +1,475 @@
+﻿@model HRMS.Models.PmsConfiguration
+@{
+    ViewBag.Title = "Menu";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+@*<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>*@
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.themeroller.css")" rel="stylesheet" />
+<link href="@Url.Content("../../Content/ui.dropdownchecklist.standalone.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("../../Scripts/ui.dropdownchecklist-1.4-min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.form.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '0px', 'left': '-252px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '5px' });
+        });
+
+        $("#frmPmsConfiguration #DataTypeLabel").text("");
+
+        $("#SettingDDID").bind("change", function () {
+            $("#TimesheetApproverValidationMessage").hide();
+            $('#frmPmsConfiguration #SettingID').val($("#SettingDDID").val());
+            var selectedProjectID = $('#ProjectDDID option:selected').val();
+            $('#frmPmsConfiguration #ProjectID').val(selectedProjectID);
+            if ($("#SettingDDID").val() != "") {
+                $("#SaveButtonDiv").show();
+
+                $.ajax({
+                    url: "GetSelectedSettingsTimesheetApprover/TaskTimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { settings: $("#SettingDDID").val(), employeeID: '@Model.EmployeeId' },
+                    success: function (results) {
+
+                        $('#TimesheetApproverDDID').empty();
+                        $('#TimesheetApproverDDID').selectBox("destroy");
+                        $('#TimesheetApproverDDID').append($("<option></option>")
+                                              .attr("value", '')
+                                              .text("Select"));
+                        $.each(results.ListData, function (index, value) {
+                            $('#TimesheetApproverDDID').append($("<option></option>")
+                                              .attr("value", value.TimesheetApproverID)
+                                              .text(value.TimesheetApproverName));
+                        });
+                        $('#TimesheetApproverDDID').selectBox('create');
+                    }
+                });
+             
+
+
+
+
+
+                $.ajax({
+                    url: "GetTypeOfSelectedPMSSettings/TaskTimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { SettingType: $("#SettingDDID").val() },
+                    success: function (results) {
+
+                        $.each(results.ListData, function (index, value) {
+
+                            var dataType = "";
+                            var Type = "";
+                            var Value = "";
+                            if (value.dataType != null) {
+                                dataType = value.dataType.trim();
+                            } else {
+                                dataType = value.dataType;
+                            }
+                            if (value.Type != null) {
+                                Type = value.Type.trim();
+                            } else {
+                                Type = value.Type;
+                            }
+                            if (value.Value != null) {
+                                Value = value.Value.trim();
+                            } else {
+                                Value = value.Value;
+                            }
+
+                            if (dataType == 'CheckBox') {
+                                $("#SettingsValueForCheckBox").val('');
+                                $("#SettingsValueForCheckBox").show();
+                                $("#SettingsValueForEmailID").hide();
+                                $("#SettingsValueForUser").hide();
+                                $("#SettingsValueForDD").hide();
+                                $("#SettingsValueForSelectedDD").hide();
+                            }
+                            else if (dataType == 'SelectDD') {
+                                $("#SettingsValueForSelectedDD").val('');
+                                $("#SettingsValueForSelectedDD").show();
+                                $("#SettingsValueForEmailID").hide();
+                                $("#SettingsValueForCheckBox").hide();
+                                $("#SettingsValueForUser").hide();
+                                $("#SettingsValueForDD").hide();
+                            }
+                            else if (dataType == 'Email') {
+                                $("#frmPmsConfigurationEmailIDValue").val('');
+                                $("#SettingsValueForEmailID").show();
+                                $("#SettingsValueForCheckBox").hide();
+                                $("#SettingsValueForUser").hide();
+                                $("#SettingsValueForDD").hide();
+                                $("#SettingsValueForSelectedDD").hide();
+                            }
+                            else if (dataType == 'User') {
+                                $("#frmPmsConfigurationUserValue").val('');
+                                $("#SettingsValueForUser").show();
+                                $("#SettingsValueForCheckBox").hide();
+                                $("#SettingsValueForEmailID").hide();
+                                $("#SettingsValueForDD").hide();
+                                $("#SettingsValueForSelectedDD").hide();
+                            }
+                            else if (dataType == 'DDValue') {
+                                $("#frmPmsConfigurationDropDownValue").val('');
+                                $("#SettingsValueForDD").show();
+                                $("#SettingsValueForCheckBox").hide();
+                                $("#SettingsValueForUser").hide();
+                                $("#SettingsValueForEmailID").hide();
+                                $("#SettingsValueForSelectedDD").hide();
+                            }
+
+                            $('#frmPmsConfiguration #LookUpTypeId').val(value.LookUpTypeId);
+                            $('#frmPmsConfiguration #Type').val(Type);
+                            $('#frmPmsConfiguration #Value').val(Value);
+                            $('#frmPmsConfiguration #LevelName').val(value.LevelName.trim());
+                            $('#frmPmsConfiguration #dataType').val(dataType);
+                            $('#frmPmsConfiguration #dataTypeValue').val(value.dataTypeValue);
+
+                        });
+
+                    }
+
+                });
+
+                $.ajax({
+                    url: "GetSeperatePMSSettings/TaskTimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { SettingType: $("#SettingDDID").val(), ProjectID: selectedProjectID },
+                    success: function (results) {
+                        var dataType = "";
+                        var Type = "";
+                        var Value = "";
+                        if (results.ListData.dataType != null) {
+                            dataType = results.ListData.dataType.trim();
+                        } else {
+                            dataType = results.ListData.dataType;
+                        }
+                        if (results.ListData.Type != null) {
+                            Type = results.ListData.Type.trim();
+                        } else {
+                            Type = results.ListData.Type;
+                        }
+                        if (results.ListData.Value != null) {
+                            Value = results.ListData.Value.trim();
+                        } else {
+                            Value = results.ListData.Value;
+                        }
+
+                        if (dataType == 'CheckBox') {
+                            if (Value == "Yes") {
+                                $("#CHK_CheckBoxValue").prop('checked', true);
+                            }
+                            else {
+                                $("#CHK_CheckBoxValue").prop('checked', false);
+                            }
+                        }
+
+                        else if (dataType == 'SelectDD') {
+                            $('#TimesheetApproverDDID').val(Value);
+                            $('#TimesheetApproverDDID').next().find('.selectBox-label').text($('#TimesheetApproverDDID option:selected').text());
+                        }
+                        else if (dataType == 'Email') {
+                            $("#frmPmsConfigurationEmailIDValue").val('');
+                            $("#SettingsValueForEmailID").show();
+                            $("#SettingsValueForCheckBox").hide();
+                            $("#SettingsValueForUser").hide();
+                            $("#SettingsValueForDD").hide();
+                            $("#SettingsValueForSelectedDD").hide();
+                        }
+                        else if (dataType == 'User') {
+                            $("#frmPmsConfigurationUserValue").val('');
+                            $("#SettingsValueForUser").show();
+                            $("#SettingsValueForCheckBox").hide();
+                            $("#SettingsValueForEmailID").hide();
+                            $("#SettingsValueForDD").hide();
+                            $("#SettingsValueForSelectedDD").hide();
+                        }
+                        else if (dataType == 'DDValue') {
+                            $("#frmPmsConfigurationDropDownValue").val('');
+                            $("#SettingsValueForDD").show();
+                            $("#SettingsValueForCheckBox").hide();
+                            $("#SettingsValueForUser").hide();
+                            $("#SettingsValueForEmailID").hide();
+                            $("#SettingsValueForSelectedDD").hide();
+                        }
+                    }
+                });
+
+            } else {
+                $("#SaveButtonDiv").hide();
+                $("#SettingsValueForDD").hide();
+                $("#SettingsValueForCheckBox").hide();
+                $("#SettingsValueForUser").hide();
+                $("#SettingsValueForEmailID").hide();
+                $("#SettingsValueForSelectedDD").hide();
+
+            }
+        });
+        $("#ProjectDDID").change(function () {
+            $("#TimesheetApproverValidationMessage").hide();
+            var selectedProjectID = $('#ProjectDDID option:selected').val();
+            $('#frmPmsConfiguration #ProjectID').val(selectedProjectID);
+            if (selectedProjectID != "") {
+                $("#SettingsDiv").show();
+
+                $.ajax({
+                    url: "GetSelectedProjectSettings/TaskTimeSheet",
+                    type: 'POST',
+                    async: false,
+                    data: { ProjectID: selectedProjectID },
+                    success: function (results) {
+                        $('#SettingDDID').empty();
+                        $('#SettingDDID').selectBox("destroy");
+                        $('#SettingDDID').append($("<option></option>")
+                              .attr("value", '')
+                              .text("Select"));
+                        $.each(results.ListData, function (index, value) {
+                            $('#SettingDDID').append($("<option></option>")
+                              .attr("value", value.Settingid)
+                              .text(value.SettingName));
+                        });
+                        $('#SettingDDID').selectBox('create');
+
+                        $("#SaveButtonDiv").hide();
+                        $("#SettingsValueForDD").hide();
+                        $("#SettingsValueForCheckBox").hide();
+                        $("#SettingsValueForUser").hide();
+                        $("#SettingsValueForEmailID").hide();
+                        $("#SettingsValueForSelectedDD").hide();
+                    }
+                });
+
+            }
+            else {
+                $("#SettingsDiv").hide();
+                $("#SaveButtonDiv").hide();
+                $("#SettingsValueForDD").hide();
+                $("#SettingsValueForCheckBox").hide();
+                $("#SettingsValueForUser").hide();
+                $("#SettingsValueForEmailID").hide();
+                $("#SettingsValueForSelectedDD").hide();
+            }
+
+        });
+
+        $("#TimesheetApproverDDID").bind("change", function () {
+            $("#TimesheetApproverValidationMessage").hide();
+            var selectedID = $('#TimesheetApproverDDID').val();
+            $('#frmPmsConfiguration #SelectedDDValue').val(selectedID);
+        });
+
+        $("#SaveSettingsBtn").click(function () {
+            $('#frmPmsConfiguration #EmailIDValue').val($("#EmailIDValue").val());
+            $('#frmPmsConfiguration #DropDownValue').val($("#DropDownValue").val());
+            $('#frmPmsConfiguration #CheckBoxValue').val($("#CheckBoxValue").val());
+            $('#frmPmsConfiguration #frmPmsConfigurationUserValue').val($("#frmPmsConfigurationUserValue").val());
+            $('#frmPmsConfiguration #frmPmsConfigurationEmailIDValue').val($("#frmPmsConfigurationEmailIDValue").val());
+            $('#frmPmsConfiguration #frmPmsConfigurationDropDownValue').val($("#frmPmsConfigurationDropDownValue").val());
+            $('#frmPmsConfiguration #SettingSelectedDDID').val($("#TimesheetApproverDDID").val());
+            $('#frmPmsConfiguration #CHK_CheckBoxValue').val($("#CHK_CheckBoxValue").val());
+
+            if ($("#SettingDDID").val() != "Can User Create task?") {
+                if ($("#TimesheetApproverDDID").val() == "") {
+                    $("#TimesheetApproverValidationMessage").text("Please select dropdown value.").show();
+                    return false;
+                }
+            }
+
+            if ($("#frmPmsConfiguration").valid()) {
+                $.ajax({
+                    url: '@Url.Action("SavePMSConfigurationSettingDetails", "TaskTimesheet")',
+                type: 'POST',
+                data: $('#frmPmsConfiguration').serialize(),
+                success: function (results) {
+
+                    if (results.status == true) {
+                        $("#SettingSaveSuccess").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    window.location.href = '@Url.Action("PmsConfiguration", "TaskTimesheet")';
+                                }
+                            }
+                        });
+
+                    }
+                    else if (results.status == false) {
+                        $("#SettingSaveError").dialog({
+                            resizable: false,
+                            autoOpen: true,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                    window.location.href = '@Url.Action("PmsConfiguration", "TaskTimesheet")';
+                                }
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        DisplayErrorDialog("Save Setting Details");
+                        window.location.href = '@Url.Action("PmsConfiguration", "TaskTimesheet")';
+                    }
+                    else {
+                        DisplayErrorDialog("Save Setting Details");
+                        window.location.href = '@Url.Action("PmsConfiguration", "TaskTimesheet")';
+                    }
+
+                }
+            });
+        }
+    });
+    });
+
+</script>
+<section class="PMSContainer  Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                PMS Configuration
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+             @Html.HorizontalMenu(Session["PageLevelAccess"] as List<HRMS.Extensions.MenuModel>);
+        </nav>
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmPmsConfiguration" }))
+        {
+
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.ProjectID)
+            @Html.HiddenFor(model => model.SettingID)          
+            @Html.HiddenFor(model => model.DataTypeLabel)
+            @Html.HiddenFor(model => model.LookUpTypeId)
+            @Html.HiddenFor(model => model.Type)
+            @Html.HiddenFor(model => model.Value)
+            @Html.HiddenFor(model => model.LevelName)
+            @Html.HiddenFor(model => model.dataType)
+            @Html.HiddenFor(model => model.dataTypeValue)
+            @Html.HiddenFor(model => model.EmployeeId)
+            @Html.HiddenFor(model => model.UserName)
+            @Html.HiddenFor(model => model.SelectedDropDownValue)
+            @Html.HiddenFor(model => model.SelectedDDValue)
+
+            <div class="FormContainerBox">
+                <div class="">
+                    <div class="formrow clearfix">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("Select Project:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ProjectID, new SelectList(Model.TimesheetProjectList, "Projectids", "ProjectName"), "Select", new { @id = "ProjectDDID" })
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="formrow clearfix" id="SettingsDiv" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("Select Setting:")
+                        </div>
+                        <div class="InputDiv">                        
+                            <select id="SettingDDID">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="formrow clearfix" id="SettingsValueForDD" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("*Value:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.DropDownValue, new { @id = "frmPmsConfigurationDropDownValue" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.DropDownValue)</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="formrow clearfix" id="SettingsValueForSelectedDD" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("*Value:")
+                        </div>
+                        <div class="InputDiv clearfix">                          
+                            <select id="TimesheetApproverDDID">
+                            </select>
+                            <span id="TimesheetApproverValidationMessage" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="formrow clearfix" id="SettingsValueForEmailID" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("*Value:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.EmailIDValue, new { @id = "frmPmsConfigurationEmailIDValue" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.EmailIDValue)</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="formrow clearfix" id="SettingsValueForUser" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("*Value:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(model => model.UserValue, new { @id = "frmPmsConfigurationUserValue" })
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.UserValue)</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="formrow clearfix" id="SettingsValueForCheckBox" style="display: none">
+                        <div class="LabelDiv" style="padding-left: 40px; width: 10%;">
+                            @Html.Label("Value:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.CheckBoxFor(model => model.CheckBoxValue, new { @id = "CHK_CheckBoxValue" })
+                            <label for="CHK_CheckBoxValue" class="LabelForCheckbox">
+                            </label>
+                            <p class="qualif-detail">@Html.ValidationMessageFor(model => model.CheckBoxValue)</p>
+                            @Html.HiddenFor(model => model.CheckBoxValue, new { id = "checkBoxValue" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer2 clearfix" id="SaveButtonDiv" style="display: none">
+                <input type="button" id="SaveSettingsBtn" value="Save" class="ButtonGray mrgnR8" />
+            </div>            
+        }
+    </div>
+</section>
+<div id="SettingSaveSuccess" title="Setting details" style="display: none">
+    <p>
+        Record has been saved successfully.
+    </p>
+</div>
+<div id="SettingSaveError" title="Setting details" style="display: none">
+    <p>
+        Details could not be saved.
+    </p>
+</div>

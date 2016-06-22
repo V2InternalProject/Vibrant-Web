@@ -1,0 +1,367 @@
+﻿@model HRMS.Models.ExpenseReimbursementStatus
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/grid.locale-en.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" language="javascript" src="../../Scripts/GridView/jquery.jqGrid.src.js"></script>
+@*<script src="../../Scripts/GridView/jquery-1.7.2.min.js" type="text/javascript"></script>*@
+<link type="text/css" rel="stylesheet" href="../../Content/themes/GridView/ui.jqgrid.css" />
+<script src="../../Scripts/ExpenseReimbursement/ShowstausReimbus.js" type="text/javascript"></script>
+<script src="../../Scripts/ExpenseReimbursement/ExpenseReimbursementStatus.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).click(function (e) {
+        if (!$(e.target).is('.EmpLink')) {
+            $("#PopUpOfEmpInfoExpense").fadeOut();
+        }
+    });
+    $(document).ready(function () {
+
+        $("#inbox").attr('checked', 'checked');
+
+        $(".Title").hide();
+        $("#exenseIdToPassOnLinkClick").val(0);
+
+        $("#btnShowStatusExpense").click(function () {
+            //jQuery("#ReimbursementShowStatusTable").trigger("reloadGrid");
+            $("#ReimbursementShowStatusTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $('#ShowStatusRebusDia').dialog({
+                autoOpen: true,
+                modal: true,
+                width: 1000,
+                resizable: true,
+                title: "Show Status"
+            });
+        });
+
+        $("#ExpenseField").change(function () {
+            if ($("#ExpenseField").val() != "") {
+//                var url = "GetFieldChildDetailsList/ExpenseReimbursement";
+//                $("#FieldChild").show();
+//                $.getJSON(url, { ExpenseField: $("#ExpenseField").val() }, function (data) {
+//                    //Clear the Model list
+//                    $("#FieldChild").empty();
+//                    $("#FieldChild").append("<option value='" + "" + "'>" + "" + "</option>");
+//                    //Foreach Model in the list, add a model option from the data returned
+//                    $.each(data, function (index, optionData) {
+
+//                        $("#FieldChild").append("<option value='" + optionData.Id + "'>" + optionData.Description + "</option>");
+//                    });
+//                });
+if($("#ExpenseField").val()=="Business Group"){
+$('#FieldChildListBG').show();
+$('#FieldChildListOU').hide();
+$('#FieldChildListSN').hide();
+}
+if($("#ExpenseField").val()=="Organization Unit"){
+$('#FieldChildListBG').hide();
+$('#FieldChildListOU').show();
+$('#FieldChildListSN').hide();
+}
+if($("#ExpenseField").val()=="Stage Name"){
+$('#FieldChildListBG').hide();
+$('#FieldChildListOU').hide();
+$('#FieldChildListSN').show();
+}
+            } else {
+                $("#FieldChild").val("");
+                $("#FieldChild").hide();
+            }
+        });
+
+//        $("#inbox").click(function () {
+//            $("#gbox_jqInboxTable").show();
+//           // $("#gbox_jqWatchListTable").hide();
+//        });
+
+//        $("#watchlist").click(function () {
+//            $("#gbox_jqInboxTable").hide();
+//            $("#gbox_jqWatchListTable").show();
+//        });
+
+//        $("#all").click(function () {
+//            $("#gbox_jqInboxTable ").show();
+//            $("#gbox_jqWatchListTable").show();
+//        });
+
+        $("#txtSearchEmployee").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggest", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + "{" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName
+                        };
+                    }));
+                });
+            }
+        });
+
+        $("#Field").change(FieldDDLChange);
+
+        $("#btnHeaderShowDetails").click(function () {
+            //$("#jqInboxTable").trigger("reloadGrid");
+            //$("#jqWatchListTable").trigger("reloadGrid");
+            $("#jqInboxTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+            $("#jqWatchListTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+        });
+
+        $("#btnFillFormExpense").click(function () {
+            window.location.href = '@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement")?expenseEmployeeId=' + $("#exenseEmpIdToPassOnLinkClick").val() + '&encryptedExpenseId=' + $("#exenseIdToPassOnLinkClick").val() + '&viewDetails=' + 'fillForm';
+        });
+
+        $('#btnShowDetailsExpense').click(function () {
+            window.location.href = '@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement")?expenseEmployeeId=' + $("#exenseEmpIdToPassOnLinkClick").val() + '&encryptedExpenseId=' + $("#exenseIdToPassOnLinkClick").val() + '&viewDetails=' + 'yes';
+        });
+
+        $("#jqWatchListTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadWatchListGrid", "ExpenseReimbursement")',
+            datatype: "json",
+            mtype: "POST",
+            postData: {
+                term: function () { return $("#txtSearchEmployee").val(); },
+                Field: function () { return $("#ExpenseField").val(); },
+                FieldChild: function () { if($("#ExpenseField").val()=="Business Group") return $("#DDFieldChildListBG").val(); if($("#ExpenseField").val()=="Organization Unit") return $("#DDFieldChildListOU").val();if($("#ExpenseField").val()=="Stage Name") return $("#DDFieldChildListSN").val(); if($("#ExpenseField").val()=="") return ""; },
+                employeeId: '@ViewBag.EncryptedEmployeeId'
+            },
+
+            // Specify the column names
+            colNames: ["StageId", "Reporting To", "Field", "ExpenseStageOrder", "ExpenseId", "EncryptedExpenseId", "EncryptedEmployeeId", "EmployeeId", "Finance Reimbursement Form Code", "Reimbursement Form Code", "Employee Name", "Status", "Stage"],
+
+            // Configure the columns
+            colModel: [
+                { name: "StageId", index: "StageId", hidden: true, width: 100, align: "left" },
+                { name: "ReportingTo", index: "ReportingTo", hidden: true, width: 100, align: "left" },
+                { name: "Field", index: "Field", hidden: true, width: 100, align: "left" },
+                { name: "ExpenseStageOrder", index: "ExpenseStageOrder", hidden: true, width: 100, align: "left" },
+                { name: "ExpenseId", index: "ExpenseId", hidden: true, width: 100, align: "left" },
+				{ name: "EncryptedExpenseId", index: "EncryptedExpenseId", hidden: true, width: 100, align: "left" },
+                { name: "EncryptedEmployeeId", index: "EncryptedEmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "ExpenseFormCode", index: "ExpenseFormCode", width: 100, align: "left" },
+                 { name: "FormCode", index: "FormCode", formatter: formatlink, width: 100, sortable: true, align: "left" },
+                 { name: "Employeename", index: "Employeename", width: 100, align: "left" },
+                  { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
+                { name: "stageName", index: "stageName", width: 100, align: "left" }
+            ],
+
+            // Grid total width and height
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            loadonce: true,
+            sortable: false,
+            pager: $("#jqWatchListDetailsPager"),
+
+            // Grid caption
+            //caption: "Watch List"
+        }).navGrid("#jqWatchListDetailsPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        $("#jqInboxTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadInboxListGrid", "ExpenseReimbursement")',
+            datatype: "json",
+            mtype: "POST",
+            postData: {
+                term: function () { return $("#txtSearchEmployee").val(); },
+                Field: function () { return $("#ExpenseField").val(); },
+                FieldChild: function () { if($("#ExpenseField").val()=="Business Group") return $("#DDFieldChildListBG").val(); if($("#ExpenseField").val()=="Organization Unit") return $("#DDFieldChildListOU").val();if($("#ExpenseField").val()=="Stage Name") return $("#DDFieldChildListSN").val(); if($("#ExpenseField").val()=="") return "";  },
+                employeeId: '@ViewBag.EncryptedEmployeeId'
+            },
+
+            // Specify the column names
+            colNames: ["StageId", "Reporting To", "Field", "ExpenseStageOrder", "ExpenseId", "EncryptedExpenseId", "EncryptedEmployeeId", "EmployeeId", "Finance Reimbursement Form Code", "Reimbursement Form Code", "Employee Name", "Status", "Stage"],
+
+            // Configure the columns
+            colModel: [
+                { name: "StageId", index: "StageId", hidden: true, width: 100, align: "left" },
+                { name: "ReportingTo", index: "ReportingTo", hidden: true, width: 100, align: "left" },
+                { name: "Field", index: "Field", hidden: true, width: 100, align: "left" },
+                { name: "ExpenseStageOrder", index: "ExpenseStageOrder", hidden: true, width: 100, align: "left" },
+                { name: "ExpenseId", index: "ExpenseId", hidden: true, width: 100, align: "left" },
+				{ name: "EncryptedExpenseId", index: "EncryptedExpenseId", hidden: true, width: 100, align: "left" },
+                	{ name: "EncryptedEmployeeId", index: "EncryptedEmployeeId", hidden: true, width: 100, align: "left" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                 { name: "ExpenseFormCode", index: "ExpenseFormCode", width: 100, align: "left" },
+                 { name: "FormCode", index: "FormCode", formatter: formatlink, width: 100, sortable: true, align: "left",sorttype:"int" },
+                 { name: "Employeename", index: "Employeename", width: 100, align: "left" },
+                  { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
+                { name: "stageName", index: "stageName", width: 100, align: "left" }
+
+            ],
+
+            // Grid total width and height
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            loadonce: true,
+            sortable: false,
+            pager: $("#jqInboxDetailsPager"),
+
+            // Grid caption
+            //caption: "Inbox"
+        }).navGrid("#jqInboxDetailsPager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+        );
+
+        function renderImages(cellvalue, options, rowobject) {
+            var obj = "";
+            for (var i = 0; i < 4; i++) {
+                if (rowobject['ExpenseStageOrder'] >= i) {
+                    if ((rowobject['Field'] == "Rejected" && rowobject['ExpenseStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['ExpenseStageOrder'] == i)) {
+                        obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
+                    } else if (rowobject['ExpenseStageOrder'] != i) {
+
+                        obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'>"; // Green
+                    }
+                    else {
+                        obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                    }
+                } else {
+                    obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                }
+            }
+
+            return obj;
+        }
+//        $("#gbox_jqWatchListTable").hide();
+    });
+
+    function formatlink(cellvalue, options, rowobject) {
+        return "<a href=# id=exp_" + rowobject['ExpenseId'] + " class=EmpLink onClick = LinkClick(this," + "\"" + rowobject['EncryptedEmployeeId'] + "\"," + "\"" + rowobject['EncryptedExpenseId'] + "\"," + rowobject['EmployeeId'] + "," + rowobject['StageId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+    }
+
+    function LinkClick(event, EncryptedEmployeeId, EncryptedExpenseId, empId, stageId) {
+        var target = event.id;
+        var width = event.offsetWidth;
+        var table = $("#" + target).parent().parent().parent().parent();
+        var tableid = $(table).attr('id');
+        if (tableid == undefined) {
+            tableid = $(table).find('table').attr('id');
+        }
+
+        if (tableid == "jqInboxTable") {
+            $('#btnFillFormExpense').show();
+            $('#btnShowStatusExpense').show();
+            $('#btnShowDetailsExpense').hide();
+        }
+
+        if (tableid == "jqWatchListTable") {
+            $('#btnFillFormExpense').hide();
+            $('#btnShowDetailsExpense').show();
+            $('#btnShowStatusExpense').show();
+        }
+
+        $('#btnSubmitResignationExpense').show();
+
+        var positionlink = $("#" + target).offset();
+
+        $("#PopUpOfEmpInfoExpense").css({
+            top: positionlink.top,
+            left: positionlink.left + width + 4,
+            position: "fixed"
+        }).fadeIn();
+
+        $("#btnAcceptOrReject").focus();
+        $("#exenseIdToPassOnLinkClick").val(EncryptedExpenseId);
+        $("#exenseEmpIdToPassOnLinkClick").val(EncryptedEmployeeId);
+        $('#InboxOrWatchListCallExpense').val(tableid);
+        $('#EmpIdToPassOnLinkClick').val(empId);
+    }
+</script>
+<link href="~/Content/New%20Design/finance.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+<section class="ExpenseContainer Container TransparentMainbody">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Expense Reimbursment</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("GetExpenseReimbursementFormDetails", "ExpenseReimbursement", new { expenseEmployeeId = ViewBag.encryptedEmployeeId, encryptedExpenseId = ViewBag.EncryptedExpenseId })">New Request</a>
+            <a href="@Url.Action("GetExpenseReimbursementStatus", "ExpenseReimbursement", new { expenseEmployeeId = ViewBag.encryptedEmployeeId, encryptedExpenseId = ViewBag.EncryptedExpenseId })" class="selected">Saved/Submitted Requests</a>
+        </nav>
+    </div>
+    <div class="MainBody">
+        <div class="Hrmain ex-savedSUb clearfix">
+            <div class="fill-dtls clearfix">
+                <div class="LabelDiv">
+                    <label for="From Date" class="select-type">Employee Name:</label>
+                </div>
+                <div class="InputDiv">
+                   <input type="text" name="searchValue" id="txtSearchEmployee" class="srchinput" height="20px" />
+                </div>
+                <div class="LabelDiv">
+                    <label for="Field" class="select-type">Field:</label>
+                </div>
+                <div class="InputDiv">
+                    @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetFieldList(), "Value", "Text"), "", new { id = "ExpenseField" })
+                </div>
+                @*<div class="InputDiv">
+                   @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldChildList, "Id", "Description", "Select"), "Select", new { style = "display:none;" , @class="sbHolder" })
+                </div>*@
+                <div class="InputDiv" style="display:none" id="FieldChildListBG">
+                  @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListBG, "Select", new { id = "DDFieldChildListBG" })
+                </div>
+                <div class="InputDiv" style="display:none" id="FieldChildListOU">
+                  @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListOU, "Select", new { id = "DDFieldChildListOU" })
+                </div>
+                <div class="InputDiv" style="display:none" id="FieldChildListSN">
+                  @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListSN, "Select", new { id = "DDFieldChildListSN" })
+                </div>
+                <div class="remain">
+                    <input type="button" id="btnHeaderShowDetails" value="Show" class="ButtonGray mrgnLN94" />
+                </div>
+            </div>
+        </div>
+        <h4 class="SmallHead">Inbox</h4>
+        <div class="tablestyle3">
+            <table id="jqInboxTable" class="scroll"></table>
+            <div id="jqInboxDetailsPager"></div>
+        </div>
+
+        <h4 class="SmallHeadW">Watch List</h4>
+         <div class="tablestyle3 mrgnT33">
+            <table id="jqWatchListTable" class="scroll"></table>
+            <div id="jqWatchListDetailsPager"></div>
+        </div>
+    </div>
+    <div id="PopUpOfEmpInfoExpense" style="display: none;">
+    <ul class="exitbutton">
+        <li id="btnFillFormExpense" style="display: none;">Fill Form</li>
+        <li id="btnShowDetailsExpense" style="display: none;">View Details</li>
+        <li id="btnShowStatusExpense" style="display: none;">View Status</li>
+    </ul>
+    <table>
+        <tr style="display: none;">
+            <td>
+                <span id="exenseIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+            <td>
+                <span id="exenseEmpIdToPassOnLinkClick" style="display: none;"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+<span id="InboxOrWatchListCallExpense" style="display: none;"></span>
+<div id="ShowStatusRebusDia" style="display: none; clear: both">
+    @{Html.RenderPartial("ExpenseReimbusShowStatus", Model);}
+</div>
+</section>

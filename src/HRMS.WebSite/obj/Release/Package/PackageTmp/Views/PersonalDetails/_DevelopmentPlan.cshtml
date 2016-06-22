@@ -1,0 +1,411 @@
+﻿@model HRMS.Models.SkillDetailsViewModel
+@{
+    ViewBag.Title = "Configure Skill Matrix";
+
+}
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "" }))
+{
+    @Html.HiddenFor(x => x.ID)
+
+}
+<script type="text/javascript">
+    var Id1="";
+    var ResourceID;
+    var RatingVal1="";
+    var SkillNames="";
+    var  Ratings1;
+    // var ToolIDVal;
+    var Targetdate1="";
+
+    $(document).ready(function () {
+
+        $('#showHistory').live("click", function () {
+            count = jQuery("#jqDevelopmentPlanTable").jqGrid('getGridParam', 'reccount');
+            $.ajax(
+            {
+                url: '@Url.Action("SkillCount", "SkillMatrix")',
+                data: { employeeId: '@Model.EmployeeId' },
+                type: 'POST',
+                async: false,
+                success: function (result) {
+                    if (result.status == false) {
+                        InitializeDialog($("#Historydialog"));
+                        $("#Historydialog").dialog("open");
+                    }
+                    else {
+                        $("#NoRecordInHistory").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            title: 'No Record!!!!',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        function InitializeDialog($element) {
+            $element.dialog({
+                autoOpen: false,
+                width: 1200,
+                resizable: true,
+                draggable: true,
+                title: "History",
+                modal: true,
+                show: 'slide',
+                closeText: 'x',
+                dialogClass: 'alert',
+                closeOnEscape: true,
+                open: function (event, ui) {
+                    $element.load("@Url.Action("ShowHistory", "SkillMatrix", new { EmployeeId = @Model.EmployeeId })");
+                },
+                close: function (event, ui) {
+                    $(this).dialog('close');
+                }
+            });
+        }
+
+        $("#btnsubmitdevelopmentplan").click(function (){
+            var x=   jQuery("#jqDevelopmentPlanTable1").jqGrid('getGridParam', 'records');
+            var y=   jQuery("#jqDevelopmentPlanTable2").jqGrid('getGridParam', 'records');
+            if( x===0 && y===0 )
+            {
+                $("#BlankGridPopUp").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: 'Development Plan',
+                    dialogClass: "noclose",
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $.ajax({
+                    url: '@Url.Action("FinalSubmitDevelopmentPlan", "PersonalDetails")',
+                    data: { Id:Id1,ExpectedRating:RatingVal1,Targetdate: Targetdate1},
+                    type: 'POST',
+                    async:false,
+                    success: function (result) {
+                       $("#btnsubmitdevelopmentplan,#btnresetdevelopmentplan").hide();
+                        $("#jqDevelopmentPlanTablePager1_left").hide();
+                        $("#jqDevelopmentPlanTablePager2_left").hide();
+                        if(result.status==true){
+                            $("#SubmitSuccess").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Development Plan',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        //window.location.href='/Resource/RMGViewPost';
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                        else if(result.status==false)
+                        {
+                            $("#CheckSubmit").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                title: 'Development Plan',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                    }
+                });
+            }
+
+        });
+
+        Ratings = @(Html.Raw(Json.Encode(ViewBag.IsRating)));
+        var Rating = [];
+        Rating.push("Select");
+        $.each(Ratings, function (index,value) {
+            Rating.push(value.Rating);
+        });
+
+        function getRatings(e) {
+
+            //SkillDropId = e.target[e.target.selectedIndex].value;
+            RatingVal1 = e.target[e.target.options.selectedIndex].text;
+        }
+
+        var s =  '@ViewBag.PrmResourcePoolId';
+        $("#jqDevelopmentPlanTable1").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("LoadDevelopmentPlan", "PersonalDetails")',
+            postData: { id: function () { return '@Model.EmployeeId' } ,ResourcePoolId: function () { return '@ViewBag.PrmResourcePoolId' } },
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names 'Resource Pool Name', 'Skill Name', 'RatingType', 'Rating', 'Updated By', 'Updated On'
+            colNames: ["","Main Skills", "Sub Skills", "Current Rating", "Expected Rating", "Target Date"],
+            // Configure the columns
+            colModel: [
+                 { name: "ID", index: "ID", align: "left", width: 120,hidden:true },
+                 { name: "ResourcePoolName", index: "ResourcePoolName", align: "left", width: 120 },
+                { name: "Description", index: "Description", align: "left", width: 120 },
+                { name: "Rating", index: "Rating", align: "left", width: 120 },
+                { name: "ExpectedRating", index: "ExpectedRating", align: "left", width: 120, editable: true, editrules: { required: true, custom: true, custom_func: IsRatingSelected },edittype: "select", editoptions: { value: Rating, dataEvents: [{ type: 'change', fn: function(e) { getRatings(e); } }]}  },
+                //{ name: "UpdatedOn", index: "UpdatedOn", align: "center", width: 200, formatter: 'date', datefmt: 'Y-m-d', formoptions: { elmsuffix: ' *' } },
+                 { name: "TargetDate", index: "TargetDate", editable: true, editrules: { required: true }, width: 120, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                     readonly: true,
+                     dataEvents: [{ type: 'change', fn: function(e) {ChangeDependandsBirthDate(e); } }],
+                     dataInit: function (element) {
+                         $(element).datepicker({
+                             dateFormat: 'mm/dd/yy',
+                             changeMonth: true,
+                             changeYear: true,
+                             yearRange: "-60:+10"
+                         });
+                     }
+                 } }
+
+            ],
+            // Grid total width and height
+            width:700,
+            autowidth: false,
+            loadonce: true,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqDevelopmentPlanTablePager1"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+
+            editurl: '@Url.Action("SaveRatingsSkills", "PersonalDetails")',
+            onCellSelect: function (rowid, iCol) {
+                jQuery('#jqDevelopmentPlanTable1').setColProp('ResourcePoolName',{editable:false});
+                jQuery('#jqDevelopmentPlanTable1').setColProp('Description',{editable:false});
+                jQuery('#jqDevelopmentPlanTable1').setColProp('Rating',{editable:false});
+                rowData = jQuery("#jqDevelopmentPlanTable1").getRowData(rowid);
+                ResourcePoolName = rowData["ResourcePoolName"];
+                SkillNames = rowData["Description"];
+                Ratings1=rowData["Rating"];
+                Id1=rowData["ID"];
+
+            }
+        }).navGrid("#jqDevelopmentPlanTablePager1", {
+            search: false,
+            refresh: false,
+            add: false,
+            edit: false,
+            del: false,
+            alert:false
+        }, {}, {}, {}
+        );
+
+        $("#jqDevelopmentPlanTable1").jqGrid('inlineNav', "#jqDevelopmentPlanTablePager1",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: false,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancel: true,
+            cancelicon: "ui-icon-cancel",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function (rowid) {
+                },
+                sucessfunc: function (data) {
+
+                },
+                url: null,
+                extraparam: {
+                    ID1:function(){
+
+                        return Id1;
+                    },
+                    ExpectedRating:function(){
+                        return RatingVal1;
+                    },
+                    TargetDate:function(){
+
+                        return Targetdate1;
+                    }
+
+                },
+                beforeSaveRow: function (options, rowid)
+                {},
+                aftersavefunc: function (result,response) {
+                    $("#SkillDetailsSucess").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery('#jqDevelopmentPlanTable1').setColProp('ResourcePoolName',{editable:false});
+                                jQuery('#jqDevelopmentPlanTable1').setColProp('Description',{editable:false});
+                                jQuery('#jqDevelopmentPlanTable1').setColProp('Rating',{editable:false});
+                                jQuery('#jqDevelopmentPlanTable1').setColProp('ExpectedRating',{editable:false});
+                                jQuery('#jqDevelopmentPlanTable1').setColProp('TargetDate',{editable:false});
+                                jQuery("#jqDevelopmentPlanTable1").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid', [{ page: 1 }]);
+                            }
+                        }
+                    });
+                },
+                errorfunc: null,
+                afterrestorefunc: function(result)
+                {
+                    jQuery('#jqDevelopmentPlanTable1').setColProp('ResourcePoolName',{editable:false});
+                    jQuery('#jqDevelopmentPlanTable1').setColProp('Description',{editable:false});
+                    jQuery('#jqDevelopmentPlanTable1').setColProp('Rating',{editable:false});
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+        function IsRatingSelected(value, colname) {
+            if (value == "0") {
+                $("#RequiredFieldForRating").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 140,
+                    width: 300,
+                    dialogClass: "noclose",
+                    buttons:
+                    {
+                        "Ok": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            else {
+                return [true, ""];
+            }
+        }
+
+        function ChangeDependandsBirthDate(e) {
+   Targetdate1= e.target.value;
+}
+    });
+    //Testing New Code
+</script>
+<div class="clearfix">
+    <div id="NoRecordInHistory" title="Record Saved" style="display: none;">
+        <p>
+            No Record Found.
+        </p>
+    </div>
+    <div id="RequiredFieldForRating" style="display: none;" title="Development Plan">
+        <p>
+            Please select Rating.
+        </p>
+    </div>
+    <div id="BlankGridPopUp" title="Record Saved" style="display: none;">
+        <p>
+            Atleast there should be one record present.
+        </p>
+    </div>
+    <div id="SubmitSuccess" style="display: none;">
+        <p>
+            Record has been Submitted successfully.
+        </p>
+    </div>
+    <div id="CheckSubmit" style="display: none;">
+        <p>
+            Record has not changed.
+        </p>
+    </div>
+    @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "developmentplanForm" }))
+    {
+
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.TargetDate)
+    }
+    <div class="clearfix blueBorderNew">
+
+        <table id="list" class="scroll" cellpadding="1" cellspacing="1"></table>
+
+        <div id="jqDevelopmentPlanTablePager" class="scroll" style="text-align: center;">
+        </div>
+        <div id="Historydialog" title="" style="overflow: hidden;">
+        </div>
+        <div class="blueBorder-E">
+            <div class="mrgnB20">
+
+                    <h2 class="thismainH">
+                        @Html.Label("Development Plan")
+                    </h2>
+                    @*</td>
+                            </tr>
+                        </table>*@
+                </div>
+
+              @*  <div class="clearfix mrgnL36">
+                    <div class="floatL">
+                        @Html.Label("Employee Name: ") &nbsp; &nbsp;<span id="Employeename" class="mrgnR15">@ViewBag.EmpName</span>
+                    </div>
+
+                    <div class="floatL">
+                        @Html.Label("Employee Code: ") &nbsp; &nbsp; <span id="Employeecode" class="mrgnR15">@ViewBag.EmpCode</span>
+                    </div>
+                </div>*@
+
+                <div class="clearfix">
+
+                    <div class="clearfix">
+                        <input type="button" class="floatR ButtonGray mrgnB10 mrgnR24" value="Show History" id="showHistory" style="display:none" />
+                    </div>
+                </div>
+                <div class="clearfix">
+
+                    <div id="divDevelopmentPlan" class="clearfix">
+                        <div class="tablestyle3">
+                            <table id="jqDevelopmentPlanTable1"></table>
+                            <div id="jqDevelopmentPlanTablePager1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clearB ButtonContainer1">
+                    <input type="button" value="Submit" class="ButtonGray" id="btnsubmitdevelopmentplan" />
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,45 @@
+﻿@model HRMS.Models.InitiatConfirmationProcess
+@using HRMS.DAL
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<script type="text/javascript">
+    $(".Title").hide();
+</script>
+<script src="@Url.Content("~/Scripts/Common.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+    });
+</script>
+<div class="clearfix blueBorder">
+    @using (Html.BeginForm("SearchEmployee", "ConfirmationProcess", FormMethod.Post, new { @id = "frmSearchEmployeeLayoutCnfm" }))
+    {
+        @Html.Hidden("empId")
+        <label id="">@HRMS.Resources.EmployeeMessages.SearchEmployeeLabel.ToString()</label>
+        <input type="text" name="searchValue" id="txtSearchTextConfrm" class="srchinput" />
+        <input class="button" id="btnSubmitSearchCnf" value="Search" type="hidden" onclick="searchEmployeeCnf()" />
+
+        <div class="tablestyle3">
+            <table id="ConfigurationTable" class="scroll">
+            </table>
+        </div>
+        <div id="ConfigurationTablePager">
+        </div>
+
+    }
+    <div id="ConfirmInitiate">
+    </div>
+    <div id="MailTemplateDialog" style="display: none">
+        @{Html.RenderPartial("_MailTemplate", Model.MailDetail);}
+    </div>
+</div>
+
+<script src="../../Scripts/Confirmation/ConfirmationDetailsRecord.js" type="text/javascript"></script>

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PMS3_HRMSModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="PMS3_HRMSDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Project_Resource_Mapping" EntityType="PMS3_HRMSModel.Project_Resource_Mapping" />
+    <EntitySet Name="ProjectMasters" EntityType="PMS3_HRMSModel.ProjectMaster" />
+    <AssociationSet Name="FK_Project_Resource_Mapping_ProjectMaster" Association="PMS3_HRMSModel.FK_Project_Resource_Mapping_ProjectMaster">
+      <End Role="ProjectMaster" EntitySet="ProjectMasters" />
+      <End Role="Project_Resource_Mapping" EntitySet="Project_Resource_Mapping" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProjectMaster_ProjectMaster" Association="PMS3_HRMSModel.FK_ProjectMaster_ProjectMaster">
+      <End Role="ProjectMaster" EntitySet="ProjectMasters" />
+      <End Role="ProjectMaster1" EntitySet="ProjectMasters" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Project_Resource_Mapping">
+    <Key>
+      <PropertyRef Name="Project_ResourceID" />
+    </Key>
+    <Property Name="Project_ResourceID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProjectID" Type="Int64" />
+    <Property Name="UserID" Type="Int64" />
+    <Property Name="DesignationID" Type="Int64" />
+    <Property Name="StartDate" Type="DateTime" />
+    <Property Name="EndDate" Type="DateTime" />
+    <Property Name="IsConnected" Type="Int32" />
+    <Property Name="ResourceTypeID" Type="Int64" />
+    <Property Name="AllocatedPercentage" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Comments" Type="String" MaxLength="1500" Unicode="true" FixedLength="false" />
+    <Property Name="RoleID" Type="Int32" />
+    <NavigationProperty Name="ProjectMaster" Relationship="PMS3_HRMSModel.FK_Project_Resource_Mapping_ProjectMaster" FromRole="Project_Resource_Mapping" ToRole="ProjectMaster" />
+  </EntityType>
+  <EntityType Name="ProjectMaster">
+    <Key>
+      <PropertyRef Name="ProjectID" />
+    </Key>
+    <Property Type="Int64" Name="ProjectID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int64" Name="ProcessID" />
+    <Property Type="String" Name="ProjectName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="ProjectCode" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="IsProjectFixed" />
+    <Property Type="DateTime" Name="ProjectStartDate" />
+    <Property Type="DateTime" Name="ProjectEndDate" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="Int32" Name="DeliveryUnitID" />
+    <Property Type="Int32" Name="DeliveryTeamID" />
+    <Property Type="Double" Name="ProjectHours" />
+    <NavigationProperty Name="Project_Resource_Mapping" Relationship="PMS3_HRMSModel.FK_Project_Resource_Mapping_ProjectMaster" FromRole="ProjectMaster" ToRole="Project_Resource_Mapping" />
+    <NavigationProperty Name="ProjectMaster1" Relationship="PMS3_HRMSModel.FK_ProjectMaster_ProjectMaster" FromRole="ProjectMaster" ToRole="ProjectMaster1" />
+    <NavigationProperty Name="ProjectMaster2" Relationship="PMS3_HRMSModel.FK_ProjectMaster_ProjectMaster" FromRole="ProjectMaster1" ToRole="ProjectMaster" />
+  </EntityType>
+  <Association Name="FK_Project_Resource_Mapping_ProjectMaster">
+    <End Type="PMS3_HRMSModel.ProjectMaster" Role="ProjectMaster" Multiplicity="0..1" />
+    <End Type="PMS3_HRMSModel.Project_Resource_Mapping" Role="Project_Resource_Mapping" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProjectMaster">
+        <PropertyRef Name="ProjectID" />
+      </Principal>
+      <Dependent Role="Project_Resource_Mapping">
+        <PropertyRef Name="ProjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProjectMaster_ProjectMaster">
+    <End Type="PMS3_HRMSModel.ProjectMaster" Role="ProjectMaster" Multiplicity="1" />
+    <End Type="PMS3_HRMSModel.ProjectMaster" Role="ProjectMaster1" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="ProjectMaster">
+        <PropertyRef Name="ProjectID" />
+      </Principal>
+      <Dependent Role="ProjectMaster1">
+        <PropertyRef Name="ProjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

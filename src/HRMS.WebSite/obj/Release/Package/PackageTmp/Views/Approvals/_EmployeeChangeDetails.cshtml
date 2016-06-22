@@ -1,0 +1,547 @@
+﻿@model HRMS.Models.EmployeeChangesApprovalViewModel
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // Set up the jquery grid
+
+        $("#employeeChangeDetailTable").jqGrid({
+            url: '@Url.Action("SelectedModuleDetails", "Approvals")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { employeeId: function () { return $("#SelectedParentID").val(); }, module: function () { return $("#SelectedParentModule").val(); } },
+            // Specify the column names
+            colNames: ["Employee ID", "Field Label", "Old Value", "New Value", "New Value Hidden", "StatusID", "Status", ""],
+            // Configure the columns
+            colModel:
+            [
+             { name: "ChildEmployeeID", index: "ChildEmployeeID", hidden: true, width: 70, align: "left" },
+             { name: "ChildFieldDiscription", index: "ChildFieldDiscription", width: 70, align: "left" },
+             { name: "ChildOldValue", index: "ChildOldValue", width: 60, align: "left" },
+             { name: "ChildNewValue", index: "ChildNewValue", width: 60, align: "left", formatter: formatUserName },
+             { name: "ChildNewValueAdmin", index: "ChildNewValue", width: 70, align: "left", hidden: true, width: 60, align: "left" },
+             { name: "ChildApprovalStatusMasterID", index: "ChildApprovalStatusMasterID", hidden: true, width: 60, align: "left" },
+             { name: "ChildRadioSelect", index: "ChildApprovalStatusMasterID", formatter: RadioFormatter, width: 100, align: "left" },
+			 { name: "ChildFieldDbColumnName", index: "ChildFieldDbColumnName", hidden: true, width: 90, align: "left" }
+
+            ],
+            width: 700,
+            height: 500,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#employeeChangeDetailTablePager"),
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            //caption: "Employees - Changed Field Details",
+            gridComplete: function () {
+
+                var employeeChangeDetailGrid = $('#employeeChangeDetailTable');
+
+                $(".radioSelected").on("change", function () {
+                    var selectedRowId = $(this).closest('tr').attr("id");
+                    var radioId = $(this).val();
+                    selectedRowId = $(this).closest('tr').attr("id");
+                    employeeChangeDetailGrid.jqGrid('setCell', selectedRowId, 'ChildApprovalStatusMasterID', radioId);
+                });
+
+                $(".NewValueChanged").on("keyup", function (ev) {
+                    var selectedRowId = $(this).closest('tr').attr("id");
+                    var newValue = ev.target.value;
+                    selectedRowId = $(this).closest('tr').attr("id");
+                    employeeChangeDetailGrid.jqGrid('setCell', selectedRowId, 'ChildNewValueAdmin', newValue);
+                });
+
+            }
+        }).navGrid("#employeeChangeDetailTablePager",
+                                            { search: false, refresh: true, add: false, edit: false, del: false },
+                                            {},
+                                            {},
+                                            {}
+                                         );
+
+        ///  OnHold Grid For Personal and Residential Details
+
+        $("#employeeChangeOnholdDetailTable").jqGrid({
+            url: '@Url.Action("SelectedModuleDetails", "Approvals")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { employeeId: function () { return $("#SelectedParentID").val(); }, module: function () { return $("#SelectedParentModule").val(); } },
+            // Specify the column names
+            colNames: ["Employee ID", "Field Label", "Old Value", "New Value", "New Value Hidden", "StatusID", "Status", "", "HrOnholdComment"],
+            // Configure the columns
+            colModel:
+            [
+             { name: "ChildEmployeeID", index: "ChildEmployeeID", hidden: true, width: 70, align: "left" },
+             { name: "ChildFieldDiscription", index: "ChildFieldDiscription", width: 60, align: "left" },
+             { name: "ChildOldValue", index: "ChildOldValue", width: 70, align: "left" },
+             { name: "ChildNewValue", index: "ChildNewValue", width: 70, align: "left", formatter: formatOnholdUserName },
+             { name: "ChildNewValueAdmin", index: "ChildNewValue", width: 70, align: "left", hidden: true, width: 70, align: "left" },
+             { name: "ChildApprovalStatusMasterID", index: "ChildApprovalStatusMasterID", hidden: true, width: 70, align: "left" },
+             { name: "ChildRadioSelect", index: "ChildApprovalStatusMasterID", formatter: RadioOnholdFormatter, width: 100, align: "left" },
+			 { name: "ChildFieldDbColumnName", index: "ChildFieldDbColumnName", hidden: true, width: 70, align: "left" },
+             { name: "ChildComments", index: "ChildComments", width: 70, align: "left", hidden: true }
+
+            ],
+            width: 700,
+            height: 500,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#employeeChangeOnholdDetailTablePager"),
+            rowNum: 10,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            //caption: "Employees - Changed Field Details",
+            gridComplete: function () {
+                var employeeChangeDetailGrid = $('#employeeChangeOnholdDetailTable');
+
+                $(".radioSelected").on("change", function () {
+                    var selectedRowId = $(this).closest('tr').attr("id");
+                    var radioId = $(this).val();
+                    selectedRowId = $(this).closest('tr').attr("id");
+                    employeeChangeDetailGrid.jqGrid('setCell', selectedRowId, 'ChildApprovalStatusMasterID', radioId);
+                });
+
+                $(".NewValueChanged").on("keyup", function (ev) {
+                    var selectedRowId = $(this).closest('tr').attr("id");
+                    var newValue = ev.target.value;
+                    selectedRowId = $(this).closest('tr').attr("id");
+                    employeeChangeDetailGrid.jqGrid('setCell', selectedRowId, 'ChildNewValueAdmin', newValue);
+                });
+            }
+        }).navGrid("#employeeChangeOnholdDetailTablePager",
+                                            { search: false, refresh: true, add: false, edit: false, del: false },
+                                            {},
+                                            {},
+                                            {}
+                                         );
+
+        function RadioFormatter(cellvalue, options, rowObject) {
+            var obj = "";
+            var n = "";
+            for (var i = 1; i <= 3; i++) {
+                if (i == 1) {
+                    obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "On Hold  ";
+                }
+                else if (i == 2) {
+                    obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Approve  ";
+                }
+                else {
+                    obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Reject  ";
+                }
+            };
+            return obj;
+        }
+        function RadioOnholdFormatter(cellvalue, options, rowObject) {
+            var obj = "";
+            var n = "";
+            for (var i = 1; i <= 3; i++) {
+                if (i == 1) {
+                    if (rowObject['ChildApprovalStatusMasterID'] != null && rowObject['ChildApprovalStatusMasterID'] == i) {
+                        obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'checked='checked'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                        obj = obj + "On Hold  ";
+                    }
+                    else {
+                        obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                        obj = obj + "On Hold  ";
+                    }
+                }
+                else if (i == 2) {
+                    obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Approve  ";
+                }
+                else {
+                    obj += "<input type='radio' name='" + rowObject['ChildFieldDiscription'] + "'id='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "' class='radioSelected' value='" + i + "'>" + "<label for='" + rowObject['ChildFieldDiscription'] + options.rowId + "_" + i + "'class='LabelForRadio'></label>";
+                    obj = obj + "Reject  ";
+                }
+            };
+            return obj;
+        }
+
+        function formatUserName(cellvalue, options, rowObject) {
+            if (rowObject['ChildFieldDiscription'] == "User Name") {
+                return "<input type='text' value='" + cellvalue + "' id='" + rowObject['ChildEmployeeID'] + "' class='NewValueChanged'></input>";
+            } else {
+                return cellvalue;
+            }
+        }
+
+        function formatOnholdUserName(cellvalue, options, rowObject) {
+            if (rowObject['ChildFieldDiscription'] == "User Name") {
+                return "<input type='text' value='" + cellvalue + "' id='" + rowObject['ChildEmployeeID'] + "' class='NewValueChanged'></input>";
+            } else {
+                var myInput = $('#txtOnholdChildComments');
+                var comment = rowObject['ChildComments'];
+                myInput.val(myInput.val() + comment + "\n");
+                return cellvalue;
+            }
+
+        }
+
+        $('#SaveNewEmployee').off('click').on('click', function (e) {
+            SaveApprovalStatusFunction(e);
+        });
+        $('#SaveOnhold').off('click').on('click', function (e) {
+            SaveApprovalStatusFunction(e);
+        });
+    });                     //end document.ready
+
+    function SaveApprovalStatusFunction(e)
+    {
+        var localOnholdGridData;
+        var localGridData;
+        var HrComments;
+
+        if ($(e.target).attr('id') == 'SaveOnhold') {
+            var CommentLength = $("#txtOnholdChildComments").val().trim();
+            var totallen = CommentLength.length;
+            if (totallen <= 0) {
+                $("#ZeroComment").dialog({
+                    title: 'Data Approval Process',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: "noclose",
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+            localGridData = 0;
+            localOnholdGridData = jQuery("#employeeChangeOnholdDetailTable").getRowData();
+
+        }
+        if ($(e.target).attr('id') == 'SaveNewEmployee') {
+            var NCommentLength = $("#txtChildComments").val().trim();
+            var Ntotallen = NCommentLength.length;
+            if (Ntotallen <= 0) {
+                $("#ZeroComment").dialog({
+                    title: 'Data Approval Process',
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    dialogClass: "noclose",
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                }); //end dialog
+                return false;
+            }
+            localOnholdGridData = 0;
+            localGridData = jQuery("#employeeChangeDetailTable").getRowData();
+        }
+        var gridData;
+        if (localGridData == 0) {
+            gridData = localOnholdGridData;
+            HrComments = $("#txtOnholdChildComments").val().trim();
+        }
+        else {
+            gridData = localGridData;
+            HrComments = $("#txtChildComments").val().trim();
+        }
+
+        for (var i = 0; i < gridData.length; i++) {
+            var radioVal = gridData[i].ChildApprovalStatusMasterID;
+            var radiovalue = radioVal.trim().length;
+            if (radiovalue > 0) {
+                count = 1;
+            }
+            else {
+                if (radiovalue <= 0) {
+                    $("#ZeroRecord").dialog({
+                        title: 'Data Approval Process',
+                        resizable: false,
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        dialogClass: "noclose",
+                        open: function () {
+                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                            $(this).parent().css('z-index', '27');
+                        },
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+
+                        }
+                    }); //end dialog
+                    return false;
+                }
+            }
+        }
+
+        var EmployeeChangesApprovalViewModel = {
+            Module: $("#SelectedParentModule").val(),
+            EmployeeID: '@Model.EmployeeID',
+            ChangeDetailsList: gridData,
+            Comments: HrComments
+
+        }
+        if ($(".radioSelected").is(":checked")) {
+            DisplayLoadingDialog();  //checked
+            $.ajax({
+                url: '@Url.Action("SaveApprovalStatus", "Approvals")',
+                type: 'POST',
+                data: JSON.stringify(EmployeeChangesApprovalViewModel),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.status == true) {
+                        $("#ApprovePdataSaveSuccessMessage").dialog({
+                            title: 'Data Approval Process',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    DisplayLoadingDialog();  //checked
+                                    $(this).dialog("close");
+                                    SendMailCall();
+                                }
+                            }
+                        }); //end dialog
+                        $("#employeeChangeDetailDialog").dialog('destroy');
+                        jQuery("#employeeApprovalTable").trigger("reloadGrid");
+                        jQuery("#employeeApprovalOnholdTable").trigger("reloadGrid");
+
+                    }
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog('Data Approval Process');
+                    }
+                    else {
+                        DisplayErrorDialog('Data Approval Process');
+                    }
+                },
+                error: function (result) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    DisplayErrorDialog('Data Approval Process');
+                }
+            });
+        }
+        else {
+            $("#RadiobuttonSelect").dialog({
+                title: 'Data Approval Process',
+                resizable: false,
+                height: 'auto',
+                width: 'auto',
+                modal: true,
+                dialogClass: "noclose",
+                open: function () {
+                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                    $(this).parent().css('z-index', '27');
+                },
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            }); //end dialog
+            return false;
+        }
+
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+        function SendMailCall() {
+            $.ajax({
+                url: '@Url.Action("AdminSendMail", "Approvals")',
+                type: 'POST',
+                data: JSON.stringify(EmployeeChangesApprovalViewModel),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+
+                    if (data) {
+                        $("#MailDialog").html(data);
+                        $("#MailDialog").dialog({
+
+                            resizable: false,
+                            height: 520,
+                            width: 800,
+                            modal: true,
+                            title: "Send Mail",
+                            close: function () {
+                                $(this).dialog('close');
+                                location.reload();
+                            }
+
+                        });
+
+                        $.validator.unobtrusive.parse($("#MailDetails"));
+                        $('#sendSeparationMail').click(function () {
+
+                            $("#CCErrorMessage").hide();
+                            $("#ToErrorMessage").hide();
+                            if ($('#MailDetails').valid()) {
+
+                                DisplayLoadingDialog();
+                                var SendMailUrl = '@Url.Action("SendEmail", "Approvals")'
+
+                                $.ajax(
+                            {
+
+                                url: SendMailUrl,
+                                type: 'POST',
+                                data: $('#MailDetails').serialize(),
+                                success: function (data) {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+
+                                    if (data.validCcId == true && data.validtoId == true) {
+                                        if (data.status == true) {
+                                            $("#MailDialog").dialog('destroy');
+                                            location.reload();
+                                        }
+                                    }
+                                    else if (data.status == "Error") {
+                                        DisplayErrorDialog('Mail Error');
+                                    }
+                                    else {
+                                        if (data.validCcId == false)
+                                            $("#CCErrorMessage").show();
+
+                                        if (data.validtoId == false)
+                                            $("#ToErrorMessage").show();
+
+                                        return false;
+
+                                    }
+
+                                },
+                                error: function () {
+                                    $("#loading").dialog("close");
+                                    $("#loading").dialog("destroy");
+                                    DisplayErrorDialog('Mail Error');
+
+                                }
+
+                            }); //end ajax
+
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    DisplayErrorDialog('Mail Error');
+
+                }
+            }); //end Mail
+
+        }
+
+    }
+</script>
+<link href="../../Content/New%20Design/common.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/New%20Design/hr.css" rel="stylesheet" type="text/css" />
+<div id="DivPRNew">
+    <div class="tablestyle3">
+        <table id="employeeChangeDetailTable" class="scroll">
+        </table>
+        <div id="employeeChangeDetailTablePager">
+        </div>
+    </div>
+    <div class="clearfix ProjectIndexFliter mrgnT20">
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span>@Html.Label("Comments:")</div>
+                <div class="InputDiv">@Html.TextAreaFor(m => m.Comments, new { @id = "txtChildComments" })
+                    @Html.HiddenFor(m => m.Comments, new { @id = "txtchildcomments" })
+                    <p id="CommentsErrorMessage" style="display: none;" class="ErrorMsg">
+                        This Field is Required.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ButtonContainer3">
+        <input id="SaveNewEmployee" type="button" value="Save" class="ButtonGray mrgnR8 saveEmployeeDetails" />
+    </div>
+</div>
+<div id="DivPROnhold">
+    <div class="tablestyle3">
+        <table id="employeeChangeOnholdDetailTable" class="scroll">
+        </table>
+        <div id="employeeChangeOnholdDetailTablePager">
+        </div>
+    </div>
+    @*<div class="approval-empdetail">
+        @Html.Label("Comments ")<span class="mandatory">*</span>
+        @Html.TextAreaFor(m => m.Comments, new { @id = "txtOnholdChildComments" })
+        @Html.HiddenFor(m => m.Comments, new { @id = "txtOnholdChildComments" })
+        <p id="CommentsErrorMessageOnhold" style="display: none; color: red">
+            This Field is Required.
+        </p>
+    </div>*@
+    <div class="clearfix ProjectIndexFliter mrgnT20">
+        <div class="leftcol">
+            <div class="formrow clearfix">
+                <div class="LabelDiv">
+                    <span class="mandatory">*</span>@Html.Label("Comments:")</div>
+                <div class="InputDiv">
+                    @Html.TextAreaFor(m => m.Comments, new { @id = "txtOnholdChildComments" })
+                    @Html.HiddenFor(m => m.Comments, new { @id = "txtOnholdChildComments" })
+                    <p id="CommentsErrorMessageOnhold" style="display: none; color: red">
+                        This Field is Required.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="clear popup_button ">
+        <div class="floatR">
+            <br />
+            <input id="SaveOnhold" type="submit" value="Save" class="button mrgnR5 saveEmployeeDetails" />
+        </div>
+    </div>*@
+    <div class="ButtonContainer3">
+        <input id="SaveOnhold" type="button" value="Save" class="ButtonGray mrgnR8 saveEmployeeDetails" />
+    </div>
+</div>
+<div id="ApprovePdataSaveSuccessMessage" style="display: none">
+    <p>
+        Data saved successfully.
+    </p>
+</div>
+<div id="MailDialog" style="display: none">
+    @{Html.RenderPartial("_MailTemplateApprovalStatus", Model.Mail);}
+</div>
+<div id="RadiobuttonSelect" style="display: none">
+    Please select status.
+</div>
+<div id="ZeroRecord" style="display: none">
+    Please Perform Approve/Reject/On Hold Action On All Records
+</div>
+<div id="ZeroComment" style="display: none">
+    Please Enter Comments.
+</div>

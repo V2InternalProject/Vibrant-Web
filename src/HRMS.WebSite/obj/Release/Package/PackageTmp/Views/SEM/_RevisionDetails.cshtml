@@ -1,0 +1,351 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+@{
+    
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "ReviewerDetails" }))
+{
+    <div class="" id="ReviewerDetailsRevisions">
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">* </span>@Html.Label("From what value to what value ?")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(x => x.QuestionOne)
+                @Html.ValidationMessageFor(x => x.QuestionOne)
+                @Html.HiddenFor(x => x.QuestionOne)
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">* </span>@Html.Label("What are the root causes for this revision ?")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(x => x.QuestionTwo)
+                @Html.ValidationMessageFor(x => x.QuestionTwo)
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">* </span>@Html.Label("How are you dealing with these root causes ?")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(x => x.QuestionThree)
+                @Html.ValidationMessageFor(x => x.QuestionThree)
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">* </span>@Html.Label("How can we avoid these problems/revisions in future ?")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(x => x.QuestionFour)
+                @Html.ValidationMessageFor(x => x.QuestionFour)
+            </div>
+        </div>
+        <div class="formrow clearfix">
+            <div class="LabelDiv">
+                <span class="mandatory">* </span>@Html.Label("What is your degree of confidence that further revisions to this project will not be required ?")
+            </div>
+            <div class="InputDiv">
+                @Html.TextBoxFor(x => x.QuestionFive)
+                @Html.ValidationMessageFor(x => x.QuestionFive)
+            </div>
+        </div>
+    </div>
+         
+    
+@*  <div class="formcolEntireRow" id="ReviewerDetailsRevisions">
+        <div class="displayB"></div>
+        <div class="displayB fieldwidth">
+           
+        </div>
+        <div class="displayB"></div>
+        <div class="displayB fieldwidth">
+            
+        </div>
+        <div class="displayB"></div>
+        <div class="displayB fieldwidth">
+           
+        </div>
+        <div class="displayB"></div>
+        <div class="displayB fieldwidth">
+           
+        </div>
+        <div class="displayB"></div>
+        <div class="displayB fieldwidth">
+           
+        </div>
+    </div>*@
+
+
+    @Html.HiddenFor(x => x.ProjectID)
+    @Html.HiddenFor(x => x.PMSProjectEndDate)
+    @Html.HiddenFor(x => x.PMSProjectWorkHours)
+    <div class="clear popup_button">
+        <div class="floatR">
+            <input type="button" value="Send For Approval" class="ButtonGray mrgnR11" id="btnsendForApproval" />
+            <input type="button" value="Cancel" class="ButtonGray mrgnR11" id="btlCancelRevision" />
+        </div>
+    </div>
+}
+<div id="errorDialogForMail" style="display: none">
+    <p>
+        There is some Error.
+    </p>
+</div>
+<div id="RevisionNotsentForApproval" style="display: none">
+    <p>
+        Revisions have not been sent for approval.
+    </p>
+</div>
+<div id="sendForrevisionApprovalFromrevisionWindow" style="display: none">
+</div>
+<div id="RequiredFeildValidationForRevision" style="display: none">
+    <p>
+        All Fields are mandatory. Please fill all Feilds.
+    </p>
+</div>
+<div id="errorSendForRevisionDialog" style="display: none">
+    <p>
+        Could not send Revisions for approval.
+    </p>
+</div>
+
+<script type="text/javascript">
+    $('#ReviewerDetails #btlCancelRevision').click(function () {
+        $("#RevisionNotsentForApproval").dialog({
+            resizable: false,
+            height: 'auto',
+            width: 'auto',
+            modal: true,
+            title: "Revisions Not sent For Approval",
+            dialogClass: "noclose",
+            open: function () {
+                $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                $(this).parent().css('z-index', '27');
+            },
+            buttons: {
+                OK: function () {
+                    $(this).dialog('destroy');
+                    window.location.href = '@Url.Action("GetPMSProjectDetails", "SEM")?ProjectIDs=' + '@ViewBag.encryptedProjectID';
+                    return false;
+                }
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#QuestionOne').focusout(function () {
+            $('#QuestionOne').val($(this).val());
+        });
+        $('#QuestionTwo').focusout(function () {
+            $('#QuestionTwo').val($(this).val());
+        });
+        $('#QuestionThree').focusout(function () {
+            $('#QuestionThree').val($(this).val());
+        });
+        $('#QuestionFour').focusout(function () {
+            $('#QuestionFour').val($(this).val());
+        });
+        $('#QuestionFive').focusout(function () {
+            $('#QuestionFive').val($(this).val());
+        });
+        $('#ReviewerDetails #btnsendForApproval').click(function () {
+            SendMailForRevisionApprovalMail();
+        });
+        function SendMailForRevisionApprovalMail() {
+            if ($('#ReviewerDetailsRevisions #QuestionOne').val() == "" || $('#ReviewerDetailsRevisions #QuestionOne').val() == null || $('#ReviewerDetails #QuestionTwo').val() == "" || $('#ReviewerDetails #QuestionTwo').val() == null || $('#ReviewerDetails #QuestionThree').val() == "" || $('#ReviewerDetails #QuestionThree').val() == null || $('#ReviewerDetails #QuestionFour').val() == "" || $('#QuestionFour').val() == null || $('#ReviewerDetails #QuestionFive').val() == "" || $('#ReviewerDetails #QuestionFive').val() == null) {
+                $("#RequiredFeildValidationForRevision").dialog({
+                    resizable: false,
+                    height: 'auto',
+                    width: 'auto',
+                    modal: true,
+                    title: "Required Feild",
+                    dialogClass: "noclose",
+                    open: function () {
+                        $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                        $(this).parent().css('z-index', '27');
+                    },
+                    buttons: {
+                        OK: function () {
+                            $(this).dialog('destroy');
+                            return false;
+                        }
+                    }
+                });
+                return false;
+            }
+            if ($('#ReviewerDetails').valid()) {
+                var RevisionDetailsModel = {
+                    ProjectID: $('#ReviewerDetails #ProjectID').val(),
+                    WorkHours: $("#PMSProjectWorkHours").val(),
+                    EndDate: $("#PMSProjectEndDate").val(),
+                    QuestionOne: $('#QuestionOne').val(),
+                    QuestionTwo: $('#QuestionTwo').val(),
+                    QuestionThree: $('#QuestionThree').val(),
+                    QuestionFour: $('#QuestionFour').val(),
+                    QuestionFive: $('#QuestionFive').val()
+                }
+                OpenLoadingPopup();
+                $.ajax({
+                    url: '@Url.Action("SendForRevisionApproval", "SEM")',
+                    type: 'POST',
+                    contentType: "application/json",
+                    dataType: 'json',
+                    data: JSON.stringify(RevisionDetailsModel),
+                    async: false,
+                    success: function (results) {
+                        var empId = '@ViewBag.loginUserId';
+                        var projectId = $('#ReviewerDetails #ProjectID').val();
+                        var btnClick = "Rivision Approval";
+                        if (results.status == true) {
+                            $.ajax({
+                                url: '@Url.Action("ProjectSendMail", "SEM")',
+                                type: 'POST',
+                                data: { loggedinEmpID: empId, projectId: projectId, btnClick: btnClick },
+                                datatype: "json",
+                                async: false,
+                                success: function (data) {
+                                    CloseLoadingPopup();
+                                    if (data) {
+                                        $("#ProjectMailDialog").html(data);
+                                        $("#ProjectMailDialog").dialog({
+                                            resizable: false,
+                                            height: 'auto',
+                                            width: 800,
+                                            modal: true,
+                                            title: "Send Mail",
+                                            close: function () {
+                                                $(this).dialog('destroy');
+                                                location.reload();
+                                                return false;
+                                            }
+                                        });
+                                        //$('#sendForrevisionApproval').dialog('close');
+                                        $('#sendForrevisionApproval').dialog('destroy');
+
+                                        $.validator.unobtrusive.parse($("#MailDetails"));
+                                        $('#sendCustomerMail').click(function () {
+                                            $("#CCErrorMessage").hide();
+                                            $("#ToErrorMessage").hide();
+                                            if ($('#CustMailDetails').valid()) {
+                                                OpenLoadingPopup();
+                                                var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                                                $.ajax(
+                                    {
+                                        url: sendMailUrl,
+                                        type: 'POST',
+                                        data: $('#CustMailDetails').serialize(),
+                                        async: false,
+                                        success: function (serverData) {
+                                            CloseLoadingPopup();
+                                            if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                if (serverData.status == true) {
+                                                    $("#ProjectMailDialog").dialog('destroy');
+                                                    location.reload();
+                                                    return false;
+                                                }
+                                            }
+                                            else if (serverData.status == "Error") {
+                                                $("#errorDialogForMail").dialog({
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 'auto',
+                                                    modal: true,
+                                                    title: 'Mail Error',
+                                                    dialogClass: "noclose",
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                            location.reload();
+                                                            return false;
+                                                        }
+                                                    }
+                                                }); //end dialog
+                                            }
+                                            else {
+                                                if (serverData.validCcId == false)
+                                                    $("#CCErrorMessage").show();
+                                                if (serverData.validtoId == false)
+                                                    $("#ToErrorMessage").show();
+                                                return false;
+                                            }
+                                        },
+                                        error: function () {
+                                            CloseLoadingPopup();
+                                            $("#errorDialogForMail").dialog({
+                                                title: 'Mail Error',
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                dialogClass: "noclose",
+                                                buttons:
+                                                {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                        location.reload();
+                                                        return false;
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                    }); //end ajax
+                                            }
+                                        });
+
+                                    }
+                                }
+                            });
+                        }
+                        else if (results.status == false)
+                        {
+                            CloseLoadingPopup();
+                            $("#errorSendForRevisionDialog").dialog({
+                                resizable: false,
+                                height: 'auto',
+                                width: 'auto',
+                                modal: true,
+                                dialogClass: "noclose",
+                                open: function () {
+                                    $(this).parent().prev('.ui-widget-overlay').css('z-index', '26');
+                                    $(this).parent().css('z-index', '27');
+                                },
+                                buttons:
+                                {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        location.reload();
+                                        return false;
+                                    }
+                                }
+                            }); //end dialog
+                        }
+                    }
+                });
+            }
+        }
+    });
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+                                    {
+                                        closeOnEscape: false,
+                                        resizable: false,
+                                        height: 140,
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        open: function () {
+                                            $('#loading').parent().css('background-color', 'transparent');
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                                            $(this).parent().css('z-index', '33');
+                                        }
+                                    });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>

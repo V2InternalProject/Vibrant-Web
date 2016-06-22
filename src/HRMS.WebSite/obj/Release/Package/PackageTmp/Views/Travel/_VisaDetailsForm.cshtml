@@ -1,0 +1,510 @@
+﻿@model HRMS.Models.VisaViewModel
+@{
+    ViewBag.Title = "Visa Details Form";
+}
+<script src="@Url.Content("../../Scripts/Travel/_TravelVisaDetails.js")" type="text/javascript"></script>
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $(document).ready(function () {
+        isAddedbyAdmin = "";
+        isVisaRowInEditMode = false;
+        var deletionIdSelected = 0;
+
+            stringCountryList = @(Html.Raw(Json.Encode(Model.countryList)));
+            var country = [];
+            country.push("Select");
+            $.each(stringCountryList, function (index,value) {
+            country.push(value.CountryName);
+            });
+   
+            stringVisaTypeList = @(Html.Raw(Json.Encode(Model.visatypeList)));
+            var visaType = [];
+            visaType.push("Select");
+            $.each(stringVisaTypeList, function (index,value) {
+            visaType.push(value.VisaTypeName);
+            });
+
+        // Set up the jquery grid
+          $("#VisaTravelDetailsTable").jqGrid({
+
+            // Ajax related configurations
+            url: '@Url.Action("TravelVisaDetailLoadGrid", "Travel")',
+            datatype: "json",
+            mtype: "POST",
+            postData: { TravelId: '@ViewBag.EncryptedTravelID' },
+            // Specify the column names
+            colNames: ["", "", "", "", "", "", "", "Country", "Visa Type", "Valid Till", "", "Immigration Details", "Visa Copy", "Visa Copy", ""],
+            // Configure the columns
+            colModel: [
+              { name: "VisaTravelID", index: "VisaTravelID", editable: true, hidden: true, width: 50, align: "left" },
+              { name: "StageID", index: "StageID", hidden: true, width: 50, align: "left" },
+              { name: "ID", index: "ID", hidden: true, width: 50, align: "left" },
+               { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 50, align: "left" },
+             { name: "CountryID", index: "CountryID", hidden: true, width: 50, align: "left" },
+               { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 50, align: "left" },
+                { name: "VisaAddedStatus", index: "VisaAddedStatus", hidden: true, width: 50, align: "left" },
+                { name: "CountryName", index: "CountryName", width: "25%", align: "left", editable: true, edittype: "select", editrules: { required: true, custom: true, custom_func: isVisaCountrySelected }, editoptions: { value: country, dataEvents: [{ type: 'change', fn: function (e) { ChangeVisaCountry(e); } }]}, classes: "VBAddedFields" },
+              { name: "VisaTypeName", index: "VisaTypeName", width: "25%", align: "left", editable: true, edittype: "select", editrules: { required: true, custom: true, custom_func: isVisaTypeSelected }, editoptions: { value: visaType, dataEvents: [{ type: 'change', fn: function (e) { ChangeVisatype(e); } }]}, classes: "VBAddedFields"  },
+              { name: "ToDate", index: "ToDate", width: "25%", align: "left", editable: true, editrules: { required: true }, sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y'}, classes: "VBAddedFields", 
+               editoptions:{
+                    readonly:true,
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        }).bind("mouseover", function () {
+                            $(this).datepicker("option", "yearRange", "-60:+10");
+                        });
+                    }
+                }
+              },
+               { name: "ValidTill", index: "ValidTill", width: "11.37%", align: "left", sorttype: 'date', formatter: 'date', hidden: true, formatoptions: { newformat: 'm/d/Y'} },
+               { name: "Decription", index: "Decription", width: "25%", align: "left", editable: true, editoptions: { maxlength: 500 } },
+               { name: "VisaFileName", index: "VisaFileName", width: 100, align: "left", formatter: formatTravelVisalink },
+              // { name: "VisaFileNameUpload", index: "VisaFileNameUpload", hidden: true, edittype: 'file', editable: true, width: 100, align: "left", classes: "approvedStageFields" },
+                {name: "VisaFileNameUpload", index: "VisaFileNameUpload", width: 100, align: "left", hidden: true, formatter: uploadVisaButton, classes: "UploadButtons approvedStageFields" },
+        { name: "Delete", index: "Delete", width: "6.25%", align: "center", formatter: DeleteVisaIconifNotNeeded }
+            ],
+
+            width: 700,
+            jsonReader: { repeatitems: false },
+            toppager: false,
+            bottompager: false,
+            rowNum: 5,
+            rowList: [5, 10, 20],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            pager: $("#VisaTravelDetailsTablePager"),
+            //caption: "Visa Details",
+            editurl: '@Url.Action("SaveTravelVisaDetailsInfo", "Travel")',
+            gridComplete: function () {
+                var viewstatus = '@ViewBag.StageID';
+                if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4) {
+                    $("#gbox_VisaTravelDetailsTable").find('input,select').attr("disabled", true);
+                    $("#gbox_VisaTravelDetailsTable").find("tr.jqgrow").css("background", "#EDEAEA");  // color grey                    
+                }
+                else {
+                    $("#gbox_VisaTravelDetailsTable").find('input,select').removeAttr("disabled");
+                }
+                if ('@ViewBag.viewDetailClick' == 'yes' || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || viewstatus == 2 || viewstatus == 1 || viewstatus == 0) {
+                    $("#VisaTravelDetailsTable").hideCol("Delete");
+                }
+
+            },
+            onCellSelect: function (rowid, iCol) {
+                var viewstatus = '@ViewBag.StageID';
+                var rowData = $(this).getRowData(rowid);
+                // var travelId = rowData['VisaTravelID'];
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+
+                if(isVisaRowInEditMode == false)
+                {
+                    var travelId = rowData['ID'];
+                    var visattravelId = rowData['VisaTravelID'];
+                    var VisaStatusAdmin = rowData['VisaAddedStatus'];
+                    isAddedbyAdmin = rowData['VisaAddedStatus'];
+                    $('#VisaForm #userSelectedCountryId').val(rowData['CountryID']);
+                    $('#VisaForm #selectedVisaTypeId').val(rowData['VisaTypeID']);
+                    $('#addTravelVisaDetailsDialog #VisaTravelIDnew').val(rowData['VisaTravelID']);
+                            
+                    if ('@ViewBag.loginUserId' == '@Model.ID' || '@Model.ID' == 0) {
+                        if (colName['index'] == "Delete") {
+                            if ((viewstatus >= 0 && viewstatus != 3) || ('@ViewBag.viewDetailClick' == 'yes') || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3)) {
+                                $(this).jqGrid('hideCol', 'Delete');
+                                return false;
+                            }
+                            else {
+                                if (VisaStatusAdmin == 1 || rowid != "new_row")
+                                    DeleteVisatravelDetail(visattravelId, travelId);
+                                else
+                                    return false;
+                            }
+                        }
+                        else
+                            if (('@ViewBag.viewDetailClick' == 'yes' && '@ViewBag.StageID' == 3) || (viewstatus >= 0 && viewstatus < 3) || ('@ViewBag.viewDetailClick' == 'yes' && '@ViewBag.StageID' != 4) || ('@ViewBag.viewDetailClick' == 'yes' && '@ViewBag.StageID' != 4 && '@ViewBag.IsLoggedInUser' == 'True') || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3)) {
+                                $(this).jqGrid('hideCol', 'Delete');
+                                return false;
+                            }
+                            else {
+                                if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == 'True') {
+                                    $('#addTravelVisaDetailsDialog #VisaDetails_CountryID').attr("disabled", "disabled");
+                                    $('#addTravelVisaDetailsDialog #Visa_VisaTypeID').attr("disabled", "disabled");
+                                    //                                $('#todateVisaDetails').attr("disabled", "disabled").addClass("bg-gray");
+                                    $("#todateVisaDetails").prop("disabled", true).addClass("bg-gray");
+                                    $('.ui-datepicker-trigger').hide();
+                                    $('#addTravelVisaDetailsDialog #Decription').removeAttr("disabled");
+                                }
+                                //EditTravelVisaDetails(rowData, visattravelId);
+                            }
+                    }
+                }
+            }
+        }).navGrid("#VisaTravelDetailsTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false }
+       );
+
+        $("#VisaTravelDetailsTable").jqGrid('inlineNav', "#VisaTravelDetailsTablePager",
+        {
+             edit: true,
+            editicon: "ui-icon-pencil",
+           edittext:"Edit",
+            add: true,
+            addicon: "ui-icon-plus",
+           addtext:"Add",
+            save: true,
+            saveicon: "ui-icon-disk",
+           savetext:"Save",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+           canceltext:"Cancel",
+            addParams: {
+                useFormatter: false,
+                 addRowParams: {
+                    oneditfunc: function (rowid) {
+                        isVisaRowInEditMode = true;
+                    $('#addTravelVisaDetailsDialog #VisaTravelIDnew').val(0);
+                        $("#VisaTravelDetailsTable").jqGrid('hideCol', 'VisaFileName');
+                        $("#VisaTravelDetailsTable").jqGrid('showCol', 'VisaFileNameUpload');
+                        $(".UploadButtons").children().hide();
+                          $("#" + rowid + "_Decription").parent().next().next().find('input[type="button"]').show();
+                    }
+                 }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function(rowId){
+                    isVisaRowInEditMode = true;
+                $("#VisaTravelDetailsTable").jqGrid('hideCol', 'VisaFileName');
+                $("#VisaTravelDetailsTable").jqGrid('showCol', 'VisaFileNameUpload');
+                if('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin" && isAddedbyAdmin == 1)
+                {
+                    $(".VBAddedFields").find("input,select").removeClass("bg-gray").removeAttr("disabled");
+                    $(".approvedStageFields").find("input,select").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
+                }
+                else if('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin" && isAddedbyAdmin == "")
+                {
+                    $(".VBAddedFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                    $(".approvedStageFields").find("input,select").removeClass("bg-gray").removeAttr("disabled").css("opacity","1");
+                }
+                else if('@ViewBag.StageID' == 4)
+                {
+                    $(".VBAddedFields").find("input,select").addClass("bg-gray").attr("disabled","disabled");
+                    $(".approvedStageFields").find("input,select").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                }
+                 $(".UploadButtons").children().hide();
+                 $("#" + rowId + "_Decription").parent().next().next().find('input[type="button"]').show();
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+                    SelectedCountryID: function () {
+                        return $('#VisaForm #userSelectedCountryId').val();
+                    },
+                    SelectedVisaTypeID: function () {
+                        return $('#VisaForm #selectedVisaTypeId').val();
+                    }
+                },
+                aftersavefunc: function (data, response) {
+                    isVisaRowInEditMode = false;
+                    var result = $.parseJSON(response.responseText);
+                    jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                    $("#VisaTravelDetailsTable").jqGrid('showCol', 'VisaFileName');
+                    $("#VisaTravelDetailsTable").jqGrid('hideCol', 'VisaFileNameUpload');
+                    if (result.status == true) {
+                        $("#AddTravelVisaDetailsSuccessMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == false) {
+                        $("#AddTravelVisaDetailsErrorMessege").dialog({
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else if (result.status == "Error") {
+                        DisplayErrorDialog("Visa Details");
+                    }
+                    else {
+                        DisplayErrorDialog("Visa Details");
+                    }
+
+                },
+                errorfunc: null,
+                afterrestorefunc: function(){
+                    isVisaRowInEditMode = false;
+                   $("#VisaTravelDetailsTable").jqGrid('showCol', 'VisaFileName');
+                   $("#VisaTravelDetailsTable").jqGrid('hideCol', 'VisaFileNameUpload');
+                   ClearVisaTempDetails();
+                },
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+
+
+        function DeleteVisaIconifNotNeeded(cellvalue, options, rowobject) {
+            if (rowobject['VisaAddedStatus'] == 1) {
+                return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
+            }
+            else {
+                return '';
+            }
+        }
+
+        function formatTravelVisalink(cellvalue, options, rowobject) {
+            if (cellvalue != null && cellvalue != "")
+                return "<a href=# id=" + rowobject['VisaTravelID'] + " class=EmpLink onClick = LinkTravelVisaClick(this," + rowobject['EmployeeId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
+            else
+                return "";
+        }
+
+         function ClearVisaTempDetails() {
+        $.ajax({
+            url: "DeleteVisaUploadDetails/Travel",
+            type: 'POST',
+            data: { VisaId: $('#addTravelVisaDetailsDialog #VisaTravelIDnew').val()},
+            success: function (data) {
+                
+            }
+        });
+    }
+
+//        $("#btnAddTravelVisaDetails").click(function () {
+//            $(".field-validation-error").empty();
+//            $('input').removeClass("input-validation-error");
+//            $('#addTravelVisaDetailsDialog #VisaTravelID').val('');
+//            $('#addTravelVisaDetailsDialog #VisaTravelIDnew').val('');
+//            $("#addTravelVisaDetailsDialog #VisaDetails_CountryID").val('');
+//            $("#addTravelVisaDetailsDialog #Visa_VisaTypeID").val('');
+//            $('#addTravelVisaDetailsDialog #visaCountry').val('');
+//            $('#addTravelVisaDetailsDialog #VisaTypeName').val('');
+//            $('#addTravelVisaDetailsDialog #fromdate').val('');
+//            $('#addTravelVisaDetailsDialog #todateVisaDetails').val('');
+//            $('#addTravelVisaDetailsDialog #hdntoDate').val('');
+//            $('#addTravelVisaDetailsDialog #Decription').val('');
+//            $('#addTravelVisaDetailsDialog #visaDecription').val('');
+//            $('#addTravelVisaDetailsDialog #AdditionalInfo').val('');
+//            $('#addTravelVisaDetailsDialog #isAdminRecord').val('1');
+//            $('#addTravelVisaDetailsDialog #VisaDetails_CountryID').removeAttr("disabled");
+//            $('#addTravelVisaDetailsDialog #Visa_VisaTypeID').removeAttr("disabled");
+//            $('#addTravelVisaDetailsDialog #todateVisaDetails').removeAttr("disabled");
+//            $('#addTravelVisaDetailsDialog #Decription').removeAttr("disabled");
+//            $('#addTravelVisaDetailsDialog #adminVisa').removeAttr("disabled");
+//            $('#addTravelVisaDetailsDialog #todateVisaDetails').datepicker('enable');
+//            $('#addTravelVisaDetailsDialog').dialog({
+//                autoOpen: false,
+//                modal: true,
+//                width: 500,
+//                resizable: false,
+//                title: "Travel Visa Details"
+//            });
+//            $('#addTravelVisaDetailsDialog').dialog('open');
+//        });
+
+        if('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")
+            $("#VisaTravelDetailsTablePager_left").css("visibility","visible");
+        else if('@ViewBag.StageID' == 4)
+            $("#VisaTravelDetailsTable_iladd").css("visibility","hidden"); 
+        else  
+            $("#VisaTravelDetailsTablePager_left").css("visibility","hidden");
+        
+        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && '@ViewBag.IsLoggedInUser' == "True" && '@ViewBag.StageID' == 4) {
+            //$("#VisaTravelDetailsTable_iladd").css("visibility","visible");
+            $("#VisaTravelDetailsTablePager_left").css("visibility","hidden");
+            
+        }
+
+    });//end ready
+
+            function uploadVisaButton(cellvalue, options, rowobject) {
+            var uplaodBtn = "<input type='button' value='Upload' id=" + rowobject['VisaTravelID'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenVisaUploadPopup() />"
+            var fileLbl = "<label id=" + rowobject['VisaTravelID'] + '_UploadedFileName' + "></label>";
+            return uplaodBtn + fileLbl;
+        }
+
+        function OpenVisaUploadPopup() {
+       UploadVisaFunction();
+    }
+
+    var viewstatus = '@ViewBag.StageID';
+    if (viewstatus >= "1" && viewstatus <= "4") {
+        $('#VisdetailsDiv').find('input, textarea, button, select, img').attr('disabled', 'disabled');
+    }
+    if ('@ViewBag.StageID' == 4 && '@ViewBag.IsLoggedInUser' == "True") {
+        $('#VisdetailsDiv').find('input, textarea, button, select, img').removeAttr("disabled");
+    }
+    if ('@ViewBag.StageID' == 3) {
+        //$('#btnAddTravelVisaDetails').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #VisaDetails_CountryID').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #Visa_VisaTypeID').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #fromdate').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #todateVisaDetails').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #Decription').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #AdditionalInfo').removeAttr("disabled");
+        $('#saveTravelVisadetails').removeAttr("disabled");
+        $('#cancel').removeAttr("disabled");
+        $('#addTravelVisaDetailsDialog #Decription').focus();
+    }
+
+    function ChangeVisaCountry(e) {
+      var countryName = e.target[e.target.selectedIndex].text;
+      var ID=0;
+      $.each(stringCountryList,function(index, value) {
+      if(value.CountryName == countryName)
+      {
+         ID=value.CountryID;
+      }
+      });
+      $('#VisaForm #userSelectedCountryId').val(ID);
+    }//
+
+      function isVisaCountrySelected(value,colname)
+      {
+        if(value == "0")
+        {
+          $("#CountryNameRequiredDialog").dialog({
+	      modal: true,
+	      resizable: false,
+	      height: 140,
+	      width: 300,
+          dialogClass: "noclose",
+	      buttons:
+	      {
+	          "Ok": function () {
+	              $(this).dialog("close");
+	          }
+	      }
+	   });
+        $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+     }//
+
+      function ChangeVisatype(e) {
+      var typeName = e.target[e.target.selectedIndex].text;
+      var ID=0;
+      $.each(stringVisaTypeList,function(index, value) {
+      if(value.VisaTypeName == typeName)
+      {
+         ID=value.VisaTypeID;
+      }
+      });
+      $('#VisaForm #selectedVisaTypeId').val(ID);
+    }//
+
+      function isVisaTypeSelected(value,colname)
+      {
+        if(value == "0")
+        {
+          $("#VisaTypeRequiredDialog").dialog({
+	      modal: true,
+	      resizable: false,
+	      height: 140,
+	      width: 300,
+          dialogClass: "noclose",
+	      buttons:
+	      {
+	          "Ok": function () {
+	              $(this).dialog("close");
+	          }
+	      }
+	   });
+        $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+     }//
+</script>
+<div id="VisdetailsDiv">
+    @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "VisaForm" }))
+    {
+        @Html.HiddenFor(x => x.userSelectedCountryId)
+        @Html.HiddenFor(x => x.selectedVisaTypeId)
+    }
+    <h4 class="SmallHeadTravel">Visa Details</h4>
+<p class="NoteTravel">(Note - In case your visa details are blank, please ensure that the details are filled under Employee Details --> Passport/Visa Details tab)</p>
+<div id="addTravelVisaDetailsDialog" style="display: none">
+                @Html.Partial("_AddVisaDetails", Model)
+            </div>
+    <div class="tablestyle3 mrgnT15">
+        <table id="VisaTravelDetailsTable" class="scroll"></table>
+</div>
+<div id="VisaTravelDetailsTablePager">
+</div>
+</div>
+@*<div id="VisdetailsDiv" style="clear: right;">
+    <h2 class="mrgnT15 title-bgcolor">
+        Visa Details
+    </h2>
+    <div class="clearfix blueBorder">
+        <p style="font-style: italic; font-size: 12px; color: #000;">
+            (Note - In case your visa details are blank, please ensure that the details are
+            filled under Employee Details --> Passport/Visa Details tab)</p>
+        <div class="mrgnT10" style="clear: left;">
+            <div id="addTravelVisaDetailsDialog" style="display: none">
+                @Html.Partial("_AddVisaDetails", Model)
+            </div>
+            @*<input type="button" hidden="hidden" value="Add Visa Details" id="btnAddTravelVisaDetails"
+                class="button" />*@            
+<div id="DeleteConfirmationDialog" style="display: none">
+    <p>
+        Are you sure you want to delete the selected record ?</p>
+</div>
+<div id="DeleteConfirmation" style="display: none;">
+    <p>
+        Record has been deleted successfully.
+    </p>
+</div>
+<div id="ShowTravelVisaDetailsDiv" style="display: none;">
+</div>
+<div id="CountryNameRequiredDialog" title="Travel Visa details" style="display: none">
+    <p>
+        Please select value of Country Name.
+    </p>
+</div>
+<div id="VisaTypeRequiredDialog" title="Travel Visa details" style="display: none">
+    <p>
+        Please select value of Visa Type.
+    </p>
+</div>
+<div id="AddTravelVisaDetailsSuccessMessege" title="Travel Visa details" style="display: none;">
+    <p>
+        Travel Visa details have been saved.
+    </p>
+</div>
+<div id="AddTravelVisaDetailsErrorMessege" title="Travel Visa details" style="display: none;">
+    <p>
+        Unable to add record.
+    </p>
+</div>

@@ -1,0 +1,439 @@
+﻿@model HRMS.Models.PMSProjectDetailsViewModel
+@{
+
+}
+<h4 class="SmallHead">
+    Project Reviewers
+</h4>
+@*<input type="button" value="Add Project Reviewers" class="button mrgnT10" />*@
+<div class="ButtonContainer2 clearfix">
+    <input type="button" id="SelectAllReviewerBtn" value="Select All" class="ButtonGray mrgnR8" />
+    <input type="button" id="DeselectAllReviewerBtn" value="Deselect All" class="ButtonGray mrgnR8" />
+    <input type="button" id="DeleteReviewerBtn" value="Delete" class="ButtonGray mrgnR8" />
+</div>
+
+<div class="tablestyle3">
+    <table id="jqAddProjectReviewersTable"></table>
+</div>
+<div id="jqAddProjectReviewersTablePager">
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+         id=0;
+        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG") {
+            $('#SelectAllReviewerBtn').hide();
+            $('#DeselectAllReviewerBtn').hide();
+            $('#DeleteReviewerBtn').hide();
+        }
+        else {
+            $('#SelectAllReviewerBtn').show();
+            $('#DeselectAllReviewerBtn').show();
+            $('#DeleteReviewerBtn').show();
+        }
+        if('@Model.SearchedUserDetails.IsProjectReviewer' == 'True' && '@Model.IsProjectApprover' != 'True')
+        {
+            $('#SelectAllReviewerBtn,#DeselectAllReviewerBtn,#DeleteReviewerBtn').hide();
+        }
+        stringList = @(Html.Raw(Json.Encode(ViewBag.ReviewersName)));
+        projectReviewers = @(Html.Raw(Json.Encode(ViewBag.ReviewersName)));
+        var Name = [];
+        var Glob_ProjectReviewerId;
+        Name.push("Select");
+        $.each(stringList, function (index,value) {
+            Name.push(value.EmployeeName);
+        });
+
+        $("#jqAddProjectReviewersTable").jqGrid({
+            // Ajax related configurations
+            url: '@Url.Action("ProjectReviewerDetailsLoadGrid", "SEM")',
+            postData: { ProjectID: '@Model.ProjectID' },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["","","Name","", "From Date", "To Date", "Role", "Delete"],
+            // Configure the columns
+            colModel: [
+                { name: "ProjectReviewerId", index: "ProjectReviewerId", align: "left",editable: true, width: 50, hidden: true },
+                { name: "ProjectID", index: "ProjectID", align: "left", width: 50, editable: true, hidden: true },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 150, editable: true, editrules: { required: true, custom: true, custom_func: isEmployeeSelected }, edittype: "select", editoptions: { value: Name, dataEvents: [{ type: 'change', fn: function(e) {myfunction(e); } }]} },
+                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 100, editable: true, hidden: true },
+                { name: "PMSProjectStartDate", index: "PMSProjectStartDate", align: "left", width: 100, formatter: 'date', editrules: { required: true },formatoptions: { newformat: 'm/d/Y'} ,editable: false, editoptions:{
+                    readonly:true,
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            maxDate: new Date('@Model.PMSProjectEndDate'),
+                            minDate: new Date('@Model.PMSProjectStartDate'),
+                            changeMonth: true,
+                            changeYear: true,
+                            beforeShow: BeforeShowForDatePicker,
+                            onClose: onCloseForDatePicker
+                        });
+                    }
+                }  },
+                { name: "PMSProjectEndDate", index: "PMSProjectEndDate", align: "left", width: 100,formatter: 'date', editrules: { required: true },formatoptions: { newformat: 'm/d/Y'} ,editable: false, editoptions:{
+                    readonly:true,
+                    dataInit: function(element) {
+                        $(element).datepicker({
+                            dateFormat: 'mm/dd/yy',
+                            maxDate: new Date('@Model.PMSProjectEndDate'),
+                            minDate: new Date('@Model.PMSProjectStartDate'),
+                            changeMonth: true,
+                            changeYear: true,
+                            beforeShow: BeforeShowForDatePicker,
+                            onClose: onCloseForDatePicker
+                        });
+                    }
+                }   },
+                { name: "RoleDescription", index: "RoleDescription", align: "left", width: 100, editable: false, editrules: { required: false },edittype: "Text"  },
+                {
+                    name: "Delete",
+                    index: "Delete",
+                    width: 50,
+                    align: "center",
+                    sortable: false,
+                    formatter: DeleteProjectPreviewer
+
+                    //}
+                }
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqAddProjectReviewersTablePager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            //sortname: "",
+            //sortorder: "asc",
+            loadonce: true,
+            editurl: '@Url.Action("SaveProjectReviewersDetails", "SEM")',
+            // Grid caption
+            //caption: "Project Reviewers",
+            gridComplete: function () {
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqAddProjectReviewersTable").jqGrid('getGridParam', 'records');
+
+                if (count > 20) {
+                    $('#jqAddProjectReviewersTablePager_center').show();
+                }
+                else {
+                    $('#jqAddProjectReviewersTablePager_center').hide();
+                }
+
+                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG") {
+                    $('#jqAddProjectReviewersTable_iladd').css('visibility','hidden');
+                    $('#jqAddProjectReviewersTable_iledit').css('visibility','hidden');
+                    $('#jqAddProjectReviewersTable_ilsave').css('visibility','hidden');
+                    $('#jqAddProjectReviewersTable_ilcancel').css('visibility','hidden');
+                }
+                else {
+                    $('#jqAddProjectReviewersTable_iladd').css('visibility','visible');
+                    $('#jqAddProjectReviewersTable_iledit').css('visibility','visible');
+                    $('#jqAddProjectReviewersTable_ilsave').css('visibility','visible');
+                    $('#jqAddProjectReviewersTable_ilcancel').css('visibility','visible');
+                }
+            },
+            onCellSelect: function(rowid, iCol) {
+                var rowData = $(this).getRowData(rowid);
+                var Glob_ProjectReviewerId = rowData['ProjectReviewerId'];
+                var employeeID=rowData['EmployeeId'];
+                var RoleDescription=rowData['RoleDescription'];
+                $('#addReviewerDetails #EmployeeId').val(employeeID);
+                $('#addReviewerDetails #RoleDescription').val(RoleDescription);
+                var cm = $(this).jqGrid("getGridParam", "colModel");
+                var colName = cm[iCol];
+                id = rowData['EmployeeId'];
+                //                if (colName['index'] == "Delete") {
+                //                if ('@Model.IsProjectApprover' != 'True') {
+                //                        DeleteProjectReviewerDetails(Glob_ProjectReviewerId);
+                //                    }
+                //                }
+            },
+        }).navGrid("#jqAddProjectReviewersTablePager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $('#addReviewerDetails #ProjectID').val('@ViewBag.ProjectId');
+
+        $("#jqAddProjectReviewersTable").jqGrid('inlineNav', "#jqAddProjectReviewersTablePager",
+        {
+            edit: true,
+            editicon: "ui-icon-pencil",
+            add: true,
+            addicon: "ui-icon-plus",
+            save: true,
+            saveicon: "ui-icon-disk",
+            cancle: true,
+            cancelicon: "ui-icon-cancel",
+            addtext: "Add",
+            edittext: "Edit",
+            canceltext: "Cancel",
+            savetext: "Save",
+            addParams: {
+                useFormatter: false,
+                addRowParams: {
+                    oneditfunc: function (rowid) {
+                        $("label[for='undefined']").hide();
+                        id=0;
+                    }
+                }
+            },
+            editParams: {
+                keys: false,
+                oneditfunc: function(rowid){
+                },
+                sucessfunc: function (data) {
+                },
+                url: null,
+                extraparam: {
+
+                    ProjectID: function () {
+                        return $('#addReviewerDetails #ProjectID').val();
+                    },
+                    EmployeeId: function () {
+                        return $('#addReviewerDetails #EmployeeId').val();
+                    },
+                    RoleDescription: function () {
+                        return $('#addReviewerDetails #RoleDescription').val();
+
+                    },
+
+                    ToDate: function(){
+                        return "@ViewBag.EndDate"
+                    },
+
+                    CurrentId: function(){
+                        return id;
+                    }
+
+
+                },
+                beforeSaveRow: function(options, rowid) {
+                },
+                aftersavefunc: function (result) {
+                    $("#SaveReviewerDetails").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                jQuery("#jqAddProjectReviewersTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                            }
+                        }
+                    });
+
+                },
+                errorfunc: null,
+                afterrestorefunc: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        }
+        );
+
+        var SelectedProjectReviewerId = [];
+        function GetSelectedCheckboxForReviewer() {
+            SelectedProjectReviewerId = [];
+            $("#jqAddProjectReviewersTable :checked").each(function (i, val) {
+                SelectedProjectReviewerId.push($(this).prop("id"));
+            });
+        }
+        $('#SelectAllReviewerBtn').on('click', function () {
+            SelectedProjectReviewerId = [];
+            $(".ModuleChkReviewer").each(function (i, val) {
+                $(".ModuleChkReviewer").attr("checked", true);
+                SelectedProjectReviewerId.push($(this).prop("id"));
+            });
+        });
+        $('#DeselectAllReviewerBtn').on('click', function () {
+            SelectedProjectReviewerId = [];
+            $(".ModuleChkReviewer").each(function (i, val) {
+                $(".ModuleChkReviewer").attr("checked", false);
+            });
+        });
+
+        $('#DeleteReviewerBtn').on('click', function () {
+            GetSelectedCheckboxForReviewer();
+            DeleteProjectReviewerDetails(SelectedProjectReviewerId);
+        });
+
+
+
+    });
+
+    function DeleteProjectPreviewer(cellValue, options, rowdata, action) {
+        //return '<input type="checkbox" class="ModuleChkReviewer" id=' + rowdata['ProjectReviewerId'] + '>';
+        var A =  '<input type="checkbox" class="ModuleChkReviewer" id=' + rowdata['ProjectReviewerId'] + '>';
+        //var B = '<input type="label" class="ModuleChkReviewer LabelForCheckbox" for=' + rowdata['ProjectReviewerId'] + '>';
+        var B= '<label for=' + rowdata['ProjectReviewerId'] + ' class="LabelForCheckbox"></label>';
+        return A + B;
+    }
+
+
+    function myfunction(e) {
+        var Name = e.target[e.target.selectedIndex].text;
+        var ID;
+        var Role;
+        $.each(projectReviewers,function(index, value){
+            if($.trim(value.EmployeeName.replace(/ /g,'')) == $.trim(Name.replace(/ /g,'')))
+            {
+                ID=value.EmployeeId;
+            }
+        });
+        if(ID != undefined)
+        {
+            $.ajax({
+                url:'@Url.Action("GetReviewerRole", "SEM")',
+                data:{ EmployeeId: ID },
+                type:'GET',
+                async:false,
+                success:function(result){
+                    if(result != null) {
+                        Role = result.results;
+                    }
+                }
+            });
+        }
+        else {
+            ID = 0;
+        }
+        $('#addReviewerDetails #EmployeeId').val(ID);
+        $('#addReviewerDetails #RoleDescription').val(Role);
+        $('#jqAddProjectReviewersTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'EmployeeId', ID);
+        $('#jqAddProjectReviewersTable').jqGrid('setCell', e.currentTarget.parentNode.parentNode.id, 'RoleDescription', Role);
+    }
+
+    function isEmployeeSelected(value,colname)
+    {
+        if(value == "0")
+        {
+            $("#RequiredFeildForEmployeeID").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $.preventDefault();
+        }
+        else
+        {
+            return [true,""];
+        }
+    }
+
+    function DeleteProjectReviewerDetails(SelectedProjectReviewerId) {
+        if(SelectedProjectReviewerId.length == 0)
+        {
+            $("#ReviewerRecordSelected").dialog({
+                modal: true,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                dialogClass: "noclose",
+                buttons:
+                {
+                    "Ok": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        }
+        else {
+            $("#DeleteReviewerDetailsConfirmation").dialog({
+                resizable: false,
+                autoOpen: true,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: "noclose",
+                buttons: {
+                    OK: function () {
+                        $.ajax({
+                            url:'@Url.Action("DeleteProjectReviewerDetails", "SEM")',
+                            data: JSON.stringify(SelectedProjectReviewerId),
+                            contentType: "application/json",
+                            type: 'POST',
+                            success:function(results) {
+                                if(results.status == true) {
+                                    $('#DeleteReviewerDetailsConfirmation').dialog('close');
+                                    $('#DeleteReviewerDetailsConfirmation').dialog('destroy');
+                                    $("#DeleteReviewerDetails").dialog({
+                                        resizable: false,
+                                        autoOpen: true,
+                                        height: 'auto',
+                                        width: 300,
+                                        modal: true,
+                                        dialogClass: "noclose",
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                jQuery("#jqAddProjectReviewersTable").jqGrid("setGridParam", { datatype: "json" }).trigger("reloadGrid");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    Cancel:function() {
+                        $('#DeleteReviewerDetailsConfirmation').dialog('close');
+                    }
+                }
+            });
+        }
+    }
+</script>
+@using (@Html.BeginForm("", "", FormMethod.Post, new { @id = "addReviewerDetails" }))
+{
+    @Html.HiddenFor(x => x.ProjectReviewerId)
+    @Html.HiddenFor(x => x.EmployeeId)
+    @Html.HiddenFor(x => x.RoleDescription)
+    @Html.HiddenFor(x => x.ProjectID)
+
+}
+<div id="SaveReviewerDetails" style="display: none;" title="Save Project Reviewer Details">
+    <p>
+        Record has been saved successfully.
+    </p>
+</div>
+<div id="DeleteReviewerDetails" style="display: none;" title="Delete Project Reviewer Details">
+    <p>
+        Record has been Deleted successfully.
+    </p>
+</div>
+<div id="DeleteReviewerDetailsConfirmation" style="display: none;" title="Delete Project Reviewer Details">
+    <p>
+        Are yor sure you want to delete the record ?
+    </p>
+</div>
+<div id="RequiredFeildForEmployeeID" style="display: none;" title="Required Feild">
+    <p>
+        Please select Employee Name.
+    </p>
+</div>
+<div id="ReviewerRecordSelected" title="Delete Reviewer details" style="display: none">
+    <p>
+        Please select atleast one record to delete.
+    </p>
+</div>

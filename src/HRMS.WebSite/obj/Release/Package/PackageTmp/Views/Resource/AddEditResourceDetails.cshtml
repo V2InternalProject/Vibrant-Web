@@ -1,0 +1,657 @@
+﻿@model HRMS.Models.AddEdirResourseModel
+@{
+    ViewBag.Title = "Add/Edit Resource";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+@*@section HeaderLinks{
+        @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+    }*@
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/Global.min.js")" type="text/javascript"></script>
+<link href="../../Content/New%20Design/pms.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/Global.min.js" type="text/javascript"></script>
+<script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
+<section class="PMSContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Resource Allocation
+            </h2>
+        </div>
+    </div>
+    <div class="MainBody">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "formAddEdirResourseDetails" }))
+        {
+            @Html.ValidationSummary(true)
+            <div class="FormContainerBox clearfix">
+                @Html.HiddenFor(x => x.ProjectEmployeeRoleID)
+                @Html.HiddenFor(x => x.EmployeeId)
+                @Html.HiddenFor(x => x.ProjectID)
+                @Html.HiddenFor(x => x.ButtonClick)
+                @Html.HiddenFor(x => x.RequesterId)
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Helpdesk Ticket ID:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.HelpdeskTicketID, new { @disabled = "disabled" })
+                            @Html.LabelFor(model => model.HelpdeskTicketID, Model.HelpdeskTicketID.ToString(), new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.HelpdeskTicketID, new { @id = "helpdeskticketid" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Project Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ProjectName, new { @disabled = "disabled" })
+                            @Html.LabelFor(model => model.ProjectName, Model.ProjectName, new { @class = "ClassDisplayLabel" })
+                            @Html.HiddenFor(x => x.ProjectName, new { @id = "projectname" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Project Start Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ProjectStartDate, String.Format("{0:MM/dd/yyyy}", Model.ProjectStartDate), new { @disabled = "disabled" })
+                            @Html.LabelFor(model => model.ProjectStartDate, String.Format("{0:MM/dd/yyyy}", Model.ProjectStartDate), new { @class = "ClassDisplayLabel" })
+                            @Html.Hidden("ProjectStartDate", String.Format("{0:MM/dd/yyyy}", Model.ProjectStartDate), new { @id = "projectstartdate" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Project End Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.ProjectEndDate, String.Format("{0:MM/dd/yyyy}", Model.ProjectEndDate), new { @disabled = "disabled" })
+                            @Html.LabelFor(model => model.ProjectEndDate, String.Format("{0:MM/dd/yyyy}", Model.ProjectEndDate), new { @class = "ClassDisplayLabel" })
+                            @Html.Hidden("ProjectEndDate", String.Format("{0:MM/dd/yyyy}", Model.ProjectEndDate), new { @id = "projectenddate" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Employee Name:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.EmployeeName)
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.EmployeeName)</p>
+                            @Html.HiddenFor(x => x.EmployeeName, new { @id = "employeename" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Reporting To:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ReportingTo, new SelectList(Model.EmployeeList, "EmployeeId", "EmployeeName"), "Select")
+                            @Html.HiddenFor(x => x.ReportingTo, new { @id = "reportingto" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Project Role:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ProjectRole, new SelectList(Model.EmployeeRole, "RoleID", "RoleDescription"), "Select", new { @class = "ValidationDropDown" })
+                            <p id="ProjectRoleValidation" class="qualif-detail">@Html.ValidationMessageFor(x => x.ProjectRole)</p>
+                            @Html.HiddenFor(x => x.ProjectRole, new { @id = "projectrole" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Resource Type:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.DropDownListFor(x => x.ResourceType, new SelectList(Model.ResourseTypes, "ResourseTypeID", "ResourseTypeDescription"), "Select", new { @class = "ValidationDropDown" })
+                            <p id="ResourceTypeValidation" class="qualif-detail">@Html.ValidationMessageFor(x => x.ResourceType)</p>
+                            @Html.HiddenFor(x => x.ResourceType, new { @id = "resourcetype" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Allocation Start Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.AllocationStartDate, String.Format("{0:MM/dd/yyyy}", Model.AllocationStartDate, new { @readonly = "readonly" }))
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AllocationStartDate)</p>
+                            @Html.Hidden("AllocationStartDate", String.Format("{0:MM/dd/yyyy}", Model.AllocationStartDate), new { @id = "allocationstartdate", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Allocation End Date:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.AllocationEndDate, String.Format("{0:MM/dd/yyyy}", Model.AllocationEndDate, new { @readonly = "readonly" }))
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AllocationEndDate)</p>
+                            @Html.Hidden("AllocationEndDate", String.Format("{0:MM/dd/yyyy}", Model.AllocationEndDate), new { @id = "allocationenddate", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="formrow clearfix">
+                    <div class="leftcol">
+                        <div class="LabelDiv">
+                            <span class="mandatory">*</span>@Html.Label("Allocated (%):")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextBoxFor(x => x.AllocatedPercentage)
+                            <p class="qualif-detail">@Html.ValidationMessageFor(x => x.AllocatedPercentage)</p>
+                            @Html.HiddenFor(x => x.AllocatedPercentage, new { @id = "allocatedpercentage" })
+                        </div>
+                    </div>
+                    <div class="rightcol">
+                        <div class="LabelDiv">
+                            <span class="hiddenstar">*</span>@Html.Label("Comments:")
+                        </div>
+                        <div class="InputDiv">
+                            @Html.TextAreaFor(x => x.Comments)
+                            @Html.HiddenFor(x => x.Comments, new { @id = "comments" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ButtonContainer1 clearfix">
+                <input id="btnaddResourse" type="button" value="Add" class="ButtonGray mrgnR11" />
+                <input id="btnUpdateResourse" type="button" value="Update" class="ButtonGray mrgnR11" />
+                <input id="btnResetResourse" type="button" value="Reset" class="ButtonGray mrgnR11" onclick="resetResourseDetails()" />
+                @*<input id="btncancel" type="button" value="Cancel" class="button " />*@
+            </div>
+        }
+        <div class="clearfix" id="HideBeforeSelect">
+            <h4 class="clearL SmallHead">
+                Current Resource Details
+            </h4>
+            <div class="tablestyle3" id="ResourceAddContainer">
+                <table id="jqCurrentResourceForAddEditTable"></table>
+            </div>
+            <div id="jqCurrentResourceTableAddEditPager">
+            </div>
+            <h4 class="SmallHead">
+                Resource History
+            </h4>
+            <div class="tablestyle3" id="HistoryAddContainer">
+                <table id="jqResourceHistoryAddEditTable"></table>
+            </div>
+            <div id="jqResourceHistoryTableAddEditPager">
+            </div>
+        </div>
+    </div>
+</section>
+<div id="SendMailPopUpForResource" style="display: none">
+</div>
+<div id="SelectPossitive" style="display: none">
+    <p>
+        Please enter valid data.
+    </p>
+</div>
+<div id="SuccessPopUpForResources" title="Resource allocation" style="display: none">
+    <center>
+        <span id="ErrormessageForresource"></span>
+    </center>
+</div>
+<div id="AllocationStartDateGreaterDialog" title="Resource allocation" style="display: none">
+    <p>
+        Allocation Start date cannot be greater than Allocation End date.
+    </p>
+</div>
+<div id="AllocationEndDateLesserDialog" title="Resource allocation" style="display: none">
+    <p>
+        Allocation End date cannot be lesser than Allocation Start date.
+    </p>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#HelpdeskTicketID,#ProjectName,#ProjectStartDate,#ProjectEndDate").hide();
+        $(".ValidationDropDown").each(function () {
+            $('.ValidationDropDown').show();
+            $('.ValidationDropDown').css({ 'display': 'block !important', 'visibility': 'hidden' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
+            $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
+        });
+        $("#ResourceType").bind("change", function () {
+            var selectedValue = $(this)[0].value;
+            if (selectedValue != "")
+                $("#ResourceTypeValidation").hide();
+            else
+                $("#ResourceTypeValidation").show();
+        });
+        $("#ProjectRole").bind("change", function () {
+            var selectedValue = $(this)[0].value;
+            if (selectedValue != "")
+                $("#ProjectRoleValidation").hide();
+            else
+                $("#ProjectRoleValidation").show();
+        });
+        if ('@Model.ButtonClick' == "NewAllocation") {
+            $('#btnUpdateResourse').hide();
+        }
+        else {
+            $('#btnaddResourse').hide();
+        }
+        $('#HideBeforeSelect').hide();
+        $('#AllocationStartDate').attr('readonly', 'readonly');
+        $('#AllocationEndDate').attr('readonly', 'readonly');
+        $("#jqCurrentResourceForAddEditTable").jqGrid({
+            //Grid for Current Resource Details
+            // Ajax related configurations
+            url: '@Url.Action("CurrentAllocationLoadGrid", "Resource")',
+            postData: { EmployeeId: function () { return $("#EmployeeId").val(); } },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee Id", "Employee Name", "Project Name", "Resource Pool Name", "Designation Name", "Resource Type", "Employment Status", "Start Date", "End Date", "Allocated (%)", "Comments"],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 35 },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 80 },
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 80 },
+                { name: "ResourcePoolName", index: "ResourcePoolName", align: "left", width: 70 },
+                { name: "DesignationName", index: "DesignationName", align: "left", width: 70 },
+                { name: "ResourceType", index: "ResourceType", align: "left", width: 50 },
+                { name: "EmployementStatus", index: "EmployementStatus", align: "left", width: 60 },
+                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 55, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 55, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "AllocatedPercentage", index: "AllocatedPercentage", align: "left", width: 40 },
+                { name: "Comments", index: "Comments", align: "left", width: 70 },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqCurrentResourceTableAddEditPager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Current Resource Details",
+            gridComplete: function () {
+
+                $("#ResourceAddContainer").find('p').text("");
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqCurrentResourceForAddEditTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqCurrentResourceForAddEditTable').hide();
+                    $("#ResourceAddContainer").append("<p>No records found</p>")
+                }
+                else {
+                    $('#gbox_jqCurrentResourceForAddEditTable').show();
+                    if (count > 20) {
+
+                        $('#jqCurrentResourceTableAddEditPager').show();
+                    }
+                    else {
+                        $('#jqCurrentResourceTableAddEditPager').hide();
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            },
+        }).navGrid("#jqCurrentResourceTableAddEditPager",
+            { search: false, refresh: false, add: false, edit: false, del: false },
+            {}, // settings for edit
+            {},
+            {}
+        );
+
+        $("#jqResourceHistoryAddEditTable").jqGrid({
+            // Ajax related configurations
+            // Grid for Resource History
+            url: '@Url.Action("AllocationHistoryLoadGrid", "Resource")',
+            postData: { EmployeeId: function () { return $("#EmployeeId").val(); } },//hardcoded for testing
+            datatype: "json",
+            mtype: "POST",
+            // Specify the column names
+            colNames: ["Employee Id", "Employee Name", "Project Name", "Resource Pool Name", "Designation Name", "Resource Type", "Employment Status", "Start Date", "End Date", "Allocated (%)", "Comments"],
+            // Configure the columns
+            colModel: [
+                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 35 },
+                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 80 },
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 80 },
+                { name: "ResourcePoolName", index: "ResourcePoolName", align: "left", width: 70 },
+                { name: "DesignationName", index: "DesignationName", align: "left", width: 70 },
+                { name: "ResourceType", index: "ResourceType", align: "left", width: 50 },
+                { name: "EmployementStatus", index: "EmployementStatus", align: "left", width: 60 },
+                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 55, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 55, formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+                { name: "AllocatedPercentage", index: "AllocatedPercentage", align: "left", width: 40 },
+                { name: "Comments", index: "Comments", align: "left", width: 70 },
+            ],
+            // Grid total width and height
+            width: 700,
+            // Paging
+            toppager: false,
+            jsonReader: { repeatitems: false },
+            pager: $("#jqResourceHistoryTableAddEditPager"),
+            rowNum: 20,
+            rowList: [],
+            viewrecords: true, // Specify if "total number of records" is displayed
+            height: 'auto',
+            autowidth: false,
+            // Default sorting
+            sortname: "",
+            sortorder: "asc",
+            // Grid caption
+            //caption: "Resource History",
+            gridComplete: function () {
+
+                //$("#HistoryAddContainer").val("");
+                //$("#HistoryAddContainer").innerHTML = "";
+                $("#HistoryAddContainer").find('p').text("");
+                var grid = $(this).getRowData();
+                var count = jQuery("#jqResourceHistoryAddEditTable").jqGrid('getGridParam', 'records');
+                if (count == 0) {
+                    $('#gbox_jqResourceHistoryAddEditTable').hide();
+                    $("#HistoryAddContainer").append("<p>No records found</p>")
+                }
+                else {
+                    $('#gbox_jqResourceHistoryAddEditTable').show();
+                    if (count > 20) {
+
+                        $('#jqResourceHistoryTableAddEditPager').show();
+                    }
+                    else {
+                        $('#jqResourceHistoryTableAddEditPager').hide();
+                    }
+                }
+            },
+            onCellSelect: function (rowid, iCol) {
+            },
+        }).navGrid("#jqResourceHistoryTableAddEditPager",
+               { search: false, refresh: false, add: false, edit: false, del: false },
+               {}, // settings for edit
+               {},
+               {}
+           );
+
+        $('#AllocationStartDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: $('#ProjectStartDate').val(), maxDate: $('#ProjectEndDate').val(), yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+         .bind("change", function () {
+             var startDate = $('#AllocationStartDate').datepicker("getDate");
+             var endDate = $('#AllocationEndDate').datepicker("getDate");
+             var EndMinDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+             $('#AllocationEndDate').datepicker("option", "minDate", EndMinDate);
+             if (startDate > endDate && endDate != null) {
+                 $("#AllocationStartDateGreaterDialog").dialog({
+                     resizable: false,
+                     autoOpen: true,
+                     height: 'auto',
+                     width: 300,
+                     modal: true,
+                     dialogClass: "noclose",
+                     buttons: {
+                         Ok: function () {
+                             $(this).dialog("close");
+                             $("#AllocationStartDate").val('');
+                         }
+                     }
+                 });
+                 $.preventDefault();
+             }
+         });
+        $('#AllocationEndDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, maxDate: $('#ProjectEndDate').val(), yearRange: "-60:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+        .bind("change", function () {
+            var fromDate = $('#AllocationStartDate').datepicker("getDate");
+            var toDate = $('#AllocationEndDate').datepicker("getDate");
+
+            if (toDate < fromDate && fromDate != null) {
+                $("#AllocationEndDateLesserDialog").dialog({
+                    resizable: false,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
+                    modal: true,
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                            $("#AllocationEndDate").val('');
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+        });
+
+        //        $('#formAddEdirResourseDetails #btncancel').click(function () {
+        //            $('#AddEditResourseDialog').dialog('close');
+        //            $('#AddEditResourseDialog').dialog('destroy');
+        //            window.location.href = '@Url.Action("ResourceIndex", "Resource")';
+        //        });
+
+        $("#formAddEdirResourseDetails #EmployeeName").autocomplete({
+            source: function (request, response) {
+                $.getJSON('@Url.Action("SearchEmployeeAutoSuggestFoeSEM", "EmployeeDetails")', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + " {" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName,
+                            text: el.EmployeeId
+                        };
+                    }));
+                });
+            },
+            select: function (event, ui) {
+                loadGridForAllocation(event, ui);
+            }
+        });
+        function loadGridForAllocation(event, ui) {
+            var EmployeeId = ui.item.text;
+            $('#EmployeeId').val(EmployeeId);
+            jQuery("#jqCurrentResourceForAddEditTable").trigger("reloadGrid");
+            jQuery("#jqResourceHistoryAddEditTable").trigger("reloadGrid");
+            $('#HideBeforeSelect').show();
+
+        }
+
+        $('#btnaddResourse,#btnUpdateResourse').click(function () {
+            if ($('#formAddEdirResourseDetails').valid()) {
+                OpenLoadingPopup();
+                $.ajax({
+                    url: '@Url.Action("AddEditResourse", "Resource")',
+                    data: $('#formAddEdirResourseDetails').serialize(),
+                    type: 'POST',
+                    success: function (results) {
+                        if (results.status == true) {
+                            var HelpDeskTicketID = results.HelpDeskTicketID;
+                            CloseLoadingPopup();
+                            $("#SuccessPopUpForResources").dialog({
+                                resizable: false,
+                                height: 150,
+                                width: 300,
+                                modal: true,
+                                title: 'Resource allocation',
+                                dialogClass: "noclose",
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                        OpenLoadingPopup();
+                                        var buttonClick = 'Add/Edit Resource';
+                                        $.ajax({
+                                            url: '@Url.Action("ResourceSendMail", "Resource")',
+                                            data: { btnClick: buttonClick, RequesterId: '@Model.RequesterId', EmployeeName: $('#EmployeeName').val(), ReportingTo: $('#ReportingTo').val(), FromDate: $('#AllocationStartDate').val(), projectRole: $('#ProjectRole').val(), ResorceType: $('#ResourceType').val(), AllocatedPercentage: $('#AllocatedPercentage').val(), Comments: $('#Comments').val(), projectId: '@Model.ProjectID', loggedinEmpID: null, EmployeeIDs: "", Todate: $('#AllocationEndDate').val() },
+                                            type: 'POST',
+                                            success: function (result) {
+                                                //$('#AddEditResourseDialog').empty();
+                                                CloseLoadingPopup();
+                                                $("#SendMailPopUpForResource").empty().append(result);
+                                                $("#SendMailPopUpForResource").dialog({
+                                                    closeOnEscape: false,
+                                                    resizable: false,
+                                                    height: 'auto',
+                                                    width: 800,
+                                                    modal: true,
+                                                    title: "Send Mail",
+                                                    close: function () {
+                                                        window.close();
+                                                        $(this).dialog('destroy');
+                                                        jQuery("#jqCurrentResourceForAddEditTable").trigger("reloadGrid");
+                                                        jQuery("#jqResourceHistoryAddEditTable").trigger("reloadGrid");
+                                                    }
+                                                });
+                                                $.validator.unobtrusive.parse($("#MailDetails"));
+                                                $('#sendCustomerMail').click(function () {
+                                                    $("#CCErrorMessage").hide();
+                                                    $("#ToErrorMessage").hide();
+                                                    if ($('#CustMailDetails').valid()) {
+                                                        OpenLoadingPopup();
+                                                        var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                                                        $.ajax({
+                                                            url: sendMailUrl,
+                                                            type: 'POST',
+                                                            data: $('#CustMailDetails').serialize(),
+                                                            async: false,
+                                                            success: function (serverData) {
+                                                                window.close();
+                                                                CloseLoadingPopup();
+                                                                if (serverData.validCcId == true && serverData.validtoId == true) {
+                                                                    if (serverData.status == true) {
+                                                                        $("#SendMailPopUpForResource").empty().dialog('destroy');
+                                                                        jQuery("#jqCurrentResourceForAddEditTable").trigger("reloadGrid");
+                                                                        jQuery("#jqResourceHistoryAddEditTable").trigger("reloadGrid");
+                                                                    }
+                                                                }
+                                                                else if (serverData.status == "Error") {
+                                                                    $("#errorDialogForMail").dialog({
+                                                                        resizable: false,
+                                                                        height: 'auto',
+                                                                        width: 'auto',
+                                                                        modal: true,
+                                                                        title: 'Mail Error',
+                                                                        dialogClass: "noclose",
+                                                                        buttons: {
+                                                                            Ok: function () {
+                                                                                $(this).dialog("close");
+                                                                                //return false;
+                                                                            }
+                                                                        }
+                                                                    }); //end dialog
+                                                                }
+                                                                else {
+                                                                    if (serverData.validCcId == false)
+                                                                        $("#CCErrorMessage").show();
+                                                                    if (serverData.validtoId == false)
+                                                                        $("#ToErrorMessage").show();
+                                                                    return false;
+                                                                }
+                                                            },
+                                                            error: function () {
+                                                                CloseLoadingPopup();
+                                                                $("#errorDialogForMail").dialog({
+                                                                    title: 'Mail Error',
+                                                                    resizable: false,
+                                                                    height: 'auto',
+                                                                    width: 'auto',
+                                                                    modal: true,
+                                                                    dialogClass: "noclose",
+                                                                    buttons:
+                                                {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                        //return false;
+                                                    }
+                                                }
+                                                                }); //end dialog
+                                                            }
+                                                        }); //end ajax
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            $('#SuccessPopUpForResources #ErrormessageForresource').empty().append(results.results);
+                        }
+                        else {
+                            //$('#SuccessPopUpForResources #ErrormessageForresource').text(results.results);
+                            CloseLoadingPopup();
+                            $("#SuccessPopUpForResources").dialog({
+                                closeOnEscape: false,
+                                resizable: false,
+                                height: 150,
+                                width: 300,
+                                modal: true,
+                                title: "Resource allocation",
+                                dialogClass: "noclose",
+                                close: function () {
+                                    $(this).dialog('destroy');
+                                    //jQuery("#jqCurrentResourceForAddEditTable").trigger("reloadGrid");
+                                    //jQuery("#jqResourceHistoryAddEditTable").trigger("reloadGrid");
+                                },
+                                buttons: {
+                                    Ok: function () {
+                                        $(this).dialog("destroy");
+                                        //jQuery("#jqCurrentResourceForAddEditTable").trigger("reloadGrid");
+                                        //jQuery("#jqResourceHistoryAddEditTable").trigger("reloadGrid");
+                                    }
+                                }
+                            });
+                            $('#SuccessPopUpForResources #ErrormessageForresource').empty().append(results.results);
+                            return false;
+                        }
+                    }
+                });
+            }
+        });
+    });
+    function resetResourseDetails() {
+        var x = location.href;
+        location.href = x;
+    }
+    //function resetResourseDetails() {
+    //    $('#EmployeeName').val($('#employeename').val());
+    //    $('#Comments').val($('#comments').val());
+
+    //    $('#AllocatedPercentage').val($('#allocatedpercentage').val());
+    //    $('#AllocationEndDate').val($('#allocationenddate').val());
+    //    $('#AllocationStartDate').val($('#allocationstartdate').val());
+    //    $('#ResourceType').val($('#resourcetype').val());
+    //    $('#ProjectRole').val($('#projectrole').val());
+    //    $('#ReportingTo').val($('#reportingto').val());
+    //    $('#Comments').val($('#comments').val());
+    //    $("#ReportingTo").next().find(".sbSelector").text($("#ReportingTo :selected").text());
+    //    $("#ProjectRole").next().find(".sbSelector").text($("#ProjectRole :selected").text());
+    //    $("#ResourceType").next().find(".sbSelector").text($("#ResourceType :selected").text());
+    //}
+    function OpenLoadingPopup() {
+        $("#loading").dialog(
+          {
+              closeOnEscape: false,
+              resizable: false,
+              height: 140,
+              width: 300,
+              modal: true,
+              dialogClass: "noclose",
+              open: function () {
+                  $('#loading').parent().css('background-color', 'transparent');
+                  $(this).parent().prev('.ui-widget-overlay').css('z-index', '32');
+                  $(this).parent().css('z-index', '33');
+              }
+          });
+    }
+
+    function CloseLoadingPopup() {
+        $("#loading").dialog("close");
+        $("#loading").dialog("destroy");
+    }
+</script>

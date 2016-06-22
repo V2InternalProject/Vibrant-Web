@@ -1,0 +1,124 @@
+﻿@model HRMS.Models.OrganizationStructure
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+@section HeaderLinks{
+    @Html.Partial("_HeaderLinks", Model.SearchedUserDetails)
+}
+<h3 class="Configure-title">
+    Add Existing Delivery Team</h3>
+@using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddExistingDT" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.ResourcePoolID)
+    @Html.HiddenFor(x => x.BusinessGroupID)
+
+    <div style="float: inherit">
+        <div class="conf-pop">
+            @Html.LabelFor(x => x.ExistingDT)<span class="mandatory">*</span>
+            @Html.DropDownListFor(x => x.ExistingDT, new SelectList(Model.ExistingDeliveryTeams, "GroupID", "GroupName"), " ")
+            @Html.ValidationMessageFor(x => Model.ExistingDT)
+        </div>
+        <br />
+    </div>
+}
+<input type="button" class="button" id="btnSaveExistingDT" value="Save" />
+<div id="ErrorSaveExistingDT" style="display: none" title="Error">
+    <center class="LoadingWrap">
+          There is some error.
+    </center>
+</div>
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $.validator.unobtrusive.parse($("#frmAddExistingDT"));
+    $("#btnSaveExistingDT").click(function () {
+        if ($("#frmAddExistingDT").valid()) {
+            $("#loading").dialog(
+              {
+                  closeOnEscape: false,
+                  resizable: false,
+                  height: 140,
+                  width: 300,
+                  modal: true,
+                  dialogClass: "noclose"
+              });
+            $("#ResourcePoolID").val('@Model.ResourcePoolID');
+            $("#BusinessGroupID").val('@Model.BusinessGroupID');
+            $.ajax({
+                url: '@Url.Action("AddExistingDT", "OrganizationStructure")',
+                data: $("#frmAddExistingDT").serialize(),
+                type: 'POST',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status == true) {
+                        $("#addExistingDTDialog").dialog("destroy").remove()
+                        $("#configureDeleveryUnit").dialog("close");
+                        $("#configureDeleveryUnit").dialog("destroy");
+                        $("#configureDeleveryUnit").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 650,
+                            width: 1100,
+                            modal: true,
+                            title: "Configure Delivery Unit",
+                            open: function (event, ui) {
+                                $('#configureDeleveryUnit').load("/OrganizationStructure/ConfigureDeleveryUnits", { BusinessGroupID: '@Model.BusinessGroupID', ResourcePoolID: '@Model.ResourcePoolID' }).dialog('open');
+                            }
+                        });
+                    }
+                    else if (results.status == "Error") {
+                        $("#ErrorSaveExistingDT").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorSaveExistingDT").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorSaveExistingDT").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>

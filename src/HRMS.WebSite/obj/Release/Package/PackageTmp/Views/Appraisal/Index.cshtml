@@ -1,0 +1,28 @@
+﻿<link rel="stylesheet" type="text/css" href="http://angular-ui.github.com/ng-grid/css/ng-grid.css" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AppraisalMaster/AppraisalMaster.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<section class="AppraisalContainer" ng-app="ApprisalSPA" ng-controller="BaseController">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">
+                Appraisal
+            </h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <ul id="menu">
+                <div ><a ng-repeat="menu in MenuData" class="{{menu.class}}" href="{{menu.URL}}">{{menu.Text}}</a></div>
+            </ul>
+        </nav>
+    </div>
+
+        <div class="appraisal-page">
+            <div>
+                <div ng-view></div>
+            </div>
+        </div>
+</section>
+
+@Scripts.Render("~/Appriasal/js")

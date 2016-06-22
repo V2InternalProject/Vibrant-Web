@@ -1,0 +1,294 @@
+﻿@model HRMS.Models.ExitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PersonalLayout.cshtml";
+}
+<link href="~/Content/New%20Design/common.css" rel="stylesheet" />
+<link href="~/Content/New%20Design/settings.css" rel="stylesheet" />
+<script src="~/Scripts/New%20Design/common.js"></script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        // Disable caching of AJAX responses
+        cache: false
+    });
+    $("#back_Reasons").click(function () {
+        window.location.href = '@Url.Action("Index", "ExitConfiguration")';
+//        parent.history.back();
+//        return false;
+    });
+
+    $("#btnSelectAll").click(function () {
+        $(".case").attr("checked", "checked");
+    });
+    $("#btnDeselectAll").click(function () {
+        $(".case").removeAttr("checked");
+    });
+    function Add() {
+        window.location.href = '@Url.Action("ConfigureEditReason", "ExitConfiguration")?reasonId=' + null;
+    }
+
+    function Delete() {
+        var collection = [];
+        $.each($(".case:checked"), function (i, val) {
+            collection.push($(val).attr("data"));
+        });
+        if (collection == "") {
+            $("#NoItemSelectedtodeleteReason").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        else {
+            $("#DeleteConfirmation").dialog({
+                closeOnEscape: false,
+                resizable: false,
+                height: 'auto',
+                width: 300,
+                modal: true,
+                dialogClass: 'noclose',
+                buttons: {
+                    Ok: function () {
+                        $("#loading").dialog(
+                        {
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            dialogClass: "noclose"
+                        });
+                        $("#DeleteConfirmation").dialog('close');
+                        DeleteCall();
+                    },
+                    Close: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+        function DeleteCall() {
+            $.ajax({
+                url: '@Url.Action("DeleteReason", "ExitConfiguration")',
+                data: JSON.stringify(collection),
+                type: 'post',
+                datatype: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (results) {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    if (results.status) {
+                        $("#DeleteSuccess").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $('.case').attr('checked', false);
+                                    $(this).dialog("close");
+                                    location.reload();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#ErrorindeleteReason").dialog({
+                            closeOnEscape: false,
+                            resizable: false,
+                            height: 'auto',
+                            width: 300,
+                            modal: true,
+                            dialogClass: 'noclose',
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                },
+                Error: function () {
+                    $("#loading").dialog("close");
+                    $("#loading").dialog("destroy");
+                    $("#ErrorindeleteReason").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+</script>
+
+<section class="SettingconfigContainer Container">
+    <div class="FixedHeader">
+        <div class="clearfix">
+            <h2 class="MainHeading">Separation</h2>
+        </div>
+        <nav class="sub-menu-colored">
+            <a href="@Url.Action("ConfigureSeperationReason", "ExitConfiguration")" class="selected">Configure Reasons</a>
+            <a href="@Url.Action("ConfigureSeperationChecklist", "ExitConfiguration")">Configure Checklist</a>
+            <a href="@Url.Action("ConfigureSeparationStackholder", "ExitConfiguration")">Configure Process Stakeholders</a>
+            <a href="@Url.Action("SetSeparationStageApprovers", "ExitConfiguration")">Set Stages Approvers</a>
+        </nav>
+    </div>
+    <div class="MainBody sepconfig-reasonMainbody">
+        <div class="FormContainerBox clearfix ProjectIndexFliter">
+            <div class="leftcol">
+                <div class="formrow clearfix">
+                    <div class="LabelDiv">
+                        <label for="From Date" class="select-type">*Reason:</label>
+                    </div>
+                    <div class="InputDiv">
+                       <textarea></textarea>
+                    </div>
+                </div>
+            </div>
+         </div>
+
+       <div class="reason-part2">
+            <button type="button" class="ButtonGray">Delete</button>
+            <button type="button" class="ButtonGray">Select All</button>
+            <button type="button" class="ButtonGray">Deselect All</button>
+
+            @*<table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                <thead>
+                    <tr>
+                        <th class="tableHeaders" width="5%">Delete</th>
+                        <th class="tableHeaders" width="">Reasons</th>
+                        <th class="tableHeaders" width=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tableRows">
+                        <td>
+                            <input type="checkbox" id="c" />
+                            <label class="LabelForCheckbox" for="c"></label>
+                        </td>
+                        <td>
+                            <input type="text" />
+                        </td>
+                        <td>
+                            <button type="button" class="ButtonGray saveR">Save</button>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="button" class="ButtonGray editR">Edit</button>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                          </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr class="tableRows">
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+
+                    <tr class="tableRows configbottomcount">
+                        <td colspan="3">
+                            <span>Total Records = 22</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>*@
+
+            <table cellpadding="0" cellspacing="0" border="0" width="96%" class="PerformanceHinderTable TableJqgrid">
+                 <thead>
+                    <tr>
+                        <th class="tableHeaders" width="5%">
+                            Delete
+                        </th>
+                        <th class="tableHeaders" ">
+                            Reasons
+                        </th>
+                    </tr>
+                </thead>
+                <div id="seperationReasonContainer">
+                    @foreach (var item in Model.seperationReason)
+                    {
+                        <tr class="tableRows">
+                            <td id="DeleteInduction" align="center">
+                                @Html.CheckBoxFor(x => item.isChecked, new { @class = "case", @data = item.ReasonID })
+                                <input type="checkbox" id="c" />
+                                <label class="LabelForCheckbox" for="c"></label>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("ConfigureEditReason", "ExitConfiguration", new { reasonId = @item.ReasonID })" id="@item.ReasonID" class="tableLink">@item.Reason</a>
+                            </td>
+                        </tr>
+                    }
+                </div>
+                <tr class="tableRows configbottomcount bluebgtable1">
+                    <td colspan="2">
+                        <span>
+                        Total Records = @Html.DisplayFor(x => x.CountRecord)</span>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <div id="DeleteSuccess" style="display: none" title="Delete SuccessFully">
+                <center class="LoadingWrap">
+                    Selected Record has been Deleted Successfully.
+                </center>
+            </div>
+            <div id="DeleteConfirmation" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                    Are you sure, you want to delete the selected records?
+                </center>
+            </div>
+            <div id="NoItemSelectedtodeleteReason" style="display: none" title="Record Delete">
+                <center class="LoadingWrap">
+                    Please select atleast one record to delete.
+                </center>
+            </div>
+            <div id="ErrorindeleteReason" style="display: none" title="Error">
+                <center class="LoadingWrap">
+                    There is some Error.
+                </center>
+            </div>
+        </div>
+    </div>
+</section>
