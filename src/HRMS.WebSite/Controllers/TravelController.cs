@@ -3386,7 +3386,7 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult TravelSendMail(string successEmpIDs, int loggedinEmpID)
+        public ActionResult TravelSendMail(string successEmpIDs, int loggedinEmpID, int templateID)
         {
             try
             {
@@ -3402,8 +3402,8 @@ namespace HRMS.Controllers
                     model.Mail.From = fromEmployeeDetails.EmailID;
                     model.Mail.To = ToEmployeeDetails.EmailID;
 
-                    int templateId = 42;
-                    List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
+                    //int mailtemplateId = templateID;
+                    List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateID);
                     foreach (var emailTemplate in template)
                     {
                         model.Mail.Subject = emailTemplate.Subject;

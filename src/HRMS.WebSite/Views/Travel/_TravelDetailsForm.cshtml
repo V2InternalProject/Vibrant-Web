@@ -1435,6 +1435,9 @@
     			                                    //    			                                            }
     			                                    //    			                                        }
     			                                    //    			                                    });
+
+    			                                    // To Send Mail While Reject Button Clicked by Admin.
+    			                                    sendcallmailforTravel(94);
     			                                }
     			                                else if (data.status == "Error") {
 
@@ -1845,6 +1848,9 @@
 					                    //					                            }
 					                    //					                        }
 					                    //					                    });
+
+					                    // To Send Mail While Reject Button Clicked by Project Manager.
+					                    sendcallmailforTravel(94);
 					                }
 					                else if (data.status == "Error") {
 
@@ -2329,7 +2335,8 @@
     });
 
     $("#SendReminderMail").click(function () {
-        sendcallmailforTravel();
+        DisplayLoadingDialog();
+        sendcallmailforTravel(42);
     });
 
 
@@ -2719,17 +2726,17 @@
         //}
         // return false;
     }
-    function sendcallmailforTravel() {
+    function sendcallmailforTravel(mailTemplateID) {
         var empId = '@ViewBag.loginUserId';
         var EmployeeID = '@ViewBag.TravelEmp';
         $.ajax({
             url: '@Url.Action("TravelSendMail", "Travel")',
             type: 'POST',
-            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID },
+            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID, templateID: mailTemplateID },
             datatype: "json",
             success: function (data) {
-                //                $("#loading").dialog("close");
-                //                $("#loading").dialog("destroy");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
                 if (data) {
                     $("#TravelMailDialog").html(data);
                     $("#TravelMailDialog").dialog({
