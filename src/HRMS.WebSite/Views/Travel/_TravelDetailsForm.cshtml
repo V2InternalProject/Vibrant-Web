@@ -1047,7 +1047,7 @@
         <span class="mandatory">*</span>Enter Comment:
     </div>
     <div class="floatL">
-        <textarea rows="5" cols="20" id="txtCommentApprover"></textarea>
+        <textarea rows="2" cols="20" id="txtCommentApprover"></textarea>
     </div>
     <div style="display: none; color: red" id="ErrorCommentApprover" class="floatL">
         Please Enter commment
@@ -1162,6 +1162,7 @@
 
     // Delete all Travel Details
     $('#btnCancelTravelRequestForm').click(function () {
+        debugger;
         var IsloggedUser = '@ViewBag.IsLoggedInUser';
         if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
             $("#ErrorForselfAdminCancel").dialog({
@@ -1253,7 +1254,7 @@
 					                    //callTravelMail(res.travelID, false, false, true, res.employeeID, res.stageID, res.ProjectManagerApprover, res.GroupHeadApprover, res.AdminApprover, res.TRFNo, res.comments);
 					                    //					                    $("#loading").dialog("close");
 					                    //					                    $("#loading").dialog("destroy");
-					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
 					                    //					                    $("#CancelAllTravelDelDialog").dialog("close");
 					                    //					                    $("#CancelMessage").dialog({
 					                    //					                        resizable: false,
@@ -1270,6 +1271,11 @@
 					                    //					                            }
 					                    //					                        }
 					                    //					                    });
+
+					                    // To Send Mail While Cancel Button Clicked by Project Manager.
+					                    $('#CancelCommentDialog').dialog("close");
+					                    $('#CancelCommentDialog').dialog("destroy");
+					                    sendcallmailforTravel(95, @Model.TravelTRFNo, comments);
 					                }
 					                else if (res.status == "Error") {
 
@@ -1395,7 +1401,6 @@
     			                        var commenttype = "rejected";
 
     			                        $('#TravelIdUser').val(TravelId);
-    			                        $('#TravelIdUser').val('@ViewBag.Travelid');
     			                        $('#StageID').val(stageid);
 
     			                        DisplayLoadingDialog(); // Checked global.js
@@ -1415,7 +1420,7 @@
     			                                EnableFields();
     			                                //$("#AccomodationDetailsForm").find('input, tr,select, textarea, dropdown').attr("disabled", "disabled");
     			                                if (data.status == true) {
-    			                                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+    			                                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
     			                                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
     			                                    //    			                                    $("#loading").dialog("close");
     			                                    //    			                                    $("#loading").dialog("destroy");
@@ -1435,6 +1440,11 @@
     			                                    //    			                                            }
     			                                    //    			                                        }
     			                                    //    			                                    });
+
+    			                                    // To Send Mail While Reject Button Clicked by Admin.
+    			                                    $('#RejectCommentDialogAdmin').dialog("close");
+    			                                    $('#RejectCommentDialogAdmin').dialog("destroy");
+    			                                    sendcallmailforTravel(94, @Model.TravelTRFNo, comments);
     			                                }
     			                                else if (data.status == "Error") {
 
@@ -1826,7 +1836,7 @@
 					            data: $('#AccomodationDetailsForm').serialize(),
 					            success: function (data) {
 					                if (data.status == true) {
-					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
 					                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
 					                    //					                    $("#loading").dialog("close");
 					                    //					                    $("#loading").dialog("destroy");
@@ -1845,6 +1855,11 @@
 					                    //					                            }
 					                    //					                        }
 					                    //					                    });
+
+					                    // To Send Mail While Reject Button Clicked by Project Manager.
+					                    $('#RejectCommentDialogApprover').dialog("close");
+					                    $('#RejectCommentDialogApprover').dialog("destrop");
+					                    sendcallmailforTravel(94, @Model.TravelTRFNo, comments);
 					                }
 					                else if (data.status == "Error") {
 
@@ -2329,7 +2344,8 @@
     });
 
     $("#SendReminderMail").click(function () {
-        sendcallmailforTravel();
+        DisplayLoadingDialog();
+        sendcallmailforTravel(42, 0, null);
     });
 
 
@@ -2719,17 +2735,17 @@
         //}
         // return false;
     }
-    function sendcallmailforTravel() {
+    function sendcallmailforTravel(mailTemplateID, travelID, travelComments) {
         var empId = '@ViewBag.loginUserId';
         var EmployeeID = '@ViewBag.TravelEmp';
         $.ajax({
             url: '@Url.Action("TravelSendMail", "Travel")',
             type: 'POST',
-            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID },
+            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID, templateID: mailTemplateID, travelTrfNo: travelID, travelComments: travelComments },
             datatype: "json",
             success: function (data) {
-                //                $("#loading").dialog("close");
-                //                $("#loading").dialog("destroy");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
                 if (data) {
                     $("#TravelMailDialog").html(data);
                     $("#TravelMailDialog").dialog({
@@ -2817,6 +2833,7 @@
                                             }); //end dialog
                                         }
                                     }); //end ajax
+                            window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
                         }
                     });
                 }
