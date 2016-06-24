@@ -1858,7 +1858,7 @@
 
 					                    // To Send Mail While Reject Button Clicked by Project Manager.
 					                    $('#RejectCommentDialogApprover').dialog("close");
-					                    $('#RejectCommentDialogApprover').dialog("destrop");
+					                    $('#RejectCommentDialogApprover').dialog("destroy");
 					                    sendcallmailforTravel(94, @Model.TravelTRFNo, comments);
 					                }
 					                else if (data.status == "Error") {
