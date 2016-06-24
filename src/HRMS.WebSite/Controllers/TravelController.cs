@@ -2638,7 +2638,7 @@ namespace HRMS.Controllers
                     else
                     {
                         EmployeeDAL EmployeeDAL = new EmployeeDAL();
-                        model.TravelEmployeeId = EmployeeDAL.GetEmployeeID(Membership.GetUser().UserName);
+                       // model.TravelEmployeeId = EmployeeDAL.GetEmployeeID(Membership.GetUser().UserName);
                         RetriveTravelID = dal.SaveRquestDeatilsForm(model, employeeId);
                         TravelID = Convert.ToString(model.TravelId);
                         EmployeeID = Convert.ToString(RetriveTravelID.EmployeeID);

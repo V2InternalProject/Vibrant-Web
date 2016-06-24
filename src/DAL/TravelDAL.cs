@@ -2022,6 +2022,27 @@ namespace HRMS.DAL
                         RetriveTravelID.EmployeeID = emp.EmployeeId.HasValue ? emp.EmployeeId.Value : 0;
                         RetriveTravelID.IsAdded = true;
                     }
+                    else if (emp.StageID == 3)
+                    {
+                        emp.EmployeeId = Traveldetailsmodel.TravelEmployeeId;
+                        emp.TRFNo = Traveldetailsmodel.TravelTRFNo;
+                        emp.RequestDate = emp.RequestDate;
+                        emp.ProjectName = emp.ProjectName;
+                        //emp.GroupHeadId = Traveldetailsmodel.GroupheadApprover;
+                        emp.CreatedDate = DateTime.Now;
+                        emp.ProjectManagerId = emp.ProjectManagerId;
+                        emp.AdminApproverId = employeeId;
+                        emp.TravelTypeId = emp.TravelTypeId;
+                        emp.TravelToCountry = emp.TravelToCountry;
+                        emp.TravelStartDate = emp.TravelStartDate;
+                        emp.TravelEndDate = emp.TravelEndDate;
+                        emp.ExpenseReimbursedByClient = emp.ExpenseReimbursedByClient;
+                        emp.AdditionalInfo = emp.AdditionalInfo;
+                        dbContext.SaveChanges();
+                        RetriveTravelID.TravelID = emp.TravelId;
+                        RetriveTravelID.EmployeeID = emp.EmployeeId.HasValue ? emp.EmployeeId.Value : 0;
+                        RetriveTravelID.IsAdded = true;
+                    }
                     else
                     {
                         emp.EmployeeId = Traveldetailsmodel.TravelEmployeeId;
