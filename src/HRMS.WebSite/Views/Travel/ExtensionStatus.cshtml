@@ -182,17 +182,58 @@ $('#FieldChildListExtSN').show();
             for (var i = 0; i < 3; i++) {
                 if (rowobject['TravelStageOrder'] >= i) {
                     if ((rowobject['Field'] == "Reject" && rowobject['TravelStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['TravelStageOrder'] == i)) {
-                        obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
-                    } else if (rowobject['TravelStageOrder'] != i) {
-                        if (rowobject['TravelStageOrder'] == 3 && i == 2)
-                            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
-                        else
-                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                        switch (i) {
+                            case 0:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesRed'> ";
+                                break;
+
+                            case 1:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesRed'> ";
+                                break;
+
+                            default:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Admin Department Approval Stage' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
+                                break;
+                        }
+                    }
+                    else if (rowobject['TravelStageOrder'] != i) {
+                        if (rowobject['TravelStageOrder'] == 3 && i == 2) {
+                            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'> "; //  Yellow
+                        }
+                        else {
+                            switch (i) {
+                                case 0:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                case 1:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                default:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Admin Department Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> "; //  Green
+                                    break;
+                            }
+                        }
                     }
                     else {
-                        obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
-                        if (rowobject['StageID'] == 7) {
-                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                        if (rowobject['StageId'] == 7) {
+                            switch (i) {
+                                case 0:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                case 1:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                default:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Admin Department Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> "; //  Green
+                                    break;
+                            }
+                        }
+                        else {
+                            obj = obj + "<img src='../../Images/New Design/status-off.png'  width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
                         }
                     }
                 } else {
