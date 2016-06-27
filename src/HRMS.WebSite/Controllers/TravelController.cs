@@ -3386,7 +3386,7 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult TravelSendMail(string successEmpIDs, int loggedinEmpID, int templateID, int travelTrfNo, string travelComments)
+        public ActionResult TravelSendMail(string successEmpIDs, int loggedinEmpID, int templateID, double travelTrfNo, string travelComments)
         {
             try
             {
