@@ -3578,12 +3578,14 @@ namespace HRMS.Controllers
                 int travelid = Convert.ToInt32(decryptedTravelId);
                 status = travelDAL.GetAllGridStatus(travelid, CountryId, TravelType, TravelTRFNo);
                 bool ClientG, PassG, ContactG, Contact1G, VisaG, JourneyG;
+                int isVisaFreeCountry = travelDAL.CheckCountryRequiresVisa(CountryId);
+
 
                 ClientG = status[0];
                 PassG = status[1];
                 ContactG = status[2];
                 Contact1G = status[3];
-                VisaG = status[4];
+                VisaG = isVisaFreeCountry > 0 ? false:status[4];
                 JourneyG = status[5];
                 return Json(new { ClientG = ClientG, PassG = PassG, ContactG = ContactG, Contact1G = Contact1G, VisaG = VisaG, JourneyG = JourneyG }, JsonRequestBehavior.AllowGet);
             }
