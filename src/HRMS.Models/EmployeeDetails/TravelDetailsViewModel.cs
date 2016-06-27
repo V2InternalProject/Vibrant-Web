@@ -159,5 +159,7 @@ namespace HRMS.Models
         public bool IsVisaExist { get; set; }
 
         public bool IsVisaValid { get; set; }
+
+        public bool IsVisaRequired { get; set; }
     }
 }

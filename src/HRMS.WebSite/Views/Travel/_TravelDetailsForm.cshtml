@@ -85,8 +85,11 @@
                     data: { employeeId: '@Model.TravelEmployeeId', countryId: $('#ddlCurrentCountry').val() },
                     type: "POST",
                     success: function (results) {
-
-                        if (results.IsVisaValid == true && results.IsVisaExist == true) {
+                        if (results.IsVisaValid == true && results.IsVisaExist == true && results.IsVisaRequired == true) {
+                            jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
+                            $('#hideddlCurrentCountry').hide();
+                        }
+                        else if (results.IsVisaValid == false && results.IsVisaExist == false && results.IsVisaRequired == false) {
                             jQuery("#VisaTravelDetailsTable").trigger("reloadGrid");
                             $('#hideddlCurrentCountry').hide();
                         }
@@ -485,9 +488,11 @@
             $("#TravelExtensionEndDate").attr("disabled", "disabled");
             $("#TravelExtDetails").attr("disabled", "disabled");
         }
-        $("#TravelStartDate, #TravelEndDate, #TravelExtensionEndDate, #TravelImmigrationDateDate").keypress(function () {
-            return false;
-        });
+
+        // -- Issue-1191: This is to allow the datepicker to get the date manually from keypad.
+        //$("#TravelStartDate, #TravelEndDate, #TravelExtensionEndDate, #TravelImmigrationDateDate").keypress(function () {
+        //    return false;
+        //});
 
         if ('@Model.StageID' == 4 && '@ViewBag.UserRole' == 'Travel_Admin') {
             $('#btnCancelTravelRequestForm').show();
@@ -847,7 +852,7 @@
                                     <div class="leftcol" id="TravelImmigrationDateDateCollection">
                                         <div class="LabelDiv">
                                             <label>
-                                                Immigration Details:
+                                                Immigration Date:
                                             </label>
                                         </div>
                                         <div class="InputDiv">
@@ -945,13 +950,13 @@
     @if (Model.StageID >= 0 && Model.StageID <= 4)
     {
         <p>
-            Travel Form details have been saved successfully.
+            Travel Form Details have been saved successfully.
         </p>
     }
     else
     {
         <p>
-            Travel Form details have been saved successfully. Please fill the below sections
+            Travel Form Details have been saved successfully. Please fill the below sections
             to complete the request.
         </p>
     }
@@ -973,12 +978,17 @@
 </div>
 <div id="SumitExtConfirmationDialog" style="display: none;">
     <p>
-        Travel Extension deatails form submited successfully.
+        Travel Extension Details form submitted successfully.
+    </p>
+</div>
+<div id="TravelSubmitFormRecordSuccess" style="display: none;" title="Travel Details">
+    <p>
+        Travel Details form submitted successfully.
     </p>
 </div>
 <div id="DateValidateforEmptydialog" style="display: none;">
     <p>
-        Please select travel extension dates and fill Travel Extension Details.
+        Please select Travel Extension Dates and fill Travel Extension Details.
     </p>
 </div>
 <div id="DateValidateforImmigrationDetails" style="display: none;">
@@ -991,7 +1001,7 @@
 </div>
 <div id="accomodationRecordSuccess" style="display: none;">
     <p>
-        Travel Requirement details has been saved successfully.
+        Travel Requirement Details has been saved successfully.
     </p>
 </div>
 <div id="DeleteConfirmationDialog" style="display: none">
@@ -1006,20 +1016,6 @@
 </div>
 <div class="reportClass" id="iframesrc">
     <iframe src="" id="reportView" width="1100px" height="424px" class="reportClass"></iframe>
-</div>
-<div id="SubmitConfirmationMessageTravel" style="display: none">
-    @if (Model.StageID == 3)
-    {
-        <p>
-            Are you sure, you want to submit the form?
-        </p>
-    }
-    else
-    {
-        <p>
-            Are you sure, you want to move process to the next stage?
-        </p>
-    }
 </div>
 <div id="ApproveAdmindialog" style="display: none;">
     <p>
@@ -1051,7 +1047,7 @@
         <span class="mandatory">*</span>Enter Comment:
     </div>
     <div class="floatL">
-        <textarea rows="5" cols="20" id="txtCommentApprover"></textarea>
+        <textarea rows="2" cols="20" id="txtCommentApprover"></textarea>
     </div>
     <div style="display: none; color: red" id="ErrorCommentApprover" class="floatL">
         Please Enter commment
@@ -1166,6 +1162,7 @@
 
     // Delete all Travel Details
     $('#btnCancelTravelRequestForm').click(function () {
+        debugger;
         var IsloggedUser = '@ViewBag.IsLoggedInUser';
         if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
             $("#ErrorForselfAdminCancel").dialog({
@@ -1257,7 +1254,7 @@
 					                    //callTravelMail(res.travelID, false, false, true, res.employeeID, res.stageID, res.ProjectManagerApprover, res.GroupHeadApprover, res.AdminApprover, res.TRFNo, res.comments);
 					                    //					                    $("#loading").dialog("close");
 					                    //					                    $("#loading").dialog("destroy");
-					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
 					                    //					                    $("#CancelAllTravelDelDialog").dialog("close");
 					                    //					                    $("#CancelMessage").dialog({
 					                    //					                        resizable: false,
@@ -1274,6 +1271,11 @@
 					                    //					                            }
 					                    //					                        }
 					                    //					                    });
+
+					                    // To Send Mail While Cancel Button Clicked by Project Manager.
+					                    $('#CancelCommentDialog').dialog("close");
+					                    $('#CancelCommentDialog').dialog("destroy");
+					                    sendcallmailforTravel(95, @Model.TravelTRFNo, comments);
 					                }
 					                else if (res.status == "Error") {
 
@@ -1399,7 +1401,6 @@
     			                        var commenttype = "rejected";
 
     			                        $('#TravelIdUser').val(TravelId);
-    			                        $('#TravelIdUser').val('@ViewBag.Travelid');
     			                        $('#StageID').val(stageid);
 
     			                        DisplayLoadingDialog(); // Checked global.js
@@ -1419,7 +1420,7 @@
     			                                EnableFields();
     			                                //$("#AccomodationDetailsForm").find('input, tr,select, textarea, dropdown').attr("disabled", "disabled");
     			                                if (data.status == true) {
-    			                                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+    			                                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
     			                                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
     			                                    //    			                                    $("#loading").dialog("close");
     			                                    //    			                                    $("#loading").dialog("destroy");
@@ -1439,6 +1440,11 @@
     			                                    //    			                                            }
     			                                    //    			                                        }
     			                                    //    			                                    });
+
+    			                                    // To Send Mail While Reject Button Clicked by Admin.
+    			                                    $('#RejectCommentDialogAdmin').dialog("close");
+    			                                    $('#RejectCommentDialogAdmin').dialog("destroy");
+    			                                    sendcallmailforTravel(94, @Model.TravelTRFNo, comments);
     			                                }
     			                                else if (data.status == "Error") {
 
@@ -1776,94 +1782,6 @@
             });
             var buttonidClicked = this.id;
             saveTravelForm(buttonidClicked);
-
-            var postUrl = '@Url.Action("SubmitTravelApprovalForm", "Travel")';
-            $('#SubmitConfirmationMessageTravel').dialog(
-                			{
-                			    autoOpen: true,
-                			    modal: true,
-                			    width: 300,
-                			    height: 'auto',
-                			    resizable: false,
-                			    title: "Submit Travel Details",
-                			    dialogClass: 'noclose',
-                			    buttons:
-                					{
-                					    Ok: function () {
-                					        $(this).dialog("close");
-                					        $(this).dialog("destroy");
-                					        DisplayLoadingDialog(); // Checked global.js
-                					        $.ajax({
-                					            url: postUrl,
-                					            type: 'POST',
-                					            async: false,
-                					            data: $('#AccomodationDetailsForm').serialize(),
-                					            success: function (results) {
-
-                					                if (results.status == true) {
-                					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
-                					                    //callTravelMail(results.travelId, results.isApproved, false, false, null, null, null, null, null, null);
-                					                    //                					                    $("#loading").dialog("close");
-                					                    //                					                    $("#loading").dialog("destroy");
-                					                    //                					                    $("#ApproveAdmindialog").dialog({
-                					                    //                					                        resizable: false,
-                					                    //                					                        height: 140,
-                					                    //                					                        width: 300,
-                					                    //                					                        title: "Submitted",
-                					                    //                					                        dialogClass: 'noclose',
-                					                    //                					                        modal: true,
-                					                    //                					                        buttons: {
-                					                    //                					                            Ok: function () {
-                					                    //                					                                $(this).dialog("close");
-                					                    //                					                                //window.location.href = "Index/Travel";
-                					                    //                					                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
-                					                    //                					                            }
-                					                    //                					                        }
-                					                    //                					                    });
-                					                }
-                					                else if (results.status == "Error") {
-
-                					                    $("#loading").dialog("close");
-                					                    $("#loading").dialog("destroy");
-                					                    $("#errorDialog").dialog({
-                					                        resizable: false,
-                					                        height: 'auto',
-                					                        width: 'auto',
-                					                        modal: true,
-                					                        title: 'Travel Details',
-                					                        buttons: {
-                					                            Ok: function () {
-                					                                $(this).dialog("close");
-                					                            }
-                					                        }
-                					                    }); //end dialog
-                					                }
-                					                else {
-
-                					                    $("#loading").dialog("close");
-                					                    $("#loading").dialog("destroy");
-                					                    $("#TravelErrorMessege").dialog({
-                					                        resizable: false,
-                					                        height: 'auto',
-                					                        width: 300,
-                					                        modal: true,
-                					                        buttons: {
-                					                            Ok: function () {
-                					                                $(this).dialog("close");
-                					                            }
-                					                        }
-                					                    });
-                					                }
-                					            }
-                					        });
-                					        return true;
-                					    },
-                					    close: function () {
-                					        $(this).dialog("close");
-                					    }
-                					}
-
-                			});
         }
     });
     // Reject Travel Details
@@ -1918,7 +1836,7 @@
 					            data: $('#AccomodationDetailsForm').serialize(),
 					            success: function (data) {
 					                if (data.status == true) {
-					                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+					                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
 					                    //callTravelMail(data.travelID, false, true, false, null, null, null, null, null, null, comments);
 					                    //					                    $("#loading").dialog("close");
 					                    //					                    $("#loading").dialog("destroy");
@@ -1937,6 +1855,11 @@
 					                    //					                            }
 					                    //					                        }
 					                    //					                    });
+
+					                    // To Send Mail While Reject Button Clicked by Project Manager.
+					                    $('#RejectCommentDialogApprover').dialog("close");
+					                    $('#RejectCommentDialogApprover').dialog("destroy");
+					                    sendcallmailforTravel(94, @Model.TravelTRFNo, comments);
 					                }
 					                else if (data.status == "Error") {
 
@@ -2421,7 +2344,8 @@
     });
 
     $("#SendReminderMail").click(function () {
-        sendcallmailforTravel();
+        DisplayLoadingDialog();
+        sendcallmailforTravel(42, 0, null);
     });
 
 
@@ -2440,7 +2364,20 @@
             data: $('#AccomodationDetailsForm').serialize(),
             success: function (results) {
                 if (results.status == true) {
-                    window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                    $("#TravelSubmitFormRecordSuccess").dialog({
+                        resizable: false,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: 'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                            }
+                        }
+                    });
+                    //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
                     //callTravelMail(results.travelId, results.isApproved, false, false, null, null, null, null, null, null);
                     //var Sucessmsg = "Travel request approved successfully."
                     //                    if ('@Model.StageID' == 3) {
@@ -2798,17 +2735,17 @@
         //}
         // return false;
     }
-    function sendcallmailforTravel() {
+    function sendcallmailforTravel(mailTemplateID, travelID, travelComments) {
         var empId = '@ViewBag.loginUserId';
         var EmployeeID = '@ViewBag.TravelEmp';
         $.ajax({
             url: '@Url.Action("TravelSendMail", "Travel")',
             type: 'POST',
-            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID },
+            data: { successEmpIDs: empId, loggedinEmpID: EmployeeID, templateID: mailTemplateID, travelTrfNo: travelID, travelComments: travelComments },
             datatype: "json",
             success: function (data) {
-                //                $("#loading").dialog("close");
-                //                $("#loading").dialog("destroy");
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
                 if (data) {
                     $("#TravelMailDialog").html(data);
                     $("#TravelMailDialog").dialog({
@@ -2896,6 +2833,7 @@
                                             }); //end dialog
                                         }
                                     }); //end ajax
+                            window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
                         }
                     });
                 }

@@ -119,7 +119,7 @@
                             onCellSelect: function (rowid, iCol) {
                                 var viewstatus = '@ViewBag.StageID';
                                 var rowData = $(this).getRowData(rowid);
-                                
+
                                 var columnName = $(this).jqGrid("getGridParam", "colModel");
                                 var colName = columnName[iCol];
                                 if(isJourneyRowInAddEditMode == false)
@@ -130,6 +130,9 @@
                                     $('#addTravelsJourneyDetails #JourneyId').val(rowData['JourneyID']);
                                     if (colName['index'] == "Delete" && rowid != "new_row") {
                                         if (viewstatus == 4 && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.viewDetailClick' != 'yes') {
+                                            DeleteJourneyDetail(rowData['JourneyID']);
+                                        }
+                                        if (viewstatus == 4 && '@ViewBag.UserRole' == 'Travel_Admin' && '@ViewBag.viewDetailClick' != 'yes') {
                                             DeleteJourneyDetail(rowData['JourneyID']);
                                         }
                                         if (viewstatus == 1 || viewstatus == 2 || viewstatus == 4 || ('@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 3) || ('@ViewBag.viewDetailClick' == 'yes')) {
@@ -218,8 +221,6 @@
                         isJourneyRowInAddEditMode = true;
                         $("#" + rowid + "_JourneyFeedback").parent().next().find('img').hide();
                         $('#addTravelsJourneyDetails #JourneyId').val(0);
-                        $("#JourneyTable").jqGrid('hideCol', 'TicketName');
-                        $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
                         $(".UploadButtons").children().hide();
                         //                    $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[class="'+rowid+'_UploadLink"]').show();
                         $("#" + rowid + "_JourneyFeedback").parent().prev().prev().find('input[type="button"]').show();
@@ -231,12 +232,15 @@
                         else
                         {
                             $(".modeDetailsClass").find("input").addClass("bg-gray").attr("disabled","disabled");
+                            $(".feedbackClass").find("input").addClass("bg-gray").attr("disabled","disabled");
                         }
-                        if(('@ViewBag.StageID' == 0 || '@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
+                        if(('@ViewBag.StageID' == 4) && '@ViewBag.IsLoggedInUser' == "True")
                         {
                             $(".feedbackClass").find("input").removeClass("bg-gray").removeAttr("disabled");
                         }
                         $(".journeyUpload").find("input").addClass("bg-gray").attr("disabled","disabled").css("opacity","0.5");
+                        $("#JourneyTable").jqGrid('hideCol', 'TicketName');
+                        $("#JourneyTable").jqGrid('showCol', 'TicketNameUpload');
 
                     }
                 }
@@ -356,12 +360,12 @@
         }
         else if('@ViewBag.StageID' == 4 && '@ViewBag.UserRole' == "Travel_Admin")
         {
-            $("#journeyTablePager_left").css("visibility","hidden");
+            $("#journeyTablePager_left").css("visibility","visible");
         }
         else
             $("#journeyTablePager_left").css("visibility","hidden");
 
-        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && '@ViewBag.IsLoggedInUser' == 'True' && '@ViewBag.StageID' == 4) {
+        if (('@ViewBag.Extension' == "Ext" ||'@ViewBag.viewDetailClick' == 'Ext') && ('@ViewBag.IsLoggedInUser' == 'True' || '@ViewBag.UserRole' == "Travel_Admin") && '@ViewBag.StageID' == 4) {
             $("#JourneyTable_iladd").css("visibility","visible");
         }
     });//end ready
@@ -434,7 +438,8 @@
 
     function isJourneyModeSelected(value,colname)
     {
-        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "0")
+        //if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "0")
+        if(value == "0")
         {
             $("#JourneyModeRequiredDialog").dialog({
                 modal: true,
@@ -459,7 +464,8 @@
 
     function isJourneyFieldRequired(value,colname)
     {
-        if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "")
+        //if((('@ViewBag.StageID' == 0 && '@ViewBag.IsLoggedInUser' == "True") || ('@ViewBag.StageID' == 3 && '@ViewBag.UserRole' == "Travel_Admin")) && value == "")
+        if(value == "")
         {
             $("#JourneyFieldRequiredDialog span").html("").append(colname);
             $("#JourneyFieldRequiredDialog").dialog({
@@ -523,7 +529,7 @@
             return [true, '', "Available"];
         }
         else {
-            return [false, '', "unAvailable"];
+            return [false, '', "Unavailable"];
         }
     }
 </script>

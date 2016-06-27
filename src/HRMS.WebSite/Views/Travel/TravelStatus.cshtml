@@ -29,39 +29,39 @@
         });
 
         $("#TravelField").change(function () {
-//            if ($("#TravelField").val() != "") {
-//                var url = "GetFieldChildDetailsList/Travel";
-//                $("#FieldChild").show();
-//                $.getJSON(url, { TravelField: $("#TravelField").val() }, function (data) {
-//                    //Clear the Model list
-//                    $("#FieldChild").empty();
-//                    $("#FieldChild").append("<option value='" + "" + "'>" + "" + "</option>");
-//                    //Foreach Model in the list, add a model option from the data returned
-//                    $.each(data, function (index, optionData) {
+            //            if ($("#TravelField").val() != "") {
+            //                var url = "GetFieldChildDetailsList/Travel";
+            //                $("#FieldChild").show();
+            //                $.getJSON(url, { TravelField: $("#TravelField").val() }, function (data) {
+            //                    //Clear the Model list
+            //                    $("#FieldChild").empty();
+            //                    $("#FieldChild").append("<option value='" + "" + "'>" + "" + "</option>");
+            //                    //Foreach Model in the list, add a model option from the data returned
+            //                    $.each(data, function (index, optionData) {
 
-//                        $("#FieldChild").append("<option value='" + optionData.Id + "'>" + optionData.Description + "</option>");
-//                    });
-//                });
-//            } else {
-//                $("#FieldChild").val("");
-//                $("#FieldChild").hide();
-//            }
-if ($("#TravelField").val() != "") {
-if($("#TravelField").val()=="Business Group"){
-$('#FieldChildListTravelBG').show();
-$('#FieldChildListTravelOU').hide();
-$('#FieldChildListTravelSN').hide();
-}
-if($("#TravelField").val()=="Organization Unit"){
-$('#FieldChildListTravelBG').hide();
-$('#FieldChildListTravelOU').show();
-$('#FieldChildListTravelSN').hide();
-}
-if($("#TravelField").val()=="Stage Name"){
-$('#FieldChildListTravelBG').hide();
-$('#FieldChildListTravelOU').hide();
-$('#FieldChildListTravelSN').show();
-}				
+            //                        $("#FieldChild").append("<option value='" + optionData.Id + "'>" + optionData.Description + "</option>");
+            //                    });
+            //                });
+            //            } else {
+            //                $("#FieldChild").val("");
+            //                $("#FieldChild").hide();
+            //            }
+            if ($("#TravelField").val() != "") {
+                if ($("#TravelField").val() == "Business Group") {
+                    $('#FieldChildListTravelBG').show();
+                    $('#FieldChildListTravelOU').hide();
+                    $('#FieldChildListTravelSN').hide();
+                }
+                if ($("#TravelField").val() == "Organization Unit") {
+                    $('#FieldChildListTravelBG').hide();
+                    $('#FieldChildListTravelOU').show();
+                    $('#FieldChildListTravelSN').hide();
+                }
+                if ($("#TravelField").val() == "Stage Name") {
+                    $('#FieldChildListTravelBG').hide();
+                    $('#FieldChildListTravelOU').hide();
+                    $('#FieldChildListTravelSN').show();
+                }
             } else {
                 $("#TravelField").val("");
                 $("#TravelField").hide();
@@ -150,7 +150,7 @@ $('#FieldChildListTravelSN').show();
                 employeeId: function () { return '@ViewBag.EncryptedEmployeeId'; },
                 term: function () { return $("#txtSearchEmployee").val(); },
                 Field: function () { return $("#TravelField").val(); },
-                FieldChild: function () { if($("#TravelField").val()=="Business Group") return $("#DDFieldChildListTravelBG").val(); if($("#TravelField").val()=="Organization Unit") return $("#FieldChildListTravelOU").val();if($("#TravelField").val()=="Stage Name") return $("#DDFieldChildListTravelSN").val(); if($("#TravelField").val()=="") return "";  }
+                FieldChild: function () { if ($("#TravelField").val() == "Business Group") return $("#DDFieldChildListTravelBG").val(); if ($("#TravelField").val() == "Organization Unit") return $("#FieldChildListTravelOU").val(); if ($("#TravelField").val() == "Stage Name") return $("#DDFieldChildListTravelSN").val(); if ($("#TravelField").val() == "") return ""; }
             },
             // Specify the column names
             colNames: ["StageId", "Reporting To", "Field", "TravelStageOrder", "TravelId", "EncryptedTravelId", "EncryptedEmployeeId", "EmployeeId", "Travel Request Number", "Employee Name", "Status", "Stage"],
@@ -165,7 +165,7 @@ $('#FieldChildListTravelSN').show();
 				{ name: "EncryptedTravelId", index: "EncryptedTravelId", hidden: true, width: 100, align: "left" },
                 { name: "EncryptedEmployeeId", index: "EncryptedEmployeeId", hidden: true, width: 100, align: "left" },
                 { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
-                 { name: "TravelRequestNumber", index: "TravelRequestNumber", formatter: formatlink, width: 100, sortable: true, align: "left",sorttype:"int" },
+                 { name: "TravelRequestNumber", index: "TravelRequestNumber", formatter: formatlink, width: 100, sortable: true, align: "left", sorttype: "int" },
                  { name: "Employeename", index: "Employeename", width: 100, align: "left" },
                   { name: "Status", index: "Status", width: 100, align: "left", formatter: renderImages },
                 { name: "stageName", index: "stageName", width: 100, align: "left" }
@@ -201,7 +201,7 @@ $('#FieldChildListTravelSN').show();
                 employeeId: function () { return '@ViewBag.EncryptedEmployeeId'; },
                 term: function () { return $("#txtSearchEmployee").val(); },
                 Field: function () { return $("#TravelField").val(); },
-                FieldChild: function () { if($("#TravelField").val()=="Business Group") return $("#DDFieldChildListTravelBG").val(); if($("#TravelField").val()=="Organization Unit") return $("#FieldChildListTravelOU").val();if($("#TravelField").val()=="Stage Name") return $("#DDFieldChildListTravelSN").val(); if($("#TravelField").val()=="") return "";  }
+                FieldChild: function () { if ($("#TravelField").val() == "Business Group") return $("#DDFieldChildListTravelBG").val(); if ($("#TravelField").val() == "Organization Unit") return $("#FieldChildListTravelOU").val(); if ($("#TravelField").val() == "Stage Name") return $("#DDFieldChildListTravelSN").val(); if ($("#TravelField").val() == "") return ""; }
             },
             // Specify the column names
             colNames: ["StageId", "Reporting To", "Field", "TravelStageOrder", "TravelId", "EncryptedTravelId", "EncryptedEmployeeId", "EmployeeId", "Travel Request Number", "Employee Name", "Status", "Stage"],
@@ -248,30 +248,67 @@ $('#FieldChildListTravelSN').show();
             for (var i = 0; i < 3; i++) {
                 if (rowobject['StageId'] >= i) {
                     if ((rowobject['Field'] == "Rejected" && rowobject['StageId'] == i) || (rowobject['Field'] == "Push Back" && rowobject['StageId'] == i)) {
-                        obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
-                    } else if (rowobject['StageId'] != i) {
-                        if (rowobject['StageId'] == 3 && i == 2)
-                            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
-                        else
-                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                        switch (i) {
+                            case 0:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesRed'> ";
+                                break;
+
+                            case 1:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesRed'> ";
+                                break;
+
+                            default:
+                                obj = obj + "<img src='../../Images/New Design/status-rejected.png' title='Admin Department Approval Stage' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
+                                break;
+                        }
+                    }
+                    else if (rowobject['StageId'] != i) {
+                        if (rowobject['StageId'] == 3 && i == 2) {
+                            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'> "; //  Yellow
+                        }
+                        else {
+                            switch (i) {
+                                case 0:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                case 1:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                default:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Approved' width='31px' height='31px' class='StatusImagesGreen'> "; //  Green
+                                    break;
+                            }
+                        }
                     }
                     else {
-                        obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
-                        if (rowobject['StageID'] == 7) {
-                            obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                        if (rowobject['StageId'] == 7) {
+                            switch (i) {
+                                case 0:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Project Manager Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                case 1:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Group Head Approval Stage' width='31px' height='31px' class='StatusImagesGreen'> ";
+                                    break;
+
+                                default:
+                                    obj = obj + "<img src='../../Images/New Design/status-on.png' title='Approved' width='31px' height='31px' class='StatusImagesGreen'> "; //  Green
+                                    break;
+                            }
+                        }
+                        else {
+                            obj = obj + "<img src='../../Images/New Design/status-off.png'  width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
                         }
                     }
                 } else {
-                    obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                    obj = obj + "<img src='../../Images/New Design/status-off.png'  width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
                 }
             }
-
             return obj;
         }
-
     });
-
-
 
     function formatlink(cellvalue, options, rowobject) {
         return "<a href=# id=" + rowobject['TravelId'] + " class=EmpLink onClick = LinkClick(this," + "\"" + rowobject['TravelRequestNumber'] + "\"," + "\"" + rowobject['EncryptedEmployeeId'] + "\"," + "\"" + rowobject['EncryptedTravelId'] + "\"," + rowobject['EmployeeId'] + "," + rowobject['StageId'] + ") class=EmployeeNameLink >" + cellvalue + "</a>";
@@ -332,7 +369,7 @@ $('#FieldChildListTravelSN').show();
             $("#FieldChild").hide();
         }
     }
- 
+
 </script>
 <div id="ShowStatusTravelDialog" style="display: none; clear: both">
     @{Html.RenderPartial("_TravelShowStatus", Model);}
@@ -340,41 +377,45 @@ $('#FieldChildListTravelSN').show();
 <div id="TravelReportDetails" style="display: none; clear: both">
 </div>
 <span id="InboxOrWatchListCallTravel" style="display: none;"></span>@*<script type="text/javascript">
-    $("#txtSearchTravel").keypress(function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            searchterm = $("#txtSearchTravel").val();
-            jQuery("#jqInboxTable").trigger("reloadGrid");
-            jQuery("#jqWatchListTable").trigger("reloadGrid");
-        }
-    });
+        $("#txtSearchTravel").keypress(function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                searchterm = $("#txtSearchTravel").val();
+                jQuery("#jqInboxTable").trigger("reloadGrid");
+                jQuery("#jqWatchListTable").trigger("reloadGrid");
+            }
+        });
 
-    $("#txtSearchTravel").autocomplete({
-        source: function (request, response) {
-            $.getJSON('SearchEmployeeAutoSuggestTravel/Travel', { term: request.term }, function (data) {
-                response($.map(data, function (el) {
-                    var emplyeeInformation = el.EmployeeName + " {" + el.EmployeeCode + "}";
-                    return {
-                        label: emplyeeInformation,
-                        value: el.EmployeeName
-                    };
-                }));
-            });
-        }
-    });
+        $("#txtSearchTravel").autocomplete({
+            source: function (request, response) {
+                $.getJSON('SearchEmployeeAutoSuggestTravel/Travel', { term: request.term }, function (data) {
+                    response($.map(data, function (el) {
+                        var emplyeeInformation = el.EmployeeName + " {" + el.EmployeeCode + "}";
+                        return {
+                            label: emplyeeInformation,
+                            value: el.EmployeeName
+                        };
+                    }));
+                });
+            }
+        });
 
-</script>*@
+    </script>*@
 <section class="TravelContainer Container TransparentMainbody">
     <div class="FixedHeader">
         <div class="clearfix">
             <h2 class="MainHeading">
-                Travel</h2>
+                Travel
+            </h2>
         </div>
         <nav class="sub-menu-colored">
             <a id="newReqLink" href="@Url.Action("GetTravelFormDetails", "Travel", new { IsNewForm = true, encryptedTravelId = ViewBag.EncryptedTravelId, viewDetails = "NoExt" })">
-                New Request</a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })">
-                    Extension Request</a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")" class="selected">
-                        Saved/Submitted Request</a>
+                New Request
+            </a> <a id="extensionReqLink" href="@Url.Action("GetExtensionStatus", "Travel", new { IsNewForm = true, EncryptedTravelID = "", viewDetails = "Ext" })">
+                Extension Request
+            </a> <a id="SavedReqLink" href="@Url.Action("GetTravelStatus", "Travel")" class="selected">
+                Saved/Submitted Request
+            </a>
         </nav>
     </div>
     <div class="MainBody SavesubMainbody">
@@ -382,21 +423,23 @@ $('#FieldChildListTravelSN').show();
             <div class="fill-dtls clearfix">
                 <div class="LabelDiv">
                     <label for="From Date" class="select-type">
-                        Employee Name:</label>
+                        Employee Name:
+                    </label>
                 </div>
                 <div class="InputDiv">
                     <input type="text" name="searchValue" id="txtSearchEmployee" class="srchinput" height="20px" />
                 </div>
                 <div class="LabelDiv">
                     <label for="Field" class="select-type">
-                        Field:</label>
+                        Field:
+                    </label>
                 </div>
                 <div class="InputDiv">
                     @Html.DropDownListFor(model => model.Field, new SelectList(Model.GetFieldList(), "Value", "Text"), "", new { id = "TravelField" })
                 </div>
                 @*   <div class="InputDiv">
-                    @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldChildList, "Id", "Description", "Select"), "Select", new { style = "display:none;" })
-                </div>*@
+                        @Html.DropDownListFor(model => model.FieldChild, new SelectList(Model.FieldChildList, "Id", "Description", "Select"), "Select", new { style = "display:none;" })
+                    </div>*@
                 <div class="InputDiv" style="display: none" id="FieldChildListTravelBG">
                     @Html.DropDownListFor(model => model.FieldChild, (SelectList)ViewBag.FieldChildListBG, "Select", new { id = "DDFieldChildListTravelBG" })
                 </div>
@@ -408,22 +451,24 @@ $('#FieldChildListTravelSN').show();
                 </div>
                 <div class="remain">
                     <button id="btnHeaderShowDetails" type="button" class="ButtonGray">
-                        Show</button>
+                        Show
+                    </button>
                 </div>
             </div>
         </div>
         <h4 class="SmallHead">
-            Inbox</h4>
+            Inbox
+        </h4>
         <div class="tablestyle3">
-            <table id="jqInboxTable" class="scroll">
-            </table>
+            <table id="jqInboxTable" class="scroll"></table>
             <div id="jqInboxDetailsPager">
             </div>
         </div>
         @*<div class="commondivider mrgnL30 mrgnR30 mrgnT20">
-        </div>*@
+            </div>*@
         <h4 class="SmallHead">
-            Watch List</h4>
+            Watch List
+        </h4>
         <div class="tablestyle3 mrgnT20">
             <table id="jqWatchListTable" class="scroll"></table>
             <div id="jqWatchListDetailsPager">

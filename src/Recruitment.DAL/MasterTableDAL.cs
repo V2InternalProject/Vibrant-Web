@@ -417,7 +417,7 @@ namespace DAL
 
 
                     case "Boolean":
-                        if ((Boolean )parameterArray[i]  == true )
+                        if (Convert.ToBoolean(parameterArray[i])  == true)
                             parameterArray[i] = "1";
                         else if ((Boolean)parameterArray[i] == false)
                             parameterArray[i] = "0";
@@ -743,7 +743,7 @@ namespace DAL
                 SqlConnection Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["myConnectionString"].ConnectionString);
                 using (SqlConnection myConnection = new SqlConnection(AppConfiguration.ConnectionString))
                 {
-                    SqlCommand myCommand = new SqlCommand("AddUpdateMaster", myConnection);
+                    SqlCommand myCommand = new SqlCommand("sp_AddUpdateMaster", myConnection);
                     myCommand.CommandType = CommandType.StoredProcedure;
                     myCommand.Parameters.AddWithValue("@Operation", "UPDATE");
                     myCommand.Parameters.AddWithValue("@TableName", tableName);

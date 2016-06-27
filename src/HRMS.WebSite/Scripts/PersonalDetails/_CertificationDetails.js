@@ -274,7 +274,7 @@ function isCertificateSelected(value, colname) {
         $("#CertificateRequiredDialog").dialog({
             modal: true,
             resizable: false,
-            height: 140,
+            height: 'auto',
             width: 300,
             dialogClass: "noclose",
             buttons:
