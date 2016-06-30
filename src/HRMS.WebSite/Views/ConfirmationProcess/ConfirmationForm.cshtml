@@ -1075,7 +1075,7 @@
                     type: 'POST',
                     url: postApproveUrl,
                     async: false,
-                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
+                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), ReportingMangerComment: $('#ReportingManagerComments').val(), HrComments: $('#Text_HRComments').val() },
                     success: function (resultApprove) {
                         if (resultApprove.status == true) {
                             //$("#ConfirmationRecordSave").dialog({
