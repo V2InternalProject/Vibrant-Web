@@ -101,10 +101,6 @@
             else if ($('#IsManagerOrEmployee').val() == "HR") {
                 var comments = $("#Text_HRComments").val();
             }
-            if (comments.length <= 0) {
-                $('#ErrorRejectComment').show();
-                return false;
-            }
             else {
                 $('#ErrorComment').hide();
             }
