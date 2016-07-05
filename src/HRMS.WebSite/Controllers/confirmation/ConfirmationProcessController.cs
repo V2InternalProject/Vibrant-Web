@@ -2621,7 +2621,7 @@ namespace HRMS.Controllers
         /// <param name="approveReject"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ApproveConfirmationFormDetails(string employeeId, int confirmationID, string IsManagerOrEmployee)
+        public ActionResult ApproveConfirmationFormDetails(string employeeId, int confirmationID, string IsManagerOrEmployee, string ReportingMangerComment, string HrComments)
         {
             try
             {
@@ -2632,7 +2632,7 @@ namespace HRMS.Controllers
 
                 DAL.ConfirmationDAL dal = new DAL.ConfirmationDAL();
                 string resultMessage = string.Empty;
-                var status = dal.ApproveConfirmationFormDetails(Convert.ToInt32(decryptedEmployeeId), confirmationID, IsManagerOrEmployee);
+                var status = dal.ApproveConfirmationFormDetails(Convert.ToInt32(decryptedEmployeeId), confirmationID, IsManagerOrEmployee, ReportingMangerComment, HrComments);
                 if (status)
                     resultMessage = "Saved";
                 else
