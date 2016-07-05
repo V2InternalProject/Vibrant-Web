@@ -546,7 +546,7 @@
                                     CommandArgument='<%#  Eval("LeaveDetailID") %>' OnClientClick="return confirm('Are you sure you want to Cancel this Leave?');">Cancel&nbsp;Leave</asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" CausesValidation="False"></asp:LinkButton>
                                 &nbsp;
 
                                 <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel"
