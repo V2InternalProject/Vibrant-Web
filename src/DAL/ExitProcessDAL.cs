@@ -2843,7 +2843,7 @@ namespace HRMS.DAL
                                            from reportingManager in Rm.DefaultIfEmpty()
                                            join organizationUnit in dbContext.tbl_PM_Location on employee.LocationID equals organizationUnit.LocationID into OU
                                            from Organization in OU.DefaultIfEmpty()
-                                           where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusID == 18 || employee.EmployeeStatusID == 13 || employee.EmployeeStatusMasterID == 2)
+                                           where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusID == 13 || employee.EmployeeStatusMasterID == 2)
                                            orderby employee.EmployeeName
                                            select new EmpSeperationTerminationViewModel
                                            {
@@ -2864,7 +2864,7 @@ namespace HRMS.DAL
                                        from reportingManager in Rm.DefaultIfEmpty()
                                        join organizationUnit in dbContext.tbl_PM_Location on employee.LocationID equals organizationUnit.LocationID into OU
                                        from Organization in OU.DefaultIfEmpty()
-                                       where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusMasterID == 1 && employee.EmployeeStatusID != 18)
+                                       where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusMasterID == 1)
                                        orderby employee.EmployeeName
                                        select new EmpSeperationTerminationViewModel
                                        {
@@ -2887,7 +2887,7 @@ namespace HRMS.DAL
                                            from reportingManager in Rm.DefaultIfEmpty()
                                            join organizationUnit in dbContext.tbl_PM_Location on employee.LocationID equals organizationUnit.LocationID into OU
                                            from Organization in OU.DefaultIfEmpty()
-                                           where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusID == 18 || employee.EmployeeStatusID == 13 || employee.EmployeeStatusMasterID == 2) && (employee.LocationID == organization)
+                                           where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusID == 13 || employee.EmployeeStatusMasterID == 2) && (employee.LocationID == organization)
                                            orderby employee.EmployeeName
                                            select new EmpSeperationTerminationViewModel
                                            {
@@ -2908,7 +2908,7 @@ namespace HRMS.DAL
                                        from reportingManager in Rm.DefaultIfEmpty()
                                        join organizationUnit in dbContext.tbl_PM_Location on employee.LocationID equals organizationUnit.LocationID into OU
                                        from Organization in OU.DefaultIfEmpty()
-                                       where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusMasterID == 1 && employee.EmployeeStatusID != 18) && (employee.LocationID == organization)
+                                       where (employee.EmployeeName.Contains(searchText) || employee.EmployeeCode.Contains(searchText)) && (employee.EmployeeStatusMasterID == 1) && (employee.LocationID == organization)
                                        orderby employee.EmployeeName
                                        select new EmpSeperationTerminationViewModel
                                        {
