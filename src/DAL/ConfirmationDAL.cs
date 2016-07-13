@@ -2557,7 +2557,7 @@ namespace HRMS.DAL
             return quetionList;
         }
 
-        public bool ApproveConfirmationFormDetails(int? empID, int confirmationId, string IsManagerOrEmployee)
+        public bool ApproveConfirmationFormDetails(int? empID, int confirmationId, string IsManagerOrEmployee, string ReportingMangerComment, string HrComments)
         {
             bool isAdded = false;
             dbContext = new HRMSDBEntities();
@@ -2667,12 +2667,20 @@ namespace HRMS.DAL
                         corporate.ToStageId = ToStage - 1;
                     }
                     else if (ToStage == 0 || (confTable.IsFurtherApprovalStagePresent == true && ToStage == 1))
+                    {
+                        corporate.Comments = ReportingMangerComment;
                         corporate.ToStageId = ToStage + 1;
+                    }
                     else
                         corporate.ToStageId = 4;
                     if (confTable.IsFurtherApprovalStageCleared == true && ToStage == 1)
                         corporate.ToStageId = 4;
                     corporate.EventDatatime = DateTime.Now;
+
+                    if (ToStage == 1 && confTable.IsFurtherApprovalStagePresent == true)
+                    {
+                        corporate.Comments = HrComments;
+                    }
 
                     confTable.stageID = corporate.ToStageId;
 
