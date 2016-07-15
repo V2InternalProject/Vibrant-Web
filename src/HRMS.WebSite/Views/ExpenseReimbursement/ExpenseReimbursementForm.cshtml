@@ -510,7 +510,7 @@
 
         //submit details
         $('#btnSubmitExpenseReimursementForm').click(function () {
-            if ('@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId' && '@Model.StageID' == 3) {
+            @*if ('@ViewBag.loginUserId' == '@Model.ReimbursementEmployeeId' && '@Model.StageID' == 3) {
                 $("#ErrorForselfFinanceApprove").dialog({
                     resizable: false,
                     height: 'auto',
@@ -525,8 +525,8 @@
 
                 });
                 $.preventDefault();
-            }
-            else {
+            }*@
+            //else {
 
                 if (($('#PrimaryApprover').is(":enabled") && $('#SecondaryApprover').is(":enabled"))) {
                     if (!$('#ExpenseReimbursementForm').valid()) {
@@ -743,7 +743,7 @@
                 }
                 else
                     return false;
-            }
+            //}
         });
 
         if ('@ViewBag.viewDetailClick' == "yes")
