@@ -2226,7 +2226,7 @@ namespace HRMS.Controllers
             if (oldDate == DateTime.Parse("01/01/0001"))
             {
                 //oldDate = DateTime.Now;
-                if (confirmationDetails.ExtendedProbationDate == null)
+                if (confirmationDetails.ExtendedProbationDate == null || confirmationDetails.PIPDate == null)
                 {
                     oldDate = Convert.ToDateTime(Empcode);
                 }
@@ -2427,6 +2427,10 @@ namespace HRMS.Controllers
                         {
                             model.ConfirmationDate = DateTime.Now;
                             model.ExtendProbationDate = DateTime.Now.AddDays(1);
+                            if (tempConfirmation.PIPDate == null)
+                            {
+                                model.PIPDate = DateTime.Parse(model.ProbationReviewDate);
+                            }
                             if (tempConfirmation.PIPDate != null)
                                 model.PIPDate = Convert.ToDateTime(tempConfirmation.PIPDate);
                             if (tempConfirmation.PIPComments != null)
