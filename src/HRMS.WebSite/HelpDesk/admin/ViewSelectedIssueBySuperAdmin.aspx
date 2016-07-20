@@ -651,7 +651,7 @@
                     <div class="formrow clearfix">
                         <div class="leftcol clearfix">
                             <div class="LabelDiv">
-                                <asp:Label ID="Label36" runat="server" Visible="False">Current Issue Status:</asp:Label>
+                                <asp:Label ID="Label36" runat="server" Visible="True">Current Issue Status:</asp:Label>
                             </div>
                             <div class="InputDiv">
                                 <asp:Label ID="lblCurrentIssueStatus" runat="server"></asp:Label>
