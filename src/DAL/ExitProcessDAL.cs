@@ -1358,7 +1358,14 @@ namespace HRMS.DAL
                                         else
                                         {
                                             HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetailsExit(obj.ApproverID.Value);
-                                            ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
+                                            if (EmpDetails == null)
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
+                                            }
                                         }
                                     }
                                     if (EntryFromDepartmentsList.Count(r => r.StageActorEmployeeId == EmpDetailsmgr.EmployeeID) == 0)
@@ -1375,7 +1382,14 @@ namespace HRMS.DAL
                                 foreach (var obj in approverlist)
                                 {
                                     HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetailsExit(obj.ApproverID.Value);
-                                    ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
+                                    if (EmpDetails == null)
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
+                                    }
                                 }
                             }
                             char[] symbols = new char[] { ',' };
