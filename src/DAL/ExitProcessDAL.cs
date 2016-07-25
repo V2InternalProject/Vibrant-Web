@@ -1357,7 +1357,7 @@ namespace HRMS.DAL
                                         }
                                         else
                                         {
-                                            HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetails(obj.ApproverID.Value);
+                                            HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetailsExit(obj.ApproverID.Value);
                                             ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
                                         }
                                     }
@@ -1374,7 +1374,7 @@ namespace HRMS.DAL
                             {
                                 foreach (var obj in approverlist)
                                 {
-                                    HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetails(obj.ApproverID.Value);
+                                    HRMS_tbl_PM_Employee EmpDetails = employeeDAL.GetEmployeeDetailsExit(obj.ApproverID.Value);
                                     ApproverName = ApproverName + EmpDetails.EmployeeName + ",";
                                 }
                             }

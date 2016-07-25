@@ -422,7 +422,19 @@ namespace HRMS.DAL
                 throw;
             }
         }
-
+        public HRMS_tbl_PM_Employee GetEmployeeDetailsExit(int employeeId)
+        {
+            try
+            {
+                dbContext = new HRMSDBEntities();
+                HRMS_tbl_PM_Employee EmpDetails = dbContext.HRMS_tbl_PM_Employee.Where(ed => ed.EmployeeID == employeeId && ed.Status == false).FirstOrDefault();
+                return EmpDetails;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public tbl_PM_Employee_SEM GetEmployeeDetailsForConfirmation(int employeeId)
         {
             try
