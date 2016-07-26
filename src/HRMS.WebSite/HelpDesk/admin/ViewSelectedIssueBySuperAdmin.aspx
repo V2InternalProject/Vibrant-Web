@@ -649,7 +649,7 @@
                         </div>
                     </div>
                     <div class="formrow clearfix">
-                        <div class="leftcol clearfix">
+                        <div class="leftcol clearfix" style="visibility:hidden">
                             <div class="LabelDiv">
                                 <asp:Label ID="Label36" runat="server" Visible="True">Current Issue Status:</asp:Label>
                             </div>
