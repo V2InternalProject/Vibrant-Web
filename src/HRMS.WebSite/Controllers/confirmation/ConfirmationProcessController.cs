@@ -3202,7 +3202,7 @@ namespace HRMS.Controllers
                     }
                     proID = EmpRoleDetails.ProjectID;
                 }
-                tbl_PM_Employee_SEM loggedinUserEmpDetails = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(details.ReportingTo));
+                HRMS_tbl_PM_Employee loggedinUserEmpDetails = employeeDAL.GetEmployeeDetails(Convert.ToInt32(employeedetail.ReportingTo));
                 model.ProjectManager = loggedinUserEmpDetails.EmployeeName;
 
                 tbl_PM_Project projDetails = dal.GetProjectDetails(proID);
