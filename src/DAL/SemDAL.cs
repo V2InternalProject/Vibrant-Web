@@ -4241,6 +4241,21 @@ namespace HRMS.DAL
             }
         }
 
+        public int GetEmployeeIDHRMS(string employeeCode)
+        {
+            try
+            {
+                int employeeID = (from e in dbContextHRMS.HRMS_tbl_PM_Employee
+                                  where e.EmployeeCode == employeeCode
+                                  select e.EmployeeID).FirstOrDefault();
+                return employeeID;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public tbl_PM_ProjectEmployeeRole GetResorcetDetails(int? employeeId, int? projectId)
         {
             try

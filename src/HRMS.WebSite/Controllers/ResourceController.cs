@@ -918,6 +918,8 @@ namespace HRMS.Controllers
                 ViewBag.loginUserId = LoggedinUserEmployeeId;
 
                 int EmployeeID = dal.GetEmployeeID(EmployeeCode);
+                int HRMSEMployeeID = dal.GetEmployeeIDHRMS(EmployeeCode);
+                HRMS_tbl_PM_Employee employeedetail = employeeDAL.GetEmployeeDetails(HRMSEMployeeID);
 
                 tbl_PM_Employee_SEM details = dal.GetEmployeeDetailsFromEmployeeID(EmployeeID);
                 model.EmployeeName = details.EmployeeName;
@@ -939,7 +941,7 @@ namespace HRMS.Controllers
                     }
                     proID = EmpRoleDetails.ProjectID;
                 }
-                tbl_PM_Employee_SEM loggedinUserEmpDetails = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(details.ReportingTo));
+                HRMS_tbl_PM_Employee loggedinUserEmpDetails = employeeDAL.GetEmployeeDetails(Convert.ToInt32(employeedetail.ReportingTo));
                 model.ProjectManager = loggedinUserEmpDetails.EmployeeName;
 
                 tbl_PM_Project projDetails = dal.GetProjectDetails(proID);
@@ -956,7 +958,7 @@ namespace HRMS.Controllers
                     model.RatingScale[i].Percentage = Convert.ToInt32(model.RatingScale[i].Percentage);
                 }
 
-                List<ProjectEndAppraisalParameters> parameterlist = dal.GetProjectEndAppraisalParameters(EmployeeID, ProjectID, ProjectEndAppraisalStatusID);
+                List<ProjectEndAppraisalParameters> parameterlist = dal.GetProjectEndAppraisalParameters(EmployeeID, proID, ProjectEndAppraisalStatusID);
                 if (parameterlist.Count > 0)
                 {
                     model.ProjectEndAppraisalParameterList = parameterlist;
@@ -973,7 +975,7 @@ namespace HRMS.Controllers
                 model.RatingsList = ratingList;
 
                 model.EmployeeID = EmployeeID;
-                model.ProjectID = ProjectID;
+                model.ProjectID = proID;
                 model.ProjectEndAppraisalFormStatus = ProjectEndAppraisalStatusID;
                 foreach (var l in parameterlist)
                 {
