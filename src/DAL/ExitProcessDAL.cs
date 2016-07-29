@@ -2554,7 +2554,7 @@ namespace HRMS.DAL
                 List<ApproverList> ApproverDetails = new List<ApproverList>();
                 ApproverDetails = (from departments in dbContext.tbl_HR_ExitProcess_StageApprovers
                                    join employee in dbContext.HRMS_tbl_PM_Employee on departments.ApproverID equals employee.EmployeeID
-                                   where departments.ExitInstanceID == 0 && departments.stageID == 4
+                                   where departments.ExitInstanceID == 0 && departments.stageID == 4 && employee.Status==false
                                    select new ApproverList
                                    {
                                        ApproverID = departments.QuestionnaireID,
