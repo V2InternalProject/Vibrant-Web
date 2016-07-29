@@ -3252,7 +3252,7 @@ namespace HRMS.Controllers
             }
             catch (Exception)
             {
-                return RedirectToAction("Index", "Error", new { errorCode = "There are some errors." });
+                return RedirectToAction("Index", "Error", new { errorCode = "Data is not available " });
             }
         }
     }

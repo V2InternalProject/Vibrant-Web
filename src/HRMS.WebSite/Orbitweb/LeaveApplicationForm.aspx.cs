@@ -491,7 +491,7 @@ namespace HRMS.Orbitweb
                         absent = -(Convert.ToInt32(CorrectionLeaves.ToString()));
                     }
 
-                    if (ConfigdateTime.Date <= Convert.ToDateTime(txtFromDate.Text).Date)
+                    if (ConfigdateTime.Date >= Convert.ToDateTime(txtFromDate.Text).Date)
                     {
                         lblError.Text = "Administrator has frozen the data for the selected date";
                         return;
