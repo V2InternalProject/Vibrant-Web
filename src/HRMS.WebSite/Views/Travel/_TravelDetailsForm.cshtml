@@ -993,7 +993,7 @@
 </div>
 <div id="DateValidateforImmigrationDetails" style="display: none;">
     <p>
-        Immigration Details Should be less than or equal to Travel Extended To Date.
+        I -94 Expiry Date Should be Greater than or equal to Travel Extended To Date.
     </p>
 </div>
 @*//div added*@
@@ -1949,7 +1949,7 @@
         var ExtendDate = $('#TravelExtensionEndDate').val();
 
         if (testval == "Ext") {
-            if (new Date($('#TravelImmigrationDateDate').val()) > new Date($('#TravelExtensionEndDate').val())) {
+            if (new Date($('#TravelImmigrationDateDate').val()) < new Date($('#TravelExtensionEndDate').val())) {
                 $("#DateValidateforImmigrationDetails").dialog({
                     resizable: false,
                     height: 'auto',
