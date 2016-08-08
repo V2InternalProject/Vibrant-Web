@@ -1971,7 +1971,7 @@
     //Modified By Mahesh For Issue Id:24366
     debugger;
     $('#ConfirmationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
-    $('#PIPDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: new Date, yearRange: "c:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
+    $('#PIPDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: '@Model.ProbationReviewDate', yearRange: "c:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
     $('#ExtendProbationDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
     //$("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('accept');
     $("#acceptConfirmation").click(function () {

@@ -657,6 +657,9 @@ namespace V2.Helpdesk.web.admin
                         {
                             if (ddlLoginUser.SelectedItem.Text == "Select")
                             {
+                                EmployeeID = Convert.ToInt32(Session["EmployeeID"]);
+                                objIssueAssignment.EmployeeID = EmployeeID;
+                                objIssueAssignment.IssueReportDateTime = DateTime.Now ;
                                 IsRecordInserted = objBLIssueAssignment.IssueAssignmentBySuperAdmin(objIssueAssignment);
                                 if (IsRecordInserted)
                                 {
