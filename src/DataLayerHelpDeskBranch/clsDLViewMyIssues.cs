@@ -69,15 +69,31 @@ namespace V2.Helpdesk.DataLayer
 			DataSet dsIssueList;
 			dsIssueList = new DataSet();
 
-			SqlParameter[] objParam = new SqlParameter[2];
-			objParam[0] = new SqlParameter("@EmployeeID", SqlDbType.Int);
-			objParam[0].Value = objViewMyIssues.EmployeeID;
-			objParam[1] = new SqlParameter("@StatusID", SqlDbType.NVarChar);
-			objParam[1].Value = objViewMyIssues.SelectedStatus;
+            //SqlParameter[] objParam = new SqlParameter[2];
+            //objParam[0] = new SqlParameter("@EmployeeID", SqlDbType.Int);
+            //objParam[0].Value = objViewMyIssues.EmployeeID;
+            //objParam[1] = new SqlParameter("@StatusID", SqlDbType.NVarChar);
+            //objParam[1].Value = objViewMyIssues.SelectedStatus;
 			try
 			{
-				dsIssueList = SqlHelper.ExecuteDataset(sqlConn, CommandType.StoredProcedure,"sp_GetIssueListNew3",objParam);
-				return dsIssueList;
+                //dsIssueList = SqlHelper.ExecuteDataset(sqlConn, CommandType.StoredProcedure,"sp_GetIssueListNew3",objParam);
+                //return dsIssueList;
+                using (SqlConnection con = new SqlConnection(sqlConn))
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = "sp_GetIssueListNew3";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 5000;
+                    cmd.Connection = con;
+
+                    cmd.Parameters.AddWithValue("@EmployeeID", objViewMyIssues.EmployeeID);
+                    cmd.Parameters.AddWithValue("@StatusID", objViewMyIssues.SelectedStatus);
+
+
+                    SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                    adp.Fill(dsIssueList);
+                }
+                return dsIssueList;
 			}
 			catch(V2Exceptions ex)
 			{
@@ -91,6 +107,7 @@ namespace V2.Helpdesk.DataLayer
 				objFileLog.WriteLine(LogType.Error, ex.Message, "clsDLViewMyIssues.cs", "GetMyIssueList", ex.StackTrace);
 				throw new V2Exceptions(ex.ToString(),ex);
 			}
+
 		}
 
 		public DataSet GetSelectedIssue(Model.clsViewMyIssues objViewIssue,int userid)
