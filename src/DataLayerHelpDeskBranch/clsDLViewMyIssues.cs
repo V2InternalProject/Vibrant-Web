@@ -76,7 +76,7 @@ namespace V2.Helpdesk.DataLayer
 			objParam[1].Value = objViewMyIssues.SelectedStatus;
 			try
 			{
-				dsIssueList = SqlHelper.ExecuteDataset(sqlConn, CommandType.StoredProcedure,"sp_GetIssueListNew2",objParam);
+				dsIssueList = SqlHelper.ExecuteDataset(sqlConn, CommandType.StoredProcedure,"sp_GetIssueListNew3",objParam);
 				return dsIssueList;
 			}
 			catch(V2Exceptions ex)
