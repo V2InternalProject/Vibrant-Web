@@ -1324,6 +1324,23 @@
             // }
         });
 
+        $('#NumberOfDaysPIP').blur(function () {
+
+            var EmpidCon = $('#EmployeeIdConfirmation').val();
+            $.ajax({
+                url: '@Url.Action("AddWorkingDaysforPIP", "ConfirmationProcess")',
+                data: { empcode: EmpidCon, count: $('#NumberOfDaysPIP').val() },
+                type: 'POST',
+                async: false,
+                success: function (result) {
+                    var FinalDate = eval(result.results.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+                    $('#PIPDate').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    $('#PIPDate').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                }
+            });
+
+        });
+
         $('#PIPDatePicker').change(function () {
             //var a = new Date();
             //if ($(this).val() != "0") {
@@ -1903,9 +1920,9 @@
                                     </div>
                                     <div class="formrow clearfix">
                                         <div class="leftcol">
-                                            <div class="LabelDiv">@Html.Label("*PIP Extended Days:")</div>
+                                            <div class="LabelDiv">@Html.Label("*PIP Days:")</div>
                                             <div class="InputDiv">
-                                                @Html.TextBoxFor(model => model.NumberOfDaysPIP, new { @readonly = "readonly", @class = "ClassDisabledFields" })
+                                                @Html.TextBoxFor(model => model.NumberOfDaysPIP, new { @class = "ClassDisabledFields" })
                                                 @*@Html.LabelFor(emp => emp.NumberOfDaysPIP, new { @class = "ClassDisplayLabel", @id = "txt_NumberOfDaysPIP" })*@
                                             </div>
                                         </div>

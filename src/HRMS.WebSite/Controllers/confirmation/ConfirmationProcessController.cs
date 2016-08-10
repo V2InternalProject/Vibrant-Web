@@ -2260,6 +2260,29 @@ namespace HRMS.Controllers
             return Json(new { results = totalWorkingDays }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult AddWorkingDaysforPIP(string empcode, int count)
+        {
+            ConfirmationDAL dal = new ConfirmationDAL();
+            int EmpId = int.Parse(empcode);
+            ////DateTime start = DateTime.Now;
+            SemDAL semDal = new SemDAL();
+            EmployeeDAL EmpDal = new EmployeeDAL();
+            tbl_CF_Confirmation confirmationDetails = dal.getConfirmationId(Convert.ToInt32(EmpId));
+            HRMS_tbl_PM_Employee Empdetails = new HRMS_tbl_PM_Employee();
+            HRMSDBEntities dbContext = new HRMSDBEntities();
+
+            var Empcode = (from resource in dbContext.HRMS_tbl_PM_Employee
+                           where resource.EmployeeID == EmpId
+                           select resource.Probation_Review_Date).FirstOrDefault();
+            DateTime start = Convert.ToDateTime(Empcode);
+            int daysToAdd = count;
+            var end = start.AddDays(daysToAdd);
+
+            return Json(new { results = end }, JsonRequestBehavior.AllowGet);
+
+        }
+
         [HttpGet]
         public ActionResult ConfirmationFormDetails(string employeeId, string viewDetailsBtn = "no")
         {
