@@ -133,7 +133,7 @@
                                 }
                             });
                             @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
-                            }
+                        }
                     }
                 });
 
@@ -197,7 +197,7 @@
                                              }
                                          });
                                          @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
-                                         }
+                                     }
                                  }
                              });
                          }
@@ -1130,109 +1130,109 @@
             var status = "Approved";
             var isExtendAccept = "";
             //if ($('#IsManagerOrEmployee').val() == "HR" && $('#StageID').val() == 6)
-                isExtendAccept = '@Model.IsAcceptedOrExtended';
-                var postApproveUrl = '@Url.Action("ApproveConfirmationFormDetails", "ConfirmationProcess")'
-                $.ajax({
-                    type: 'POST',
-                    url: postApproveUrl,
-                    async: false,
-                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), ReportingMangerComment: $('#ReportingManagerComments').val(), HrComments: $('#Text_HRComments').val() },
-                    success: function (resultApprove) {
-                        if (resultApprove.status == true) {
-                            //$("#ConfirmationRecordSave").dialog({
-                            //    resizable: false,
-                            //    height: 140,
-                            //    width: 300,
-                            //    modal: true,
-                            //    title: "Confirmation Details",
-                            //    buttons: {
-                            //        Ok: function () {
-                            //            $(this).dialog("close");
+            isExtendAccept = '@Model.IsAcceptedOrExtended';
+            var postApproveUrl = '@Url.Action("ApproveConfirmationFormDetails", "ConfirmationProcess")'
+            $.ajax({
+                type: 'POST',
+                url: postApproveUrl,
+                async: false,
+                data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), ReportingMangerComment: $('#ReportingManagerComments').val(), HrComments: $('#Text_HRComments').val() },
+                success: function (resultApprove) {
+                    if (resultApprove.status == true) {
+                        //$("#ConfirmationRecordSave").dialog({
+                        //    resizable: false,
+                        //    height: 140,
+                        //    width: 300,
+                        //    modal: true,
+                        //    title: "Confirmation Details",
+                        //    buttons: {
+                        //        Ok: function () {
+                        //            $(this).dialog("close");
 
-                            $('#btnApproveConfirmation').hide();
-                            $('#btnSaveDetailsConfirmation').hide();
-                            $('.button').hide();
-                            $('#frmConfirmationFormQuetions').find('input,tr,textarea').attr('disabled', 'disabled');
-                            $('#frmValueDriverConfirmation').find('input,tr,textarea').attr('disabled', 'disabled');
-                            $('#frmConfirmationFormApproverComments').find('input,textarea').attr('disabled', 'disabled');
-                            $('#frmConfirmationFormHRDetails').find('input,select,textarea').attr('disabled', 'disabled');
-                            /* added below code to hide delete column so that user cant click after the form is approved*/
-                            var colPos1 = 9;
-                            //   var corpoarteGrid = $('#corporateTable');
-                            //   corpoarteGrid.jqGrid('hideCol', corpoarteGrid.getGridParam("colModel")[colPos1].name);
-                            var colPos2 = 6;
-                            //  var skillGrid = $('#SkillAquiredTable');
-                            //   skillGrid.jqGrid('hideCol', skillGrid.getGridParam("colModel")[colPos2].name);
-                            var colPos3 = 9;
-                            //  var qualificationGrid = $('#AddQualificationTable');
-                            //   qualificationGrid.jqGrid('hideCol', qualificationGrid.getGridParam("colModel")[colPos3].name);
-                            var colPos4 = 8;
-                            //   var projGrid = $('#projectAchievementsTable');
-                            //   projGrid.jqGrid('hideCol', projGrid.getGridParam("colModel")[colPos4].name);
-                            /*mail start*/
-                            @*var mailurl = '@Url.Action("GetEmailTemplate", "ConfirmationProcess")';*@
-                            var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
-                            $.ajax({
-                                url: mailurl,
-                                type: 'GET',
-                                data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString(), IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
-                                success: function (data) {
+                        $('#btnApproveConfirmation').hide();
+                        $('#btnSaveDetailsConfirmation').hide();
+                        $('.button').hide();
+                        $('#frmConfirmationFormQuetions').find('input,tr,textarea').attr('disabled', 'disabled');
+                        $('#frmValueDriverConfirmation').find('input,tr,textarea').attr('disabled', 'disabled');
+                        $('#frmConfirmationFormApproverComments').find('input,textarea').attr('disabled', 'disabled');
+                        $('#frmConfirmationFormHRDetails').find('input,select,textarea').attr('disabled', 'disabled');
+                        /* added below code to hide delete column so that user cant click after the form is approved*/
+                        var colPos1 = 9;
+                        //   var corpoarteGrid = $('#corporateTable');
+                        //   corpoarteGrid.jqGrid('hideCol', corpoarteGrid.getGridParam("colModel")[colPos1].name);
+                        var colPos2 = 6;
+                        //  var skillGrid = $('#SkillAquiredTable');
+                        //   skillGrid.jqGrid('hideCol', skillGrid.getGridParam("colModel")[colPos2].name);
+                        var colPos3 = 9;
+                        //  var qualificationGrid = $('#AddQualificationTable');
+                        //   qualificationGrid.jqGrid('hideCol', qualificationGrid.getGridParam("colModel")[colPos3].name);
+                        var colPos4 = 8;
+                        //   var projGrid = $('#projectAchievementsTable');
+                        //   projGrid.jqGrid('hideCol', projGrid.getGridParam("colModel")[colPos4].name);
+                        /*mail start*/
+                        @*var mailurl = '@Url.Action("GetEmailTemplate", "ConfirmationProcess")';*@
+                        var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
+                        $.ajax({
+                            url: mailurl,
+                            type: 'GET',
+                            data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString(), IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
+                            success: function (data) {
 
-                                    $("#loading").dialog("close");
-                                    $("#loading").dialog("destroy");
-                                    $('#MailTemplateDialog').html(data);
-                                    $("#MailTemplateDialog").dialog({
-                                        resizable: false,
-                                        height: 520,
-                                        width: 800,
-                                        modal: true,
-                                        title: 'Send Mail',
-                                        close: function () {
-                                            window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
-                                        }
-                                    });
-                                    //here put send mail
-                                }
-                            }); /*end*/
-                            //}
-                            // }
-                            //});
-                        }
-                        else if (resultApprove.status == "Error") {
-                            $("#loading").dialog("close");
-                            $("#loading").dialog("destroy");
-                            $("#errorDialog").dialog({
-                                title: 'Confirmation Process',
-                                resizable: false,
-                                height: 'auto',
-                                width: 'auto',
-                                modal: true,
-                                buttons: {
-                                    Ok: function () {
-                                        $(this).dialog("close");
+                                $("#loading").dialog("close");
+                                $("#loading").dialog("destroy");
+                                $('#MailTemplateDialog').html(data);
+                                $("#MailTemplateDialog").dialog({
+                                    resizable: false,
+                                    height: 520,
+                                    width: 800,
+                                    modal: true,
+                                    title: 'Send Mail',
+                                    close: function () {
+                                        window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
                                     }
-                                }
-                            }); //end dialog
-                        }
-                        else {
-                            $("#loading").dialog("close");
-                            $("#loading").dialog("destroy");
-                            $("#AddPerformanceErrorMessege").dialog({
-                                title: 'Confirmation Process',
-                                resizable: false,
-                                height: 140,
-                                width: 300,
-                                modal: true,
-                                buttons: {
-                                    Ok: function () {
-                                        $(this).dialog("close");
-                                    }
-                                }
-                            });
-                        }
+                                });
+                                //here put send mail
+                            }
+                        }); /*end*/
+                        //}
+                        // }
+                        //});
                     }
-                });
+                    else if (resultApprove.status == "Error") {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $("#errorDialog").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 'auto',
+                            width: 'auto',
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                    }
+                    else {
+                        $("#loading").dialog("close");
+                        $("#loading").dialog("destroy");
+                        $("#AddPerformanceErrorMessege").dialog({
+                            title: 'Confirmation Process',
+                            resizable: false,
+                            height: 140,
+                            width: 300,
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                }
             });
+        });
 
         //DisplayLabel() function is used to hide disabled fields and display respective value as Label.
         //        function DisplayLabel() {
@@ -1325,17 +1325,17 @@
         });
 
         $('#NumberOfDaysPIP').blur(function () {
-
+            var a = $(this).val();
             var EmpidCon = $('#EmployeeIdConfirmation').val();
             $.ajax({
                 url: '@Url.Action("AddWorkingDaysforPIP", "ConfirmationProcess")',
-                data: { empcode: EmpidCon, count: $('#NumberOfDaysPIP').val() },
+                data: { empcode: EmpidCon, count: $(this).val() },
                 type: 'POST',
                 async: false,
                 success: function (result) {
                     var FinalDate = eval(result.results.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
-                    $('#PIPDate').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
-                    $('#PIPDate').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    $('#PIPDatePicker').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    $('#PIPDatePicker').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
                 }
             });
 
@@ -1376,7 +1376,7 @@
         // $('#txt_roleName').text($('#roleName').find(":selected").text());
         //$('#txt_NumberOfDaysProbation').text($('#NumberOfDaysProbation').val());
         $('#txt_ExtendedProbationDate').text($('#ExtentedProbationDateP').val());
-        $('#txt_NumberOfDaysPIP').text($('#NumberOfDaysPIP').val());
+        $('#txt_PIPStartDate').text($('#PIPDatePicker').val());
         //$('#txt_PIPDate').text($('#PIPDate').val());
 
         if ('@Model.IsManagerOrEmployee.Equals("FurtherApprover")' == 'True') {
@@ -1912,7 +1912,7 @@
                                         <div class="leftcol">
                                             <div class="LabelDiv">@Html.Label("* PIP start date:")</div>
                                             <div class="InputDiv">
-                                                @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @id = "PIPDatePicker", @class = "ClassDisabledFields" })
+                                                @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @id = "PIPDatePicker" })
                                                 @Html.LabelFor(emp => emp.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @class = "ClassDisplayLabel", @id = "txt_PIPStartDate" })
                                                 @*@Html.Hidden("PIPDate", String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { id = "PIPDate" })*@
                                             </div>
@@ -1920,9 +1920,9 @@
                                     </div>
                                     <div class="formrow clearfix">
                                         <div class="leftcol">
-                                            <div class="LabelDiv">@Html.Label("*PIP Days:")</div>
+                                            <div class="LabelDiv">@Html.Label("* PIP Days:")</div>
                                             <div class="InputDiv">
-                                                @Html.TextBoxFor(model => model.NumberOfDaysPIP, new { @class = "ClassDisabledFields" })
+                                                @Html.TextBoxFor(model => model.NumberOfDaysPIP)
                                                 @*@Html.LabelFor(emp => emp.NumberOfDaysPIP, new { @class = "ClassDisplayLabel", @id = "txt_NumberOfDaysPIP" })*@
                                             </div>
                                         </div>
