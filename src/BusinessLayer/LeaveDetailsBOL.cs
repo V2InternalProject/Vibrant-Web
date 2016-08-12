@@ -249,13 +249,7 @@ namespace V2.Orbit.BusinessLayer
                 throw new V2Exceptions(ex.ToString(),ex);
             }
         }
-        #endregion
-
-        
-
-
-
-
+        #endregion  
 
         #region SearchLeaveDetails
         public DataSet SearchLeaveDetails(LeaveDetailsModel objLeaveDeatilsModel)
@@ -478,8 +472,7 @@ namespace V2.Orbit.BusinessLayer
             }
         }
         
-        #endregion
-        
+        #endregion        
 
         #region CheckLeaveDetails
         public int CheckLeaveDetails(LeaveDetailsModel objLeaveDeatilsModel)
@@ -662,6 +655,29 @@ namespace V2.Orbit.BusinessLayer
                 FileLog objFileLog = FileLog.GetLogger();
                 objFileLog.WriteLine(LogType.Error, ex.Message, "LeaveDetailsBOL.cs", "GetLeaveForAdminApproval", ex.StackTrace);
                 throw new V2Exceptions(ex.ToString(),ex);
+            }
+
+        }
+
+        #endregion
+
+        #region Get Leave Balance For Given Date
+
+        public DataSet GetLeaveBalanceForGivenDate(int EmployeeCode, DateTime FromDate, DateTime ToDate)
+        {
+            try
+            {
+                return objLeaveDetailsDAL.CheckLeaveBalanceForGivenDate(EmployeeCode, FromDate, ToDate);
+            }
+            catch (V2Exceptions ex)
+            {
+                throw;
+            }
+            catch (System.Exception ex)
+            {
+                FileLog objFileLog = FileLog.GetLogger();
+                objFileLog.WriteLine(LogType.Error, ex.Message, "LeaveDetailsBOL.cs", "GetLeaveBalanceForGivenDate", ex.StackTrace);
+                throw new V2Exceptions(ex.ToString(), ex);
             }
 
         }
