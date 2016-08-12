@@ -465,7 +465,7 @@ namespace HRMS.DAL
 
                         if (data.Type.Equals("Add"))
                         {
-                            dbContext.tbl_PM_EmployeeCertificationMatrix.DeleteObject(certificationMatrix);
+                            //dbContext.tbl_PM_EmployeeCertificationMatrix.DeleteObject(certificationMatrix);
                         }
                         else
                         {
