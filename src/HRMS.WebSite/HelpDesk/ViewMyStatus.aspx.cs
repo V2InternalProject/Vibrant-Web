@@ -192,7 +192,7 @@ namespace HRMS.HelpDesk
                 Response.Write("val = window.open('" + resumePath + "')" + '\n');
 
                 Response.Write("</script>" + '\n');
-                Session["FileNames"] = "";
+                // Session["FileNames"] = "";
             }
             catch (V2Exceptions ex)
             {
@@ -333,6 +333,11 @@ namespace HRMS.HelpDesk
                     {
                         objIssueAssignment.ReportIssueID = Convert.ToInt32(Session["IssueId"]);
                         dsfileName = objBLIssueAssignment.FileName(objIssueAssignment);
+                        if (dsfileName.Tables[0].Rows.Count == 0)
+                        {
+                            Session["FileNames"] = null;
+                            pnlFileName.Controls.Clear();
+                        }
                         if (dsfileName.Tables[0].Rows.Count > 0)
                         {
                             for (int i = 0, j = 0; i < dsfileName.Tables[0].Rows.Count; i++, j++)
@@ -342,11 +347,17 @@ namespace HRMS.HelpDesk
                                 //lnkFileName.ID = "lnk2FileName1";
                                 lnkFileName.Attributes.Add("runat", "server");
                                 //this.lnk2.Click += new System.EventHandler(this.lnk2_Click);
+                                if (Session["FileNames"] != null)
+                                {
+                                    Session["FileNames"] = null;
+                                }
                                 Session["FileNames"] = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
+                                lnkFileName.Text = string.Empty;
                                 lnkFileName.Text = dsfileName.Tables[0].Rows[j]["FileName"].ToString();
                                 //lnkFileName.Text = "</br>";
 
                                 lnkFileName.Click += new System.EventHandler(this.lnkFileName_Click);
+                                pnlFileName.Controls.Clear();
                                 pnlFileName.Controls.Add(lnkFileName);
                                 pnlFileName.Controls.Add(new LiteralControl("<br/>"));
 
