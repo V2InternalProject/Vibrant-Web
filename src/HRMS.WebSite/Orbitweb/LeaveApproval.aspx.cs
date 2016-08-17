@@ -1019,6 +1019,7 @@ namespace HRMS.Orbitweb
                                     {
                                         objLeaveTransDetailsModel.Quantity = Convert.ToDecimal("-" + 1);
                                         objLeaveTransDetailsModel.Description = "Leave:" + lblgrvLeaveReason.Text.ToString();
+                                        TotalLeavesApplyedFor--;
                                     }
                                     else
                                     {
@@ -1028,7 +1029,6 @@ namespace HRMS.Orbitweb
 
                                     AddLeaveTransDetails();
                                     UpdateEmployeeLeaveAndComp();
-                                    TotalLeavesApplyedFor--;
                                 }
                             }
                             else
