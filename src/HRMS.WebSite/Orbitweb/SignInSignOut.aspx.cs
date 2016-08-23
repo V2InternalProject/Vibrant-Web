@@ -101,7 +101,7 @@ namespace HRMS.Orbitweb
                     objFileLog.WriteLine(LogType.Info, "", "SignInSignOut.aspx.cs", "", "User IP: " + ip);
 
                     var islocal = LocalNetworkIPList.Where(t => ip.StartsWith(t)).Any();
-                    if (islocal)
+                    if (!islocal)
                     {
                         string resulturl = string.Format("{0}&ip={1}&format=xml", IPAddressWebServiceURL, ip);
 
