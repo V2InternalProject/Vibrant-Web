@@ -441,12 +441,39 @@ namespace HRMS.Orbitweb
                 }
 
                 TotalLeavesApplyedFor = j++;
-
+                int totalleavesappliedfor = TotalLeavesApplyedFor;
+                int CurrentBalance = 0;
+                int OnDayBalance = 0;
+                bool leaveFlag = false;
                 if (TotalLeavesApplyedFor == 0)
                 {
                     lblError.Text = "You have  already Signed In for these dates / It is in Holiday List / Weekly Off, So you can't apply leaves for these dates";
                     return;
                 }
+                else
+                {
+                    if (Convert.ToDateTime(txtFromDate.Text.Trim()) < Convert.ToDateTime(DateTime.Now))
+                    {
+                        DataSet dsLeavebalanceforGivenDate = objLeaveDeatilsBOL.GetLeaveBalanceForGivenDate(objLeaveDetailsModel.UserID, objLeaveDetailsModel.LeaveDateFrom, objLeaveDetailsModel.LeaveDateTo);
+                        CurrentBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["CurrentBalance"]);
+                        OnDayBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["OnDayBalance"]);
+                        if (CurrentBalance > 0)
+                        {
+                            if (TotalLeavesApplyedFor > OnDayBalance)
+                            {
+                                int diff = TotalLeavesApplyedFor - OnDayBalance;
+                                TotalLeavesApplyedFor = TotalLeavesApplyedFor - diff;
+                                leaveFlag = true;
+                            }
+                        }
+                        else
+                        {
+                            TotalLeavesApplyedFor = 0;
+                            leaveFlag = true;
+                        }
+                    }
+                }
+
                 //Getting Total Leaves
                 // Done changes
 
@@ -511,9 +538,21 @@ namespace HRMS.Orbitweb
                     }
                     else
                     {
-                        objLeaveDetailsModel.TotalLeaveDays = Convert.ToInt32(TotalLeavesApplyedFor);
-                        objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
-                        AddLeaveDetails();
+                        if (leaveFlag)
+                        {
+                            absent = totalleavesappliedfor - TotalLeavesApplyedFor;
+                            objLeaveDetailsModel.TotalLeaveDays = Convert.ToInt32(TotalLeavesApplyedFor);
+                            objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(absent);
+                            AddLeaveDetails();
+                            lblError.Text = "You have applied for " + totalleavesappliedfor + " leaves, but your Leave balance till that day is " + CurrentBalance + ", So actual leave days will be " + TotalLeavesApplyedFor + " and " + absent + " days will be marked as absent.";
+                        }
+                        else
+                        {
+                            objLeaveDetailsModel.TotalLeaveDays = Convert.ToInt32(TotalLeavesApplyedFor);
+                            objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
+                            AddLeaveDetails();
+                        }
+
                     }
                 }
 
@@ -1362,6 +1401,11 @@ namespace HRMS.Orbitweb
                     return;
                 }
                 TotalLeavesApplyedFor = j++;
+                int totalleavesappliedfor = TotalLeavesApplyedFor;
+                int CurrentBalance = 0;
+                int OnDayBalance = 0;
+                bool leaveFlag = false;
+
                 if (TotalLeavesApplyedFor == 0)
                 {
                     lblError.Text = ("You have  already Signed In for these dates / It is in Holiday List / Weekly Off, So you can't apply leaves for these dates");
@@ -1369,6 +1413,30 @@ namespace HRMS.Orbitweb
                     BindData();
                     return;
                 }
+                else
+                {
+                    if (Convert.ToDateTime(txtgrvFormDate.Text.Trim()) < Convert.ToDateTime(DateTime.Now))
+                    {
+                        DataSet dsLeavebalanceforGivenDate = objLeaveDeatilsBOL.GetLeaveBalanceForGivenDate(objLeaveDetailsModel.UserID, objLeaveDetailsModel.LeaveDateFrom, objLeaveDetailsModel.LeaveDateTo);
+                        CurrentBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["CurrentBalance"]);
+                        OnDayBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["OnDayBalance"]);
+                        if (CurrentBalance > 0)
+                        {
+                            if (TotalLeavesApplyedFor > OnDayBalance)
+                            {
+                                int diff = TotalLeavesApplyedFor - OnDayBalance;
+                                TotalLeavesApplyedFor = TotalLeavesApplyedFor - diff;
+                                leaveFlag = true;
+                            }
+                        }
+                        else
+                        {
+                            TotalLeavesApplyedFor = 0;
+                            leaveFlag = true;
+                        }
+                    }
+                }
+
                 TotalLeavesBalance = lblAvailableLeaves.Text.Split('.');
                 BalanceLeaves = Convert.ToInt32(TotalLeavesBalance[0].ToString());
 
@@ -1416,9 +1484,20 @@ namespace HRMS.Orbitweb
                     }
                     else
                     {
-                        objLeaveDetailsModel.TotalLeaveDays = TotalLeavesApplyedFor;
-                        objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
-                        UpdateLeaveDetails();
+                        if (leaveFlag)
+                        {
+                            absent = totalleavesappliedfor - TotalLeavesApplyedFor;
+                            objLeaveDetailsModel.TotalLeaveDays = Convert.ToInt32(TotalLeavesApplyedFor);
+                            objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(absent);
+                            UpdateLeaveDetails();
+                            lblError.Text = "Leaves applied for " + totalleavesappliedfor + " leaves, but your Leave balance till that day is " + CurrentBalance + ", So actual leave days will be " + TotalLeavesApplyedFor + " and " + absent + " days will be marked as absent.";
+                        }
+                        else
+                        {
+                            objLeaveDetailsModel.TotalLeaveDays = TotalLeavesApplyedFor;
+                            objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
+                            UpdateLeaveDetails();
+                        }
                     }
                 }
                 gvLeaveApplication.EditIndex = -1;
