@@ -531,7 +531,7 @@ namespace HRMS.Orbitweb
                 }
                 else
                 {
-                    if (ConfigdateTime.Date >= Convert.ToDateTime(txtToDate.Text).Date)
+                    if (ConfigdateTime.Date >= Convert.ToDateTime(txtFromDate.Text).Date)
                     {
                         lblError.Text = "Administrator has frozen the data for the selected date";
                         return;
