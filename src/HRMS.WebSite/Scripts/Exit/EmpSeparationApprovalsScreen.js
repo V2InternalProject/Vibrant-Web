@@ -419,6 +419,11 @@ function HRCommentsDetailsForm() {
 }
 
 function FieldDDLChange() {
+    if ($("#Field").val() == "Select") {
+        $('#FieldChildListExitBG').hide();
+        $('#FieldChildListExitOU').hide();
+        $('#FieldChildListExitSN').hide();
+        }
     if ($("#Field").val() != "") {
         if ($("#Field").val() == "Business Group") {
             $('#FieldChildListExitBG').show();
