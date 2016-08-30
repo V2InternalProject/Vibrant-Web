@@ -1329,19 +1329,19 @@
             var EmpidCon = $('#EmployeeIdConfirmation').val();
             $.ajax({
                 url: '@Url.Action("AddWorkingDaysforPIP", "ConfirmationProcess")',
-                data: { empcode: EmpidCon, count: $(this).val() },
+                data: { empcode: EmpidCon, count: $(this).val(), PIPstartDate: $('#PIPDatePicker').val() },
                 type: 'POST',
                 async: false,
                 success: function (result) {
                     var FinalDate = eval(result.results.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
-                    $('#PIPDatePicker').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
-                    $('#PIPDatePicker').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    $('#PIPDate').val((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
+                    $('#PIPDate').text((FinalDate.getMonth() + 1) + "/" + FinalDate.getDate() + "/" + FinalDate.getFullYear());
                 }
             });
 
         });
 
-        $('#PIPDatePicker').change(function () {
+        @*$('#PIPDatePicker').change(function () {
             //var a = new Date();
             //if ($(this).val() != "0") {
             var EmpidCon = $('#EmployeeIdConfirmation').val();
@@ -1362,7 +1362,7 @@
                 }
             });
             //}
-        });
+        });*@
 
         for (var i = 1; i <= '@Model.confParameterList.Count'; i++) {
 
@@ -1912,8 +1912,18 @@
                                         <div class="leftcol">
                                             <div class="LabelDiv">@Html.Label("* PIP start date:")</div>
                                             <div class="InputDiv">
-                                                @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @id = "PIPDatePicker" })
-                                                @Html.LabelFor(emp => emp.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @class = "ClassDisplayLabel", @id = "txt_PIPStartDate" })
+                                                @Html.TextBoxFor(model => model.PIPstartDate, String.Format("{0:MM/dd/yyyy}", Model.PIPstartDate), new { @id = "PIPDatePicker" })
+                                                @Html.LabelFor(emp => emp.PIPstartDate, String.Format("{0:MM/dd/yyyy}", Model.PIPstartDate), new { @class = "ClassDisplayLabel", @id = "txt_PIPStartDate" })
+                                                @*@Html.Hidden("PIPDate", String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { id = "PIPDate" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formrow clearfix">
+                                        <div class="leftcol">
+                                            <div class="LabelDiv">@Html.Label(" ProbationReviewDate: ")</div>
+                                            <div class="InputDiv">
+                                                @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @readonly = "readonly" })
+                                                @Html.LabelFor(emp => emp.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @class = "ClassDisplayLabel" })
                                                 @*@Html.Hidden("PIPDate", String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { id = "PIPDate" })*@
                                             </div>
                                         </div>

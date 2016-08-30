@@ -2023,7 +2023,36 @@ namespace HRMS.DAL
             }
             return tempConfirmation;
         }
+        public DataSet GetTempConfirmationNew(int confirmationID)
+        {
+            ConfirmationFormViewModel tempConfirmation = new ConfirmationFormViewModel();
+            DataSet dset = new DataSet();
+            try
+            {
+                string constring = GetADOConnectionString();
+                SqlConnection con = new SqlConnection(constring);
+                con.Open();
 
+                SqlCommand cmd = new SqlCommand();
+                SqlDataAdapter dadapter = new SqlDataAdapter();
+                cmd.CommandText = "Select * from tbl_CF_TempConfirmation where ConfirmationID ='" + confirmationID + "' ";//write sp name here
+                cmd.Connection = con;
+
+                dadapter = new SqlDataAdapter(cmd.CommandText, con);
+                dadapter.Fill(dset);
+                //using (SqlDataReader reader = cmd.ExecuteReader())
+                //{
+                //    tempConfirmation = ;
+
+                //}
+                //tempConfirmation= cmd.ExecuteScalar();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return dset;
+        }
         public RatingMinMax GetRating()
         {
             RatingMinMax ratingMinMax = new RatingMinMax();
@@ -2515,7 +2544,25 @@ namespace HRMS.DAL
                         if (empCorporate.PIPDate == DateTime.MinValue)
                             tempConf.PIPDate = null;
                         else
+                        {
                             tempConf.PIPDate = empCorporate.PIPDate;
+                            try
+                            {
+                                string constring = GetADOConnectionString();
+                                SqlConnection con = new SqlConnection(constring);
+                                con.Open();
+                                SqlCommand cmd = new SqlCommand();
+
+                                cmd.CommandText = "update tbl_CF_TempConfirmation set PIPstartDate= '" + empCorporate.PIPstartDate + "' where ConfirmationID ='" + empCorporate.confirmationID + "' ";//write sp name here
+                                cmd.Connection = con;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception)
+                            {
+                                throw;
+                            }
+
+                        }
                         tempConf.NumberOfDaysExtension = empCorporate.NumberOfDaysPIP;
                         tempConf.ConfirmationStatus = 2;
                         ConfDetails.ConfirmationStatus = 2;
