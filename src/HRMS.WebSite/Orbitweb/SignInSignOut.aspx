@@ -96,6 +96,7 @@
             <div align="center" class="SuccessMsgOrbit">
                 <asp:Label ID="lblSuccess" runat="server" SkinID="lblSuccess"></asp:Label>
             </div>
+            <br />
             <div align="center" class="ErrorMsgOrbit">
                 <asp:Label ID="lblErrorMess" runat="server" SkinID="lblError"></asp:Label>
             </div>
