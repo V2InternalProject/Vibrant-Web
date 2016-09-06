@@ -2837,7 +2837,7 @@ namespace HRMS.DAL
                     else
                     {
                         List<EmployeeChangesApprovalViewModel> empChangeDetails = (from changes in dbContext.tbl_ApprovalChanges
-                                                                                   where (changes.CreatedBy.Contains(searchText) || changes.Module.Contains(searchText)) && (changes.ApprovalStatusMasterID == 1 || changes.ApprovalStatusMasterID == 2) && (changes.EmployeeID != LoggedInEmployeeId)
+                                                                                   where (changes.CreatedBy.Contains(searchText) || changes.Module.Contains(searchText)) && (changes.ApprovalStatusMasterID == 1) && (changes.EmployeeID != LoggedInEmployeeId)
                                                                                    orderby changes.EmployeeID
                                                                                    group changes by new { changes.EmployeeID, changes.Module, changes.CreatedBy } into grp
                                                                                    select new EmployeeChangesApprovalViewModel
