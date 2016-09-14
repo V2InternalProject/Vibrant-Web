@@ -1,0 +1,46 @@
+
+--TO SET Expense Stage From 1 to 4 for Paid Expenses 
+--select ExpenseID,StageID,* from tbl_HR_Expense where ExpenseID in (
+--1842,
+--253,
+--1536,
+--1894,
+--1755,
+--9,
+--96,
+--1699,
+--234,
+--154,
+--155,
+--157,
+--200,
+--201,
+--1715,
+--1793,
+--1836
+--)
+
+--Update tbl_HR_Expense
+--SET StageID=4
+--Where ExpenseID in (
+--1842,
+--253,
+--1536,
+--1894,
+--1755,
+--9,
+--96,
+--1699,
+--234,
+--154,
+--155,
+--157,
+--200,
+--201,
+--1715,
+--1793,
+--1836
+--)
+
+--INSERT into Tbl_HR_ExpenseStageEvent(ExpenseID,EventDatatime,Action,FromStageId,ToStageId,UserId,Comments)
+--Values(ExpenseID,GETDATE(),'Closed',1,4,'Closed as per discussion with Finance team')
