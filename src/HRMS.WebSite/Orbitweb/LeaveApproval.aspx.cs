@@ -320,6 +320,10 @@ namespace HRMS.Orbitweb
                                 objLeaveTransDetailsModel.LeaveType = Convert.ToBoolean(dsLeaveTransaction.Tables[0].Rows[k]["LeaveType"].ToString());
                                 objLeaveTransDetailsModel.LeaveTransactionID = Convert.ToInt32(dsLeaveTransaction.Tables[0].Rows[k]["LeaveTransactionID"].ToString());
 
+                                int totalleavesappliedfor = TotalLeavesApplyedFor;
+                                int CurrentBalance = 0;
+                                int OnDayBalance = 0;
+                                bool leaveFlag = false;
                                 if (BalanceLeaves > 0)
                                 {
                                     objLeaveTransDetailsModel.Quantity = Convert.ToDecimal("-" + 1);
@@ -816,6 +820,10 @@ namespace HRMS.Orbitweb
                     return;
                 }
                 TotalLeavesApplyedFor = j++;
+                int totalleavesappliedfor = TotalLeavesApplyedFor;
+                int CurrentBalance = 0;
+                int OnDayBalance = 0;
+                bool leaveFlag = false;
 
                 if (TotalLeavesApplyedFor == 0)
                 {
@@ -823,6 +831,29 @@ namespace HRMS.Orbitweb
                     gvLeaveApprovals.EditIndex = -1;
                     GetLeaveDetails();
                     return;
+                }
+                else
+                {
+                    if (Convert.ToDateTime(txtgrvFormDate.Text.Trim()) < Convert.ToDateTime(DateTime.Now))
+                    {
+                        DataSet dsLeavebalanceforGivenDate = objLeaveDeatilsBOL.GetLeaveBalanceForGivenDate(objLeaveDetailsModel.UserID, objLeaveDetailsModel.LeaveDateFrom, objLeaveDetailsModel.LeaveDateTo);
+                        CurrentBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["CurrentBalance"]);
+                        OnDayBalance = Convert.ToInt32(dsLeavebalanceforGivenDate.Tables[0].Rows[0]["OnDayBalance"]);
+                        if (CurrentBalance > 0)
+                        {
+                            if (TotalLeavesApplyedFor > OnDayBalance)
+                            {
+                                int diff = TotalLeavesApplyedFor - OnDayBalance;
+                                TotalLeavesApplyedFor = TotalLeavesApplyedFor - diff;
+                                leaveFlag = true;
+                            }
+                        }
+                        else
+                        {
+                            TotalLeavesApplyedFor = 0;
+                            leaveFlag = true;
+                        }
+                    }
                 }
 
                 if (ddlStatusID.SelectedValue == Convert.ToString("2"))
@@ -943,12 +974,28 @@ namespace HRMS.Orbitweb
                     }
                     else
                     {
-                        objLeaveDetailsModel.TotalLeaveDays = TotalLeavesApplyedFor;
-                        objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
+                        if (leaveFlag)
+                        {
+                            absent = totalleavesappliedfor - TotalLeavesApplyedFor;
+                            objLeaveDetailsModel.TotalLeaveDays = Convert.ToInt32(TotalLeavesApplyedFor);
+                            objLeaveDetailsModel.LeaveDateTo = Convert.ToDateTime(txtgrvToDate.Text.Trim());
+                            objLeaveDetailsModel.LeaveCorrectionDays = absent;
+                            UpdateTMLeaveDetails();
+                        }
+                        else
+                        {
 
-                        objLeaveDetailsModel.LeaveDateTo = Convert.ToDateTime(txtgrvToDate.Text.Trim());
-                        UpdateTMLeaveDetails();
+
+                            objLeaveDetailsModel.TotalLeaveDays = TotalLeavesApplyedFor;
+                            objLeaveDetailsModel.LeaveCorrectionDays = Convert.ToInt32(0);
+
+                            objLeaveDetailsModel.LeaveDateTo = Convert.ToDateTime(txtgrvToDate.Text.Trim());
+                            UpdateTMLeaveDetails();
+
+                        }
+
                     }
+
 
                     for (int k = 0; k < strLeaves.Length; k++)
                     {
@@ -958,19 +1005,49 @@ namespace HRMS.Orbitweb
                         }
                         else
                         {
-                            if (ddlStatusID.SelectedValue == Convert.ToString("2"))
+                            if (leaveFlag)
                             {
-                                //Here Adding Leave records to LeaveTransaction table
-                                objLeaveTransDetailsModel.UserID = Convert.ToInt32(lblTMmember.Text.ToString());
-                                objLeaveTransDetailsModel.LeaveDetailsID = Convert.ToInt32(lblLeaveDetailID.Text);
-                                objLeaveTransDetailsModel.TransactionDate = Convert.ToDateTime(strLeaves[k].ToString());
-                                objLeaveTransDetailsModel.Description = "Leave:" + lblgrvLeaveReason.Text.ToString();
-                                objLeaveTransDetailsModel.Quantity = Convert.ToDecimal("-" + 1);
-                                objLeaveTransDetailsModel.LeaveType = Convert.ToBoolean(1);
+                                if (ddlStatusID.SelectedValue == Convert.ToString("2"))
+                                {
+                                    // Here Adding Leave records to LeaveTransaction table
+                                    objLeaveTransDetailsModel.UserID = Convert.ToInt32(lblTMmember.Text.ToString());
+                                    objLeaveTransDetailsModel.LeaveDetailsID = Convert.ToInt32(lblLeaveDetailID.Text);
+                                    objLeaveTransDetailsModel.TransactionDate = Convert.ToDateTime(strLeaves[k].ToString());
+                                    objLeaveTransDetailsModel.LeaveType = Convert.ToBoolean(1);
 
-                                AddLeaveTransDetails();
-                                UpdateEmployeeLeaveAndComp();
+                                    if (TotalLeavesApplyedFor > 0)
+                                    {
+                                        objLeaveTransDetailsModel.Quantity = Convert.ToDecimal("-" + 1);
+                                        objLeaveTransDetailsModel.Description = "Leave:" + lblgrvLeaveReason.Text.ToString();
+                                        TotalLeavesApplyedFor--;
+                                    }
+                                    else
+                                    {
+                                        objLeaveTransDetailsModel.Quantity = Convert.ToDecimal(0);
+                                        objLeaveTransDetailsModel.Description = "Absent:" + lblgrvLeaveReason.Text.ToString();
+                                    }
+
+                                    AddLeaveTransDetails();
+                                    UpdateEmployeeLeaveAndComp();
+                                }
                             }
+                            else
+                            {
+                                if (ddlStatusID.SelectedValue == Convert.ToString("2"))
+                                {
+                                    //Here Adding Leave records to LeaveTransaction table
+                                    objLeaveTransDetailsModel.UserID = Convert.ToInt32(lblTMmember.Text.ToString());
+                                    objLeaveTransDetailsModel.LeaveDetailsID = Convert.ToInt32(lblLeaveDetailID.Text);
+                                    objLeaveTransDetailsModel.TransactionDate = Convert.ToDateTime(strLeaves[k].ToString());
+                                    objLeaveTransDetailsModel.Description = "Leave:" + lblgrvLeaveReason.Text.ToString();
+                                    objLeaveTransDetailsModel.Quantity = Convert.ToDecimal("-" + 1);
+                                    objLeaveTransDetailsModel.LeaveType = Convert.ToBoolean(1);
+
+                                    AddLeaveTransDetails();
+                                    UpdateEmployeeLeaveAndComp();
+                                }
+                            }
+
                         }
                     }
                     if (ddlStatusID.SelectedValue == Convert.ToString("2"))
@@ -994,37 +1071,6 @@ namespace HRMS.Orbitweb
                     {
                         SendingMailToReportingPerson();
                     }
-                    // Commented by Nilesh Dalal.
-                    // No need to have this as Approver can't Cancel the Leave.
-                    //if (ddlStatusID.SelectedValue == Convert.ToString("4"))
-                    //{
-                    //    try
-                    //    {
-                    //        SendingMailToReportingPerson();
-                    //    }
-                    //    catch (V2Exceptions)
-                    //    {
-                    //        try
-                    //        {
-                    //            Response.Redirect("LeaveApproval.aspx");
-                    //        }
-                    //        catch (System.Threading.ThreadAbortException ex)
-                    //        {
-                    //            throw;
-                    //        }
-                    //    }
-                    //    catch (System.Exception)
-                    //    {
-                    //        try
-                    //        {
-                    //            Response.Redirect("LeaveApproval.aspx");
-                    //        }
-                    //        catch (System.Threading.ThreadAbortException ex)
-                    //        {
-                    //            throw;
-                    //        }
-                    //    }
-                    //}
                 }
                 else
                 {

@@ -1154,6 +1154,59 @@ namespace V2.Orbit.DataLayer
 
 
         #endregion
+
+        #region Check Leave Balance For Given Date
+        /// <summary>
+        /// Added by Rahul
+        /// Description: Not to allow leaves if there is no enough leave balance.
+        /// </summary>
+        /// <param name="EmployeeCode"></param>
+        /// <param name="FromDate"></param>
+        /// <param name="ToDate"></param>
+        /// <returns></returns>
+        /// 
+        public DataSet CheckLeaveBalanceForGivenDate(int EmployeeCode, DateTime FromDate, DateTime ToDate)
+        {
+            try
+            {
+                DataSet dsLeaveBalanceForGivenDate = new DataSet();
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = "CheckLeaveBalanceForGivenDate";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 5000;
+                    cmd.Connection = con;
+
+                    cmd.Parameters.AddWithValue("@EmployeeCode", EmployeeCode);
+                    cmd.Parameters.AddWithValue("@FromDate", FromDate);
+                    cmd.Parameters.AddWithValue("@ToDate", ToDate);
+
+                    SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                    adp.Fill(dsLeaveBalanceForGivenDate);
+                }
+
+                return dsLeaveBalanceForGivenDate;
+                //SqlParameter[] param = new SqlParameter[3];
+                //param[0] = new SqlParameter("@EmployeeCode", EmployeeCode);
+                //param[1] = new SqlParameter("@FromDate", FromDate);
+                //param[2] = new SqlParameter("@ToDate", ToDate);
+
+                //return dsLeaveBalanceForGivenDate = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "CheckLeaveBalanceForGivenDate", param);
+            }
+            catch (V2Exceptions ex)
+            {
+                throw;
+            }
+            catch (System.Exception ex)
+            {
+                FileLog objFileLog = FileLog.GetLogger();
+                objFileLog.WriteLine(LogType.Error, ex.Message, "LeaveDeatilsDAL.cs", "CheckLeaveBalanceForGivenDate", ex.StackTrace);
+                throw new V2Exceptions(ex.ToString(), ex);
+            }
+        }
+
+        #endregion
      
      }
 }
