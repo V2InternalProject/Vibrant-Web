@@ -76,10 +76,10 @@ namespace HRMS.Orbitweb
                 bool whiteListed = empCodes.Contains(User.Identity.Name);
                 if (whiteListed)
                 {
-                    btnSignIn.Visible = true;
-                    btnSignOut.Visible = true;
+                    btnSignIn.Visible = false;
+                    btnSignOut.Visible = false;
                     OpenSignInSignOutPage();
-                    ClientScript.RegisterStartupScript(GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(true)", true);
+                    ClientScript.RegisterStartupScript(GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(false)", true);
                     //ScriptManager.RegisterStartupScript(this, GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(true)", true);
                 }
                 else
@@ -131,10 +131,10 @@ namespace HRMS.Orbitweb
 
                         if (ipDetails.countryCode == UnitedStatesCountryCode)
                         {
-                            btnSignIn.Visible = true;
-                            btnSignOut.Visible = true;
+                            btnSignIn.Visible = false;
+                            btnSignOut.Visible = false;
                             OpenSignInSignOutPage();
-                            ClientScript.RegisterStartupScript(GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(true)", true);
+                            ClientScript.RegisterStartupScript(GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(false)", true);
                             //ScriptManager.RegisterStartupScript(this, GetType(), "ChangeVisibilityofManualTab", "ChangeVisibility(true)", true);
                         }
                         else

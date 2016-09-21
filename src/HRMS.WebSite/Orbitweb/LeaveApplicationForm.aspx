@@ -338,7 +338,7 @@
                         <button type="button" class="ButtonGray">
                             Reset</button>--%>
                             <asp:Button ID="btnSubmit" TabIndex="3" OnClick="btnSubmit_Click" runat="server" CausesValidation="true" OnClientClick="return Validation();"
-                                Text="Submit" CssClass="ButtonGray"></asp:Button>&nbsp;
+                                Text="Submit" CssClass="ButtonGray" Enabled="false"></asp:Button>&nbsp;
 
                             <asp:Button ID="btnReset" OnClick="btnReset_Click" runat="server" Text="Reset" CausesValidation="false"
                                 CssClass="ButtonGray"></asp:Button>
@@ -540,13 +540,13 @@
                             <ItemTemplate>
                                 <asp:Label ID="lblApprove" runat="server"></asp:Label>
                                 <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
-                                    CommandArgument='<%#  Eval("LeaveDetailID") %>'>Edit</asp:LinkButton>&nbsp;
+                                    CommandArgument='<%#  Eval("LeaveDetailID") %>' Enabled="false">Edit</asp:LinkButton>&nbsp;
 
                                 <asp:LinkButton ID="lnkButCancel" runat="server" CommandName="LeaveCancel" CausesValidation="False"
                                     CommandArgument='<%#  Eval("LeaveDetailID") %>' OnClientClick="return confirm('Are you sure you want to Cancel this Leave?');">Cancel&nbsp;Leave</asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" CausesValidation="False"></asp:LinkButton>
+                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" CausesValidation="False" Enabled="false"></asp:LinkButton>
                                 &nbsp;
 
                                 <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel"

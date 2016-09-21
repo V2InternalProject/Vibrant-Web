@@ -164,11 +164,11 @@
                             </div>
                             <div class="fill-dtls2">
                                 <asp:Button ID="btnSubmit" OnClick="btnSubmit_Click" runat="server" Text="Submit"
-                                    CssClass="ButtonGray"></asp:Button>
+                                    CssClass="ButtonGray" Enabled="false"></asp:Button>
                                 &nbsp;
 
                                 <asp:Button ID="btnReset" OnClick="btnReset_Click" runat="server" CausesValidation="false"
-                                    Text="Reset" CssClass="ButtonGray"></asp:Button>
+                                    Text="Reset" CssClass="ButtonGray" Enabled="false"></asp:Button>
                             </div>
                         </div>
                     </asp:Panel>

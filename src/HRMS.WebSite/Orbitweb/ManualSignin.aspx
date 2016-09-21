@@ -210,7 +210,7 @@
                 <%--                    <input type="button" class="ButtonGray mrgnR11" value="Save">
                     <input type="button" class="ButtonGray" value="Cancel">--%>
                 <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click"
-                    CausesValidation="true" Style="margin-right: 10px;" CssClass="ButtonGray mrgnR11"></asp:Button>
+                    CausesValidation="true" Style="margin-right: 10px;" CssClass="ButtonGray mrgnR11" Enabled="false"></asp:Button>
                 <asp:Button ID="btnCancel" runat="server" Text="Cancel" OnClick="btnCancel_Click"
                     CausesValidation="false" CssClass="ButtonGray"></asp:Button>
             </div>
