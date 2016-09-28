@@ -311,7 +311,7 @@
                             <%--<input type="button" class="ButtonGray mrgnR11" value="Add Comments">
                         <input type="button" class="ButtonGray" value="Upload File">--%>
                             <asp:Button ID="btnSubmit" class="ButtonGray mrgnR11" runat="server" Text="Submit"
-                                OnClick="btnSubmit_Click" />
+                                OnClick="btnSubmit_Click" Visible="false" Enabled="false"/>
                         </div>
                     </div>
                 </section>

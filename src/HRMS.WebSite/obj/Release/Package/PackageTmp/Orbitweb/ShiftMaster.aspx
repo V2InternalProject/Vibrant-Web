@@ -402,17 +402,17 @@
                                 <asp:TemplateColumn HeaderText="Action">
                                     <ItemStyle HorizontalAlign="left"></ItemStyle>
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
+                                        <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false" Enabled="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                                     </ItemTemplate>
                                     <FooterStyle HorizontalAlign="Center"></FooterStyle>
                                     <FooterTemplate>
-                                        <asp:LinkButton ID="btnAdd" runat="server" Text="ADD" CommandName="btnAdd"></asp:LinkButton>
-                                        <asp:LinkButton ID="btn" runat="server" Text="Cancel" CommandName="btnCancel" CausesValidation="false"></asp:LinkButton>
+                                        <asp:LinkButton ID="btnAdd" runat="server" Text="ADD" CommandName="btnAdd" Visible="false" Enabled="false"></asp:LinkButton>
+                                        <asp:LinkButton ID="btn" runat="server" Text="Cancel" CommandName="btnCancel" Visible="false"  CausesValidation="false" Enabled="false"></asp:LinkButton>
                                     </FooterTemplate>
                                     <EditItemTemplate>
-                                        <asp:LinkButton ID="lnkbutUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <asp:LinkButton ID="lnkbutUpdate" runat="server" Text="Update" CommandName="Update" Enabled="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;&nbsp;
 
-                                        <asp:LinkButton ID="lnkbutCancel" runat="server" Text="Cancel" CommandName="btnCancel"
+                                        <asp:LinkButton ID="lnkbutCancel" runat="server" Text="Cancel" CommandName="btnCancel" Enabled="false"
                                             CausesValidation="false"></asp:LinkButton>
                                     </EditItemTemplate>
                                 </asp:TemplateColumn>

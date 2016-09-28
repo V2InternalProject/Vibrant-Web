@@ -97,7 +97,7 @@
                         </div>
                         <div class="InputDiv">
                             <asp:TextBox ID="txtempname" runat="server" AutoPostBack="true" OnTextChanged="txtempname_TextChanged"
-                                Width="182px"></asp:TextBox><asp:TextBox ID="txtempid" runat="server" Visible="false"
+                                Width="182px" Enabled="false"></asp:TextBox><asp:TextBox ID="txtempid" runat="server" Visible="false"
                                     Width="75px"></asp:TextBox>
                             <ajaxToolkit:AutoCompleteExtender ID="aceEmpName1" runat="server" TargetControlID="txtempname"
                                 ServicePath="~/LeaveTransactionAutoComplete.asmx" ServiceMethod="GetEmployeeName"

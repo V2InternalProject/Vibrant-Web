@@ -488,7 +488,8 @@ namespace HRMS.Controllers
                     return RedirectToAction("Index", "Error", new { errorCode = "You are not authorised to do this action." });
 
                 ExpenseReimbursementDAL dal = new ExpenseReimbursementDAL();
-                bool status = dal.DeletedExpenseDetails(expenseId, Convert.ToInt32(decryptedEmployeeId));
+            //   bool status = dal.DeletedExpenseDetails(expenseId, Convert.ToInt32(decryptedEmployeeId));
+                 bool status = true;
                 return Json(new { status = status }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)

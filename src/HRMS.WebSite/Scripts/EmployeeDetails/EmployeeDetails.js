@@ -278,7 +278,7 @@ function EmployeeDetailfunction() {
         }
     }
 
-    $('#btnSave').click(buttonSaveFunction);
+  //  $('#btnSave').click(buttonSaveFunction);
     $("#ddcl-LoginRole-ddw input:checkbox").each(function () {
         var counter = 0;
         var currentVal = $(this).val();
