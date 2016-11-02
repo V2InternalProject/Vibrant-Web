@@ -80,9 +80,9 @@
             // Configure the columns
             colModel: [
 
-              { name: "EmployeeId", index: "TravelID", hidden: true, width: 25, align: "left" },
-              { name: "DocumentID", index: "DocumentID", hidden: true, width: 25, align: "left" },
-             { name: "PassportFileName", index: "PassportFileName", width: 50, align: "left", formatter: formatlink },
+              { name: "EmployeeId", index: "TravelID", hidden: true, width: 25, align: "left", editable: false },
+              { name: "DocumentID", index: "DocumentID", hidden: true, width: 25, align: "left", editable: false },
+             { name: "PassportFileName", index: "PassportFileName", width: 50, align: "left", formatter: formatlink, editable: false },
 	        { name: "Delete", index: "Delete", width: "10%", align: "center", formatter: function () { return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">'; } }
             ],
 
@@ -122,7 +122,7 @@
                 var colName = cm[iCol];
                 if (colName['index'] == "Delete") {
                     if ('@ViewBag.UserRole' == '@HRMS.Models.UserRoles.HRAdmin') {
-                        DeletePassportDocument(DocumentID, '@Model.PersonType');
+                        //DeletePassportDocument(DocumentID, '@Model.PersonType');
                     }
                     else {
                         return false;
@@ -257,16 +257,16 @@
             colNames: ["DependantVisaDetailsId", "EmployeeId", "Country", "CountryId", "IsValidVisa", "Visa TypeName", "IsVisaExpired", "ValidTill", "Visa Copy", "VisaTypeID", ""],
             // Configure the columns
             colModel: [
-                { name: "DependantVisaDetailsId", index: "DependantVisaDetailsId", hidden: true, width: 100, align: "left" },
-                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
-                { name: "Country", index: "Country", width: 100, align: "left" },
-                { name: "SelectedCountryId", index: "SelectedCountryId", hidden: true, width: 100, align: "left" },
-                { name: "IsValidVisa", index: "IsValidVisa", hidden: true, width: 100, align: "left" },
-                 { name: "VisaTypeName", index: "VisaTypeName", width: 100, align: "left" },
-                { name: "IsVisaExpired", index: "IsVisaExpired", hidden: true, width: 100, align: "left" },
-                { name: "ValidTill", index: "ValidTill", width: 100, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
-                 { name: "VisaFileName", index: "VisaFileName", width: 100, align: "left", formatter: formatSpouseVisalink },
-                { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 100, align: "left" },
+                { name: "DependantVisaDetailsId", index: "DependantVisaDetailsId", hidden: true, width: 100, align: "left" ,editable:false},
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left", editable: false },
+                { name: "Country", index: "Country", width: 100, align: "left", editable: false },
+                { name: "SelectedCountryId", index: "SelectedCountryId", hidden: true, width: 100, align: "left", editable: false },
+                { name: "IsValidVisa", index: "IsValidVisa", hidden: true, width: 100, align: "left", editable: false },
+                 { name: "VisaTypeName", index: "VisaTypeName", width: 100, align: "left", editable: false },
+                { name: "IsVisaExpired", index: "IsVisaExpired", hidden: true, width: 100, align: "left", editable: false },
+                { name: "ValidTill", index: "ValidTill", width: 100, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editable: false },
+                 { name: "VisaFileName", index: "VisaFileName", width: 100, align: "left", formatter: formatSpouseVisalink, editable: false },
+                { name: "VisaTypeID", index: "VisaTypeID", hidden: true, width: 100, align: "left", editable: false },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -340,10 +340,10 @@
                 var rowData = $(this).getRowData(rowid);
                 var dependantsVisaDetailsId = rowData['DependantVisaDetailsId'];
                 if (iCol == 10 && ('@Model.EmpStatusMasterID' != 2)) {
-                    DeleteEmployeeVisaDetailDialog(dependantsVisaDetailsId);
+                   // DeleteEmployeeVisaDetailDialog(dependantsVisaDetailsId);
                 } else {
                     if ('@Model.EmpStatusMasterID' != 2) {
-                        EditEmployeeVisaDetails(rowData);
+                       // EditEmployeeVisaDetails(rowData);
                     }
                 }
             }
@@ -719,7 +719,7 @@
         </div>
         <div class="ButtonContainer1">
             @*<input type="button" value="Save" class="ButtonGray" />*@
-            <input type="submit" value="Save" id="btnSaveSpouseTravelDetails" class="ButtonGray" />
+            <input type="submit" value="Save" id="btnSaveSpouseTravelDetails" class="ButtonGray" disabled="disabled" style="visibility:hidden"  />
             @*  <input type="button" value="Reset" id="btnCancelSpouseTravelDetails" class="button" />*@
         </div>
     }
@@ -813,7 +813,7 @@
         </div>
     </div>
         <div class="ButtonContainer1">
-            <input type="submit" value="Save" id="btnSaveSpouseVisaTravelDetails" class="ButtonGray" />
+            <input type="submit" value="Save" id="btnSaveSpouseVisaTravelDetails" class="ButtonGray" disabled="disabled" style="visibility:hidden" />
         </div>
         <div class="tablestyle3" style="width: 100%;">
             <div id="spouseAddedVisaDetails">

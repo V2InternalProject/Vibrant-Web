@@ -258,16 +258,16 @@
                                     <ItemStyle HorizontalAlign="Center" Width="16%"></ItemStyle>
                                     <EditItemTemplate>
                                         <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"
-                                            CausesValidation="false"></asp:LinkButton>
+                                            CausesValidation="false" Enabled="false" Visible="false"></asp:LinkButton>
                                         &nbsp;
 
                                         <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="lbnCancel"
-                                            CausesValidation="false"></asp:LinkButton>
+                                            CausesValidation="false" Visible="false"></asp:LinkButton>
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                         <asp:Label ID="lblApprove" runat="server"></asp:Label>
                                         <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
-                                            CommandArgument='<%#  Eval("CompensationID") %>'>Edit</asp:LinkButton>
+                                            CommandArgument='<%#  Eval("CompensationID") %>' Enabled="false">Edit</asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>

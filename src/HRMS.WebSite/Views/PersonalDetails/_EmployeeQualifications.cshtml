@@ -58,24 +58,24 @@
 
             // Configure the columns
             colModel: [
-                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 100, align: "left" },
-                { name: "Qualification", index: "Qualification", editable: true, width: 120, align: "left", editrules: { custom: true, custom_func: isQualificationSelected}, edittype: "select", editoptions: { value: qualification, dataEvents: [{ type: 'change', fn: function(e) {ChangeQualification(e); } }]} },
-                { name: "QualificationID", index: "QualificationID", hidden: true, width: 150, align: "left" },
-                { name: "EmployeeQualificationID", index: "EmployeeQualificationID", editable: true, hidden: true, width: 100, align: "left" },
-                { name: "Degree", index: "Degree", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isDegreeSelected}, edittype: "select", editoptions: { value: degree, dataEvents: [{ type: 'change', fn: function(e) {ChangeDegree(e); } }]} },
-                { name: "DegreeID", index: "DegreeID", width: 70, align: "left", hidden: true },
-                { name: "Specialization", index: "Specialization", editable: true, editoptions: { maxlength: 200}, width: 110, align: "left" },
-                { name: "Institute", index: "Institute", editable: true, editrules: { required: true }, editoptions: { maxlength: 100}, width: 120, align: "left" },
-                { name: "University", index: "University", editable: true, editrules: { required: true }, editoptions: { maxlength: 200}, width: 120, align: "left" },
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 100, align: "left",editable: false },
+                { name: "Qualification", index: "Qualification", editable: false, width: 120, align: "left", editrules: { custom: true, custom_func: isQualificationSelected}, edittype: "select", editoptions: { value: qualification, dataEvents: [{ type: 'change', fn: function(e) {ChangeQualification(e); } }]} },
+                { name: "QualificationID", index: "QualificationID", hidden: true, width: 150, align: "left" ,editable: false},
+                { name: "EmployeeQualificationID", index: "EmployeeQualificationID", editable: false, hidden: true, width: 100, align: "left" },
+                { name: "Degree", index: "Degree", editable: false, width: 70, align: "left", editrules: { custom: true, custom_func: isDegreeSelected}, edittype: "select", editoptions: { value: degree, dataEvents: [{ type: 'change', fn: function(e) {ChangeDegree(e); } }]} },
+                { name: "DegreeID", index: "DegreeID", width: 70, align: "left", hidden: true,editable: false },
+                { name: "Specialization", index: "Specialization", editable: false, editoptions: { maxlength: 200}, width: 110, align: "left" },
+                { name: "Institute", index: "Institute", editable: false, editrules: { required: true }, editoptions: { maxlength: 100}, width: 120, align: "left" },
+                { name: "University", index: "University", editable: false, editrules: { required: true }, editoptions: { maxlength: 200}, width: 120, align: "left" },
             //                { name: "Course", index: "Course", width: 100, align: "left" },
-                { name: "Year", index: "Year", width: 50, editable: true, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
-                { name: "Type", index: "Type", width: 80, editable: true, align: "left", editrules: { custom: true, custom_func: isTypeSelected}, edittype: "select", editoptions: { value: type, dataEvents: [{ type: 'change', fn: function(e) {ChangeType(e); } }]} },
-                { name: "TypeID", index: "TypeID", width: 60, align: "left", hidden: true },
-                { name: "Percentage", index: "Percentage", editable: true, editrules: { required: true, custom: true, custom_func: isValidPercentage }, editoptions: { maxlength: 50},width: 100, align: "left" },
+                { name: "Year", index: "Year", width: 50, editable: false, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
+                { name: "Type", index: "Type", width: 80, editable: false, align: "left", editrules: { custom: true, custom_func: isTypeSelected}, edittype: "select", editoptions: { value: type, dataEvents: [{ type: 'change', fn: function(e) {ChangeType(e); } }]} },
+                { name: "TypeID", index: "TypeID", width: 60, align: "left", hidden: true,editable: false },
+                { name: "Percentage", index: "Percentage", editable: false, editrules: { required: true, custom: true, custom_func: isValidPercentage }, editoptions: { maxlength: 50},width: 100, align: "left" },
 
-                { name: "ApprovalOrRejectionStatus", index: "ApprovalOrRejectionStatus", formatter: ShowHideMessage, width: 80, align: "left" },
-                { name: "ActionType", index: "ActionType", hidden: true, width: 100, align: "left" },
-                { name: "ApprovalStatusFlag", index: "ApprovalStatusFlag", hidden: true, width: 100, align: "left" },
+                { name: "ApprovalOrRejectionStatus", index: "ApprovalOrRejectionStatus", formatter: ShowHideMessage, width: 80, align: "left",editable: false },
+                { name: "ActionType", index: "ActionType", hidden: true, width: 100, align: "left",editable: false },
+                { name: "ApprovalStatusFlag", index: "ApprovalStatusFlag", hidden: true, width: 100, align: "left" ,editable: false},
                 {
                     name: "Delete",
                     index: "Delete",
@@ -144,7 +144,7 @@
                             if ((rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
                                 (rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
                                 (rowData['ActionType'] == "" && rowData['ApprovalOrRejectionStatus'] == "")) {
-                                DeleteQualificationDetail(selectedQualId, '@ViewBag.qualificationEmployeeID');
+                               // DeleteQualificationDetail(selectedQualId, '@ViewBag.qualificationEmployeeID');
                             }
                         }
                     } else {
@@ -173,15 +173,15 @@
     );
         $("#employeeTable").jqGrid('inlineNav', "#employeeTablePager",
     {
-        edit: true,
-        editicon: "ui-icon-pencil",
-        edittext: "Edit",
-        add: true,
-        addicon: "ui-icon-plus",
-        addtext: "Add",
-        save: true,
-        saveicon: "ui-icon-disk",
-        savetext: "Save",
+        //edit: true,
+        //editicon: "ui-icon-pencil",
+        //edittext: "Edit",
+        //add: true,
+        //addicon: "ui-icon-plus",
+        //addtext: "Add",
+        //save: true,
+        //saveicon: "ui-icon-disk",
+        //savetext: "Save",
         cancle: true,
         cancelicon: "ui-icon-cancel",
         canceltext: "Cancel",

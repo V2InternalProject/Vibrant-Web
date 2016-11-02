@@ -95,68 +95,116 @@
         });
 
         $('#btnRejectConfirmation,#btnDisagreewithManager').click(function () {
-            $('#RejectCommentDialog').dialog(
-			{
-			    autoOpen: true,
-			    modal: true,
-			    width: 425,
-			    height: 'auto',
-			    resizable: false,
-			    title: "Reject",
-			    buttons:
-					{
-					    Ok: function () {
-					        var comments = $("#txtRejectComment").val();
-					        if (comments.length <= 0) {
-					            $('#ErrorRejectComment').show();
-					            return false;
-					        }
-					        else {
-					            $('#ErrorComment').hide();
-					        }
-					        var postRejectUrl = '@Url.Action("RejectConfirmation", "ConfirmationProcess")'
-					        $.ajax({
-					            type: 'POST',
-					            url: postRejectUrl,
-					            async: false,
-					            data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), RejectComments: comments },
-					            success: function (resultApprove) {
-					                if (resultApprove.status == true) {
-					                    $('#RejectCommentDialog').dialog('close');
-					                    $('#RejectCommentDialog').dialog('destroy');
+            if ($('#IsManagerOrEmployee').val() == "HR" && $("#IsFurtherApproverNeeded").is(':checked')) {
+                var comments = $("#Text_HRComments").val();
+                var postRejectUrl = '@Url.Action("RejectConfirmation", "ConfirmationProcess")'
+                $.ajax({
+                    type: 'POST',
+                    url: postRejectUrl,
+                    async: false,
+                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), RejectComments: comments },
+                    success: function (resultApprove) {
+                        if (resultApprove.status == true) {
+                            var status = "Reject";
+                            var isExtendAccept = "";
+                            isExtendAccept = '@Model.IsAcceptedOrExtended';
+                            var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
+                            $.ajax({
+                                url: mailurl,
+                                type: 'GET',
+                                data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString() },
+                                success: function (data) {
+                                    $('#MailTemplateDialog').html(data);
+                                    $("#MailTemplateDialog").dialog({
+                                        resizable: false,
+                                        height: 520,
+                                        width: 800,
+                                        modal: true,
+                                        title: 'Send Mail',
+                                        open: function () {
+                                            $(this).parent().prev('.ui-widget-overlay').css('z-index', '30');
+                                            $(this).parent().css('z-index', '31');
+                                        },
+                                        close: function () {
+                                            window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
+                                        }
+                                    });
+                                    //here put send mail
+                                }
+                            });
+                            @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
+                            }
+                    }
+                });
 
-					                    var status = "Reject";
-					                    var isExtendAccept = "";
-					                    //if ($('#IsManagerOrEmployee').val() == "HR" && $('#StageID').val() == 6)
-					                    isExtendAccept = '@Model.IsAcceptedOrExtended';
+            }
 
-					                    var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
-					                    $.ajax({
-					                        url: mailurl,
-					                        type: 'GET',
-					                        data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString() },
-					                        success: function (data) {
-					                            $('#MailTemplateDialog').html(data);
-					                            $("#MailTemplateDialog").dialog({
-					                                resizable: false,
-					                                height: 520,
-					                                width: 800,
-					                                modal: true,
-					                                title: 'Send Mail',
-					                                close: function () {
-					                                    window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
-					                                }
-					                            });
-					                            //here put send mail
-					                        }
-					                    });
-					                    @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
-					                }
-					            }
-					        });
-					    }
-					}
-			});
+            else {
+                $('#RejectCommentDialog').dialog(
+             {
+                 autoOpen: true,
+                 modal: true,
+                 width: 425,
+                 height: 'auto',
+                 resizable: false,
+                 title: "Reject",
+                 buttons:
+                     {
+                         Ok: function () {
+                             var comments = $("#txtRejectComment").val();
+                             if (comments.length <= 0) {
+                                 $('#ErrorRejectComment').show();
+                                 return false;
+                             }
+
+                             else {
+                                 $('#ErrorComment').hide();
+                             }
+                             var postRejectUrl = '@Url.Action("RejectConfirmation", "ConfirmationProcess")'
+                             $.ajax({
+                                 type: 'POST',
+                                 url: postRejectUrl,
+                                 async: false,
+                                 data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), RejectComments: comments },
+                                 success: function (resultApprove) {
+                                     if (resultApprove.status == true) {
+                                         $('#RejectCommentDialog').dialog('close');
+                                         $('#RejectCommentDialog').dialog('destroy');
+
+                                         var status = "Reject";
+                                         var isExtendAccept = "";
+                                         //if ($('#IsManagerOrEmployee').val() == "HR" && $('#StageID').val() == 6)
+                                         isExtendAccept = '@Model.IsAcceptedOrExtended';
+
+                                         var mailurl = '@Url.Action("GetEmailTemplateNewComfirmation", "ConfirmationProcess")';
+                                         $.ajax({
+                                             url: mailurl,
+                                             type: 'GET',
+                                             data: { employeeId: '@ViewBag.confirmationEmployeeId', IsApproveOrReject: status.toString(), IsAcceptExtendPIP: isExtendAccept.toString() },
+                                             success: function (data) {
+                                                 $('#MailTemplateDialog').html(data);
+                                                 $("#MailTemplateDialog").dialog({
+                                                     resizable: false,
+                                                     height: 520,
+                                                     width: 800,
+                                                     modal: true,
+                                                     title: 'Send Mail',
+                                                     close: function () {
+                                                         window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';
+                                                     }
+                                                 });
+                                                 //here put send mail
+                                             }
+                                         });
+                                         @*window.location.href = '@Url.Action("ConfirmationDetailList", "ConfirmationProcess")';*@
+                                         }
+                                 }
+                             });
+                         }
+                     }
+             });
+            }
+
         });
 
         /*HR CLOSURE VALIDATION STARTS*/
@@ -1088,7 +1136,7 @@
                     type: 'POST',
                     url: postApproveUrl,
                     async: false,
-                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val() },
+                    data: { employeeId: '@ViewBag.confirmationEmployeeId', confirmationID: '@Model.confirmationID', IsManagerOrEmployee: $('#IsManagerOrEmployee').val(), ReportingMangerComment: $('#ReportingManagerComments').val(), HrComments: $('#Text_HRComments').val() },
                     success: function (resultApprove) {
                         if (resultApprove.status == true) {
                             //$("#ConfirmationRecordSave").dialog({
@@ -1923,7 +1971,7 @@
     //Modified By Mahesh For Issue Id:24366
     debugger;
     $('#ConfirmationDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
-    $('#PIPDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: new Date, yearRange: "c:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
+    $('#PIPDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, minDate: '@Model.ProbationReviewDate', yearRange: "c:+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
     $('#ExtendProbationDatePicker').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "c-2:c+10", showOn: "both", buttonImage: "../../images/New Design/calender-icon.png", buttonImageOnly: true });
     //$("#frmConfirmationFormHRDetails #IsAcceptedOrExtended").val('accept');
     $("#acceptConfirmation").click(function () {

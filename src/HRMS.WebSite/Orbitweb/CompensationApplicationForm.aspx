@@ -164,11 +164,11 @@
                             </div>
                             <div class="fill-dtls2">
                                 <asp:Button ID="btnSubmit" OnClick="btnSubmit_Click" runat="server" Text="Submit"
-                                    CssClass="ButtonGray"></asp:Button>
+                                    CssClass="ButtonGray" Enabled="false" Visible="false"></asp:Button>
                                 &nbsp;
 
                                 <asp:Button ID="btnReset" OnClick="btnReset_Click" runat="server" CausesValidation="false"
-                                    Text="Reset" CssClass="ButtonGray"></asp:Button>
+                                    Text="Reset" CssClass="ButtonGray" Enabled="false" Visible="false"></asp:Button>
                             </div>
                         </div>
                     </asp:Panel>
@@ -316,11 +316,11 @@
                                     CausesValidation="False" CommandArgument='<%#  Eval("CompensationID") %>' OnClientClick="return confirm('Do you want to cancel Comp. Off?');">Cancel&nbsp;CompOff</asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" Enabled="false"></asp:LinkButton>
                                 &nbsp;
 
                                 <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel"
-                                    CausesValidation="false"></asp:LinkButton>
+                                    CausesValidation="false" Enabled="false"></asp:LinkButton>
                             </EditItemTemplate>
                         </asp:TemplateField>
                     </Columns>

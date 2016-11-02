@@ -27,11 +27,11 @@
 
         $('#employeeApprovalTable').on('click', ".employee-module-link-class", function () {
 
-            LinkClick($(this));
+           // LinkClick($(this));
         });
 
         $('#employeeApprovalOnholdTable').on('click', ".employee-module-link-class", function () {
-            LinkClick($(this));
+            //LinkClick($(this));
         });
 
         // Set up the jquery grid
@@ -45,9 +45,9 @@
             // Configure the columns
             colModel:
             [
-                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" },
-                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left" },
-                { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatLink }
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" ,editable:false },
+                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left" ,editable:false },
+                { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatLink ,editable:false }
 
             ],
             width: 500,
@@ -97,9 +97,9 @@
             // Configure the columns
             colModel:
             [
-                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" },
-                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left" },
-                 { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatOnholdLink }
+                { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 110, align: "left" ,editable:false },
+                { name: "CreatedBy", index: "CreatedBy", width: 110, align: "left"  ,editable:false},
+                 { name: "Module", index: "Module", width: 110, align: "left", formatter: FormatOnholdLink ,editable:false }
             ],
             width: 500,
             height: 300,

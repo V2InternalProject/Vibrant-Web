@@ -32,14 +32,14 @@
                 mtype: "POST",
                 colNames: ["EmployeeCertificationID", "Employee ID", "Certification ID", "Certification Name", "", "Certification Number", "Institution", "Certificate Date", "Certification Score", "Grade", "Status", "ActionType", "ApprovalStatusFlag", ""],
                 colModel: [
-                    { name: "EmployeeCertificationID", index: "EmployeeCertificationID", editable: true, hidden: true, width: 30, align: "left" },
-                    { name: "EmployeeID", index: "EmployeeID", width: 30, hidden: true, align: "left" },
-                    { name: "CertificationID", index: "CertificationID", width: 30, hidden: true, align: "left" },
-                    { name: "CertificationName", index: "CertificationName", editable: true, align: "left", width: '50', editrules: { custom: true, custom_func: isCertificateSelected}, edittype: "select", editoptions: { value: certificate, dataEvents: [{ type: 'change', fn: function(e) {ChangeCertificate(e); } }]}  },
-                    { name: "CertificationNameID", index: "CertificationNameID", hidden: true, align: "left" },
-                    { name: "CertificationNo", index: "CertificationNo", editable: true, editrules: { required: true }, editoptions: { maxlength: 50}, width: 50, align: "left" },
-                    { name: "Institution", index: "Institution", editable: true, editrules: { required: true }, editoptions: { maxlength: 500}, width: 90, align: "left" },
-                    { name: "CertificationDate", index: "CertificationDate", editable: true, editrules: { required: true }, width: 40, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' },editoptions:{
+                    { name: "EmployeeCertificationID", index: "EmployeeCertificationID", editable: false, hidden: true, width: 30, align: "left" },
+                    { name: "EmployeeID", index: "EmployeeID", width: 30, hidden: true, align: "left" ,editable: false},
+                    { name: "CertificationID", index: "CertificationID", width: 30, hidden: true, align: "left",editable: false },
+                    { name: "CertificationName", index: "CertificationName", editable: false, align: "left", width: '50', editrules: { custom: true, custom_func: isCertificateSelected}, edittype: "select", editoptions: { value: certificate, dataEvents: [{ type: 'change', fn: function(e) {ChangeCertificate(e); } }]}  },
+                    { name: "CertificationNameID", index: "CertificationNameID", hidden: true, align: "left",editable: false },
+                    { name: "CertificationNo", index: "CertificationNo", editable: false, editrules: { required: true }, editoptions: { maxlength: 50}, width: 50, align: "left" },
+                    { name: "Institution", index: "Institution", editable: false, editrules: { required: true }, editoptions: { maxlength: 500}, width: 90, align: "left" },
+                    { name: "CertificationDate", index: "CertificationDate", editable: false, editrules: { required: true }, width: 40, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' },editoptions:{
                         readonly:true,
                         dataInit: function(element) {
                             $(element).datepicker({
@@ -51,9 +51,9 @@
                             });
                         }
                     }  },
-                    { name: "CertificationScore", index: "CertificationScore", editable: true, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
-                    { name: "CertificationGrade", index: "CertificationGrade", editable: true, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
-                    { name: "Status", index: "Status", width: 40, formatter: ShowHideMessage, align: "left" },
+                    { name: "CertificationScore", index: "CertificationScore", editable: false, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
+                    { name: "CertificationGrade", index: "CertificationGrade", editable: false, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
+                    { name: "Status", index: "Status", width: 40, formatter: ShowHideMessage, align: "left" ,editable: false},
                     { name: "ActionType", index: "ActionType", hidden: true, width: 100, align: "left" },
                     { name: "ApprovalStatusFlag", index: "ApprovalStatusFlag", hidden: true, width: 100, align: "left" },
                     {
@@ -61,6 +61,7 @@
                         index: "Delete",
                         width: 22,
                         align: "center",
+                        editable:false,
                         formatter: function () {
                             if ($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' && $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' && ('@Model.EmpStatusMasterID' != 2)) {
                                 return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
@@ -120,7 +121,7 @@
                                     if ((rowData['Status'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['Status'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
                                     (rowData['Status'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['Status'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
                                     (rowData['ActionType'] == "" && rowData['Status'] == "")) {
-                                        DeleteCertificationDetail(selectedId, '@ViewBag.CertificationEmployeeID');
+                                       // DeleteCertificationDetail(selectedId, '@ViewBag.CertificationEmployeeID');
                                     }
                                 }
                             }
@@ -147,15 +148,15 @@
 
         $("#certificationTable").jqGrid('inlineNav', "#certificationTablePager",
  {
-     edit: true,
-     editicon: "ui-icon-pencil",
-     edittext: "Edit",
-     add: true,
-     addicon: "ui-icon-plus",
-     addtext: "Add",
-     save: true,
-     saveicon: "ui-icon-disk",
-     savetext: "Save",
+     //edit: true,
+     //editicon: "ui-icon-pencil",
+     //edittext: "Edit",
+     //add: true,
+     //addicon: "ui-icon-plus",
+     //addtext: "Add",
+     //save: true,
+     //saveicon: "ui-icon-disk",
+     //savetext: "Save",
      cancle: true,
      cancelicon: "ui-icon-cancel",
      canceltext: "Cancel",

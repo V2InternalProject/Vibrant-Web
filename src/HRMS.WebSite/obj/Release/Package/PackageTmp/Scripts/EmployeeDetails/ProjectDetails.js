@@ -20,17 +20,17 @@ $(document).ready(function () {
 
         // Configure the columns
         colModel: [
-	            { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
-	            { name: "ProjectResourceID", index: "ProjectResourceID", hidden: true, width: 100, align: "left" },
-	            { name: "ProjectDetailID", index: "ProjectDetailID", hidden: true, width: 100, align: "left" },
-	            { name: "FromDate", index: "FromDate", width: 180, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
-	            { name: "ToDate", index: "ToDate", width: 180, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
-	            { name: "CurrentRole", index: "CurrentRole", width: 250, align: "left" },
-	            { name: "CurrentProject", index: "CurrentProject", width: 250, align: "left" },
-	            { name: "CurrentReportingManager", index: "CurrentReportingManager", width: 300, align: "left" },
-	            { name: "DeliveryUnit", index: "DeliveryUnit", width: 250, align: "left" },
-	            { name: "ResourcePoolName", index: "ResourcePoolName", width: 375, align: "left" },
-	            { name: "ResourcePoolManager", index: "ResourcePoolManager", width: 375, align: "left" },
+	            { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left",editable:false },
+	            { name: "ProjectResourceID", index: "ProjectResourceID", hidden: true, width: 100, align: "left" ,editable:false},
+	            { name: "ProjectDetailID", index: "ProjectDetailID", hidden: true, width: 100, align: "left", editable: false },
+	            { name: "FromDate", index: "FromDate", width: 180,editable:false, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+	            { name: "ToDate", index: "ToDate", width: 180,editable:false, align: "left", sorttype: 'date', formatter: 'date', formatoptions: { newformat: 'm/d/Y' } },
+	            { name: "CurrentRole", index: "CurrentRole",editable:false, width: 250, align: "left" },
+	            { name: "CurrentProject", index: "CurrentProject",editable:false, width: 250, align: "left" },
+	            { name: "CurrentReportingManager", index: "CurrentReportingManager",editable:false, width: 300, align: "left" },
+	            { name: "DeliveryUnit", index: "DeliveryUnit",editable:false, width: 250, align: "left" },
+	            { name: "ResourcePoolName", index: "ResourcePoolName",editable:false, width: 375, align: "left" },
+	            { name: "ResourcePoolManager", index: "ResourcePoolManager", editable:false,width: 375, align: "left" },
         ],
 
         width: 800,

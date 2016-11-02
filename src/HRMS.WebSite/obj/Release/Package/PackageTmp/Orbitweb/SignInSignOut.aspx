@@ -96,6 +96,7 @@
             <div align="center" class="SuccessMsgOrbit">
                 <asp:Label ID="lblSuccess" runat="server" SkinID="lblSuccess"></asp:Label>
             </div>
+            <br />
             <div align="center" class="ErrorMsgOrbit">
                 <asp:Label ID="lblErrorMess" runat="server" SkinID="lblError"></asp:Label>
             </div>
@@ -104,10 +105,10 @@
                 <div class="clearfix">
                     <div class="floatL mrgnL20 mrgnT3">
                         <asp:Button ID="btnSignIn" runat="server" Text="Sign In" OnClick="btnSignIn_Click"
-                            CausesValidation="False" CssClass="ButtonBlue mrgnR11" />
+                            CausesValidation="False" CssClass="ButtonBlue mrgnR11"  Enabled="false"/>
 
                         <asp:Button ID="btnSignOut" runat="server" OnClick="btnSignOut_Click" Text="Sign Out"
-                            CausesValidation="False" CssClass="ButtonSignOut" />
+                            CausesValidation="False" CssClass="ButtonSignOut" Enabled="false" />
                     </div>
                     <div class="OrbitFilter">
                         <a href="#" class="OrbitFilterLink floatR">Filters</a>
@@ -221,7 +222,7 @@
                         <asp:TemplateField HeaderText="Action" Visible="False">
                             <ItemTemplate>
                                 <asp:LinkButton ID="lnkbtnEdit" runat="server" CausesValidation="false" CommandName="EditSignInSignOut"
-                                    CommandArgument='<%#  Eval("SignInSignOutID") %>'>Edit</asp:LinkButton>
+                                    CommandArgument='<%#  Eval("SignInSignOutID") %>' Enabled="false">Edit</asp:LinkButton>
                                 <asp:Label ID="lblStatus" runat="server" Visible="False"></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>

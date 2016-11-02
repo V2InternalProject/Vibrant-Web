@@ -123,14 +123,14 @@
             colNames: ["EmergencyContact Id", "EmployeeId", "Name", "Address", "Contact No.", "Email Id", "", "Relationship", ""],
             // Configure the columns
             colModel: [
-                { name: "EmployeeEmergencyContactId", index: "EmployeeEmergencyContactId", width: 50, editable: true, hidden: true, align: "left", visible: "false" },
-                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 25, align: "left" },
-                { name: "Name", index: "Name", editable: true, editrules: { required: true },  width: 50,editoptions: { maxlength: 1000}, align: "left" },
-                { name: "EmgAddress", index: "EmgAddress", editable: true, editoptions: { maxlength: 4000}, width: 50, align: "left" },
-                { name: "ContactNo", index: "ContactNo", editable: true, align: "left", width: 25, editrules: { required: true, custom: true, custom_func: isValidContactNo }, editoptions: { maxlength: 100} },
-                { name: "EmailId", index: "EmailId", editable: true, align: "left", width: 80, editrules: { custom: true, custom_func: isValidContactEmailAddress}, editoptions: { maxlength: 50} },
-                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left",  width: 25,visible: "false" },
-                { name: "Relation", index: "Relation", editable: true, align: "left", width: 30, editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeContactRelation(e); } }]} },
+                { name: "EmployeeEmergencyContactId", index: "EmployeeEmergencyContactId", width: 50, editable: false, hidden: true, align: "left", visible: "false" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 25, align: "left" ,editable: false},
+                { name: "Name", index: "Name", editable: false, editrules: { required: true },  width: 50,editoptions: { maxlength: 1000}, align: "left" },
+                { name: "EmgAddress", index: "EmgAddress", editable: false, editoptions: { maxlength: 4000}, width: 50, align: "left" },
+                { name: "ContactNo", index: "ContactNo", editable: false, align: "left", width: 25, editrules: { required: true, custom: true, custom_func: isValidContactNo }, editoptions: { maxlength: 100} },
+                { name: "EmailId", index: "EmailId", editable: false, align: "left", width: 80, editrules: { custom: true, custom_func: isValidContactEmailAddress}, editoptions: { maxlength: 50} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left",  width: 25,visible: "false",editable: false },
+                { name: "Relation", index: "Relation", editable: false, align: "left", width: 30, editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeContactRelation(e); } }]} },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -193,7 +193,7 @@
                             return false;
                         }
                         else {
-                            DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                            //DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
                         }
                     }
                 } @*else {
@@ -214,15 +214,15 @@
 
         $("#jqEmergencyContactTable").jqGrid('inlineNav', "#jqEmergencyContactTablePager",
 {
-    edit: true,
-    editicon: "ui-icon-pencil",
-    edittext: "Edit",
-    add: true,
-    addicon: "ui-icon-plus",
-    addtext: "Add",
-    save: true,
-    saveicon: "ui-icon-disk",
-    savetext: "Save",
+    //edit: true,
+    //editicon: "ui-icon-pencil",
+    //edittext: "Edit",
+    //add: true,
+    //addicon: "ui-icon-plus",
+    //addtext: "Add",
+    //save: true,
+    //saveicon: "ui-icon-disk",
+    //savetext: "Save",
     cancle: true,
     cancelicon: "ui-icon-cancel",
     canceltext: "Cancel",
@@ -596,8 +596,8 @@
                 </div>
             </div>
             <div class="ButtonContainer1">
-                <input type="submit" id="btnSave" value="Save" class="ButtonGray mrgnR11" />
-                <input type="button" id="btnReset" value="Reset" onclick="RestoreValues()" class="ButtonGray" />
+                <input type="submit" id="btnSave" value="Save" class="ButtonGray mrgnR11" style="visibility:hidden"  />
+                <input type="button" id="btnReset" value="Reset" onclick="RestoreValues()" class="ButtonGray" style="visibility:hidden" />
             </div>
             <div class="commondivider mrgnL30 mrgnR30">
             </div>

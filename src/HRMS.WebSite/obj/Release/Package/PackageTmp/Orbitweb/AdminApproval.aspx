@@ -79,7 +79,7 @@
                                 Select Module Type:</label>
                         </div>
                         <div class="InputDiv">
-                            <asp:DropDownList ID="ddlModuleType" runat="server" Width="130px" AutoPostBack="true"
+                            <asp:DropDownList ID="ddlModuleType" runat="server" Width="130px" AutoPostBack="true" Enabled="false"
                                 OnSelectedIndexChanged="ddlModuleType_SelectedIndexChanged">
                                 <asp:ListItem Text="-- Select --" Value="10"></asp:ListItem>
                                 <asp:ListItem Text="Sign-In Sign-Out" Value="0"></asp:ListItem>
@@ -281,13 +281,13 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Action">
                                 <EditItemTemplate>
-                                    <asp:LinkButton ID="lnkBtnUpdate" runat="server" CausesValidation="True" ValidationGroup="Edit"
+                                    <asp:LinkButton ID="lnkBtnUpdate" runat="server" CausesValidation="True" ValidationGroup="Edit" Enabled="false"
                                         CommandName="Update" Text="Update"></asp:LinkButton>
-                                    <asp:LinkButton ID="lnkBtnCancel" runat="server" CausesValidation="False" CommandName="Cancel"
+                                    <asp:LinkButton ID="lnkBtnCancel" runat="server" CausesValidation="False" CommandName="Cancel" Enabled="false"
                                         Text="Cancel"></asp:LinkButton>
                                 </EditItemTemplate>
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="lnkBtnEdit" runat="server" CausesValidation="False" CommandName="Edit"
+                                    <asp:LinkButton ID="lnkBtnEdit" runat="server" CausesValidation="False" CommandName="Edit" Enabled="false"
                                         Text="Edit"></asp:LinkButton>
                                     <asp:Label ID="lblStatus" runat="server" Visible="False"></asp:Label>
                                 </ItemTemplate>
@@ -455,16 +455,16 @@
                                 <ItemStyle HorizontalAlign="Center" Width="14%"></ItemStyle>
                                 <ItemStyle Wrap="False" />
                                 <EditItemTemplate>
-                                    <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"
+                                    <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" Enabled="false"
                                         CausesValidation="True" ValidationGroup="Edit"></asp:LinkButton>
                                     &nbsp;
 
-                                    <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="Cancel"
+                                    <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="Cancel"  Enabled="false"
                                         CausesValidation="false"></asp:LinkButton>
                                 </EditItemTemplate>
                                 <ItemTemplate>
                                     <asp:Label ID="lblApproved" runat="server"></asp:Label>
-                                    <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
+                                    <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False" Enabled="false"
                                         CommandArgument='<%#  Eval("LeaveDetailID") %>'>Edit</asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>

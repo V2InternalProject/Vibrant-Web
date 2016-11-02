@@ -72,7 +72,7 @@
                             </div>
                             <div class="InputDiv">
                                 <asp:DropDownList ID="DDlYear" runat="server" AutoPostBack="True" OnSelectedIndexChanged="DDlYear_SelectedIndexChanged"
-                                    CausesValidation="True">
+                                    CausesValidation="True" Enabled="false">
                                 </asp:DropDownList>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                             </asp:Label>
                         </ItemTemplate>
                         <FooterTemplate>
-                            <asp:TextBox ID="txtHolidaydate" runat="server" Height="28px" MaxLength="50" Width="100px"
+                            <asp:TextBox ID="txtHolidaydate" runat="server" Height="28px" MaxLength="50" Width="100px" Enabled="false"
                                 Text='<%# DataBinder.Eval(Container.DataItem, "HolidayDate") %>'>
                             </asp:TextBox>
                             <asp:ImageButton ImageUrl="~/images/New Design/calender-icon.png" runat="server"
@@ -140,7 +140,7 @@
                         </ItemTemplate>
                         <FooterStyle HorizontalAlign="Left" VerticalAlign="Middle"></FooterStyle>
                         <FooterTemplate>
-                            <asp:TextBox ID="txtHolidayDescription" runat="server" MaxLength="50"></asp:TextBox>
+                            <asp:TextBox ID="txtHolidayDescription" runat="server" MaxLength="50" Enabled="false"></asp:TextBox>
                         </FooterTemplate>
                         <EditItemTemplate>
                             <asp:TextBox ID="txtHolidayDescription1" runat="server" Width="90%" MaxLength="50"
@@ -158,7 +158,7 @@
                         </ItemTemplate>
                         <FooterStyle HorizontalAlign="Left" VerticalAlign="Middle"></FooterStyle>
                         <FooterTemplate>
-                            <asp:DropDownList ID="ddlHolidayLocation1" runat="server" Width="90%" MaxLength="50"></asp:DropDownList>
+                            <asp:DropDownList ID="ddlHolidayLocation1" runat="server" Width="90%" MaxLength="50" Enabled="false" ></asp:DropDownList>
                         </FooterTemplate>
                         <EditItemTemplate>
                             <asp:DropDownList ID="ddlHolidayLocation2" runat="server" Width="90%" MaxLength="50">
@@ -184,13 +184,13 @@
                     <asp:TemplateColumn HeaderText="Action">
                         <ItemStyle HorizontalAlign="Center"></ItemStyle>
                         <ItemTemplate>
-                            <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
+                            <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false" Enabled="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                         </ItemTemplate>
                         <FooterStyle HorizontalAlign="Center"></FooterStyle>
                         <FooterTemplate>
-                            <asp:LinkButton ID="btnAdd" runat="server" Text="ADD" CommandName="btnAdd"></asp:LinkButton>
+                            <asp:LinkButton ID="btnAdd" runat="server" Text="ADD" CommandName="btnAdd" Enabled="false" Visible="false"></asp:LinkButton>
                             <asp:LinkButton ID="Linkbutton1" runat="server" Text="Cancel" CommandName="btnCancel"
-                                CausesValidation="false"></asp:LinkButton>
+                                CausesValidation="false" Enabled="false" Visible="false"></asp:LinkButton>
                         </FooterTemplate>
                         <EditItemTemplate>
                             <asp:LinkButton ID="lnkbutUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>&nbsp;

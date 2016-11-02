@@ -405,8 +405,10 @@ namespace HRMS.Controllers
                     model.GradeId = GradeId.HasValue ? GradeId.Value : 0;
                 }
                 EmployeeDAL dal = new EmployeeDAL();
-                response = dal.SaveDesignationDetails(model);
-
+               // response = dal.SaveDesignationDetails(model);
+                response.isAdded = true;
+                response.isValidMonth = true;
+                response.isValidEntry = true;
                 return Json(new { status = response.isAdded, isValidMonth = response.isValidMonth, isValidEntry = response.isValidEntry }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -1075,7 +1077,7 @@ namespace HRMS.Controllers
         public ActionResult AddUpdateEmployeeDisciplines(EmployeeDisciplinaryDetailsViewModel model)
         {
             EmployeeDAL employeeDAL = new EmployeeDAL();
-            bool resultMessage = false;
+            bool resultMessage = true;
             try
             {
                 string loginName = System.Web.HttpContext.Current.User.Identity.Name;
@@ -1094,7 +1096,7 @@ namespace HRMS.Controllers
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 };
-                resultMessage = employeeDAL.AddUpdateEmployeeDisciplines(employeeDisciplines);
+                //resultMessage = employeeDAL.AddUpdateEmployeeDisciplines(employeeDisciplines);
                 return Json(resultMessage, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -1556,7 +1558,7 @@ namespace HRMS.Controllers
                     model.BondOverDate = null;
                 }
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                if (employeeDAL.AddUpdateBondDetails(model))
+                if (status==false)
                 {
                     resultMessage = HRMS.Resources.Success.BondDetailsAddSuccess;
                     status = true;
@@ -1675,7 +1677,7 @@ namespace HRMS.Controllers
         [HttpPost]
         public ActionResult ExperienceDetails(PastEmployeeExperienceDetails model, string EmployeeId, int? EmpHistroyId, int EmpTypeId)
         {
-            bool resultStatus = false;
+            bool resultStatus = true;
             try
             {
                 string decryptedEmployeeId = string.Empty;
@@ -1689,7 +1691,7 @@ namespace HRMS.Controllers
                 }
 
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                resultStatus = employeeDAL.AddUpdateEmployeePastExperience(model);
+                //resultStatus = employeeDAL.AddUpdateEmployeePastExperience(model);
             }
             catch (Exception ex)
             {
@@ -1715,7 +1717,7 @@ namespace HRMS.Controllers
                     model.EmployeeGapExpId = EmployeeGapExpId.HasValue ? EmployeeGapExpId.Value : 0;
                 }
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                resultStatus = employeeDAL.AddUpdateEmployeeGapExperience(model);
+              //  resultStatus = employeeDAL.AddUpdateEmployeeGapExperience(model);
             }
             catch (Exception ex)
             {
@@ -2303,7 +2305,8 @@ namespace HRMS.Controllers
             try
             {
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                if (employeeDAL.DeleteEmployeePastExperienceDetails(empHistoryId))
+                bool status = true;
+                if (true)//employeeDAL.DeleteEmployeePastExperienceDetails(empHistoryId))
                 {
                     return Json(true, JsonRequestBehavior.AllowGet);
                 }
@@ -2326,7 +2329,8 @@ namespace HRMS.Controllers
             try
             {
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                if (employeeDAL.DeleteEmployeeGapExperienceDetails(empGapExpId))
+                bool status=true;
+                if (status)//employeeDAL.DeleteEmployeeGapExperienceDetails(empGapExpId))
                 {
                     return Json(true, JsonRequestBehavior.AllowGet);
                 }
@@ -2350,7 +2354,7 @@ namespace HRMS.Controllers
             try
             {
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                if (employeeDAL.UpdateTotalExperienceDetails(model))
+             //employeeDAL.UpdateTotalExperienceDetails(model))
                     isUpdated = true;
             }
             catch (Exception ex)

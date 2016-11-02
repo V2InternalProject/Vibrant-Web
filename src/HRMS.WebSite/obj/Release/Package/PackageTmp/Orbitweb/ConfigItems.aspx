@@ -187,12 +187,12 @@
                                 <asp:TemplateColumn HeaderText="Action" ItemStyle-Width="23%">
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
+                                        <asp:LinkButton ID="lnkbutEdit" runat="server" Text="Edit" CommandName="Edit" CausesValidation="false" Enabled="false"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                                     </ItemTemplate>
                                     <EditItemTemplate>
-                                        <asp:LinkButton ID="lnkbutUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>&nbsp;
+                                        <asp:LinkButton ID="lnkbutUpdate" runat="server" Text="Update" CommandName="Update" Enabled="false"></asp:LinkButton>&nbsp;
 
-                                        <asp:LinkButton ID="lnkbutCancel" runat="server" Text="Cancel" CommandName="btnCancel"
+                                        <asp:LinkButton ID="lnkbutCancel" runat="server" Text="Cancel" CommandName="btnCancel" Enabled="false"
                                             CausesValidation="false"></asp:LinkButton>
                                     </EditItemTemplate>
                                 </asp:TemplateColumn>
