@@ -1,11 +1,10 @@
-﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
+﻿﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
 @{
     ViewBag.Title = "Medical Details";
     Layout = "~/Views/Shared/_PersonalLayout.cshtml";
 }
 <link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
 <script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
-
 <script src="../../Scripts/PersonalDetails/_MedicalHistory.js" type="text/javascript"></script>
 <script src="../../Scripts/Global.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -39,11 +38,11 @@
 
             // Configure the columns
             colModel: [
-                { name: "MedicalDescId", index: "MedicalDescId", hidden: true, align: "left", visible: "false",editable: false },
-                { name: "EmployeeId", index: "EmployeeId", hidden: true, align: "left",editable: false },
-                { name: "MedicalDescription", index: "MedicalDescription",  editable: false,  editrules: { required: true },align: "left", width:400 },
+                { name: "MedicalDescId", index: "MedicalDescId", hidden: true, align: "left", visible: "false" },
+                { name: "EmployeeId", index: "EmployeeId", hidden: true, align: "left" },
+                { name: "MedicalDescription", index: "MedicalDescription",  editable: true,  editrules: { required: true },align: "left", width:400 },
                 //{ name: "Year", index: "Year", align: "left" },
-                { name: "Year", index: "Year", editable: false, width: 40, required:true, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
+                { name: "Year", index: "Year", editable: true, width: 40, required:true, align: "left", editrules: { custom: true, custom_func: isYearSelected}, edittype: "select", editoptions: { value: year, dataEvents: [{ type: 'change', fn: function(e) {ChangeYear(e); } }]} },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -109,12 +108,12 @@
                 if (colName['index'] == "Delete" && '@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') && rowid != "new_row"
 					 ) {
-                   // DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                    DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
                 } else {
                     if ('@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					 ) {
-                       // EditMedicalDetails(rowData);
+                        EditMedicalDetails(rowData);
                     }
                 }
             }
@@ -127,15 +126,15 @@
 
         $("#jqMedicalTable").jqGrid('inlineNav', "#jqMedicalTablePager",
          {
-             //edit: true,
-             //editicon: "ui-icon-pencil",
-             //edittext:"Edit",
-             //add: true,
-             //addicon: "ui-icon-plus",
-             //addtext:"Add",
-             //save: true,
-             //saveicon: "ui-icon-disk",
-             //savetext:"Save",
+             edit: true,
+             editicon: "ui-icon-pencil",
+             edittext:"Edit",
+             add: true,
+             addicon: "ui-icon-plus",
+             addtext:"Add",
+             save: true,
+             saveicon: "ui-icon-disk",
+             savetext:"Save",
              cancle: true,
              cancelicon: "ui-icon-cancel",
              canceltext:"Cancel",
@@ -242,6 +241,17 @@
                  mtype: "POST"
              }
          });
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+            //$("#certificationTable").find('tr').find('td').find('img').removeAttr('style','visibility');
+        }
+        else
+        {
+            $("#jqMedicalTable").find('tr').find('td').find('img').attr('disabled','disabled');
+            $("#jqMedicalTable_iladd").css("visibility","hidden");
+            $("#jqMedicalTable_iledit").css("visibility","hidden");
+            $("#jqMedicalTable_ilsave").css("visibility","hidden");
+            $("#jqMedicalTable_ilcancel").css("visibility","hidden");
+        }
 
         $("#ddlBloodGroup").next().next().text($("#ddlBloodGroup :selected").text());
         if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeId') {
@@ -288,7 +298,7 @@
             }
         });
         $('#MedicalDetailsForm #Year').val(ID);
-         $('#' + SelectdRowID + '_Year').attr('title', yearName);
+        $('#' + SelectdRowID + '_Year').attr('title', yearName);
     }//end function
 
     function filldropdownlist() {
@@ -444,7 +454,6 @@
             </div>
         </div>
     </div>*@
-
 <section class="EmployeeContainer Container">
     <div class="FixedHeader">
         <div class="clearfix">
@@ -510,13 +519,12 @@
                     </div>
                 </div>
                 <div class="rightcol clearfix">
-                    <input type="button" id="btnSave" value="Save Blood Group" class="ButtonGray mrgnR11" style="visibility:hidden" />
+                    <input type="button" id="btnSave" value="Save Blood Group" class="ButtonGray mrgnR11" onclick="SaveRecord();" />
                     @*<input type="button" id="btnCancel" value="Reset" class="ButtonGray" onclick="restoreBloodGroup();" />*@
                 </div>
             </div>
         </div>
         <div class="mrgnT33">
-
             <div class="tablestyle3">
                 <table id="jqMedicalTable"></table>
             </div>

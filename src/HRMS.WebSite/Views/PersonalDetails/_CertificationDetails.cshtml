@@ -1,4 +1,4 @@
-﻿@model HRMS.Models.CertificationDetailsViewModel
+﻿﻿@model HRMS.Models.CertificationDetailsViewModel
 @{
     ViewBag.Title = "Certification Details";
     Layout = "~/Views/Shared/_PersonalLayout.cshtml";
@@ -32,14 +32,14 @@
                 mtype: "POST",
                 colNames: ["EmployeeCertificationID", "Employee ID", "Certification ID", "Certification Name", "", "Certification Number", "Institution", "Certificate Date", "Certification Score", "Grade", "Status", "ActionType", "ApprovalStatusFlag", ""],
                 colModel: [
-                    { name: "EmployeeCertificationID", index: "EmployeeCertificationID", editable: false, hidden: true, width: 30, align: "left" },
-                    { name: "EmployeeID", index: "EmployeeID", width: 30, hidden: true, align: "left" ,editable: false},
-                    { name: "CertificationID", index: "CertificationID", width: 30, hidden: true, align: "left",editable: false },
-                    { name: "CertificationName", index: "CertificationName", editable: false, align: "left", width: '50', editrules: { custom: true, custom_func: isCertificateSelected}, edittype: "select", editoptions: { value: certificate, dataEvents: [{ type: 'change', fn: function(e) {ChangeCertificate(e); } }]}  },
-                    { name: "CertificationNameID", index: "CertificationNameID", hidden: true, align: "left",editable: false },
-                    { name: "CertificationNo", index: "CertificationNo", editable: false, editrules: { required: true }, editoptions: { maxlength: 50}, width: 50, align: "left" },
-                    { name: "Institution", index: "Institution", editable: false, editrules: { required: true }, editoptions: { maxlength: 500}, width: 90, align: "left" },
-                    { name: "CertificationDate", index: "CertificationDate", editable: false, editrules: { required: true }, width: 40, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' },editoptions:{
+                    { name: "EmployeeCertificationID", index: "EmployeeCertificationID", editable: true, hidden: true, width: 30, align: "left" },
+                    { name: "EmployeeID", index: "EmployeeID", width: 30, hidden: true, align: "left" },
+                    { name: "CertificationID", index: "CertificationID", width: 30, hidden: true, align: "left" },
+                    { name: "CertificationName", index: "CertificationName", editable: true, align: "left", width: '50', editrules: { custom: true, custom_func: isCertificateSelected}, edittype: "select", editoptions: { value: certificate, dataEvents: [{ type: 'change', fn: function(e) {ChangeCertificate(e); } }]}  },
+                    { name: "CertificationNameID", index: "CertificationNameID", hidden: true, align: "left" },
+                    { name: "CertificationNo", index: "CertificationNo", editable: true, editrules: { required: true }, editoptions: { maxlength: 50}, width: 50, align: "left" },
+                    { name: "Institution", index: "Institution", editable: true, editrules: { required: true }, editoptions: { maxlength: 500}, width: 90, align: "left" },
+                    { name: "CertificationDate", index: "CertificationDate", editable: true, editrules: { required: true }, width: 40, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' },editoptions:{
                         readonly:true,
                         dataInit: function(element) {
                             $(element).datepicker({
@@ -51,9 +51,9 @@
                             });
                         }
                     }  },
-                    { name: "CertificationScore", index: "CertificationScore", editable: false, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
-                    { name: "CertificationGrade", index: "CertificationGrade", editable: false, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
-                    { name: "Status", index: "Status", width: 40, formatter: ShowHideMessage, align: "left" ,editable: false},
+                    { name: "CertificationScore", index: "CertificationScore", editable: true, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
+                    { name: "CertificationGrade", index: "CertificationGrade", editable: true, editrules: { required: true }, editoptions: { maxlength: 30}, width: 50, align: "left" },
+                    { name: "Status", index: "Status", width: 40, formatter: ShowHideMessage, align: "left" },
                     { name: "ActionType", index: "ActionType", hidden: true, width: 100, align: "left" },
                     { name: "ApprovalStatusFlag", index: "ApprovalStatusFlag", hidden: true, width: 100, align: "left" },
                     {
@@ -61,7 +61,6 @@
                         index: "Delete",
                         width: 22,
                         align: "center",
-                        editable:false,
                         formatter: function () {
                             if ($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' && $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive' && ('@Model.EmpStatusMasterID' != 2)) {
                                 return '<img src="../../Images/New Design/delete-icon.png" width="21px" height="25px">';
@@ -121,7 +120,7 @@
                                     if ((rowData['Status'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['Status'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
                                     (rowData['Status'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['Status'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
                                     (rowData['ActionType'] == "" && rowData['Status'] == "")) {
-                                       // DeleteCertificationDetail(selectedId, '@ViewBag.CertificationEmployeeID');
+                                        DeleteCertificationDetail(selectedId, '@ViewBag.CertificationEmployeeID');
                                     }
                                 }
                             }
@@ -148,15 +147,15 @@
 
         $("#certificationTable").jqGrid('inlineNav', "#certificationTablePager",
  {
-     //edit: true,
-     //editicon: "ui-icon-pencil",
-     //edittext: "Edit",
-     //add: true,
-     //addicon: "ui-icon-plus",
-     //addtext: "Add",
-     //save: true,
-     //saveicon: "ui-icon-disk",
-     //savetext: "Save",
+     edit: true,
+     editicon: "ui-icon-pencil",
+     edittext: "Edit",
+     add: true,
+     addicon: "ui-icon-plus",
+     addtext: "Add",
+     save: true,
+     saveicon: "ui-icon-disk",
+     savetext: "Save",
      cancle: true,
      cancelicon: "ui-icon-cancel",
      canceltext: "Cancel",
@@ -165,7 +164,7 @@
          addRowParams: {
              oneditfunc: function (rowid) {
                  isCertificationRowInAddEditMode = true;
-             SelectedCertificationRowId = rowid;
+                 SelectedCertificationRowId = rowid;
              }
          }
      },
@@ -231,11 +230,22 @@
          mtype: "POST"
      }
  });
-    if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') || '@Model.EmpStatusMasterID' == 2) {
-        //$("#btnAddCertificationDetails").hide();
-        $("#certificationTablePager_left").css("visibility","hidden");
-    }
- });//end ready
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+            //$("#certificationTable").find('tr').find('td').find('img').removeAttr('style','visibility');
+        }
+        else
+        {
+            $("#certificationTable").find('tr').find('td').find('img').attr('disabled','disabled');
+            $("#certificationTable_iladd").css("visibility","hidden");
+            $("#certificationTable_iledit").css("visibility","hidden");
+            $("#certificationTable_ilsave").css("visibility","hidden");
+            $("#certificationTable_ilcancel").css("visibility","hidden");
+        }
+        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeID') || '@Model.EmpStatusMasterID' == 2) {
+            //$("#btnAddCertificationDetails").hide();
+            $("#certificationTablePager_left").css("visibility","hidden");
+        }
+    });//end ready
 
     if ('@ViewBag.SendMail' == 'CanSend') {
         $('#btnCertSendEmail').removeAttr('disabled');
@@ -263,16 +273,16 @@
     }
 
     function ChangeCertificate(e) {
-    var certificateName = e.target[e.target.selectedIndex].text;
-    var ID = 0;
-    $.each(stringCertificateList, function (index, value) {
-        if (value.CertificationName == certificateName) {
-            ID = value.CertificationID;
-        }
-    });
-    $('#CertificationDetailsForm #SelectedCertificationID').val(ID);
-    $('#' + SelectedCertificationRowId + '_CertificationName').attr('title', certificateName);
-}//end function
+        var certificateName = e.target[e.target.selectedIndex].text;
+        var ID = 0;
+        $.each(stringCertificateList, function (index, value) {
+            if (value.CertificationName == certificateName) {
+                ID = value.CertificationID;
+            }
+        });
+        $('#CertificationDetailsForm #SelectedCertificationID').val(ID);
+        $('#' + SelectedCertificationRowId + '_CertificationName').attr('title', certificateName);
+    }//end function
 </script>
 @*<h3 class="mrgnT15">
         Certification Details</h3>
@@ -300,42 +310,57 @@
     <div class="FixedHeader">
         <div class="clearfix">
             <h2 class="MainHeading">
-                Personal Details</h2>
+                Personal Details
+            </h2>
         </div>
         <nav class="sub-menu-colored">
             @if (Model.UserRole == "RMG" && Model.EmployeeID != ViewBag.loggedinEmployeeID)
             {
                 <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Personal</a>
+                    Personal
+                </a>
                 <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Education</a>
+                    Education
+                </a>
                 <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })" class="selected">
-                    Certification</a>
+                    Certification
+                </a>
                 <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Skill</a>
+                    Skill
+                </a>
                 <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Contact</a>
+                    Contact
+                </a>
             }
             else
             {
                 <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Personal</a>
+                    Personal
+                </a>
                 <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Dependent</a>
+                    Dependent
+                </a>
                 <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Declaration</a>
+                    Declaration
+                </a>
                 <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Residence</a>
+                    Residence
+                </a>
                 <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Contact</a>
+                    Contact
+                </a>
                 <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Education</a>
+                    Education
+                </a>
                 <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })" class="selected">
-                    Certification</a>
+                    Certification
+                </a>
                 <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Skill</a>
+                    Skill
+                </a>
                 <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.CertificationEmployeeID })">
-                    Medical History</a>
+                    Medical History
+                </a>
             }
         </nav>
     </div>
@@ -406,51 +431,50 @@
                     </div>
                 </div>
             </div>*@ @*</div>*@ @*<div class="fill-dtls clearfix">
-                <input type="button" value="Save" class="ButtonGray" />
-            </div>*@
-        <div class="mrgnT33">
-            <div class="tablestyle3">
-                <table id="certificationTable" class="scroll">
-                </table>
-                <div id="certificationTablePager" />
+                    <input type="button" value="Save" class="ButtonGray" />
+                </div>*@
+            <div class="mrgnT33">
+                <div class="tablestyle3">
+                    <table id="certificationTable" class="scroll"></table>
+                    <div id="certificationTablePager" />
+                </div>
             </div>
         </div>
+        <div class="ButtonContainer1">
+            <input type="button" value="Send Approval Mail" id="btnCertSendEmail" disabled="disabled"
+                   class="ButtonGray" onclick=" sendMail()" />
+        </div>
+    </section>
+    <div id="CertificateRequiredDialog" title="Certification Details" style="display: none">
+        <p>
+            Please select value of Certification Name.
+        </p>
     </div>
-    <div class="ButtonContainer1">
-        <input type="button" value="Send Approval Mail" id="btnCertSendEmail" disabled="disabled"
-            class="ButtonGray" onclick=" sendMail()" />
+    <div id="AddCertificationSuccessMessege" title="Certification details" style="display: none;">
+        <p>
+            Certification details have been saved.
+        </p>
     </div>
-</section>
-<div id="CertificateRequiredDialog" title="Certification Details" style="display: none">
-    <p>
-        Please select value of Certification Name.
-    </p>
-</div>
-<div id="AddCertificationSuccessMessege" title="Certification details" style="display: none;">
-    <p>
-        Certification details have been saved.
-    </p>
-</div>
-<div id="AddCertificationErrorMessege" title="Certification details" style="display: none;">
-    <p>
-        Unable to add record.
-    </p>
-</div>
-<div id="DeleteConfirmation" title="Certification details" style="display: none;">
-    <p>
-        Record has been deleted.
-    </p>
-</div>
-<div id="DeleteConfirmationDialog" title="Certification details" style="display: none">
-    <p>
-        Are you sure you want to delete the record?
-    </p>
-</div>
-<div id="mailError" title="Mail Error" style="display: none">
-    <p>
-        Mail Sending Failed.
-    </p>
-</div>
-<div id="failedRecipient" title="Sending Failed" style="display: none">
-    <center><span>Could not send mail to </span><span id="span_failedRecipient"></span></center>
-</div>
+    <div id="AddCertificationErrorMessege" title="Certification details" style="display: none;">
+        <p>
+            Unable to add record.
+        </p>
+    </div>
+    <div id="DeleteConfirmation" title="Certification details" style="display: none;">
+        <p>
+            Record has been deleted.
+        </p>
+    </div>
+    <div id="DeleteConfirmationDialog" title="Certification details" style="display: none">
+        <p>
+            Are you sure you want to delete the record?
+        </p>
+    </div>
+    <div id="mailError" title="Mail Error" style="display: none">
+        <p>
+            Mail Sending Failed.
+        </p>
+    </div>
+    <div id="failedRecipient" title="Sending Failed" style="display: none">
+        <center><span>Could not send mail to </span><span id="span_failedRecipient"></span></center>
+    </div>
