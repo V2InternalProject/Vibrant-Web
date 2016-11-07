@@ -1,4 +1,4 @@
-﻿@model HRMS.Models.DesignationDetailsViewModel
+﻿﻿@model HRMS.Models.DesignationDetailsViewModel
 @{
     ViewBag.Title = "Designation Details";
     Layout = "~/Views/Shared/_PersonalLayout.cshtml";
@@ -73,16 +73,16 @@
             // Configure the columns
             colModel: [
 
-                { name: "Year", index: "Year", align: "left", width: 60, editable: false, editrules: { required: true ,custom:true ,custom_func: IsYearSelected }, edittype: "select", editoptions: { value: YearsList, dataEvents: [{ type: 'change', fn: function(e) {getYearsList(e); } }]} },
-                { name: "Month", index: "Month", align: "left", width: 80, editable: false, editrules: { required: true ,custom:true, custom_func: IsMonthSelected }, edittype: "select", editoptions: { value: MonthsList, dataEvents: [{ type: 'change', fn: function(e) {getMonthsList(e); } }]} },
-                { name: "Grade", index: "Grade", align: "left", width: 45, editable: false, editrules: { required: true }, edittype: "select", editoptions: { value: GradesList, dataEvents: [{ type: 'change', fn: function(e) {getGradesList(e); } }]} },
-                { name: "GradeId", index: "GradeId", hidden: true, width: 100, align: "left", editable: false },
-                { name: "Level", index: "Level", align: "left", width: 60, editable: false, editrules: {}, edittype: "select", editoptions: { value: LevelsList, dataEvents: [{ type: 'change', fn: function(e) {getLevelsList(e); } }]} },
-                { name: "Designation", index: "Designation", width: 150, align: "left", editable: false ,editrules: {required:true } , editoptions: { dataEvents: [{type: 'change' , fn: function(e) {CheckJoiningDesignation(e); } }]} },
-                { name: "RoleDescription", index: "RoleDescription", width: 150, align: "left", editable: false,editrules: {} },
-                { name: "JoiningDesignation", index: "JoiningDesignation", width: 200, align: "left", editable: false ,editrules: {required: true } ,editoptions: { dataEvents: [{type: 'change' , fn: function(e) { CheckJoiningDesignation(e); } }] }},
-                { name: "UniqueId", index: "UniqueId", hidden: true, width: 100, align: "left",editable: false },
-                { name: "isDefaultRecord", index: "isDefaultRecord", hidden: true, width: 100, align: "left" ,editable: false },
+                { name: "Year", index: "Year", align: "left", width: 60, editable: true, editrules: { required: true ,custom:true ,custom_func: IsYearSelected }, edittype: "select", editoptions: { value: YearsList, dataEvents: [{ type: 'change', fn: function(e) {getYearsList(e); } }]} },
+                { name: "Month", index: "Month", align: "left", width: 80, editable: true, editrules: { required: true ,custom:true, custom_func: IsMonthSelected }, edittype: "select", editoptions: { value: MonthsList, dataEvents: [{ type: 'change', fn: function(e) {getMonthsList(e); } }]} },
+                { name: "Grade", index: "Grade", align: "left", width: 45, editable: true, editrules: { required: true }, edittype: "select", editoptions: { value: GradesList, dataEvents: [{ type: 'change', fn: function(e) {getGradesList(e); } }]} },
+                { name: "GradeId", index: "GradeId", hidden: true, width: 100, align: "left", editable: true },
+                { name: "Level", index: "Level", align: "left", width: 60, editable: true, editrules: {}, edittype: "select", editoptions: { value: LevelsList, dataEvents: [{ type: 'change', fn: function(e) {getLevelsList(e); } }]} },
+                { name: "Designation", index: "Designation", width: 150, align: "left", editable: true ,editrules: {required:true } , editoptions: { dataEvents: [{type: 'change' , fn: function(e) {CheckJoiningDesignation(e); } }]} },
+                { name: "RoleDescription", index: "RoleDescription", width: 150, align: "left", editable: true,editrules: {} },
+                { name: "JoiningDesignation", index: "JoiningDesignation", width: 200, align: "left", editable: true ,editrules: {required: true } ,editoptions: { dataEvents: [{type: 'change' , fn: function(e) { CheckJoiningDesignation(e); } }] }},
+                { name: "UniqueId", index: "UniqueId", hidden: true, width: 100, align: "left",editable: true },
+                { name: "isDefaultRecord", index: "isDefaultRecord", hidden: true, width: 100, align: "left" },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -161,10 +161,10 @@
                     var selectedEmployeeId = employeeId;
                     $('#Month').val(rowData['Month']);
                     if (iCol == 10 && ('@Model.EmpStatusMasterID' != 2)  && rowid != "new_row") {
-                       // DeleteDesignationDetail(selectedDesignationId, isDefaultRecord, selectedEmployeeId);
+                        DeleteDesignationDetail(selectedDesignationId, isDefaultRecord, selectedEmployeeId);
                     } else {
                         if ('@Model.EmpStatusMasterID' != 2) {
-                            //EditDesignationDetails(rowData);
+                            EditDesignationDetails(rowData);
                         }
                     }
                 }
@@ -178,16 +178,16 @@
 
         $("#jqDesignationTable").jqGrid('inlineNav', "#jqTableDesignationPager",
        {
-           //edit: true,
-           //editicon: "ui-icon-pencil",
-           //add: true,
-           //addicon: "ui-icon-plus",
-           //save: true,
-           //saveicon: "ui-icon-disk",
-           //cancle: true,
-           //cancelicon: "ui-icon-cancel",
-           //addtext: "Add",
-           //savetext: "Save",
+           edit: true,
+           editicon: "ui-icon-pencil",
+           add: true,
+           addicon: "ui-icon-plus",
+           save: true,
+           saveicon: "ui-icon-disk",
+           cancle: true,
+           cancelicon: "ui-icon-cancel",
+           addtext: "Add",
+           savetext: "Save",
            edittext: "Edit",
            canceltext: "Cancel",
            addParams: {
