@@ -754,7 +754,7 @@ namespace HRMS.Controllers
                 travelDetailsViewModel.checkSpouseDetails = employeeDAL.IsSpouseDetailsPresent(Convert.ToInt32(decryptedEmployeeId));
 
                 if (travelDetailsViewModel.PersonType == TravelDetailsPerson.Own)
-                    return PartialView("_PersonalTravelDetails ", travelDetailsViewModel);
+                    return PartialView("_PersonalTravelDetails", travelDetailsViewModel);
                 else
                 {
                     travelDetailsViewModel.VisaDetailsModel.EmpStatusMasterID = EmpStatusMasterID;

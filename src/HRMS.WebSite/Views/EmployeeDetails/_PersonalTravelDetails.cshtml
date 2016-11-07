@@ -69,6 +69,15 @@
 
             //SetPageTitle('Own Travel Details');
 
+            if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+            }
+            else
+            {
+                $('#btnSave').hide();
+                $('#btnSaveVisaTravelDetails').hide();
+                jQuery('#btnAddVisaDetails').hide();
+                $("#gbox_jqPersonTravelTable").find('input,select').attr("disabled", true);
+            }
             if ('@Model.EmpStatusMasterID' == 2) {
                 jQuery('form#frmAddOwnTravelDetails').find('input,select').attr('disabled', true);
             }

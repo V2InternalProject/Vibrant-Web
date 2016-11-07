@@ -42,7 +42,15 @@
             $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
             $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
         });
-
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+        }
+        else {
+            $('#btnSaveSpouseTravelDetails').hide();
+            $('#btnSaveSpouseVisaTravelDetails').hide();
+            $('#btnSaveVisaTravelDetails').hide();
+            jQuery('#btnAddVisaDetails').hide();
+            $("#gbox_jqPersonTravelTable").find('input,select').attr("disabled", true);
+        }
         $("#spouseVisa").bind("change", function (event) {
             $("#FileSpouseVisaField").val($(this).val());
             $('#spouseVisa').attr('title', $(this).val());
