@@ -193,7 +193,10 @@
                             return false;
                         }
                         else {
-                            DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                            if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2))
+                            {
+                                DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                            }
                         }
                     }
                 } @*else {

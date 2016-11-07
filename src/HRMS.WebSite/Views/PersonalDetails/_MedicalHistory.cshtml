@@ -108,7 +108,10 @@
                 if (colName['index'] == "Delete" && '@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') && rowid != "new_row"
 					 ) {
-                    DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                    if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2))
+                    {
+                        DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                    }
                 } else {
                     if ('@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
@@ -247,6 +250,8 @@
         else
         {
             $("#jqMedicalTable").find('tr').find('td').find('img').attr('disabled','disabled');
+            $("#btnSave").attr('disabled','disabled');
+            $("#btnSave").css("visibility","hidden");
             $("#jqMedicalTable_iladd").css("visibility","hidden");
             $("#jqMedicalTable_iledit").css("visibility","hidden");
             $("#jqMedicalTable_ilsave").css("visibility","hidden");

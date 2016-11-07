@@ -83,7 +83,7 @@
                     align: "center",
                     formatter: function () {
                         if ((($('#UserRole').val() != '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() != '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2)) {
-                            return '<img src="../../Images/New Design/delete-icon.png" style="visibility: hidden;" width="21px" height="25px">';
+                            return '<img src="../../Images/New Design/delete-icon.png"  width="21px" height="25px">';
                         } else {
                             return '';
                         }
@@ -144,7 +144,10 @@
                             if ((rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GApproved_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridHRApprovalStatusMessages.GRejected_3') ||
                                 (rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GApproved_RMG_2' || rowData['ApprovalOrRejectionStatus'] == '@HRMS.Models.GridRMGApprovalStatusMessages.GRejected_RMG_3') ||
                                 (rowData['ActionType'] == "" && rowData['ApprovalOrRejectionStatus'] == "")) {
-                                DeleteQualificationDetail(selectedQualId, '@ViewBag.qualificationEmployeeID');
+                                if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2))
+                                {
+                                    DeleteQualificationDetail(selectedQualId, '@ViewBag.qualificationEmployeeID');
+                                }
                             }
                         }
                     } else {

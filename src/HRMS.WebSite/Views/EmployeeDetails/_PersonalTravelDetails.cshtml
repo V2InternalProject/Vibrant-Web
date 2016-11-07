@@ -181,7 +181,7 @@
                     var cm = $(this).jqGrid("getGridParam", "colModel");
                     var colName = cm[iCol];
                     if (colName['index'] == "Delete") {
-                        if ('@ViewBag.UserRole' == '@HRMS.Models.UserRoles.HRAdmin' || '@Model.EmployeeId' == '@ViewBag.loggedInEmployeeId') {
+                        if ('@ViewBag.UserRole' == '@HRMS.Models.UserRoles.HRAdmin') {
                             DeletePassportDocument(DocumentID, '@Model.PersonType');
                         }
                         else {

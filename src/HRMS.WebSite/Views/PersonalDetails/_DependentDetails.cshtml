@@ -112,9 +112,7 @@
                     $('#DependantsDetailsForm #uniqueID').val(rowData['uniqueID']);
                     var colName = columnName[iCol];
                     if (colName['index'] == "Delete" && rowid != "new_row") {
-                        if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
-                        || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId'))
-                         && ('@Model.EmpStatusMasterID' != 2)) {
+                        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2)) {
                             DeleteDependantDetail(selectedDependantId, '@ViewBag.DependentEmployeeId');
                         }
                     }
@@ -243,6 +241,7 @@
         }
         else
         {
+            $(".ui-pg-div").css("visibility","hidden");
             $("#dependantTable_iladd").css("visibility","hidden");
             $("#dependantTable_iledit").css("visibility","hidden");
             $("#dependantTable_ilsave").css("visibility","hidden");
