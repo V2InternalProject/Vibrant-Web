@@ -525,8 +525,8 @@
                     </div>
                     <div class="fill-dtls clearfix">
                         <asp:Button ID="btnSubmit" runat="server" Text="Submit" ValidationGroup="Add" CausesValidation="True"
-                            class="ButtonGray"></asp:Button>
-                        <asp:Button ID="btnReset" runat="server" Text="Reset" CausesValidation="False" class="ButtonGray"></asp:Button>
+                            class="ButtonGray" Visible="false"></asp:Button>
+                        <asp:Button ID="btnReset" runat="server" Text="Reset" CausesValidation="False" class="ButtonGray" Visible="false"></asp:Button>
                     </div>
                     <div>
                         <asp:TextBox ID="txtUpdateCurrentAllocation" hidden="true" runat="server" Text="<%$appSettings:UpdateCurrentAllocation %>" />
