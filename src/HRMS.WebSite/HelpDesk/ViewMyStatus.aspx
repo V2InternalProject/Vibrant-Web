@@ -99,14 +99,14 @@
                     <PagerStyle CssClass="gridPager" HorizontalAlign="Right" Mode="NumericPages" />
                     <Columns>
                         <asp:TemplateColumn HeaderStyle-Width="10%" HeaderText="Report Issue ID">
-                            <%--<ItemTemplate>
+                            <ItemTemplate>
                                 <asp:LinkButton ID="lBtnReportIssueID" runat="server" CommandName="viewDetails" Text='<%#DataBinder.Eval(Container.DataItem, "ReportIssueID")%>'>
                                 </asp:LinkButton>
-                            </ItemTemplate>--%>
-                            <ItemTemplate>
+                            </ItemTemplate>
+                            <%--<ItemTemplate>
                                 <asp:label ID="lBtnReportIssueID" runat="server" Text='<%#DataBinder.Eval(Container.DataItem, "ReportIssueID")%>'>
                                 </asp:label>
-                            </ItemTemplate>
+                            </ItemTemplate>--%>
                             <HeaderStyle Width="10%" />
                         </asp:TemplateColumn>
                         <asp:TemplateColumn HeaderStyle-Width="15%" HeaderText="Report Issue Date">
@@ -445,9 +445,9 @@
                 </asp:DataGrid>
                 <div class="ButtonContainer1 clearfix">
                     <asp:Button ID="btnAddComments" OnClick="btnAddComments_Click" runat="server" CssClass="ButtonGray mrgnR11 hideOnAdd"
-                        Text="Add Comments" Visible="false"></asp:Button>
+                        Text="Add Comments" ></asp:Button>
                     <asp:Button ID="btnUpload" runat="server" CssClass="ButtonGray" Text="Upload File"
-                        OnClick="btnUpload_Click"  Visible="false"/>
+                        OnClick="btnUpload_Click"  />
                 </div>
             </asp:Panel>
             <div>
@@ -467,11 +467,11 @@
                 </div>
                 <div class="ButtonContainer1 clearfix">
                     <asp:Button ID="btnSaveComments" runat="server" CssClass="ButtonGray mrgnR11" Text="Save Comments"
-                        OnClick="btnSaveComments_Click" Visible="false"></asp:Button>
+                        OnClick="btnSaveComments_Click"></asp:Button>
                     <asp:Button ID="btnCloseIssue" runat="server" CssClass="ButtonGray mrgnR11" Text="Close Issue"
-                        OnClick="btnCloseIssue_Click" Visible="false"></asp:Button>
+                        OnClick="btnCloseIssue_Click" ></asp:Button>
                     <asp:Button ID="btnReOpenIssue" OnClick="btnReOpenIssue_Click" runat="server" CssClass="ButtonGray"
-                        Text="Reopen Issue" Visible="false"></asp:Button>
+                        Text="Reopen Issue"></asp:Button>
                 </div>
                 <div>
                     <input id="txtMaxLimit" type="hidden" runat="server">
