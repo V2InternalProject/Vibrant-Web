@@ -831,7 +831,7 @@
                                                         </div>
             }
         </div>
-        @if (Model.UserRole == "HR Admin")
+        @if ((Model.UserRole == "HR Admin")||(Model.UserRole=="RMG")) 
         {
             <div class="ButtonContainer1">
                 <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" />
