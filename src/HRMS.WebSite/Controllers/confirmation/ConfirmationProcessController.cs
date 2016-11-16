@@ -1957,7 +1957,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(22);
+            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(00);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -1972,7 +1972,7 @@ namespace HRMS.Controllers
         public void TimerAction(object e)
         {
             // do some work
-            //AutoSendMail();
+            AutoSendMail();
             // now, call the set timer method to reset its next call time
             SetTimerValue();
         }
@@ -2052,7 +2052,7 @@ namespace HRMS.Controllers
                 myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
                 myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 myMailClient.Send(mail);
-                mail.Dispose();
+                // mail.Dispose();
             }
 
             //Befor Probation Review date
@@ -2074,6 +2074,7 @@ namespace HRMS.Controllers
 
             for (int i = 0; i < valuesBeforeProbation.Count; i++)
             {
+                SmtpClient smtpClient = new SmtpClient();
                 mail.CC.Add(valuesBeforeProbation[i].Item2);
                 mail.To.Add(valuesBeforeProbation[i].Item4);
                 mail.From = new MailAddress(valuesBeforeProbation[i].Item2, "HR Admin");
@@ -2095,13 +2096,16 @@ namespace HRMS.Controllers
                 }
                 mail.Subject = model.Mail.Subject;
                 mail.Body = model.Mail.Message;
-                mail.Priority = MailPriority.High;
-                SmtpClient myMailClient = new SmtpClient();
-                myMailClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                myMailClient.Send(mail);
-                mail.Dispose();
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                smtpClient.Send(mail);
+                // mail.Dispose();
             }
         }
 
