@@ -2083,28 +2083,58 @@ namespace HRMS.Controllers
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
                 EmployeeDAL employeeDAL = new EmployeeDAL();
                 model.Mail = new TravelMailTemplate();
-                int templateId = 79;
-                List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
-                foreach (var emailTemplate in template)
+                DateTime DT = new DateTime();
+                DT = DateTime.Now;
+                if (valuesBeforeProbation[i].Item5.ToShortDateString() == DT.ToString("MM/dd/yyyy"))
                 {
-                    model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
-                    model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
-                    model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
-                    model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
-                    model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
-                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    int templateId = 96;
+                    List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
+                    foreach (var emailTemplate in template)
+                    {
+                        model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
+                        model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
+                        model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
+                        model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    }
+                    mail.Subject = model.Mail.Subject;
+                    mail.Body = model.Mail.Message;
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.EnableSsl = true;
+                    smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                    //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                    string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                    string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                    smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                    smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                    smtpClient.Send(mail);
                 }
-                mail.Subject = model.Mail.Subject;
-                mail.Body = model.Mail.Message;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.EnableSsl = true;
-                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
-                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
-                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
-                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
-                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                smtpClient.Send(mail);
+                else
+                {
+                    int templateId1 = 79;
+                    List<EmployeeMailTemplate> template1 = Commondal.GetEmailTemplate(templateId1);
+                    foreach (var emailTemplate in template1)
+                    {
+                        model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
+                        model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
+                        model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
+                        model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    }
+                    mail.Subject = model.Mail.Subject;
+                    mail.Body = model.Mail.Message;
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.EnableSsl = true;
+                    smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                    //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                    string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                    string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                    smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                    smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                    smtpClient.Send(mail);
+                }
                 // mail.Dispose();
             }
         }
