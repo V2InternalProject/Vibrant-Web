@@ -1354,15 +1354,18 @@ namespace HRMS.Controllers
                     model.Mail.Message = model.Mail.Message.Replace("##allocation end date##", values[i].Item3);
                     model.Mail.Message = model.Mail.Message.Replace("##logged in user##", System.Configuration.ConfigurationManager.AppSettings["RMGName"].ToString());
                 }
+                SmtpClient smtpClient = new SmtpClient();
                 mail.Subject = model.Mail.Subject;
                 mail.Body = model.Mail.Message;
-                mail.Priority = MailPriority.High;
-                SmtpClient myMailClient = new SmtpClient();
-                myMailClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                myMailClient.Send(mail);
-                mail.Dispose();
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                smtpClient.Send(mail);
             }
         }
 

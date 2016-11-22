@@ -56,7 +56,7 @@ namespace HRMS
 
             //Resource Allocation Auto mail
             var resource = new ResourceController();
-            // resource.SetTimerValue();
+            resource.SetTimerValue();
             var travel = new TravelController();
             travel.SetTimerValue();
 

@@ -77,6 +77,34 @@ namespace HRMS.DAL
                 throw ex;
             }
         }
+        public List<PMSProjectDetailsViewModel> ProjectReviewerDetailsforEmail(int ProjectID)
+        {
+            try
+            {
+                List<PMSProjectDetailsViewModel> ProjectReviewerDetails = new List<PMSProjectDetailsViewModel>();
+
+                var ProjectReviewerDetail = dbContext.GetProjectReviewerDetails_sp(ProjectID);
+                //if (ProjectReviewerDetail.Count() > 0)
+                //{
+                ProjectReviewerDetails = (from reviewerdetails in ProjectReviewerDetail
+                                          select new PMSProjectDetailsViewModel
+                                          {
+                                              ProjectReviewerId = reviewerdetails.ProjectReviewerId,
+                                              ProjectID = reviewerdetails.ProjectId,
+                                              EmployeeId = reviewerdetails.EmployeeId,
+                                              EmployeeName = reviewerdetails.EmployeeName,
+                                              PMSProjectStartDate = reviewerdetails.FromDate,
+                                              PMSProjectEndDate = reviewerdetails.ToDate,
+                                              RoleDescription = reviewerdetails.RoleDescription
+                                          }).ToList();
+                //}
+                return ProjectReviewerDetails.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public List<RevisionList> GetApprooveRevisionProjectDetails(int? ProjectID)
         {

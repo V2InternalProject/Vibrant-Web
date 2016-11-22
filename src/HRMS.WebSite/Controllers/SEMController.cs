@@ -2840,7 +2840,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(11).AddMinutes(05);
+            DateTime requiredTime = DateTime.Today.AddHours(11).AddMinutes(00);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -2874,12 +2874,11 @@ namespace HRMS.Controllers
             string constring = GetADOConnectionString();
             SqlConnection con = new SqlConnection(constring);
             DateTime today = DateTime.Today;
-
             DateTime NightyDaysAfter = today.AddDays(-90);
             DateTime SixtyDaysAfter = today.AddDays(-60);
             DateTime ThirtyDaysAfter = today.AddDays(-30);
-
-            string records = "Select * from Tbl_PM_Project where ActualEndDate = '" + today + "' OR ActualEndDate = '" + NightyDaysAfter + "' OR ActualEndDate = '" + SixtyDaysAfter + "' OR ActualEndDate = '" + ThirtyDaysAfter + "'";
+            DateTime threeedaysBefore = today.AddDays(3);
+            string records = "Select * from Tbl_PM_Project where ActualEndDate = '" + threeedaysBefore + "' OR ActualEndDate = '" + today + "' OR ActualEndDate = '" + NightyDaysAfter + "' OR ActualEndDate = '" + SixtyDaysAfter + "' OR ActualEndDate = '" + ThirtyDaysAfter + "'";
 
             con.Open();
             SqlDataAdapter da = new SqlDataAdapter(records, con);
@@ -2897,7 +2896,7 @@ namespace HRMS.Controllers
             DataSet dsProjectApproversEmail = new DataSet();
             foreach (var item in ProjectApprovers)
             {
-                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "'";
+                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
                 ProjectApproversEmail = new SqlDataAdapter(EmployeeRecords, con);
                 ProjectApproversEmail.Fill(dsProjectApproversEmail);
             }
@@ -2906,20 +2905,13 @@ namespace HRMS.Controllers
             DataSet dsRMGsEmail = new DataSet();
             foreach (var item in RMGs)
             {
-                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "'";
+                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
                 RMGsEmail = new SqlDataAdapter(EmployeeRecords, con);
                 RMGsEmail.Fill(dsRMGsEmail);
             }
 
             SqlDataAdapter ManagersEmail = new SqlDataAdapter();
             DataSet dsManagersEmail = new DataSet();
-            foreach (var item in Managers)
-            {
-                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "'";
-                ManagersEmail = new SqlDataAdapter(EmployeeRecords, con);
-                ManagersEmail.Fill(dsManagersEmail);
-            }
-
             var values = new List<Tuple<int, string, string>>();
 
             foreach (DataTable t in ds.Tables)
@@ -2933,11 +2925,6 @@ namespace HRMS.Controllers
                     {
                         EndDate = row["ActualEndDate"].ToString();
                     }
-                    //DateTime? ActualEndDate = null;
-                    //if (EndDate != "")
-                    //{
-                    //    ActualEndDate = Convert.ToDateTime(EndDate);
-                    //}
                     int ProjectId = Convert.ToInt32(projectIds);
                     values.Add(new Tuple<int, string, string>(ProjectId, ProjName, EndDate));
                 }
@@ -2981,7 +2968,7 @@ namespace HRMS.Controllers
                 MailMessage mail = new MailMessage();
                 foreach (var item in ManagerEmaildsList)
                 {
-                    mail.To.Add(item);
+                    // mail.To.Add(item);
                 }
                 string Email = string.Empty;
                 foreach (var item in ApproverEmaildsList)
@@ -2998,12 +2985,59 @@ namespace HRMS.Controllers
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
+
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                int employeeID = employeeDAL.GetEmployeeID(Membership.GetUser().UserName);
-                HRMS_tbl_PM_Employee fromEmployeeDetails = employeeDAL.GetEmployeeDetails(employeeID);
-                string LoggesInUser = null;
-                if (fromEmployeeDetails != null)
-                    LoggesInUser = fromEmployeeDetails.UserName;
+                //int employeeID = employeeDAL.GetEmployeeID(Membership.GetUser().UserName);
+                //HRMS_tbl_PM_Employee fromEmployeeDetails = employeeDAL.GetEmployeeDetails(employeeID);
+                SemDAL dal = new SemDAL();
+                List<PMSProjectDetailsViewModel> projectDetails = new List<PMSProjectDetailsViewModel>();
+                //int totalCount, page, rows;
+                projectDetails = dal.ProjectReviewerDetailsforEmail(values[i].Item1);
+                if (projectDetails == null)
+                {
+                }
+                foreach (var k in projectDetails)
+                {
+                    tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(k.EmployeeId);
+                    HRMS_tbl_PM_Employee fromEmployeeDetailsEmail = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+                    if (fromEmployeeDetailsEmail == null)
+                    {
+
+                    }
+                    else
+                    {
+                        mail.To.Add(fromEmployeeDetailsEmail.EmailID);
+                    }
+                }
+
+                string EmployeeRecords = "Select EmployeeID from tbl_PM_ProjectEmployeeRole where ProjectID = '" + values[i].Item1 + "' AND Responsibility = '" + "Project Manager" + "'";
+                ManagersEmail = new SqlDataAdapter(EmployeeRecords, con);
+                ManagersEmail.Fill(dsManagersEmail);
+                foreach (DataTable t in dsManagersEmail.Tables)
+                {
+                    foreach (DataRow row in t.Rows)
+                    {
+                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeID"]));
+                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmail = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+                        if (fromEmployeeDetailsEmail == null)
+                        {
+
+                        }
+                        else
+                        {
+                            ManagerEmaildsList.Add(fromEmployeeDetailsEmail.EmailID);
+                        }
+
+                    }
+                }
+                foreach (var item in ManagerEmaildsList)
+                {
+                    mail.To.Add(item);
+                }
+                //  int employeecode= employeeDAL.GetEmployeeDetails(projectDetai)
+                //string LoggesInUser = null;
+                //if (fromEmployeeDetails != null)
+                //    LoggesInUser = fromEmployeeDetails.UserName;
                 model.Mail = new TravelMailTemplate();
                 int templateId = 62;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
@@ -3013,17 +3047,20 @@ namespace HRMS.Controllers
                     model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
                     model.Mail.Message = model.Mail.Message.Replace("##project name##", values[i].Item2);
                     model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (values[i].Item3).ToString());
-                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", LoggesInUser);
+                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "RMG");
                 }
+                SmtpClient smtpClient = new SmtpClient();
                 mail.Subject = model.Mail.Subject;
                 mail.Body = model.Mail.Message;
-                mail.Priority = MailPriority.High;
-                SmtpClient myMailClient = new SmtpClient();
-                myMailClient.Host = "webmail.in.v2solutions.com";
-                myMailClient.Port = 587;
-                myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                myMailClient.Send(mail);
-                mail.Dispose();
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                smtpClient.Send(mail);
             }
             con.Close();
         }
