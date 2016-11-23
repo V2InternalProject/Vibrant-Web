@@ -2840,7 +2840,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(11).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(00);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -2985,13 +2985,9 @@ namespace HRMS.Controllers
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-
                 EmployeeDAL employeeDAL = new EmployeeDAL();
-                //int employeeID = employeeDAL.GetEmployeeID(Membership.GetUser().UserName);
-                //HRMS_tbl_PM_Employee fromEmployeeDetails = employeeDAL.GetEmployeeDetails(employeeID);
                 SemDAL dal = new SemDAL();
                 List<PMSProjectDetailsViewModel> projectDetails = new List<PMSProjectDetailsViewModel>();
-                //int totalCount, page, rows;
                 projectDetails = dal.ProjectReviewerDetailsforEmail(values[i].Item1);
                 if (projectDetails == null)
                 {
@@ -3009,11 +3005,18 @@ namespace HRMS.Controllers
                         mail.To.Add(fromEmployeeDetailsEmail.EmailID);
                     }
                 }
+                constring = GetADOConnectionString();
+                SqlConnection con2 = new SqlConnection(constring);
 
-                string EmployeeRecords = "Select EmployeeID from tbl_PM_ProjectEmployeeRole where ProjectID = '" + values[i].Item1 + "' AND Responsibility = '" + "Project Manager" + "'";
-                ManagersEmail = new SqlDataAdapter(EmployeeRecords, con);
-                ManagersEmail.Fill(dsManagersEmail);
-                foreach (DataTable t in dsManagersEmail.Tables)
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "GetPM_DMforMailalert";//write sp name here
+                cmd.Connection = con;
+                cmd.Parameters.Add("@ProjectID", Convert.ToInt32(values[i].Item1));
+                SqlDataAdapter da2 = new SqlDataAdapter(cmd);
+                DataSet dsPMDMEMail = new DataSet();
+                da2.Fill(dsPMDMEMail);
+                foreach (DataTable t in dsPMDMEMail.Tables)
                 {
                     foreach (DataRow row in t.Rows)
                     {
@@ -3025,19 +3028,11 @@ namespace HRMS.Controllers
                         }
                         else
                         {
-                            ManagerEmaildsList.Add(fromEmployeeDetailsEmail.EmailID);
+                            mail.To.Add(fromEmployeeDetailsEmail.EmailID);
                         }
 
                     }
                 }
-                foreach (var item in ManagerEmaildsList)
-                {
-                    mail.To.Add(item);
-                }
-                //  int employeecode= employeeDAL.GetEmployeeDetails(projectDetai)
-                //string LoggesInUser = null;
-                //if (fromEmployeeDetails != null)
-                //    LoggesInUser = fromEmployeeDetails.UserName;
                 model.Mail = new TravelMailTemplate();
                 int templateId = 62;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
