@@ -3005,8 +3005,6 @@ namespace HRMS.Controllers
                         mail.To.Add(fromEmployeeDetailsEmail.EmailID);
                     }
                 }
-                constring = GetADOConnectionString();
-                SqlConnection con2 = new SqlConnection(constring);
 
                 SqlCommand cmd = new SqlCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
