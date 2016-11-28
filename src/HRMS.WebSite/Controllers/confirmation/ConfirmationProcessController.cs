@@ -2294,6 +2294,30 @@ namespace HRMS.Controllers
             return Json(new { results = totalWorkingDays }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult AddWorkingDaysforPIP(string empcode, int count, DateTime PIPstartDate)
+        {
+            ConfirmationDAL dal = new ConfirmationDAL();
+            int EmpId = int.Parse(empcode);
+            ////DateTime start = DateTime.Now;
+            SemDAL semDal = new SemDAL();
+            EmployeeDAL EmpDal = new EmployeeDAL();
+            tbl_CF_Confirmation confirmationDetails = dal.getConfirmationId(Convert.ToInt32(EmpId));
+            HRMS_tbl_PM_Employee Empdetails = new HRMS_tbl_PM_Employee();
+            HRMSDBEntities dbContext = new HRMSDBEntities();
+            var Empcode = (from resource in dbContext.HRMS_tbl_PM_Employee
+                           where resource.EmployeeID == EmpId
+                           select resource.Probation_Review_Date).FirstOrDefault();
+            DateTime start = Convert.ToDateTime(Empcode);
+            //if (confirmationDetails.PIPDate == null)
+            //{
+            //    start = Convert.ToDateTime(PIPstartDate);
+            //}
+            int daysToAdd = count;
+            var end = PIPstartDate.AddDays(daysToAdd);
+            return Json(new { results = end }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public ActionResult ConfirmationFormDetails(string employeeId, string viewDetailsBtn = "no")
         {
@@ -2457,6 +2481,9 @@ namespace HRMS.Controllers
                     }
                     else if (tempConfirmation.ConfirmationStatus == 2)
                     {
+                        ConfirmationFormViewModel model1 = new ConfirmationFormViewModel();
+                        DataSet dset1 = new DataSet();
+                        dset1 = dal.GetTempConfirmationNew(confirmationDetails.ConfirmationID);
                         if (model.IsManagerOrEmployee != "Manager")
                         {
                             model.ConfirmationDate = DateTime.Now;
@@ -2469,6 +2496,14 @@ namespace HRMS.Controllers
                                 model.PIPDate = Convert.ToDateTime(tempConfirmation.PIPDate);
                             if (tempConfirmation.PIPComments != null)
                                 model.PIPComments = tempConfirmation.PIPComments.Trim();
+                            if (dset1.Tables[0].Rows[0]["PIPstartDate"] == null || dset1.Tables[0].Rows[0]["PIPstartDate"] == System.DBNull.Value)
+                            {
+                                model.PIPstartDate = DateTime.Parse(model.ProbationReviewDate);
+                            }
+                            else
+                            {
+                                model.PIPstartDate = Convert.ToDateTime(dset1.Tables[0].Rows[0]["PIPstartDate"]);
+                            }
                         }
                         model.IsAcceptedOrExtended = "sendPIP";
                     }
