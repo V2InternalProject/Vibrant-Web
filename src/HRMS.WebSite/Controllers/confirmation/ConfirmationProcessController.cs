@@ -3011,7 +3011,7 @@ namespace HRMS.Controllers
                             subject = subject.Replace("##employee name##", employeeDetails.EmployeeName);
                             model.MailDetail.Subject = subject;
                             mailbody = mailbody.Replace("##employee name##", employeeDetails.EmployeeName);
-                            mailbody = mailbody.Replace("##new probation review date##", Convert.ToString(confirmationDetail.ExtendedProbationDate));
+                            mailbody = mailbody.Replace("##new probation review date##", Convert.ToString(Convert.ToDateTime(confirmationDetail.PIPDate).ToShortDateString()));
                             mailbody = mailbody.Replace("##logged in user##", loginuser.EmployeeName);
                             model.MailDetail.Message = mailbody.Replace("<br>", Environment.NewLine);
                             ViewBag.body = mailbody;

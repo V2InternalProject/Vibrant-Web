@@ -1497,7 +1497,7 @@
             </h2>
         </div>
         <nav class="sub-menu-colored">
-            <a href="@Url.Action(" confirmationdetaillist", "ConfirmationProcess" )">
+            <a href="@Url.Action("confirmationdetaillist", "ConfirmationProcess" )">
                 Saved/Submitted
                 Requests
             </a><a href="#" class="selected">Confirmation Process</a>
@@ -1506,7 +1506,7 @@
     <div class="MainBody">
         <div class="InnerContainer">
             <div class="clearfix">
-                <a class="LinkBrown floatL Expensewrap" href="@Url.Action(" confirmationdetaillist", "ConfirmationProcess" )" id="BackPrevious">
+                <a class="LinkBrown floatL Expensewrap" href="@Url.Action("confirmationdetaillist", "ConfirmationProcess" )" id="BackPrevious">
                     Back
                 </a>
             </div>
@@ -1933,7 +1933,7 @@
                                     </div>
                                     <div class="formrow clearfix">
                                         <div class="leftcol">
-                                            <div class="LabelDiv">@Html.Label(" ProbationReviewDate: ")</div>
+                                            <div class="LabelDiv">@Html.Label("  PIP review date: ")</div>
                                             <div class="InputDiv">
                                                 @Html.TextBoxFor(model => model.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @readonly = "readonly" })
                                                 @Html.LabelFor(emp => emp.PIPDate, String.Format("{0:MM/dd/yyyy}", Model.PIPDate), new { @class = "ClassDisplayLabel" })
