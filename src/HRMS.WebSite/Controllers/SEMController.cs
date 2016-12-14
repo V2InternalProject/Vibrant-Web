@@ -2840,7 +2840,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(00);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -3039,7 +3039,7 @@ namespace HRMS.Controllers
                     model.Mail.Subject = emailTemplate.Subject;
                     model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
                     model.Mail.Message = model.Mail.Message.Replace("##project name##", values[i].Item2);
-                    model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (values[i].Item3).ToString());
+                    model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (Convert.ToDateTime(values[i].Item3).ToShortDateString()).ToString());
                     model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "RMG");
                 }
                 SmtpClient smtpClient = new SmtpClient();

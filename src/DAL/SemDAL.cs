@@ -4157,6 +4157,7 @@ namespace HRMS.DAL
                 DateTime? EndDate = null;
                 string EmployeeID = string.Empty;
                 string allocationEndDate = string.Empty;
+                string BulkReallocationDate = string.Empty;
                 string allocationPercentage = string.Empty;
                 List<int> NotReallocatedEmployees = new List<int>();
                 int? HelpdeskIssueID = null;
@@ -4167,7 +4168,7 @@ namespace HRMS.DAL
                         ProjectEmployeeRoleID = ProjectEmployeeRoleID + "," + item.ProjectEmployeeRoleID;
                         EndDate = item.BulkReallocationDate;
                         EmployeeID = EmployeeID + "," + item.EmployeeId;
-                        allocationEndDate = allocationEndDate + "," + item.AllocationEndDate;
+                        BulkReallocationDate = BulkReallocationDate + "," + item.BulkReallocationDate;
                         allocationPercentage = allocationPercentage + "," + item.AllocatedPercentage;
                         HelpdeskIssueID = item.HelpdeskTicketID;
                     }
@@ -4178,9 +4179,9 @@ namespace HRMS.DAL
                 }
                 ProjectEmployeeRoleID = ProjectEmployeeRoleID.TrimStart(new char[] { ',' });
                 EmployeeID = EmployeeID.TrimStart(new char[] { ',' });
-                allocationEndDate = allocationEndDate.TrimStart(new char[] { ',' });
+                BulkReallocationDate = BulkReallocationDate.TrimStart(new char[] { ',' });
                 allocationPercentage = allocationPercentage.TrimStart(new char[] { ',' });
-                var BulkAllocation = dbContext.SimultaneousReallocateResource_SP(ProjectEmployeeRoleID, EndDate, EmployeeID, allocationEndDate, allocationPercentage, HelpdeskIssueID);
+                var BulkAllocation = dbContext.SimultaneousReallocateResource_SP(ProjectEmployeeRoleID, EndDate, EmployeeID, BulkReallocationDate, allocationPercentage, HelpdeskIssueID);
                 List<AddEdirResourseModel> NotReallocatedEmployeeList = (from r in BulkAllocation
                                                                          select new AddEdirResourseModel
                                                                          {
