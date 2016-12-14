@@ -64,6 +64,7 @@ namespace HRMS.Models
         {
             List<SelectListItem> list = new List<SelectListItem>
             {
+                new SelectListItem { Selected = true, Text = "Select" , Value="Select" },
                 new SelectListItem { Selected = true, Text = "Business Group", Value = "Business Group" },
                 new SelectListItem { Selected = true, Text = "Organization Unit", Value = "Organization Unit" },
                 new SelectListItem { Selected = true, Text = "Stage Name", Value = "Stage Name" },

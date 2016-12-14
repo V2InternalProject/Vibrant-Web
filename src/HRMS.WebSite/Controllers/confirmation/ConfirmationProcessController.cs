@@ -1957,7 +1957,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(9).AddMinutes(30);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -2085,7 +2085,7 @@ namespace HRMS.Controllers
                 model.Mail = new TravelMailTemplate();
                 DateTime DT = new DateTime();
                 DT = DateTime.Now;
-                if (valuesBeforeProbation[i].Item5.ToShortDateString() == DT.ToString("MM/dd/yyyy"))
+                if (valuesBeforeProbation[i].Item5.ToString("MM/dd/yyyy") == DT.ToString("MM/dd/yyyy"))
                 {
                     int templateId = 96;
                     List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);

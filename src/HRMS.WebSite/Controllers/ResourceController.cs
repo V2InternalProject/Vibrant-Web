@@ -1282,7 +1282,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(9).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
