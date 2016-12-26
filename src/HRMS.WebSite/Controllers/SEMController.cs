@@ -2857,6 +2857,7 @@ namespace HRMS.Controllers
         {
             // do some work
             sendMail();
+
             sendmailforCustomerEnd();
             // now, call the set timer method to reset its next call time
             SetTimerValue();

@@ -772,6 +772,7 @@ public partial class Candidate : System.Web.UI.Page
                     {
                         AddCandidateExperienceDetails();
                         dsExperience = candidateBLL.GetExperienceDetails(candidateID);
+
                         maxcandidatejoined = candidateBLL.GetMaxjoinedcandidate(candidateID);
                         foreach (DataRow row in maxcandidatejoined.Tables[0].Rows)
                         {

@@ -1335,6 +1335,7 @@ namespace HRMS.Controllers
                 mail.To.Add(values[i].Item5);
                 PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
                 string[] users = Roles.GetUsersInRole("RMG");
+
                 foreach (string user in users)
                 {
                     HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
