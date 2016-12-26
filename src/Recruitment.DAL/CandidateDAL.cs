@@ -462,6 +462,13 @@ namespace DAL
             return dsCandidateDAL = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.StoredProcedure, "sp_GetCandidateExperienceDetails_ChangeForType", param);
         }
 
+        public DataSet GetMaxjoinedcandidate(string candidateID)
+        {
+            SqlParameter[] param = new SqlParameter[1];
+            param[0] = new SqlParameter("@CandidateID", SqlDbType.BigInt);
+            param[0].Value = candidateID;
+            return dsCandidateDAL = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.StoredProcedure, "GetMaxjoinedcandidate", param);
+        }
 
         public DataSet GetEducationDetails(CandidateBOL candidateBOL)
         {

@@ -193,6 +193,12 @@ namespace BLL
             return dsCandidateBLL;
         }
 
+        public DataSet GetMaxjoinedcandidate(string candidateID)
+        {
+            dsCandidateBLL = candidateDAL.GetMaxjoinedcandidate(candidateID);
+            return dsCandidateBLL;
+        }
+
 
         public DataSet GetEducationDetails(CandidateBOL candidateBOL)
         {

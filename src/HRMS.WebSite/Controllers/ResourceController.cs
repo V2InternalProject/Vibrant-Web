@@ -4,6 +4,7 @@ using MvcApplication3.Filters;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
@@ -1330,9 +1331,19 @@ namespace HRMS.Controllers
             for (int i = 0; i < values.Count; i++)
             {
                 MailMessage mail = new MailMessage();
-
                 mail.To.Add(values[i].Item4);
                 mail.To.Add(values[i].Item5);
+                PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
+                string[] users = Roles.GetUsersInRole("RMG");
+                foreach (string user in users)
+                {
+                    HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
+                    if (employee == null)
+                    { }
+                    else
+                        mail.CC.Add(employee.EmailID);
+                }
+
                 string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
                 string Email = string.Empty;
                 Email = RMGEmail;
