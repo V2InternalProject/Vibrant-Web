@@ -2858,7 +2858,7 @@ namespace HRMS.Controllers
             // do some work
             sendMail();
 
-            sendmailforCustomerEnd();
+            //sendmailforCustomerEnd();
             // now, call the set timer method to reset its next call time
             SetTimerValue();
 
@@ -2873,210 +2873,208 @@ namespace HRMS.Controllers
             return adoConnStr;
         }
 
-        public void sendmailforCustomerEnd()
-        {
-            string constring = GetADOConnectionString();
-            SqlConnection con = new SqlConnection(constring);
-            string[] RMGs = { };
-            string[] ProjectApprovers = { };
-            RMGs = Roles.GetUsersInRole("RMG");
-            ProjectApprovers = Roles.GetUsersInRole("Project_Approver");
-            SqlDataAdapter ProjectApproversEmail = new SqlDataAdapter();
-            DataSet dsProjectApproversEmail = new DataSet();
-            foreach (var item in ProjectApprovers)
-            {
-                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
-                ProjectApproversEmail = new SqlDataAdapter(EmployeeRecords, con);
-                ProjectApproversEmail.Fill(dsProjectApproversEmail);
-            }
-            List<string> ApproverEmaildsList = new List<string>();
+        //public void sendmailforCustomerEnd()
+        //{
+        //    string constring = GetADOConnectionString();
+        //    SqlConnection con = new SqlConnection(constring);
+        //    string[] RMGs = { };
+        //    string[] ProjectApprovers = { };
+        //    RMGs = Roles.GetUsersInRole("RMG");
+        //    ProjectApprovers = Roles.GetUsersInRole("Project_Approver");
+        //    SqlDataAdapter ProjectApproversEmail = new SqlDataAdapter();
+        //    DataSet dsProjectApproversEmail = new DataSet();
+        //    foreach (var item in ProjectApprovers)
+        //    {
+        //        string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
+        //        ProjectApproversEmail = new SqlDataAdapter(EmployeeRecords, con);
+        //        ProjectApproversEmail.Fill(dsProjectApproversEmail);
+        //    }
+        //    List<string> ApproverEmaildsList = new List<string>();
 
-            foreach (DataTable t in dsProjectApproversEmail.Tables)
-            {
-                foreach (DataRow row in t.Rows)
-                {
-                    string EmailId = row["EmailID"].ToString();
-                    ApproverEmaildsList.Add(EmailId);
-                }
-            }
+        //    foreach (DataTable t in dsProjectApproversEmail.Tables)
+        //    {
+        //        foreach (DataRow row in t.Rows)
+        //        {
+        //            string EmailId = row["EmailID"].ToString();
+        //            ApproverEmaildsList.Add(EmailId);
+        //        }
+        //    }
 
-            SqlDataAdapter RMGsEmail = new SqlDataAdapter();
-            DataSet dsRMGsEmail = new DataSet();
-            foreach (var item in RMGs)
-            {
-                string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
-                RMGsEmail = new SqlDataAdapter(EmployeeRecords, con);
-                RMGsEmail.Fill(dsRMGsEmail);
-            }
-            List<string> RMGEmaildsList = new List<string>();
+        //    SqlDataAdapter RMGsEmail = new SqlDataAdapter();
+        //    DataSet dsRMGsEmail = new DataSet();
+        //    foreach (var item in RMGs)
+        //    {
+        //        string EmployeeRecords = "Select EmailID from HRMS_tbl_PM_Employee where EmployeeCode = '" + item + "' AND Status = '" + 0 + "'";
+        //        RMGsEmail = new SqlDataAdapter(EmployeeRecords, con);
+        //        RMGsEmail.Fill(dsRMGsEmail);
+        //    }
+        //    List<string> RMGEmaildsList = new List<string>();
 
-            foreach (DataTable t in dsRMGsEmail.Tables)
-            {
-                foreach (DataRow row in t.Rows)
-                {
-                    string EmailId = row["EmailID"].ToString();
-                    RMGEmaildsList.Add(EmailId);
-                }
-            }
-            DateTime today = DateTime.Today;
-            DateTime sevenDaysbefore = today.AddDays(7);
-            string records = "Select * from tbl_PM_Customer where ContractValidityDate = '" + sevenDaysbefore + "'";
-            con.Open();
-            SqlDataAdapter dataap = new SqlDataAdapter(records, con);
-            DataSet cust = new DataSet();
-            dataap.Fill(cust);
-            var custvalues = new List<Tuple<int, string, string>>();
-            foreach (DataTable t in cust.Tables)
-            {
-                foreach (DataRow row in t.Rows)
-                {
-                    int CustomerID = Convert.ToInt32(row["Customer"]);
-                    string CustomerName = row["CustomerName"].ToString();
-                    string ContractValidityDate = string.Empty;
-                    if (row["ContractValidityDate"].ToString() != null)
-                    {
-                        ContractValidityDate = row["ContractValidityDate"].ToString();
-                    }
-                    custvalues.Add(new Tuple<int, string, string>(CustomerID, CustomerName, ContractValidityDate));
-                }
-            }
-            for (int i = 0; i < custvalues.Count; i++)
-            {
-                TravelViewModel model = new TravelViewModel();
-                CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                MailMessage mail = new MailMessage();
-                SqlCommand cmd = new SqlCommand();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
-                SemDAL dal = new SemDAL();
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetProjectIRFinanceApprovers_SP";//write sp name here
-                cmd.Connection = con;
-                SqlDataAdapter fin = new SqlDataAdapter(cmd);
-                DataSet FinanceApprover = new DataSet();
-                fin.Fill(FinanceApprover);
-                foreach (DataTable t in FinanceApprover.Tables)
-                {
-                    foreach (DataRow row in t.Rows)
-                    {
-                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["employeeid"]));
-                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmail = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
-                        if (fromEmployeeDetailsEmail == null)
-                        {
+        //    foreach (DataTable t in dsRMGsEmail.Tables)
+        //    {
+        //        foreach (DataRow row in t.Rows)
+        //        {
+        //            string EmailId = row["EmailID"].ToString();
+        //            RMGEmaildsList.Add(EmailId);
+        //        }
+        //    }
+        //    DateTime today = DateTime.Today;
+        //    DateTime sevenDaysbefore = today.AddDays(7);
+        //    string records = "Select * from tbl_PM_Customer where ContractValidityDate = '" + sevenDaysbefore + "'";
+        //    con.Open();
+        //    SqlDataAdapter dataap = new SqlDataAdapter(records, con);
+        //    DataSet cust = new DataSet();
+        //    dataap.Fill(cust);
+        //    var custvalues = new List<Tuple<int, string, string>>();
+        //    foreach (DataTable t in cust.Tables)
+        //    {
+        //        foreach (DataRow row in t.Rows)
+        //        {
+        //            int CustomerID = Convert.ToInt32(row["Customer"]);
+        //            string CustomerName = row["CustomerName"].ToString();
+        //            string ContractValidityDate = string.Empty;
+        //            if (row["ContractValidityDate"].ToString() != null)
+        //            {
+        //                ContractValidityDate = row["ContractValidityDate"].ToString();
+        //            }
+        //            custvalues.Add(new Tuple<int, string, string>(CustomerID, CustomerName, ContractValidityDate));
+        //        }
+        //    }
+        //    for (int i = 0; i < custvalues.Count; i++)
+        //    {
+        //        TravelViewModel model = new TravelViewModel();
+        //        CommonMethodsDAL Commondal = new CommonMethodsDAL();
+        //        MailMessage mail = new MailMessage();
+        //        SqlCommand cmd = new SqlCommand();
+        //        EmployeeDAL employeeDAL = new EmployeeDAL();
+        //        SemDAL dal = new SemDAL();
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.CommandText = "GetProjectIRFinanceApprovers_SP";//write sp name here
+        //        cmd.Connection = con;
+        //        SqlDataAdapter fin = new SqlDataAdapter(cmd);
+        //        DataSet FinanceApprover = new DataSet();
+        //        fin.Fill(FinanceApprover);
+        //        foreach (DataTable t in FinanceApprover.Tables)
+        //        {
+        //            foreach (DataRow row in t.Rows)
+        //            {
+        //                tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["employeeid"]));
+        //                HRMS_tbl_PM_Employee fromEmployeeDetailsEmail = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+        //                if (fromEmployeeDetailsEmail == null)
+        //                {
 
-                        }
-                        else
-                        {
-                            mail.To.Add(fromEmployeeDetailsEmail.EmailID);
-                        }
+        //                }
+        //                else
+        //                {
+        //                    mail.To.Add(fromEmployeeDetailsEmail.EmailID);
+        //                }
 
-                    }
-                }
+        //            }
+        //        }
 
-                SqlCommand cmd2 = new SqlCommand();
-                cmd2.CommandType = CommandType.StoredProcedure;
-                cmd2.CommandText = "GetCustomerwithPMemail";//write sp name here
-                cmd2.Connection = con;
-                cmd2.Parameters.Add("@customerId", Convert.ToInt32(custvalues[i].Item1));
-                SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
-                DataSet dsPMMail = new DataSet();
-                da2.Fill(dsPMMail);
-                foreach (DataTable t in dsPMMail.Tables)
-                {
-                    foreach (DataRow row in t.Rows)
-                    {
-                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeID"]));
-                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmailPM = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
-                        if (fromEmployeeDetailsEmailPM == null)
-                        {
+        //        SqlCommand cmd2 = new SqlCommand();
+        //        cmd2.CommandType = CommandType.StoredProcedure;
+        //        cmd2.CommandText = "GetCustomerwithPMemail";//write sp name here
+        //        cmd2.Connection = con;
+        //        cmd2.Parameters.Add("@customerId", Convert.ToInt32(custvalues[i].Item1));
+        //        SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
+        //        DataSet dsPMMail = new DataSet();
+        //        da2.Fill(dsPMMail);
+        //        foreach (DataTable t in dsPMMail.Tables)
+        //        {
+        //            foreach (DataRow row in t.Rows)
+        //            {
+        //                tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeID"]));
+        //                HRMS_tbl_PM_Employee fromEmployeeDetailsEmailPM = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+        //                if (fromEmployeeDetailsEmailPM == null)
+        //                {
 
-                        }
-                        else
-                        {
-                            mail.To.Add(fromEmployeeDetailsEmailPM.EmailID);
-                        }
+        //                }
+        //                else
+        //                {
+        //                    mail.To.Add(fromEmployeeDetailsEmailPM.EmailID);
+        //                }
 
-                    }
-                }
+        //            }
+        //        }
 
-                SqlCommand cmd3 = new SqlCommand();
-                cmd3.CommandType = CommandType.StoredProcedure;
-                cmd3.CommandText = "GetCustomerwithProjectIRapprovermail";//write sp name here
-                cmd3.Connection = con;
-                cmd3.Parameters.Add("@customerId", Convert.ToInt32(custvalues[i].Item1));
-                SqlDataAdapter da3 = new SqlDataAdapter(cmd3);
-                DataSet dsProjectIRMail = new DataSet();
-                da3.Fill(dsProjectIRMail);
-                foreach (DataTable t in dsProjectIRMail.Tables)
-                {
-                    foreach (DataRow row in t.Rows)
-                    {
-                        if (Convert.ToString(row["emailId"]) == null)
-                        {
-                        }
-                        else
-                        {
-                            mail.To.Add(Convert.ToString(row["emailId"]));
-                        }
-                    }
-                }
-                foreach (var item in RMGEmaildsList)
-                {
-                    mail.CC.Add(item);
-                }
-                string Email = string.Empty;
-                foreach (var item in ApproverEmaildsList)
-                {
-                    Email = item;
-                    // mail.CC.Add(item);
-                }
-                foreach (var item in RMGEmaildsList)
-                {
-                    mail.CC.Add(item);
-                }
+        //        SqlCommand cmd3 = new SqlCommand();
+        //        cmd3.CommandType = CommandType.StoredProcedure;
+        //        cmd3.CommandText = "GetCustomerwithProjectIRapprovermail";//write sp name here
+        //        cmd3.Connection = con;
+        //        cmd3.Parameters.Add("@customerId", Convert.ToInt32(custvalues[i].Item1));
+        //        SqlDataAdapter da3 = new SqlDataAdapter(cmd3);
+        //        DataSet dsProjectIRMail = new DataSet();
+        //        da3.Fill(dsProjectIRMail);
+        //        foreach (DataTable t in dsProjectIRMail.Tables)
+        //        {
+        //            foreach (DataRow row in t.Rows)
+        //            {
+        //                if (Convert.ToString(row["emailId"]) == null)
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    mail.To.Add(Convert.ToString(row["emailId"]));
+        //                }
+        //            }
+        //        }
+        //        foreach (var item in RMGEmaildsList)
+        //        {
+        //            mail.CC.Add(item);
+        //        }
+        //        string Email = string.Empty;
+        //        foreach (var item in ApproverEmaildsList)
+        //        {
+        //            Email = item;
+        //            // mail.CC.Add(item);
+        //        }
+        //        foreach (var item in RMGEmaildsList)
+        //        {
+        //            mail.CC.Add(item);
+        //        }
 
-                mail.From = new MailAddress(Email, "TestEmail");
-                model.Mail = new TravelMailTemplate();
-                int templateId = 97;
-                List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
-                foreach (var emailTemplate in template)
-                {
-                    model.Mail.Subject = emailTemplate.Subject;
-                    model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
-                    model.Mail.Message = model.Mail.Message.Replace("##project name##", custvalues[i].Item2);
-                    model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (Convert.ToDateTime(custvalues[i].Item3).ToShortDateString()).ToString());
-                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "RMG");
-                }
-                SmtpClient smtpClient = new SmtpClient();
-                mail.Subject = model.Mail.Subject;
-                mail.Body = model.Mail.Message;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.EnableSsl = true;
-                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
-                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
-                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
-                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
-                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                smtpClient.Send(mail);
-            }
-            con.Close();
+        //        mail.From = new MailAddress(Email, "TestEmail");
+        //        model.Mail = new TravelMailTemplate();
+        //        int templateId = 97;
+        //        List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
+        //        foreach (var emailTemplate in template)
+        //        {
+        //            model.Mail.Subject = emailTemplate.Subject;
+        //            model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
+        //            model.Mail.Message = model.Mail.Message.Replace("##project name##", custvalues[i].Item2);
+        //            model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (Convert.ToDateTime(custvalues[i].Item3).ToShortDateString()).ToString());
+        //            model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "RMG");
+        //        }
+        //        SmtpClient smtpClient = new SmtpClient();
+        //        mail.Subject = model.Mail.Subject;
+        //        mail.Body = model.Mail.Message;
+        //        smtpClient.UseDefaultCredentials = false;
+        //        smtpClient.EnableSsl = true;
+        //        smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+        //        //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+        //        string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+        //        string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+        //        smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+        //        smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+        //        smtpClient.Send(mail);
+        //    }
+        //    con.Close();
 
-        }
+        //}
+
         public void sendMail()
         {
             string constring = GetADOConnectionString();
             SqlConnection con = new SqlConnection(constring);
             DateTime today = DateTime.Today;
-            DateTime NightyDaysAfter = today.AddDays(-90);
-            DateTime SixtyDaysAfter = today.AddDays(-60);
-            DateTime ThirtyDaysAfter = today.AddDays(-30);
-            DateTime threeedaysBefore = today.AddDays(3);
-            string records = "Select * from Tbl_PM_Project where ActualEndDate = '" + threeedaysBefore + "' OR ActualEndDate = '" + today + "' OR ActualEndDate = '" + NightyDaysAfter + "' OR ActualEndDate = '" + SixtyDaysAfter + "' OR ActualEndDate = '" + ThirtyDaysAfter + "'";
-
-            con.Open();
-            SqlDataAdapter da = new SqlDataAdapter(records, con);
+            SqlCommand pcmd = new SqlCommand();
+            pcmd.CommandType = CommandType.StoredProcedure;
+            pcmd.CommandText = "GetProjectEndRecords";//write sp name here
+            pcmd.Connection = con;
+            SqlDataAdapter Pend = new SqlDataAdapter(pcmd);
             DataSet ds = new DataSet();
-            da.Fill(ds);
+            Pend.Fill(ds);
 
             string[] ProjectApprovers = { };
             string[] RMGs = { };
@@ -3247,6 +3245,7 @@ namespace HRMS.Controllers
                 smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
                 smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
                 smtpClient.Send(mail);
+                mail.Dispose();
             }
             con.Close();
         }
