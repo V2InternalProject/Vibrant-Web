@@ -1561,21 +1561,15 @@ namespace HRMS.DAL
                     if (exi != null)
                     {
                         OldStageId = exi.stageID;
-
                         if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "Line Manager Approval" select a.ExitStageID).SingleOrDefault())
-                            exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "RMG Approval Stage" select a.ExitStageID).SingleOrDefault();
+                            exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "HR Approval Stage" select a.ExitStageID).SingleOrDefault();
                         else
                         {
-                            if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "RMG Approval Stage" select a.ExitStageID).SingleOrDefault())
-                                exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "HR Approval Stage" select a.ExitStageID).SingleOrDefault();
+                            if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "Exit" select a.ExitStageID).SingleOrDefault())
+                                exi.stageID = exi.stageID;
                             else
                             {
-                                if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "Exit" select a.ExitStageID).SingleOrDefault())
-                                    exi.stageID = exi.stageID;
-                                else
-                                {
-                                    exi.stageID = exi.stageID + 1;
-                                }
+                                exi.stageID = exi.stageID + 1;
                             }
                         }
                     }
@@ -1650,18 +1644,18 @@ namespace HRMS.DAL
                     {
                         OldStageId = exi.stageID;
 
-                        if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "RMG Approval Stage" select a.ExitStageID).SingleOrDefault())
+
+                        if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "HR Approval Stage" select a.ExitStageID).SingleOrDefault())
+                            exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "Line Manager Approval" select a.ExitStageID).SingleOrDefault();
+                        else if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "RMG Approval Stage" select a.ExitStageID).SingleOrDefault())
                             exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "Line Manager Approval" select a.ExitStageID).SingleOrDefault();
                         else
                         {
-                            if (exi.stageID == (from a in dbContext.tbl_HR_ExitStage where a.Description == "HR Approval Stage" select a.ExitStageID).SingleOrDefault())
-                                exi.stageID = (from a in dbContext.tbl_HR_ExitStage where a.Description == "RMG Approval Stage" select a.ExitStageID).SingleOrDefault();
-                            else
-                            {
-                                exi.stageID = exi.stageID - 1;
-                            }
+                            exi.stageID = exi.stageID - 1;
                         }
+
                     }
+
                     dbContext.SaveChanges();
 
                     Tbl_HR_ExitStageEvent obj = new Tbl_HR_ExitStageEvent();
@@ -2554,7 +2548,7 @@ namespace HRMS.DAL
                 List<ApproverList> ApproverDetails = new List<ApproverList>();
                 ApproverDetails = (from departments in dbContext.tbl_HR_ExitProcess_StageApprovers
                                    join employee in dbContext.HRMS_tbl_PM_Employee on departments.ApproverID equals employee.EmployeeID
-                                   where departments.ExitInstanceID == 0 && departments.stageID == 4 && employee.Status==false
+                                   where departments.ExitInstanceID == 0 && departments.stageID == 4 && employee.Status == false
                                    select new ApproverList
                                    {
                                        ApproverID = departments.QuestionnaireID,
