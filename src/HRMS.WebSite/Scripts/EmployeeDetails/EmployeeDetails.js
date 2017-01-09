@@ -278,7 +278,7 @@ function EmployeeDetailfunction() {
         }
     }
 
-  //  $('#btnSave').click(buttonSaveFunction);
+    $('#btnSave').click(buttonSaveFunction);
     $("#ddcl-LoginRole-ddw input:checkbox").each(function () {
         var counter = 0;
         var currentVal = $(this).val();
@@ -472,69 +472,69 @@ function CheckLoginRole() {
     }
 }
 
-//function buttonSaveFunction() {
-//    CheckLoginRole();
-//    if (noRoleFlag == true) {
-//        return false;
-//    }
-//    if ($("#EmployeeForm").valid()) {
-//        jQuery('form#EmployeeForm').find('input,select,textarea').attr('disabled', false);
-//        DisplayLoadingDialog();  //checked
-//        $.ajax({
-//            url: window.postUrl,
-//            type: 'POST',
-//            data: $('#EmployeeForm').serialize(),
-//            success: function (results) {
-//                $("#loading").dialog("close");
-//                $("#loading").dialog("destroy");
+function buttonSaveFunction() {
+    CheckLoginRole();
+    if (noRoleFlag == true) {
+        return false;
+    }
+    if ($("#EmployeeForm").valid()) {
+        jQuery('form#EmployeeForm').find('input,select,textarea').attr('disabled', false);
+        DisplayLoadingDialog();  //checked
+        $.ajax({
+            url: window.postUrl,
+            type: 'POST',
+            data: $('#EmployeeForm').serialize(),
+            success: function (results) {
+                $("#loading").dialog("close");
+                $("#loading").dialog("destroy");
 
-//                if ($("#EmployeeStatusMaster").val() == 3 || $("#EmployeeStatusMaster").val() == 4) {
-//                    $('form#EmployeeForm').find('input,select,textarea').attr('disabled', true);
-//                    $("#EmployeeStatusMaster").attr("disabled", false);
-//                    window.location.reload();
-//                }
+                if ($("#EmployeeStatusMaster").val() == 3 || $("#EmployeeStatusMaster").val() == 4) {
+                    $('form#EmployeeForm').find('input,select,textarea').attr('disabled', true);
+                    $("#EmployeeStatusMaster").attr("disabled", false);
+                    window.location.reload();
+                }
 
-//                if (results.status) {
-//                    $("#EmployeesuccessDialog").dialog({
-//                        closeOnEscape: false,
-//                        resizable: false,
-//                        height: 140,
-//                        width: 300,
-//                        modal: true,
-//                        dialogClass: "noclose",
-//                        buttons: {
-//                            Ok: function () {
-//                                location.reload();
-//                                $(this).dialog("close");
-//                            }
-//                        },
-//                        close: function () {
-//                            location.reload();
-//                            $(this).dialog("destroy");
-//                        }
-//                    });
-//                }
-//                else {
-//                    $("#errorDialog").dialog({
-//                        closeOnEscape: false,
-//                        resizable: false,
-//                        height: 140,
-//                        width: 300,
-//                        modal: true,
-//                        dialogClass: "noclose",
-//                        buttons: {
-//                            Ok: function () {
-//                                location.reload();
-//                                $(this).dialog("close");
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
-//    return false;
-//}
+                if (results.status) {
+                    $("#EmployeesuccessDialog").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                location.reload();
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function () {
+                            location.reload();
+                            $(this).dialog("destroy");
+                        }
+                    });
+                }
+                else {
+                    $("#errorDialog").dialog({
+                        closeOnEscape: false,
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                location.reload();
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+    return false;
+}
 
 $("#RejoinedWithingOneYear").click(function () {
     if ($('#RejoinedWithingOneYear').is(':checked')) {

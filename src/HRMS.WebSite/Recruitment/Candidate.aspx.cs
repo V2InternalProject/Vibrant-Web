@@ -22,6 +22,7 @@ public partial class Candidate : System.Web.UI.Page
     private ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     private DataSet dsExperience = new DataSet();
+    private DataSet maxcandidatejoined = new DataSet();
     private DataSet dsEducation = new DataSet();
     private DataSet dsCertification = new DataSet();
     private DataSet dsCertificationName = new DataSet();
@@ -771,11 +772,26 @@ public partial class Candidate : System.Web.UI.Page
                     {
                         AddCandidateExperienceDetails();
                         dsExperience = candidateBLL.GetExperienceDetails(candidateID);
-                        BindOnPageLoad(dsExperience, grdExperienceDetails);
-                        Session["UserName"] = txtFirstName.Text.ToLower() + "." + txtLastName.Text.ToLower();
-                        Session["CandidateID"] = Convert.ToString(candidateID);
-                        log.Info(Convert.ToString(Session["UserName"]) + " details are saved and joining pop-up window opened.");
-                        ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", "window.open('JoinEmployeePopup.aspx',null,'height=550, width=1200,status= no, resizable= no, scrollbars=yes, toolbar=no,location=no,menubar=no');", true);
+
+                        maxcandidatejoined = candidateBLL.GetMaxjoinedcandidate(candidateID);
+                        foreach (DataRow row in maxcandidatejoined.Tables[0].Rows)
+                        {
+                            var temp = Convert.ToInt32(row["Position"].ToString());
+                            var cnt = Convert.ToInt32(row["Count"].ToString());
+                            if (Convert.ToInt32(cnt) >= Convert.ToInt32(temp))
+                            {
+                                lblMsg.Text = "as per the RRF no of positions are Filled" + cnt ;
+                                log.Info("Validation error while updating candidate details.");
+                            }
+                            else
+                            {
+                                BindOnPageLoad(dsExperience, grdExperienceDetails);
+                                Session["UserName"] = txtFirstName.Text.ToLower() + "." + txtLastName.Text.ToLower();
+                                Session["CandidateID"] = Convert.ToString(candidateID);
+                                log.Info(Convert.ToString(Session["UserName"]) + " details are saved and joining pop-up window opened.");
+                                ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", "window.open('JoinEmployeePopup.aspx',null,'height=550, width=1200,status= no, resizable= no, scrollbars=yes, toolbar=no,location=no,menubar=no');", true);
+                            }
+                        }
                     }
                 }
                 else

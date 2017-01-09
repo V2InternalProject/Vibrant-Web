@@ -773,7 +773,7 @@ namespace HRMS.Controllers
         }
 
         //added by Rahul Ramachandran for implementing Export to excel functionality
-        public void ExportToExcelTimeSheetData(int? ProjectID, int? TaskID, int? StatusID, DateTime? StartDate, DateTime? EndDate, int page, int rows)
+        public void ExportToExcelTimeSheetData(int? ProjectID, int? TaskID, int? StatusID, int? EmployeeID, DateTime? StartDate, DateTime? EndDate, int page, int rows)
         {
             WSEMDBEntities dbContext = new WSEMDBEntities();
             DataSet dsCurrentDetails = new DataSet();
@@ -782,13 +782,12 @@ namespace HRMS.Controllers
 
             int totalcount = 0;
             List<TimesheetModel> Entrydetails = new List<TimesheetModel>();
-            Entrydetails = taskTimeSheetDAL.TimesheetEntryRecords(ProjectID, TaskID, StartDate, EndDate, StatusID, null, page, rows, out totalcount);
+            Entrydetails = taskTimeSheetDAL.TimesheetEntryRecords(ProjectID, TaskID, StartDate, EndDate, StatusID, EmployeeID, page, rows, out totalcount);
 
             DataTable dt = new DataTable();
             dt.Columns.Add("Project", typeof(string));
             dt.Columns.Add("Date", typeof(string));
-            dt.Columns.Add("Start Date", typeof(string));
-            dt.Columns.Add("End Date", typeof(string));
+            dt.Columns.Add("TaskName", typeof(string));
             dt.Columns.Add("Hours", typeof(string));
             dt.Columns.Add("Units", typeof(string));
             dt.Columns.Add("Status", typeof(string));
@@ -802,13 +801,12 @@ namespace HRMS.Controllers
                     DataRow dr = dt.NewRow();
                     dr[0] = item.ProjectName;
                     dr[1] = item.Date;
-                    dr[2] = item.FromDateFilter;
-                    dr[3] = item.ToDateFilter;
-                    dr[4] = item.Hours;
-                    dr[5] = item.Units;
-                    dr[6] = item.Status;
-                    dr[7] = item.Comments;
-                    dr[8] = item.ApproverComments;
+                    dr[2] = item.TaskName;
+                    dr[3] = item.Hours;
+                    dr[4] = item.Units;
+                    dr[5] = item.Status;
+                    dr[6] = item.Comments;
+                    dr[7] = item.ApproverComments;
                     dt.Rows.Add(dr);
                 }
                 dsCurrentDetails.Tables.Add(dt);

@@ -36,8 +36,8 @@
         $.each(stringList, function (index,value) {
             RoleSelected.push(value.RoleId);
         });
-//            if('@Model.BillableStatus' == 'True')
-//   $("#BillableStatus").attr('checked', true);
+        //            if('@Model.BillableStatus' == 'True')
+        //   $("#BillableStatus").attr('checked', true);
         EmployeeDetailfunction();
         $('#employeestatus').val($('#EmployeeStatus option:selected').val());
     });
@@ -57,12 +57,12 @@
         }
 
         else if( $("#employeestatus").val()=="5" && '@ViewBag.ConfirmProcess'=='True')
-         {
+        {
             $("#InitiateConfirmation").hide();
             $("#Confirmlabel").show();
         }
 
-       $('#LoginRole').selectBox('destroy').hide();
+        $('#LoginRole').selectBox('destroy').hide();
         $(".ClassDisplayLabel, .ClassTextareaDiv").hide();
         $(".ValidationDropDown").each(function () {
             $('.ValidationDropDown').show();
@@ -106,7 +106,7 @@
                     $(this).hide().next().hide().next().show();
                 }
                 else if (val.id == "CommitmentsMade") {
-                  //  $(this).hide().next().show().children().show();
+                    //  $(this).hide().next().show().children().show();
                 }
                 else
                     $(this).hide().next().show();
@@ -142,7 +142,7 @@
 
             }
 
-            });
+        });
     }
 </script>
 <section class="EmployeeContainer Container">
@@ -831,10 +831,13 @@
                                                         </div>
             }
         </div>
-        <div class="ButtonContainer1">
-            <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" disabled="disabled" style="visibility:hidden"  />
-            <input type="button" class="ButtonGray" value="Reset" id="btnReset" onclick="RestoreValues();" style="visibility:hidden" />
-        </div>
+        @if ((Model.UserRole == "HR Admin")||(Model.UserRole=="RMG")) 
+        {
+            <div class="ButtonContainer1">
+                <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" />
+                <input type="button" class="ButtonGray" value="Reset" id="btnReset" onclick="RestoreValues();" />
+            </div>
+        }
     </div>
 </section>
 <div id="EmployeesuccessDialog" title="Employee Details" style="display: none">

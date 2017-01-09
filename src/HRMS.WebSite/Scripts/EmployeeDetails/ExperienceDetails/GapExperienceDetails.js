@@ -19,11 +19,11 @@ $(document).ready(
                 mtype: "POST",
                 colNames: ["Employee Id", "EmployeeGapExp Id", "Reason", "From Date", "To Date", "Gap Duration", "Description", ""],
                 colModel: [
-                    { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left", editable: false },
-                    { name: "EmployeeGapExpId", index: "EmployeeGapExpId", hidden: true, width: 100, align: "left", editable: false },
-                    { name: "Reason", index: "Reason", width: 150, align: "left", editable: false, editrules: { required: true } },
+                    { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
+                    { name: "EmployeeGapExpId", index: "EmployeeGapExpId", hidden: true, width: 100, align: "left" },
+                    { name: "Reason", index: "Reason", width: 150, align: "left", editable: true, editrules: { required: true } },
                     {
-                        name: "FromDate", index: "FromDate", width: 70, editable: false, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                        name: "FromDate", index: "FromDate", width: 70, editable: true, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                             readonly: true,
                             dataEvents: [{ type: 'change', fn: function (e) { ChangeGapFromDate(e); } }],
                             dataInit: function (element) {
@@ -53,7 +53,7 @@ $(document).ready(
                         }
                     },
                     {
-                        name: "ToDate", index: "ToDate", width: 70, editable: false, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                        name: "ToDate", index: "ToDate", width: 70, editable: true, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                             readonly: true,
                             dataEvents: [{ type: 'change', fn: function (e) { ChangeGapToDate(e); } }],
                             dataInit: function (element) {
@@ -83,8 +83,8 @@ $(document).ready(
                             }
                         }
                     },
-                    { name: "GapDuration", index: "GapDuration", width: 70, align: "left", editable: false, classes: "DependandGapClass" },
-                    { name: "Description", index: "Description", width: 140, align: "left", editable: false },
+                    { name: "GapDuration", index: "GapDuration", width: 70, align: "left", editable: true, classes: "DependandGapClass" },
+                    { name: "Description", index: "Description", width: 140, align: "left", editable: true },
                     {
                         name: "Delete",
                         index: "Delete",
@@ -129,7 +129,7 @@ $(document).ready(
                     oldStartDate = rowData['FromDate'];
                     oldEndDate = rowData['ToDate'];
                     if (iCol == 7 && (window.Empstatusmasterid != 2) && rowid != "new_row") {
-                       // DeleteEmployeeGapExperienceDetailDialog(empGapExpId);
+                        DeleteEmployeeGapExperienceDetailDialog(empGapExpId);
                     } else {
                         if (window.Empstatusmasterid != 2) {
                             //EditEmployeeGapExperienceDetails(rowData);
@@ -145,16 +145,16 @@ $(document).ready(
             );
             $("#gapExperiencejqTable").jqGrid('inlineNav', "#gapExperiencejqTablePager",
     {
-        //edit: true,
-        //editicon: "ui-icon-pencil",
-        //add: true,
-        //addicon: "ui-icon-plus",
-        //save: true,
-        //saveicon: "ui-icon-disk",
-        //cancle: true,
-        //cancelicon: "ui-icon-cancel",
-        //addtext: "Add",
-        //savetext: "Save",
+        edit: true,
+        editicon: "ui-icon-pencil",
+        add: true,
+        addicon: "ui-icon-plus",
+        save: true,
+        saveicon: "ui-icon-disk",
+        cancle: true,
+        cancelicon: "ui-icon-cancel",
+        addtext: "Add",
+        savetext: "Save",
         edittext: "Edit",
         canceltext: "Cancel",
         addParams: {

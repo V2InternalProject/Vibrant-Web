@@ -39,7 +39,7 @@
                 $("#errmsgUnits").html("Dot character is not allowed at starting").show().delay(1000).fadeOut("slow");
                 return false;
             }
-           
+
 
         });
         $("#timesheetentryform #Hours").keypress(function (e) {
@@ -65,15 +65,14 @@
 
         });
 
-        $("#timesheetentryform #Units").change(function()
-        {
+        $("#timesheetentryform #Units").change(function () {
             var UnitValue = $("#Units").val();
             if (UnitValue == 0) {
                 $("#errmsgUnits").html("More Than 0").show().delay(1000).fadeOut("slow");
                 return false;
             }
-    });
-        
+        });
+
         $("#txtProjectName").keyup(function () {
 
             if (!this.value) {
@@ -730,7 +729,7 @@
         $("#txtProjectName1").autocomplete({
             source: function (request, response) {
                 $.getJSON('@Url.Action("ProjectNameAutoSuggestForTimesheet", "TaskTimesheet")', { term: request.term }, function (data) {
-                    response($.map(data, function (el) {                        
+                    response($.map(data, function (el) {
                         var emplyeeInformation = el.EmployeeId + "{" + el.EmployeeName + "}";
                         return {
                             label: el.emplyeeInformation,
@@ -995,11 +994,13 @@
                 });
                 $.preventDefault();
             }
-            var ProjectID = $('#selectedProjectIDFilter').val();
-            var TaskID = $('#TaskDDFilter').val();
-            var StatusID = $('#StatusDDFilter').val();
-            var StartDate = $('#fromDateFilter').val();
-            var EndDate = $('#ToDateFilter').val();
+            debugger;
+            var ProjectID = $('#timesheetentryform #selectedProjectIDFilter').val();//$('#selectedProjectIDFilter').val();
+            var TaskID = $('#timesheetentryform #selectedTaskDDFilter').val();//$('#TaskDDFilter').val();
+            var StatusID = $('#timesheetentryform #selectedStatusDDFilter').val();//$('#StatusDDFilter').val();
+            var EmployeeID = $('#timesheetentryform #EmployeeId').val();
+            var StartDate = $('#timesheetentryform #selectedFromDateFilter').val();//$('#fromDateFilter').val();
+            var EndDate = $('#timesheetentryform #selectedToDateFilter').val();//$('#ToDateFilter').val();
             var rows = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'records');
             var page = jQuery("#TimeSheetEntryTable").jqGrid('getGridParam', 'page');
             TimeSheetIDs = "";
@@ -1008,7 +1009,7 @@
                     TimeSheetIDs = TimeSheetIDs + $(val).attr("name") + ",";
                 }
             });
-            window.location.href = '@Url.Action("ExportToExcelTimeSheetData", "TaskTimesheet")?ProjectID=' + ProjectID + "&TaskID=" + TaskID + "&StatusID=" + StatusID + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&page=" + page + "&rows=" + rows;
+            window.location.href = '@Url.Action("ExportToExcelTimeSheetData", "TaskTimesheet")?ProjectID=' + ProjectID + "&TaskID=" + TaskID + "&StatusID=" + StatusID +"&EmployeeID="+EmployeeID + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&page=" + page + "&rows=" + rows;
         });
 
     });

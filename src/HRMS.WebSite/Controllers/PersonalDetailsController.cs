@@ -1,4 +1,4 @@
-﻿using HRMS.DAL;
+﻿﻿using HRMS.DAL;
 using HRMS.Helper;
 using HRMS.Models;
 using HRMS.Notification;
@@ -1492,8 +1492,8 @@ namespace HRMS.Controllers
             {
                 DAL.PersonalDetailsDAL dal = new DAL.PersonalDetailsDAL();
                 string resultMessage = string.Empty;
-                //var status = dal.SavedependantDetails(model, RelationId, EmployeeID);
-                var status = true;
+                var status = dal.SavedependantDetails(model, RelationId, EmployeeID);
+
                 return Json(new { status = status }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
@@ -2431,8 +2431,7 @@ namespace HRMS.Controllers
             {
                 DAL.PersonalDetailsDAL dal = new DAL.PersonalDetailsDAL();
                 string result = string.Empty;
-                //var success = dal.AddEmployeeEmergencyContact(model, RelationId, EmployeeID);
-                var success = true;
+                var success = dal.AddEmployeeEmergencyContact(model, RelationId, EmployeeID);
                 if (success)
                     result = HRMS.Resources.Success.ResourceManager.GetString("SaveContactDetailsSuccess");
                 else
@@ -2746,28 +2745,28 @@ namespace HRMS.Controllers
         {
             try
             {
-                //DAL.QualificationDetailsDAL dal = new DAL.QualificationDetailsDAL();
-                //int? empid = EmployeeId;
+                DAL.QualificationDetailsDAL dal = new DAL.QualificationDetailsDAL();
+                int? empid = EmployeeId;
                 string resultMessage = string.Empty;
-                //string[] role = Roles.GetRolesForUser(Membership.GetUser().UserName);
-                //int LoggedinEmployeeId = empdal.GetEmployeeID(Membership.GetUser().UserName);
-                //model.EmployeeID = LoggedinEmployeeId;
-                //string user = Commondal.GetMaxRoleForUser(role);
-                //bool IsLoggedInEmployee = false;
+                string[] role = Roles.GetRolesForUser(Membership.GetUser().UserName);
+                int LoggedinEmployeeId = empdal.GetEmployeeID(Membership.GetUser().UserName);
+                model.EmployeeID = LoggedinEmployeeId;
+                string user = Commondal.GetMaxRoleForUser(role);
+                bool IsLoggedInEmployee = false;
 
-                //if (empid == model.EmployeeID)
-                //    IsLoggedInEmployee = true;
-                //else
-                //    IsLoggedInEmployee = false;
-                var status = true;
-                //var status = dal.SaveEmployeeQualification(model, IsLoggedInEmployee, SelectedQualificationID, SelectedDegreeID, SelectedYearID, SelectedTypeID, EmployeeId);
+                if (empid == model.EmployeeID)
+                    IsLoggedInEmployee = true;
+                else
+                    IsLoggedInEmployee = false;
+
+                var status = dal.SaveEmployeeQualification(model, IsLoggedInEmployee, SelectedQualificationID, SelectedDegreeID, SelectedYearID, SelectedTypeID, EmployeeId);
                 if (status)
                 {
                     resultMessage = "Saved";
                 }
                 else
                     resultMessage = "Error";
-                return Json(new { results = resultMessage, status = "saved" }, JsonRequestBehavior.AllowGet);
+                return Json(new { results = resultMessage, status = status }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
@@ -2816,13 +2815,12 @@ namespace HRMS.Controllers
                 };
 
                 //string resultMessage = string.Empty;
-               // bool status = dal.AddEmployeeMedicalHistory(employeeMedicalDetails);
-                bool status = false;
+                bool status = dal.AddEmployeeMedicalHistory(employeeMedicalDetails);
                 //if (status)
                 //    resultMessage = HRMS.Resources.Success.ResourceManager.GetString("AddMedicalDetailsSuccess");
                 //else
                 //    resultMessage = HRMS.Resources.Errors.ResourceManager.GetString("AddMedicalDetailsError");
-                return Json(new { status = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = status }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
@@ -3127,10 +3125,9 @@ namespace HRMS.Controllers
 
                 string resultMessage = string.Empty;
 
-              //  var status = dal.SaveCertificationDetails(model, IsLoggedInEmployee, SelectedCertificationID, EmployeeId);
-                  var status = false;
+                var status = dal.SaveCertificationDetails(model, IsLoggedInEmployee, SelectedCertificationID, EmployeeId);
 
-                return Json(new { status = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = status }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {

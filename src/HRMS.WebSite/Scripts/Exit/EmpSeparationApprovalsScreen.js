@@ -419,6 +419,12 @@ function HRCommentsDetailsForm() {
 }
 
 function FieldDDLChange() {
+
+    if ($("#Field").val() == "Select") {
+            $('#FieldChildListExitBG').hide();
+            $('#FieldChildListExitOU').hide();
+            $('#FieldChildListExitSN').hide();
+    }
     if ($("#Field").val() != "") {
         if ($("#Field").val() == "Business Group") {
             $('#FieldChildListExitBG').show();
@@ -694,7 +700,7 @@ function FillCheckList() {
             }
         });
     }
-    ///
+        ///
 
     else if ($("#loginUsersDepartment").val() == "FINANCE CLEARANCE" && $("#LoggedInUser").val() == $("#hdnReportingTo").val()) {
         $("#FinanceSelection").dialog({

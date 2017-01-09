@@ -28,17 +28,17 @@ $(document).ready(function () {
         colNames: ["Bond ID", "Bond Type", "BondType ID", "Bond Status", "", "Bond Amount", "Bond Over Date", "Employee ID", ""],
         // Configure the columns
         colModel: [
-                { name: "BondId", index: "BondId", hidden: true, width: 100, align: "left", editable: false },
-                { name: "BondType", index: "BondType", align: "left", width: 100, editable: false, editrules: { required: true, custom: true, custom_func: IsBondTypeSelected }, edittype: "select", editoptions: { value: BondTypeList, dataEvents: [{ type: 'change', fn: function (e) { getBondType(e); } }] } },
+                { name: "BondId", index: "BondId", hidden: true, width: 100, align: "left" },
+                { name: "BondType", index: "BondType", align: "left", width: 100, editable: true, editrules: { required: true, custom: true, custom_func: IsBondTypeSelected }, edittype: "select", editoptions: { value: BondTypeList, dataEvents: [{ type: 'change', fn: function (e) { getBondType(e); } }] } },
 
                // { name: "BondType", index: "BondType", width: 100, align: "left", editable: true, editrules: { required: true, custom: true, custom_func: IsBondTypeSelected }, edittype: "select", editoptions: { value: BondTypeList, dataevents: [{ type: 'change', fn: function (e) { getBondTypeList(e); } }] } },
-                { name: "BondTypeID", index: "BondTypeID", hidden: true, width: 100, align: "left", editable: false },
+                { name: "BondTypeID", index: "BondTypeID", hidden: true, width: 100, align: "left" },
                // { name: "BondStatus", index: "BondStatus", width: 100, align: "left", editable: true, editrules: { required: true, custom: true, custom_func: IsBondStatusSelected }, edittype: "select", editoptions: { value: BondStatusList, dataevents: [{ type: 'change', fn: function (e) { getBondStatusList45(e); } }] } },
-              { name: "BondStatus", index: "BondStatus", align: "left", width: 100, editable: false, editrules: { required: true, custom: true, custom_func: IsBondStatusSelected }, edittype: "select", editoptions: { value: BondStatusList, dataEvents: [{ type: 'change', fn: function (e) { getBondStatus(e); } }] } },
-                 { name: "BondStatusHidden", index: "BondStatusHidden", hidden: true, width: 50, align: "left", editable: false },
-               { name: "BondAmount", index: "BondAmount", width: 100, align: "left", editable: false, editrules: { custom: true, custom_func: IsBondAmountRequired, custom_func: isValidAmount } },
+              { name: "BondStatus", index: "BondStatus", align: "left", width: 100, editable: true, editrules: { required: true, custom: true, custom_func: IsBondStatusSelected }, edittype: "select", editoptions: { value: BondStatusList, dataEvents: [{ type: 'change', fn: function (e) { getBondStatus(e); } }] } },
+                 { name: "BondStatusHidden", index: "BondStatusHidden", hidden: true, width: 50, align: "left" },
+               { name: "BondAmount", index: "BondAmount", width: 100, align: "left", editable: true, editrules: { custom: true, custom_func: IsBondAmountRequired, custom_func: isValidAmount } },
                 {
-                    name: "BondOverDate", index: "BondOverDate", width: 50, align: "left", editable: false, editrules: { custom: true, custom_func: IsBondOverDateRequired }, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                    name: "BondOverDate", index: "BondOverDate", width: 50, align: "left", editable: true, editrules: { custom: true, custom_func: IsBondOverDateRequired }, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                         readonly: true,
                         dataEvents: [{ type: 'change', fn: function (e) { } }],
                         dataInit: function (element) {
@@ -123,10 +123,10 @@ $(document).ready(function () {
             bondId = selectedBondId;
             selectedBondStatus = rowData['BondStatusHidden'];
             if (iCol == 8 && (window.empStatusId != 2) && rowid != "new_row") {
-               // DeleteBondDetails(selectedBondId);
+                DeleteBondDetails(selectedBondId);
             } else {
                 if (window.empStatusId != 2) {
-                    //EditBondDetails(rowData);
+                    EditBondDetails(rowData);
                 }
             }
             return true;
@@ -136,16 +136,16 @@ $(document).ready(function () {
       );
     $("#jqBondDetailsTable").jqGrid('inlineNav', "#jqTableBondDetailsPager",
    {
-       //edit: true,
-       //editicon: "ui-icon-pencil",
-       //add: true,
-       //addicon: "ui-icon-plus",
-       //save: true,
-       //saveicon: "ui-icon-disk",
-       //cancle: true,
-       //cancelicon: "ui-icon-cancel",
-       //addtext: "Add",
-       //savetext: "Save",
+       edit: true,
+       editicon: "ui-icon-pencil",
+       add: true,
+       addicon: "ui-icon-plus",
+       save: true,
+       saveicon: "ui-icon-disk",
+       cancle: true,
+       cancelicon: "ui-icon-cancel",
+       addtext: "Add",
+       savetext: "Save",
        edittext: "Edit",
        canceltext: "Cancel",
        addParams: {

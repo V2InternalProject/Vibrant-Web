@@ -4,6 +4,7 @@ using MvcApplication3.Filters;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
@@ -1282,7 +1283,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(9).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -1330,9 +1331,20 @@ namespace HRMS.Controllers
             for (int i = 0; i < values.Count; i++)
             {
                 MailMessage mail = new MailMessage();
-
                 mail.To.Add(values[i].Item4);
                 mail.To.Add(values[i].Item5);
+                PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
+                string[] users = Roles.GetUsersInRole("RMG");
+
+                foreach (string user in users)
+                {
+                    HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
+                    if (employee == null)
+                    { }
+                    else
+                        mail.CC.Add(employee.EmailID);
+                }
+
                 string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
                 string Email = string.Empty;
                 Email = RMGEmail;
@@ -1354,15 +1366,18 @@ namespace HRMS.Controllers
                     model.Mail.Message = model.Mail.Message.Replace("##allocation end date##", values[i].Item3);
                     model.Mail.Message = model.Mail.Message.Replace("##logged in user##", System.Configuration.ConfigurationManager.AppSettings["RMGName"].ToString());
                 }
+                SmtpClient smtpClient = new SmtpClient();
                 mail.Subject = model.Mail.Subject;
                 mail.Body = model.Mail.Message;
-                mail.Priority = MailPriority.High;
-                SmtpClient myMailClient = new SmtpClient();
-                myMailClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                myMailClient.Send(mail);
-                mail.Dispose();
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+                smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                smtpClient.Send(mail);
             }
         }
 
