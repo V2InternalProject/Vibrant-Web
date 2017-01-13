@@ -19,7 +19,7 @@ namespace HRMS.Models
 
         [Required]
         [Display(Name = "Joining Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         public DateTime? JoiningDate { get; set; }
 
