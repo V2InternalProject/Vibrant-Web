@@ -35,7 +35,7 @@ function renderImages(cellvalue, options, rowobject) {
     obj = "";
     for (var i = 1; i < 8; i++) {
         if (i == 3)//RMG Stage Approval : by Rahul R
-            obj = obj + "<img src='../../Images/New Design/not-conducted.png' width='31px' height='31px' class='StatusImagesGray' title='RMG Stage Approval'>";//RMG
+            obj = obj + "<img src='../../Images/New Design/not-conducted.png' width='31px' height='31px' class='StatusImagesGray' title='Moved to Next Stage'>";//RMG
         else {
             if (rowobject['ExitStageOrder'] >= i) {
                 if ((rowobject['Field'] == "Reject" && rowobject['ExitStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['ExitStageOrder'] == i)) {
