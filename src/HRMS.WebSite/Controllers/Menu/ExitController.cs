@@ -397,8 +397,9 @@ namespace HRMS.Controllers
                             mailBody = mailBody.Replace("##date selected by HR##", empexitTermination.TentativeReleavingDate.Value.Date.ToString("d"));
                             mailBody = mailBody.Replace("##comments enter by HR##", empexitTermination.HRComment);
                             mailBody = mailBody.Replace("##HR Admin##", Server.HtmlEncode(terminationDetails.EmployeeName));
-                            model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
-                            string[] Loginroles = { "HR Admin", "RMG" };
+                            model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);  
+                            //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+                            string[] Loginroles = { "HR Admin"};
                             foreach (string r in Loginroles)
                             {
                                 string[] users = Roles.GetUsersInRole(r);
@@ -446,7 +447,8 @@ namespace HRMS.Controllers
                                 mailBody = mailBody.Replace("##Employee name##", employeeDetails.EmployeeName);
                                 mailBody = mailBody.Replace("##HR Closure stakeholder##", Server.HtmlEncode(employeeD.EmployeeName));
                                 model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
-                                string[] Loginroles = { "HR Admin", "RMG" };
+                                //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+                                string[] Loginroles = { "HR Admin" };
                                 foreach (string r in Loginroles)
                                 {
                                     string[] users = Roles.GetUsersInRole(r);
@@ -487,7 +489,8 @@ namespace HRMS.Controllers
                                     ViewBag.Body = mailBody;
                                     model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
                                     model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                    string[] Loginroles = { "HR Admin", "RMG" };
+                                    //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+                                    string[] Loginroles = { "HR Admin" };
                                     foreach (string r in Loginroles)
                                     {
                                         string[] users = Roles.GetUsersInRole(r);
@@ -528,7 +531,8 @@ namespace HRMS.Controllers
                                             model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
                                         if (CompetencyManager != null)
                                             model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                        string[] Loginroles = { "HR Admin", "RMG" };
+                                        //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+                                        string[] Loginroles = { "HR Admin"};
                                         foreach (string r in Loginroles)
                                         {
                                             string[] users = Roles.GetUsersInRole(r);
@@ -546,46 +550,48 @@ namespace HRMS.Controllers
                                     {
                                         if (isApproveCall == true)
                                         {
-                                            if (userApproverStageId == 8 || user == "RMG")//RMG approver stage
-                                            {
-                                                HRMS_tbl_PM_Employee employeeD = employeeDAL.GetEmployeeDetails(employeeDAL.GetEmployeeID(Membership.GetUser().UserName));
-                                                model.Mail.From = employeeD.EmailID;
-                                                model.Mail.To = employeeDetails.EmailID;
-                                                templateId = 25;
-                                                template = Commondal.GetEmailTemplate(templateId);
-                                                foreach (var emailTemplate in template)
-                                                {
-                                                    subject = emailTemplate.Subject;
-                                                    mailBody = emailTemplate.Message;
-                                                }
-                                                subject = subject.Replace("##RMG manager name##", employeeD.EmployeeName);
-                                                subject = subject.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
-                                                model.Mail.Subject = subject;
-                                                mailBody = mailBody.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
-                                                //mailBody = mailBody.Replace("##Tentative Release Date##", obj.TentativeReleaseDate.Value.Date.ToString("d"));
-                                                mailBody = mailBody.Replace("##Agreed release date##", obj.AgreedReleaseDate.Value.Date.ToString("d"));
-                                                mailBody = mailBody.Replace("##RMG manager name##", Server.HtmlEncode(employeeD.EmployeeName));
-                                                model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
-                                                ViewBag.Body = mailBody;
-                                                model.Mail.Cc = model.Mail.Cc + manager.EmailID + ";";
-                                                model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                                model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
-                                                model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
-                                                string[] Loginroles = { "HR Admin", "RMG" };
-                                                foreach (string r in Loginroles)
-                                                {
-                                                    string[] users = Roles.GetUsersInRole(r);
-                                                    foreach (string userR in users)
-                                                    {
-                                                        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                        if (employee == null)
-                                                            model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                        else
-                                                            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                    }
-                                                }
-                                            }
-                                            else
+                                            //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+
+                                            //if (userApproverStageId == 8 || user == "RMG")//RMG approver stage
+                                            //{
+                                            //    HRMS_tbl_PM_Employee employeeD = employeeDAL.GetEmployeeDetails(employeeDAL.GetEmployeeID(Membership.GetUser().UserName));
+                                            //    model.Mail.From = employeeD.EmailID;
+                                            //    model.Mail.To = employeeDetails.EmailID;
+                                            //    templateId = 25;
+                                            //    template = Commondal.GetEmailTemplate(templateId);
+                                            //    foreach (var emailTemplate in template)
+                                            //    {
+                                            //        subject = emailTemplate.Subject;
+                                            //        mailBody = emailTemplate.Message;
+                                            //    }
+                                            //    subject = subject.Replace("##RMG manager name##", employeeD.EmployeeName);
+                                            //    subject = subject.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
+                                            //    model.Mail.Subject = subject;
+                                            //    mailBody = mailBody.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
+                                            //    //mailBody = mailBody.Replace("##Tentative Release Date##", obj.TentativeReleaseDate.Value.Date.ToString("d"));
+                                            //    mailBody = mailBody.Replace("##Agreed release date##", obj.AgreedReleaseDate.Value.Date.ToString("d"));
+                                            //    mailBody = mailBody.Replace("##RMG manager name##", Server.HtmlEncode(employeeD.EmployeeName));
+                                            //    model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
+                                            //    ViewBag.Body = mailBody;
+                                            //    model.Mail.Cc = model.Mail.Cc + manager.EmailID + ";";
+                                            //    model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
+                                            //    model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
+                                            //    model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
+                                            //    string[] Loginroles = { "HR Admin", "RMG" };
+                                            //    foreach (string r in Loginroles)
+                                            //    {
+                                            //        string[] users = Roles.GetUsersInRole(r);
+                                            //        foreach (string userR in users)
+                                            //        {
+                                            //            HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                            //            if (employee == null)
+                                            //                model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                            //            else
+                                            //                model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                            //        }
+                                            //    }
+                                            //}
+                                            //else                                            
                                             {
                                                 if (userApproverStageId == 3 || user == "HR Admin")
                                                 {
@@ -619,19 +625,21 @@ namespace HRMS.Controllers
                                                         model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
                                                         ViewBag.Body = mailBody;
                                                         model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
-                                                        string[] Loginroles = { "RMG" };
-                                                        foreach (string r in Loginroles)
-                                                        {
-                                                            string[] users = Roles.GetUsersInRole(r);
-                                                            foreach (string userR in users)
-                                                            {
-                                                                HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                                if (employee == null)
-                                                                    model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                                else
-                                                                    model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                            }
-                                                        }
+                                                        //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+
+                                                        //string[] Loginroles = { "RMG" };
+                                                        //foreach (string r in Loginroles)
+                                                        //{
+                                                        //    string[] users = Roles.GetUsersInRole(r);
+                                                        //    foreach (string userR in users)
+                                                        //    {
+                                                        //        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                                        //        if (employee == null)
+                                                        //            model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                                        //        else
+                                                        //            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                                        //    }
+                                                        //}
                                                     }
                                                     else
                                                     {
@@ -655,19 +663,21 @@ namespace HRMS.Controllers
                                                         ViewBag.Body = mailBody;
                                                         model.Mail.Cc = model.Mail.Cc + manager.EmailID + ";" + CompetencyManager.EmailID + ";"
                                                                         + ReportingManager.EmailID + ";" + employeeDetails.EmailID + ";";
-                                                        string[] Loginroles = { "RMG" };
-                                                        foreach (string r in Loginroles)
-                                                        {
-                                                            string[] users = Roles.GetUsersInRole(r);
-                                                            foreach (string userR in users)
-                                                            {
-                                                                HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                                if (employee == null)
-                                                                    model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                                else
-                                                                    model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                            }
-                                                        }
+                                                        //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+
+                                                        //string[] Loginroles = { "RMG" };
+                                                        //foreach (string r in Loginroles)
+                                                        //{
+                                                        //    string[] users = Roles.GetUsersInRole(r);
+                                                        //    foreach (string userR in users)
+                                                        //    {
+                                                        //        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                                        //        if (employee == null)
+                                                        //            model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                                        //        else
+                                                        //            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                                        //    }
+                                                        //}
                                                     }
                                                 }
                                                 else
@@ -717,44 +727,46 @@ namespace HRMS.Controllers
                                         {
                                             if (IsRejectCall == true)
                                             {
-                                                if (userApproverStageId == 8 || user == "RMG")//RMG reject
-                                                {
-                                                    HRMS_tbl_PM_Employee employeeD = employeeDAL.GetEmployeeDetails(employeeDAL.GetEmployeeID(Membership.GetUser().UserName));
-                                                    model.Mail.From = employeeD.EmailID;
-                                                    model.Mail.To = manager.EmailID;
-                                                    templateId = 26;
-                                                    template = Commondal.GetEmailTemplate(templateId);
-                                                    foreach (var emailTemplate in template)
-                                                    {
-                                                        subject = emailTemplate.Subject;
-                                                        mailBody = emailTemplate.Message;
-                                                    }
-                                                    subject = subject.Replace("##RMG manager name##", employeeD.EmployeeName);
-                                                    subject = subject.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
-                                                    model.Mail.Subject = subject;
-                                                    mailBody = mailBody.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
-                                                    mailBody = mailBody.Replace("##RMG manager name##", Server.HtmlEncode(employeeD.EmployeeName));
-                                                    model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
-                                                    ViewBag.Body = mailBody;
-                                                    model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                                    model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
-                                                    model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
+                                                //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
 
-                                                    string[] Loginroles = { "HR Admin", "RMG" };
-                                                    foreach (string r in Loginroles)
-                                                    {
-                                                        string[] users = Roles.GetUsersInRole(r);
-                                                        foreach (string userR in users)
-                                                        {
-                                                            HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                            if (employee == null)
-                                                                model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                            else
-                                                                model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                        }
-                                                    }
-                                                }
-                                                else
+                                                //if (userApproverStageId == 8 || user == "RMG")//RMG reject
+                                                //{
+                                                //    HRMS_tbl_PM_Employee employeeD = employeeDAL.GetEmployeeDetails(employeeDAL.GetEmployeeID(Membership.GetUser().UserName));
+                                                //    model.Mail.From = employeeD.EmailID;
+                                                //    model.Mail.To = manager.EmailID;
+                                                //    templateId = 26;
+                                                //    template = Commondal.GetEmailTemplate(templateId);
+                                                //    foreach (var emailTemplate in template)
+                                                //    {
+                                                //        subject = emailTemplate.Subject;
+                                                //        mailBody = emailTemplate.Message;
+                                                //    }
+                                                //    subject = subject.Replace("##RMG manager name##", employeeD.EmployeeName);
+                                                //    subject = subject.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
+                                                //    model.Mail.Subject = subject;
+                                                //    mailBody = mailBody.Replace("##employee name##", Server.HtmlEncode(employeeDetails.EmployeeName));
+                                                //    mailBody = mailBody.Replace("##RMG manager name##", Server.HtmlEncode(employeeD.EmployeeName));
+                                                //    model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
+                                                //    ViewBag.Body = mailBody;
+                                                //    model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
+                                                //    model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
+                                                //    model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
+
+                                                //    string[] Loginroles = { "HR Admin", "RMG" };
+                                                //    foreach (string r in Loginroles)
+                                                //    {
+                                                //        string[] users = Roles.GetUsersInRole(r);
+                                                //        foreach (string userR in users)
+                                                //        {
+                                                //            HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                                //            if (employee == null)
+                                                //                model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                                //            else
+                                                //                model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                                //        }
+                                                //    }
+                                                //}
+                                                //else
                                                 {
                                                     if (userApproverStageId == 3 || user == "HR Admin")
                                                     {
@@ -801,7 +813,9 @@ namespace HRMS.Controllers
                                                             model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
                                                             ViewBag.Body = mailBody;
                                                             model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                                            string[] Loginroles = { "HR Admin", "RMG" };
+                                                            //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
+                                                            
+                                                            string[] Loginroles = { "HR Admin"};
                                                             foreach (string r in Loginroles)
                                                             {
                                                                 string[] users = Roles.GetUsersInRole(r);
