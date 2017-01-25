@@ -1979,8 +1979,8 @@ namespace HRMS.Controllers
 
         public void AutoSendMail()
         {
-            ConfirmationDAL dal = new ConfirmationDAL();
 
+            ConfirmationDAL dal = new ConfirmationDAL();
             //After Probation Review Date
             DataSet dsConfirmationDetails = dal.GetAutoTriggerMailDetailsForConfirmation();
             var values = new List<Tuple<string, string, string, string>>();
@@ -2004,34 +2004,30 @@ namespace HRMS.Controllers
                     values.Add(new Tuple<string, string, string, string>(EmployeeName, EmpEmailId, ReportingToName, ManagerEmailId));
                 }
             }
-            MailMessage mail = new MailMessage();
 
-            string[] Loginroles = { "HR Admin" };
-            foreach (string r in Loginroles)
-            {
-                string[] users = Roles.GetUsersInRole(r);
-                foreach (string userR in users)
-                {
-                    HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                    if (employee == null)
-                        continue;
-                    else
-                        mail.CC.Add(employee.EmailID);
-                }
-            }
             for (int i = 0; i < values.Count; i++)
             {
+                MailMessage mail = new MailMessage();
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+                string[] Loginroles = { "HR Admin" };
+                foreach (string r in Loginroles)
+                {
+                    string[] users = Roles.GetUsersInRole(r);
+                    foreach (string userR in users)
+                    {
+                        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                        if (employee == null)
+                            continue;
+                        else
+                            mail.CC.Add(employee.EmailID);
+                    }
+                }
                 mail.CC.Add(values[i].Item2);
                 mail.To.Add(values[i].Item4);
-                //string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
-                //string Email = string.Empty;
-                //Email = RMGEmail;
-                //mail.CC.Add(RMGEmail);
                 mail.From = new MailAddress(values[i].Item2, "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
                 model.Mail = new TravelMailTemplate();
                 int templateId = 11;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
@@ -2075,13 +2071,29 @@ namespace HRMS.Controllers
             for (int i = 0; i < valuesBeforeProbation.Count; i++)
             {
                 SmtpClient smtpClient = new SmtpClient();
+                MailMessage mail = new MailMessage();
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+                string[] Loginroles = { "HR Admin" };
+                foreach (string r in Loginroles)
+                {
+                    string[] users = Roles.GetUsersInRole(r);
+                    foreach (string userR in users)
+                    {
+                        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                        if (employee == null)
+                            continue;
+                        else
+                        {
+                            mail.CC.Add(employee.EmailID);
+                        }
+                    }
+                }
                 mail.CC.Add(valuesBeforeProbation[i].Item2);
                 mail.To.Add(valuesBeforeProbation[i].Item4);
                 mail.From = new MailAddress(valuesBeforeProbation[i].Item2, "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
                 model.Mail = new TravelMailTemplate();
                 DateTime DT = new DateTime();
                 DT = DateTime.Now;
@@ -2109,6 +2121,7 @@ namespace HRMS.Controllers
                     smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
                     smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
                     smtpClient.Send(mail);
+                    mail.Dispose();
                 }
                 else
                 {
@@ -2134,6 +2147,7 @@ namespace HRMS.Controllers
                     smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
                     smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
                     smtpClient.Send(mail);
+                    mail.Dispose();
                 }
                 // mail.Dispose();
             }

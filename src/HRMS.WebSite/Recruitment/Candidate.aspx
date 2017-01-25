@@ -1005,7 +1005,7 @@
     <section class="ConfirmationContainer Container">
         <uc1:RecruiterHeader ID="RecruiterHeader1" runat="server"></uc1:RecruiterHeader>
         <div class="MainBody Candidate clearfix">
-            <asp:Label ID="lblMsg" SkinID="lblSuccess"
+            <asp:Label ID="lblMsg" SkinID="lblSuccess" style="margin-left: 750px;float: left;"
                 runat="server"></asp:Label>
             <div class="rwrap">
                 <div class="tabs">

@@ -772,7 +772,7 @@ public partial class Candidate : System.Web.UI.Page
                     {
                         AddCandidateExperienceDetails();
                         dsExperience = candidateBLL.GetExperienceDetails(candidateID);
-
+                        // to Check Max Joined Candidate against RRF By Mahesh F
                         maxcandidatejoined = candidateBLL.GetMaxjoinedcandidate(candidateID);
                         foreach (DataRow row in maxcandidatejoined.Tables[0].Rows)
                         {
@@ -780,7 +780,7 @@ public partial class Candidate : System.Web.UI.Page
                             var cnt = Convert.ToInt32(row["Count"].ToString());
                             if (Convert.ToInt32(cnt) >= Convert.ToInt32(temp))
                             {
-                                lblMsg.Text = "as per the RRF no of positions are Filled" + cnt ;
+                                lblMsg.Text = "For RRF Candidate Already Joined";
                                 log.Info("Validation error while updating candidate details.");
                             }
                             else
