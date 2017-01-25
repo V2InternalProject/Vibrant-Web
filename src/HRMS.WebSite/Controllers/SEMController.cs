@@ -2839,9 +2839,8 @@ namespace HRMS.Controllers
 
         public void SetTimerValue()
         {
-
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(00);
+            DateTime requiredTime = DateTime.Today.AddHours(11).AddMinutes(15);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -2872,7 +2871,7 @@ namespace HRMS.Controllers
             string adoConnStr = sc.ConnectionString;
             return adoConnStr;
         }
-
+        //For Customer Contract End mailers By Mahesh F 
         public void sendmailforCustomerEnd()
         {
 
@@ -2880,7 +2879,7 @@ namespace HRMS.Controllers
             SqlConnection con = new SqlConnection(constring);
             string[] RMGs = { };
             string[] ProjectApprovers = { };
-            RMGs = Roles.GetUsersInRole("RMG");
+            RMGs = Roles.GetUsersInRole("PMO");
             ProjectApprovers = Roles.GetUsersInRole("Project_Approver");
             SqlDataAdapter ProjectApproversEmail = new SqlDataAdapter();
             DataSet dsProjectApproversEmail = new DataSet();
@@ -2999,6 +2998,33 @@ namespace HRMS.Controllers
                     }
                 }
 
+
+                SqlCommand cmd4 = new SqlCommand();
+                cmd4.CommandType = CommandType.StoredProcedure;
+                cmd4.CommandText = "GetProjectReviwersasperCustomer";//write sp name here
+                cmd4.Connection = con;
+                cmd4.Parameters.Add("@customerId", Convert.ToInt32(custvalues[i].Item1));
+                SqlDataAdapter Reviwer = new SqlDataAdapter(cmd4);
+                DataSet ReviwerDS = new DataSet();
+                Reviwer.Fill(ReviwerDS);
+                foreach (DataTable t in ReviwerDS.Tables)
+                {
+                    foreach (DataRow row in t.Rows)
+                    {
+                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeId"]));
+                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmailPM = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+                        if (fromEmployeeDetailsEmailPM == null)
+                        {
+
+                        }
+                        else
+                        {
+                            mail.To.Add(fromEmployeeDetailsEmailPM.EmailID);
+                        }
+
+                    }
+                }
+
                 SqlCommand cmd3 = new SqlCommand();
                 cmd3.CommandType = CommandType.StoredProcedure;
                 cmd3.CommandText = "GetCustomerwithProjectIRapprovermail";//write sp name here
@@ -3045,7 +3071,7 @@ namespace HRMS.Controllers
                     model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
                     model.Mail.Message = model.Mail.Message.Replace("##project name##", custvalues[i].Item2);
                     model.Mail.Message = model.Mail.Message.Replace("##project End Date##", (Convert.ToDateTime(custvalues[i].Item3).ToShortDateString()).ToString());
-                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "RMG");
+                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "PMO");
                 }
                 SmtpClient smtpClient = new SmtpClient();
                 mail.Subject = model.Mail.Subject;
