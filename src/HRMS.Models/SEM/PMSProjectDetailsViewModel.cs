@@ -37,7 +37,7 @@ namespace HRMS.Models
         public DateTime Holidaydate { get; set; }
 
         [Required]
-        [StringLength(50, ErrorMessage = "Project Name can not be greater than 50 characters.")]
+        [StringLength(100, ErrorMessage = "Project Name can not be greater than 100 characters.")]
         [Display(Name = "Project Name")]
         public string ProjectName { get; set; }             // This is used for Project Name Text in Add Project Details View
 
