@@ -383,7 +383,8 @@
                             </label>
                         </div>
                         <div class="InputDiv">
-                            @Html.DisplayFor(x => x.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate))
+                            @Html.TextBoxFor(x => x.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate), new { @id = "lblJoiningDate", @class = "ClassDisplayLabel" })
                         </div>
                     </div>
                     <div class="clearfix formrow">
