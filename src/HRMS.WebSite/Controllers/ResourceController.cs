@@ -1307,7 +1307,9 @@ namespace HRMS.Controllers
         {
             SemDAL dal = new SemDAL();
             DataSet dsResourceDetails = dal.GetAutoTriggerMailDetailsForResource();
-            var values = new List<Tuple<int, string, string, string, string, string>>();
+            //Rahul R: Removing Employee from the Allocation End Mailer
+            //var values = new List<Tuple<int, string, string, string, string, string>>();
+            var values = new List<Tuple<int, string, string, string, string>>();
 
             foreach (DataTable t in dsResourceDetails.Tables)
             {
@@ -1320,11 +1322,12 @@ namespace HRMS.Controllers
                     {
                         EndDate = row["AllocationEndDate"].ToString();
                     }
-                    string EmpEmailId = row["EmpEMailId"].ToString();
+                    //string EmpEmailId = row["EmpEMailId"].ToString();
                     string ManagerEmailId = row["ManagerEmailId"].ToString();
                     string EmpName = row["EmpName"].ToString();
                     int ProjectId = Convert.ToInt32(projectIds);
-                    values.Add(new Tuple<int, string, string, string, string, string>(ProjectId, ProjName, EndDate, EmpEmailId, ManagerEmailId, EmpName));
+                    //values.Add(new Tuple<int, string, string, string, string, string>(ProjectId, ProjName, EndDate, EmpEmailId, ManagerEmailId, EmpName));
+                    values.Add(new Tuple<int, string, string, string, string>(ProjectId, ProjName, EndDate, ManagerEmailId, EmpName));
                 }
             }
 
@@ -1332,17 +1335,16 @@ namespace HRMS.Controllers
             {
                 MailMessage mail = new MailMessage();
                 mail.To.Add(values[i].Item4);
-                mail.To.Add(values[i].Item5);
+                //mail.To.Add(values[i].Item5);
                 PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
                 string[] users = Roles.GetUsersInRole("RMG");
 
                 foreach (string user in users)
                 {
                     HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
-                    if (employee == null)
-                    { }
-                    else
+                    if (employee != null)
                         mail.CC.Add(employee.EmailID);
+
                 }
 
                 string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
@@ -1361,7 +1363,7 @@ namespace HRMS.Controllers
                 {
                     model.Mail.Subject = emailTemplate.Subject;
                     model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
-                    model.Mail.Message = model.Mail.Message.Replace("##employee name##", values[i].Item6);
+                    model.Mail.Message = model.Mail.Message.Replace("##employee name##", values[i].Item5);
                     model.Mail.Message = model.Mail.Message.Replace("##project name##", values[i].Item2);
                     model.Mail.Message = model.Mail.Message.Replace("##allocation end date##", values[i].Item3);
                     model.Mail.Message = model.Mail.Message.Replace("##logged in user##", System.Configuration.ConfigurationManager.AppSettings["RMGName"].ToString());
