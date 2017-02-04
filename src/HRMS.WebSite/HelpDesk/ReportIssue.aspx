@@ -7,6 +7,7 @@
     <link href="../Content/New%20Design/helpdesk.css" rel="stylesheet" />
     <script src="Script/jquery.blockUI.js" type="text/javascript"></script>
     <script src="../Scripts/Global.min.js" type="text/javascript"></script>
+    <%--By Rahul R:Increasing Width of Dropdowns--%> 
     <style>
         .selectBox-options LI {
             width: 500px;
