@@ -1,4 +1,4 @@
-﻿@model HRMS.Models.ContactDetailsViewModel
+﻿﻿@model HRMS.Models.ContactDetailsViewModel
 @{
     ViewBag.Title = "Contact Details";
     Layout = "~/Views/Shared/_PersonalLayout.cshtml";
@@ -193,7 +193,10 @@
                             return false;
                         }
                         else {
-                            DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                            if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2))
+                            {
+                                DeleteEmergencyContactDetail(deleteId, '@ViewBag.ContactEmployeeId');
+                            }
                         }
                     }
                 } @*else {
@@ -305,6 +308,18 @@
         mtype: "POST"
     }
 });
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+
+        }
+        else
+        {
+            $("#jqEmergencyContactTable_iladd").css("visibility","hidden");
+            $("#jqEmergencyContactTable_iledit").css("visibility","hidden");
+            $("#jqEmergencyContactTable_ilsave").css("visibility","hidden");
+            $("#jqEmergencyContactTable_ilcancel").css("visibility","hidden");
+            $('#contactDetails #btnSave').css("visibility","hidden");
+            $('#contactDetails #btnReset').css("visibility","hidden");
+        }
 
         if ((('@Model.UserRole' == "RMG") || ('@Model.UserRole' == 'HR Executive')) && '@ViewBag.LoggedInEmployeeId' != '@ViewBag.SearchedUserID') {
             //$("#btnAddEmergencyContactDetails").hide();

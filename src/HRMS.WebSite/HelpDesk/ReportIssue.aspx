@@ -7,6 +7,12 @@
     <link href="../Content/New%20Design/helpdesk.css" rel="stylesheet" />
     <script src="Script/jquery.blockUI.js" type="text/javascript"></script>
     <script src="../Scripts/Global.min.js" type="text/javascript"></script>
+    <%--By Rahul R:Increasing Width of Dropdowns--%> 
+    <style>
+        .selectBox-options LI {
+            width: 500px;
+        }
+    </style>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -275,7 +281,8 @@
             <div id="body1" runat="server">
                 <div class="MainBody HelpdeskMainbody">
                     <div class="FormContainerBox  Helpdesk clearfix">
-                        <div>
+                        <div style="text-align:center;">
+                            <asp:Label ID="DisplayText" Text="Please log all Helpdesk Tickets in VibrantWeb Refresh except for RMG Department" runat="server"  Font-Bold="true" Font-Size="Large" ForeColor="Red"></asp:Label>
                         </div>
                         <div>
                             <asp:Label ID="lbltxtError" CssClass="error" runat="server"></asp:Label>
@@ -525,8 +532,8 @@
                     </div>
                     <div class="fill-dtls clearfix">
                         <asp:Button ID="btnSubmit" runat="server" Text="Submit" ValidationGroup="Add" CausesValidation="True"
-                            class="ButtonGray"></asp:Button>
-                        <asp:Button ID="btnReset" runat="server" Text="Reset" CausesValidation="False" class="ButtonGray"></asp:Button>
+                            class="ButtonGray" ></asp:Button>
+                        <asp:Button ID="btnReset" runat="server" Text="Reset" CausesValidation="False" class="ButtonGray" ></asp:Button>
                     </div>
                     <div>
                         <asp:TextBox ID="txtUpdateCurrentAllocation" hidden="true" runat="server" Text="<%$appSettings:UpdateCurrentAllocation %>" />

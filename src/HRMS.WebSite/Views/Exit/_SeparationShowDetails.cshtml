@@ -42,7 +42,8 @@
             $('#TentativeReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
         }
 
-        if ('@Model.SearchedUserDetails.UserRole' == "RMG" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+        //Rahul R:Replacing RMG role with HR Admin so that HR could fill the agreed release date
+        if ('@Model.SearchedUserDetails.UserRole' == "HR Admin" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
             $('#AgreedReleaseDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-1:+5", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker });
         }  //Follwing is to hide $ show buttons on the basis of curent stage to perform,
         // & the person to whom particular button is to show
@@ -91,16 +92,17 @@
             }
 
         }
-
-        if ('@Model.SearchedUserDetails.UserRole' == "RMG" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
+        //Rahul R:Replacing RMG role with HR Admin so that HR could fill the agreed release date
+        if ('@Model.SearchedUserDetails.UserRole' == "HR Admin" || '@Model.SearchedUserDetails.UserRole' == "Manager" || '@ViewBag.IsManagerOrEMployee' == 'Manager') {
             $("#AgreedReleaseDate").removeAttr('disabled');
             $("#AgreedReleaseDate").removeAttr('readonly');
         }
 
-        if ('@Model.SearchedUserDetails.UserRole' == "HR Admin") {
+        //Rahul R:Commented the code which was to represent the agreed release date in read only mode for HR.
+        @*if ('@Model.SearchedUserDetails.UserRole' == "HR Admin") {
             $("#AgreedReleaseDate").attr('disabled', 'disabled');
             $(".ui-datepicker-trigger").hide();
-        }
+        }*@
 
         if ('@ViewBag.IsManagerOrEMployee' == 'Manager' && '@ViewBag.IsResignationExists' == "True" && $("#hdStageId").val() == 1) {
 
@@ -306,30 +308,30 @@
     <div class="popup-wrap SepContainer">
         <div class="emp-details borderFieldsBottom">
             <form class="hr-form clearfix">
-            <label class="prefix" for="Employee Name">
-                @Html.Label("Employee:")
-            </label>
-            <label class="suffix" for="Namrata Chandrakant Shetkar">
-                @Html.DisplayFor(x => x.EmployeeDetails.EmployeeName)
-            </label>
-            <label class="prefix" for="Employee Code">
-                @Html.Label("Tentative Release Date:")
-            </label>
-            <label class="suffix" for="3449">
-                @Html.DisplayFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate))
-            </label>
-            <label class="prefix" for="Reimbursment Form Code">
-                @Html.Label("Location:")
-            </label>
-            <label class="suffix" for="104">
-                @Html.DisplayFor(x => x.EmployeeDetails.OfficeLocation)
-            </label>
-            <label class="" for="Date Of Submissiion">
-                @Html.Label("EmployeeCode:")
-            </label>
-            <label class="suffix" for="28/4/2014">
-                @Html.DisplayFor(x => x.EmployeeDetails.EmployeeCode)
-            </label>
+                <label class="prefix" for="Employee Name">
+                    @Html.Label("Employee:")
+                </label>
+                <label class="suffix" for="Namrata Chandrakant Shetkar">
+                    @Html.DisplayFor(x => x.EmployeeDetails.EmployeeName)
+                </label>
+                <label class="prefix" for="Employee Code">
+                    @Html.Label("Tentative Release Date:")
+                </label>
+                <label class="suffix" for="3449">
+                    @Html.DisplayFor(x => x.SeparationFormDetails.TentativeReleaseDate, String.Format("{0:MM/dd/yyyy}", Model.SeparationFormDetails.TentativeReleaseDate))
+                </label>
+                <label class="prefix" for="Reimbursment Form Code">
+                    @Html.Label("Location:")
+                </label>
+                <label class="suffix" for="104">
+                    @Html.DisplayFor(x => x.EmployeeDetails.OfficeLocation)
+                </label>
+                <label class="" for="Date Of Submissiion">
+                    @Html.Label("EmployeeCode:")
+                </label>
+                <label class="suffix" for="28/4/2014">
+                    @Html.DisplayFor(x => x.EmployeeDetails.EmployeeCode)
+                </label>
             </form>
         </div>
         <h3 class="HRHeadingGreen">
@@ -381,9 +383,8 @@
                             </label>
                         </div>
                         <div class="InputDiv">
-                            <label class="select-type">
-                                @Html.DisplayFor(x => x.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate))
-                            </label>
+                            @Html.TextBoxFor(x => x.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate), new { @readonly = "readonly", @disabled = "disabled", @class = "ClassDisabledFields" })
+                            @Html.LabelFor(model => model.EmployeeDetails.JoiningDate, String.Format("{0:MM/dd/yyyy}", Model.EmployeeDetails.JoiningDate), new { @id = "lblJoiningDate", @class = "ClassDisplayLabel" })
                         </div>
                     </div>
                     <div class="clearfix formrow">
@@ -419,7 +420,7 @@
                         <div class="InputDiv">
                             <label class="select-type">
                                 @Html.DisplayFor(x => x.SeparationFormDetails.NoticePeriod)
-                                @Html.Label("Day(s)")
+                                @Html.Label("Days")
                             </label>
                         </div>
                     </div>
@@ -435,18 +436,20 @@
                             @Html.ValidationMessageFor(x => x.SeparationFormDetails.ManagerComment)
                         </div>
                     </div>
-                    <div class="clearfix formrow">
-                        <div class="LabelDiv">
-                            <label class="select-type">
-                                @Html.Label("RMG Comment:")
-                            </label>
-                        </div>
-                        <div class="InputDiv">
-                            @Html.TextAreaFor(x => x.SeparationFormDetails.RMGComment, new { @id = "RMGComment", @class = "ClassDisabledFields" })
-                            @Html.LabelFor(model => model.SeparationFormDetails.RMGComment, Model.SeparationFormDetails.RMGComment, new { @id = "lblRMGComment", @class = "ClassDisplayLabel" })
-                            @Html.ValidationMessageFor(x => x.SeparationFormDetails.RMGComment)
-                        </div>
-                    </div>
+                    
+                    @*Rahul R : RMG section is being removed from the Seperation flow.
+                        <div class="clearfix formrow">
+                            <div class="LabelDiv">
+                                <label class="select-type">
+                                    @Html.Label("RMG Comment:")
+                                </label>
+                            </div>
+                            <div class="InputDiv">
+                                @Html.TextAreaFor(x => x.SeparationFormDetails.RMGComment, new { @id = "RMGComment", @class = "ClassDisabledFields" })
+                                @Html.LabelFor(model => model.SeparationFormDetails.RMGComment, Model.SeparationFormDetails.RMGComment, new { @id = "lblRMGComment", @class = "ClassDisplayLabel" })
+                                @Html.ValidationMessageFor(x => x.SeparationFormDetails.RMGComment)
+                            </div>
+                        </div>*@
                     <div class="clearfix formrow">
                         <div class="LabelDiv">
                             <label class="select-type">
@@ -505,7 +508,7 @@
                         </div>
                         <div class="InputDiv">
                             <label class="select-type">
-                                @Html.DisplayFor(x => x.EmpdesignationDetails.Grade)
+                                @Html.DisplayFor(x => x.EmpdesignationDetails.Grade)                                
                             </label>
                         </div>
                     </div>
@@ -536,7 +539,7 @@
                     <div class="clearfix formrow">
                         <div class="LabelDiv">
                             <label class="select-type">
-                                @Html.Label("System Generated Relieving Date:")
+                                @Html.Label("System Generated Release Date:")
                             </label>
                         </div>
                         <div class="InputDiv lastcol clearfix">

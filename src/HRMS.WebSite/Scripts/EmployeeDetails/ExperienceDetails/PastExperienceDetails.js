@@ -85,7 +85,7 @@ $(document).ready(
                                     beforeShow: BeforeShowForDatePicker,
                                     onClose: onCloseForDatePicker,
                                     buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true,
-                                   // mindate: minValue,
+                                    // mindate: minValue,
                                     //beforeShowDay: disableRangeOfDays
                                 }).bind("mouseover", function () {
                                     var selectedDateID = this.id;
@@ -287,8 +287,7 @@ function isValidNumber(value, Colname) {
 
 function y2k(number) { return (number < 1000) ? number + 1900 : number; }
 
-function calculateDate(startDate,endDate)
-{
+function calculateDate(startDate, endDate) {
 }
 
 function isValidName(value, Colname) {
@@ -632,7 +631,7 @@ function ChangePastToDate(e) {
         //var spE = selectedEndDate.split("/");
         //var s = new Date(spd[2], spd[0] - 1, spd[1]);
         //var e = new Date(spE[2], spE[0] - 1, spE[1]);
-        }
+    }
     if (selectedEndDate < startDateValue && selectedEndDate != "" && startDateValue != "") {
         $("#WorkedTillDateLesserDialog").dialog({
             modal: true,

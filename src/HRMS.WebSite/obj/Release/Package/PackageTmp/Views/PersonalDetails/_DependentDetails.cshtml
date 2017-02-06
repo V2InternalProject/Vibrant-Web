@@ -37,11 +37,11 @@
             // Configure the columns
             colModel: [
                 { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 100, align: "left" },
-                { name: "DependandsId", index: "DependandsId", hidden: true, editable: true, width: 100, align: "left" },
-                { name: "DependandsName", index: "DependandsName", width: 150, editable: true, editrules: { required: true }, editoptions: { maxlength: 1000}, align: "left" },
-                { name: "DependandsRelation", index: "DependandsRelation", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDependentRelation(e); } }]} },
-                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" },
-                { name: "DependandsBirthDate", index: "DependandsBirthDate", width: 70, editable: true, editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions:{
+                { name: "DependandsId", index: "DependandsId", hidden: true, editable: false, width: 100, align: "left" },
+                { name: "DependandsName", index: "DependandsName", width: 150, editable: false, editrules: { required: true }, editoptions: { maxlength: 1000}, align: "left" },
+                { name: "DependandsRelation", index: "DependandsRelation", editable: false, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDependentRelation(e); } }]} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false",editable: false },
+                { name: "DependandsBirthDate", index: "DependandsBirthDate", width: 70, editable: false, editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions:{
                     readonly:true,
                     dataEvents: [{ type: 'change', fn: function(e) {ChangeDependandsBirthDate(e); } }],
                     dataInit: function(element) {
@@ -116,7 +116,7 @@
                         if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
                         || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId'))
                          && ('@Model.EmpStatusMasterID' != 2)) {
-                            DeleteDependantDetail(selectedDependantId, '@ViewBag.DependentEmployeeId');
+                            //DeleteDependantDetail(selectedDependantId, '@ViewBag.DependentEmployeeId');
                         }
                     }
                 }@*else {
@@ -137,15 +137,15 @@
 
         $("#dependantTable").jqGrid('inlineNav', "#dependantTablePager",
        {
-           edit: true,
-           editicon: "ui-icon-pencil",
-           edittext:"Edit",
-           add: true,
-           addicon: "ui-icon-plus",
-           addtext:"Add",
-           save: true,
-           saveicon: "ui-icon-disk",
-           savetext:"Save",
+           //edit: true,
+           //editicon: "ui-icon-pencil",
+           //edittext:"Edit",
+           //add: true,
+           //addicon: "ui-icon-plus",
+           //addtext:"Add",
+           //save: true,
+           //saveicon: "ui-icon-disk",
+           //savetext:"Save",
            cancle: true,
            cancelicon: "ui-icon-cancel",
            canceltext:"Cancel",
@@ -368,7 +368,7 @@
             </div>
         </div>
         <div class="fill-dtls clearfix" style="display:none">
-            <input type="button" value="Save" class="ButtonGray" />
+            <input type="button" value="Save" class="ButtonGray" style="visibility:hidden"  />
         </div>
         <div class="mrgnT33">
             <div class="tablestyle3">

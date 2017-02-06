@@ -362,6 +362,7 @@ namespace HRMS.Orbitweb
                     {
                         Label lblStatus1 = (Label)e.Row.FindControl("lblStatus1");
                         LinkButton lnkEdit = (LinkButton)e.Row.FindControl("LinkButton1");
+                        lnkEdit.Enabled = false;
                         lnkEdit.Visible = false;
                         Label lblStatus = (Label)e.Row.FindControl("lblStatus");
                         lblStatus.Visible = true;
@@ -372,6 +373,7 @@ namespace HRMS.Orbitweb
                     {
                         Label lblStatus1 = (Label)e.Row.FindControl("lblStatus1");
                         LinkButton lnkEdit = (LinkButton)e.Row.FindControl("LinkButton1");
+                        lnkEdit.Enabled = false;
                         lnkEdit.Visible = false;
                         Label lblStatus = (Label)e.Row.FindControl("lblStatus");
                         lblStatus.Visible = true;

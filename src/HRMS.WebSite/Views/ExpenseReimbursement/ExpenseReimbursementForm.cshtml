@@ -915,13 +915,13 @@
             // Configure the columns
             colModel: [
             //             { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'center' },
-              {name: "FileName", index: "FileName", hidden: true, width: 50, align: "left", editable: true },
-              {name: "FilePath", index: "FilePath", hidden: true, width: 50, align: "left", editable: true },
-              {name: "ExpenseDetailsId", index: "ExpenseDetailsId", hidden: true, width: 50, align: "left", editable: true },
-             { name: "ReimbursementEmployeeId", index: "ReimbursementEmployeeId", width: 50, editable: true, align: "left", hidden: true },
-                { name: "ReceiptNo", index: "ReceiptNo", width: 70, editable: true, align: "left" },
+              {name: "FileName", index: "FileName", hidden: true, width: 50, align: "left", editable: false },
+              {name: "FilePath", index: "FilePath", hidden: true, width: 50, align: "left", editable: false },
+              {name: "ExpenseDetailsId", index: "ExpenseDetailsId", hidden: true, width: 50, align: "left", editable: false },
+             { name: "ReimbursementEmployeeId", index: "ReimbursementEmployeeId", width: 50, editable: false, align: "left", hidden: true },
+                { name: "ReceiptNo", index: "ReceiptNo", width: 70, editable: false, align: "left" },
 
-              { name: "DateOfExpense", index: "DateOfExpense", width: 100, align: "left", editrules: { required: true }, sorttype: 'date', editable: true, yearRange: "-100:+10", showOn: "both", maxDate: 0, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+              { name: "DateOfExpense", index: "DateOfExpense", width: 100, align: "left", editrules: { required: true }, sorttype: 'date', editable: false, yearRange: "-100:+10", showOn: "both", maxDate: 0, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                   readonly: true,
                   dataEvents: [{ type: 'change', fn: function (e) { } }],
                   dataInit: function (element) {
@@ -940,13 +940,13 @@
                   }
               }
               },
-                 { name: "NatureOfExpense", index: "NatureOfExpense", align: "left", width: 100, editable: true, editrules: { required: true, custom: true, custom_func: IsExpenseCategorySelected }, edittype: "select", editoptions: { value: persponList, dataEvents: [{ type: 'change', fn: function (e) { getNatureOfExpense(e); } }]} },
-                { name: "Details", index: "Details", width: 170, editable: true, align: "left", editoptions: { maxlength: 500} },
-                { name: "Amount", index: "Amount", width: 80, editable: true, align: "left", editrules: { required: true, custom: true, custom_func: isValidAmount} },
-                 { name: "Comments", index: "Comments", width: 150, editable: true, align: "left", editoptions: { maxlength: 300} },
+                 { name: "NatureOfExpense", index: "NatureOfExpense", align: "left", width: 100, editable: false, editrules: { required: true, custom: true, custom_func: IsExpenseCategorySelected }, edittype: "select", editoptions: { value: persponList, dataEvents: [{ type: 'change', fn: function (e) { getNatureOfExpense(e); } }]} },
+                { name: "Details", index: "Details", width: 170, editable: false, align: "left", editoptions: { maxlength: 500} },
+                { name: "Amount", index: "Amount", width: 80, editable: false, align: "left", editrules: { required: true, custom: true, custom_func: isValidAmount} },
+                 { name: "Comments", index: "Comments", width: 150, editable: false, align: "left", editoptions: { maxlength: 300} },
                   { name: "ViewReceipt", index: "ViewReceipt", width: 80, align: "left", formatter: viewReceiptButton, classes: 'ClassViewReceipt' },
                    {name: "ReceiptNameUpload", index: "ReceiptNameUpload", width: 180, align: "left", hidden: true, formatter: uploadReceiptButton, classes: 'ClassUploadReceipt'},
-                 { name: 'Verify', index: "Verify", width: 70, align: "left", edittype: 'checkbox', editoptions: { value: "True:False" }, editable: true, formatter: AddVerifyChkBox, formatoptions: { disabled: isViewDetails() }, editable: true },
+                 { name: 'Verify', index: "Verify", width: 70, align: "left", edittype: 'checkbox', editoptions: { value: "True:False" }, editable: false, formatter: AddVerifyChkBox, formatoptions: { disabled: isViewDetails() }, editable: true },
 	              { name: "Delete",
 	                  index: "Delete",
 	                  width: 50,
@@ -1011,15 +1011,15 @@
 
         $("#ReimbursementTable").jqGrid('inlineNav', "#ReimbursementTablePager",
         {
-            edit: true,
-            editicon: "ui-icon-pencil",
-            edittext:"Edit",
-            add: true,
-            addicon: "ui-icon-plus",
-            addtext:"Add",
-            save: true,
-            saveicon: "ui-icon-disk",
-            savetext:"Save",
+            //edit: true,
+            //editicon: "ui-icon-pencil",
+            //edittext:"Edit",
+            //add: true,
+            //addicon: "ui-icon-plus",
+            //addtext:"Add",
+            //save: true,
+            //saveicon: "ui-icon-disk",
+            //savetext:"Save",
             cancle: true,
             cancelicon: "ui-icon-cancel",
             canceltext:"Cancel",
@@ -1460,7 +1460,7 @@
     //}
 
     function uploadReceiptButton(cellvalue, options, rowobject) {
-        var uplaodBtn = "<input type='button' value='Upload Receipt' id=" + rowobject['ExpenseDetailsId'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenExpenseUploadPopup() />"
+        var uplaodBtn = "<input type='button' value='Upload Receipt' id=" + rowobject['ExpenseDetailsId'] + " class='" + options['rowId'] + "_UploadLink" + " ButtonGray' onClick=OpenExpenseUploadPopup() disabled />"
         return uplaodBtn;
     }
 
@@ -1475,7 +1475,7 @@
 
     function OpenExpenseUploadPopup()
     {
-        DisplayLoadingDialog();
+        @*DisplayLoadingDialog();
         $.ajax({
             url: '@Url.Action("UploadFile", "Uploads")',
             data: {ModuleName: '@ViewBag.ExpenseModule', FormName: "ExpenseReimbursementForm", FileNameProp: "uploadedFileName", FilePathProp: "uploadedFilePath" },
@@ -1497,7 +1497,7 @@
                 $("#loading").dialog("close");
                 $("#loading").dialog("destroy");
             }
-        });
+        });*@
     }
 
     function ViewExpenseFile(rowId)
@@ -1847,10 +1847,9 @@
             </label>
         </div>
         <div class="ButtonContainer1">
-            <input id="btnSubmitExpenseReimursementForm" type="button" value="Submit" class="ButtonGray mrgnR11" />
-            <input id="btnRejectExpenseReimursementForm" type="button" value="Reject" class="ButtonGray mrgnR11" />
-            <input id="btnCancelExpenseReimursementForm" type="button" value="Cancel Expense Reimbursement"
-                   class="ButtonGray mrgnR11" />
+            @*<input id="btnSubmitExpenseReimursementForm" type="button" value="Submit" disabled="disabled" class="ButtonGray mrgnR11" style="visibility:hidden" />
+            <input id="btnRejectExpenseReimursementForm" type="button" value="Reject" disabled="disabled" class="ButtonGray mrgnR11" style="visibility:hidden" / >
+            <input id="btnCancelExpenseReimursementForm" type="button" value="Cancel Expense Reimbursement" disabled="disabled" class="ButtonGray mrgnR11" style="visibility:hidden" / >*@
         </div>
     </div>
     <div id="deleteExpenseDialogConfirmation" style="display: none">

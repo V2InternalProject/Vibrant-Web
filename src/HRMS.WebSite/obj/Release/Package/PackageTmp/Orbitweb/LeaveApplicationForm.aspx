@@ -338,10 +338,10 @@
                         <button type="button" class="ButtonGray">
                             Reset</button>--%>
                             <asp:Button ID="btnSubmit" TabIndex="3" OnClick="btnSubmit_Click" runat="server" CausesValidation="true" OnClientClick="return Validation();"
-                                Text="Submit" CssClass="ButtonGray"></asp:Button>&nbsp;
+                                Text="Submit" CssClass="ButtonGray" Enabled="false" Visible="false"></asp:Button>&nbsp;
 
                             <asp:Button ID="btnReset" OnClick="btnReset_Click" runat="server" Text="Reset" CausesValidation="false"
-                                CssClass="ButtonGray"></asp:Button>
+                                CssClass="ButtonGray" Visible="false"></asp:Button>
                         </div>
                     </asp:Panel>
                 </section>
@@ -384,7 +384,7 @@
                                 <asp:Button ID="btnSearch" OnClick="btnSearch_Click" runat="server" Text="Search"
                                     CssClass="ButtonGray"></asp:Button>&nbsp;
 
-                                <asp:Button ID="btnCancel" OnClick="btnCancel_Click" runat="server" Text="Reset"
+                                <asp:Button ID="btnCancel" OnClick="btnCancel_Click" runat="server" Text="Reset" Enabled="false"
                                     CausesValidation="false" CssClass="ButtonGray" Style="display: none;"></asp:Button>
                             </div>
                         </div>
@@ -538,18 +538,17 @@
                         <asp:TemplateField HeaderText="Action" ShowHeader="False">
                             <ItemStyle HorizontalAlign="Center" Width="14%"></ItemStyle>
                             <ItemTemplate>
-                                <asp:Label ID="lblApprove" runat="server"></asp:Label>
-                                <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
+                                      <asp:Label ID="lblApprove" runat="server"></asp:Label>
+                                <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False" Enabled="false"
                                     CommandArgument='<%#  Eval("LeaveDetailID") %>'>Edit</asp:LinkButton>&nbsp;
-
-                                <asp:LinkButton ID="lnkButCancel" runat="server" CommandName="LeaveCancel" CausesValidation="False"
-                                    CommandArgument='<%#  Eval("LeaveDetailID") %>' OnClientClick="return confirm('Are you sure you want to Cancel this Leave?');">Cancel&nbsp;Leave</asp:LinkButton>
+                                <asp:LinkButton ID="lnkButCancel" runat="server" CommandName="LeaveCancel" CausesValidation="False" Enabled="false"
+                                    CommandArgument='<%#  Eval("LeaveDetailID") %>'>Cancel&nbsp;Leave</asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" CausesValidation="False" Enabled="false"></asp:LinkButton>
                                 &nbsp;
 
-                                <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel"
+                                <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel" Enabled="false"
                                     CausesValidation="false"></asp:LinkButton>
                             </EditItemTemplate>
                         </asp:TemplateField>

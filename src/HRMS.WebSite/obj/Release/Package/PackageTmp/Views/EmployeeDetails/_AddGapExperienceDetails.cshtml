@@ -75,7 +75,7 @@
                <span class="mandatory">*</span> Reason:
             </div>
             <div class="editor-field fieldwidth floatL ">
-                @Html.TextBoxFor(model => model.Reason, new { @id = "txtAddGapExperienceDetailsReason" })<br />
+                @Html.TextBoxFor(model => model.Reason, new { @id = "txtAddGapExperienceDetailsReason" , @readonly = "readonly" })<br />
                <p class="qualif-detail"> @Html.ValidationMessageFor(model => model.Reason)</p>
                 @Html.HiddenFor(model => model.Reason, new { @id = "reason" })
             </div>
@@ -124,8 +124,8 @@
         </div>
         <div class="clear popup_button ">
             <div class="floatR">
-                <input id="btnSaveGapExperienceDetails" type="submit" value="Save" class="button mrgnR5" />
-                <input id="cancel" type="button" value="Reset" onclick="emptyDiaglog()" class="button " />
+                <input id="btnSaveGapExperienceDetails" type="submit" value="Save" class="button mrgnR5" style="visibility:hidden"  disabled="disabled" />
+                <input id="cancel" type="button" value="Reset" onclick="emptyDiaglog()" class="button " style="visibility:hidden"  disabled="disabled" />
             </div>
         </div>
     </div>

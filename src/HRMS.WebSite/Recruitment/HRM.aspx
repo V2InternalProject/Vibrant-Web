@@ -335,8 +335,8 @@
                                                 </div>
                                                 <div class="InputDiv">
                                                     <%-- <label>Vibrant Web</label>--%>
-                                                    <asp:TextBox ID="txtProjectName" runat="server" ReadOnly="True" Enabled="False" Width="180px"></asp:TextBox>
-                                                    <asp:Label ID="lbl_txtProjectName" runat="server" CssClass="ClassDisplayLabel"></asp:Label>
+                                                    <asp:TextBox ID="txtProjectName" runat="server" ReadOnly="True" Enabled="False" Width="180px" Style="word-wrap: normal; word-break: break-all;"></asp:TextBox>
+                                                    <asp:Label ID="lbl_txtProjectName" runat="server" CssClass="ClassDisplayLabel" Style="word-wrap: normal; word-break: break-all;"></asp:Label>
                                                 </div>
                                             </div>
                                         </div>

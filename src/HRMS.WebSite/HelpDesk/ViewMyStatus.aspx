@@ -103,6 +103,10 @@
                                 <asp:LinkButton ID="lBtnReportIssueID" runat="server" CommandName="viewDetails" Text='<%#DataBinder.Eval(Container.DataItem, "ReportIssueID")%>'>
                                 </asp:LinkButton>
                             </ItemTemplate>
+                            <%--<ItemTemplate>
+                                <asp:label ID="lBtnReportIssueID" runat="server" Text='<%#DataBinder.Eval(Container.DataItem, "ReportIssueID")%>'>
+                                </asp:label>
+                            </ItemTemplate>--%>
                             <HeaderStyle Width="10%" />
                         </asp:TemplateColumn>
                         <asp:TemplateColumn HeaderStyle-Width="15%" HeaderText="Report Issue Date">
@@ -387,7 +391,8 @@
                                 <input type="file" id="uploadFiles" class="FileUploadBtn" name="uploadFiles"
                                     runat="server" style="width: 100px" />
                                 <div class="BrowserVisible">
-                                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileUploadFilesField" class="FileField" value="No files selected" /></div>
+                                    <input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileUploadFilesField" class="FileField" value="No files selected" />
+                                </div>
                                 <%--  <input class="uploadBtn" id="" type="file" size="20" name="uploadFiles"
                                     runat="server" />--%>
                             </div>
@@ -440,9 +445,9 @@
                 </asp:DataGrid>
                 <div class="ButtonContainer1 clearfix">
                     <asp:Button ID="btnAddComments" OnClick="btnAddComments_Click" runat="server" CssClass="ButtonGray mrgnR11 hideOnAdd"
-                        Text="Add Comments"></asp:Button>
+                        Text="Add Comments" ></asp:Button>
                     <asp:Button ID="btnUpload" runat="server" CssClass="ButtonGray" Text="Upload File"
-                        OnClick="btnUpload_Click" />
+                        OnClick="btnUpload_Click"  />
                 </div>
             </asp:Panel>
             <div>
@@ -464,7 +469,7 @@
                     <asp:Button ID="btnSaveComments" runat="server" CssClass="ButtonGray mrgnR11" Text="Save Comments"
                         OnClick="btnSaveComments_Click"></asp:Button>
                     <asp:Button ID="btnCloseIssue" runat="server" CssClass="ButtonGray mrgnR11" Text="Close Issue"
-                        OnClick="btnCloseIssue_Click"></asp:Button>
+                        OnClick="btnCloseIssue_Click" ></asp:Button>
                     <asp:Button ID="btnReOpenIssue" OnClick="btnReOpenIssue_Click" runat="server" CssClass="ButtonGray"
                         Text="Reopen Issue"></asp:Button>
                 </div>

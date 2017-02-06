@@ -68,17 +68,17 @@
 
             // Configure the columns
             colModel: [
-                { name: "Id", index: "id", width: 40, align: "left", hidden: true },
-                { name: "DisciplineId", index: "DisciplineId", width: 40, align: "left", hidden: true },
-                { name: "EmployeeId", index: "EmployeeId", width: 40, align: "left", hidden: true },
-                { name: "CreatedByUserId", index: "CreatedByUserId", width: 40, align: "left", hidden: true },
-                { name: "CreatedByUserName", index: "CreatedByUserName", width: 20, align: "left", sortable: true},
-                { name: "AddedDate", index: "AddedDate", width: 15, align: "left", sortable: true,  formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, sortable: true },
-                { name: "DisciplineSubject", index: "DisciplineSubject", width: 25, align: "left", hidden: true, sortable: true, sortable: true },
-                { name: "View Memo", index: "View Memo", width: 15, align: "left", sortable: true, sortable: true, formatter: function () { return '<span class="GridLink">View Memo</span>'; } },
-                { name: "DisciplineMessage", index: "DisciplineMessage", width: 100, align: "left", sortable: true, hidden: true, sortable: true },
-                { name: "Manager", index: "Manager", width: 20, align: "left", sortable: true},
-                { name: "ManagerId", index: "ManagerId", width: 40, align: "left", hidden: true },
+                { name: "Id", index: "id", width: 40, align: "left", hidden: true, editable: false },
+                { name: "DisciplineId", index: "DisciplineId", width: 40, align: "left", hidden: true ,editable:false},
+                { name: "EmployeeId", index: "EmployeeId", width: 40, align: "left", hidden: true, editable: false },
+                { name: "CreatedByUserId", index: "CreatedByUserId", width: 40, align: "left", hidden: true, editable: false },
+                { name: "CreatedByUserName", index: "CreatedByUserName", width: 20, align: "left", sortable: true, editable: false },
+                { name: "AddedDate", index: "AddedDate", width: 15, align: "left", sortable: true, editable:false, formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, sortable: true },
+                { name: "DisciplineSubject", index: "DisciplineSubject", width: 25, align: "left", editable:false,hidden: true, sortable: true, sortable: true },
+                { name: "View Memo", index: "View Memo", width: 15, align: "left", sortable: true, sortable: true,editable:false, formatter: function () { return '<span class="GridLink">View Memo</span>'; } },
+                { name: "DisciplineMessage", index: "DisciplineMessage", width: 100, align: "left", editable:false,sortable: true, hidden: true, sortable: true },
+                { name: "Manager", index: "Manager", width: 20, align: "left", sortable: true, editable: false },
+                { name: "ManagerId", index: "ManagerId", width: 40, align: "left", hidden: true,editable:false },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -134,11 +134,11 @@
                     return false;
                 }
                 if (iCol == 11 && ('@Model.EmpStatusMasterID' != 2) && rowid != "new_row") {
-                    DeleteQualificationDetail(selectedDisciplineId, rowData);
+                   // DeleteQualificationDetail(selectedDisciplineId, rowData);
                 }
 
                 if ((iCol == 4 || iCol == 5 || iCol == 9) && ('@Model.EmpStatusMasterID' != 2)) {
-                    EditEmployeeDisciplinaryDetails(rowData);
+                    //EditEmployeeDisciplinaryDetails(rowData);
                 }
             }
         }).navGrid("#disciplinedetailsjqTablePager",
@@ -382,7 +382,7 @@
                 </div>
             </div>
             <div class="ButtonContainer1">
-                <input type="button" value="Save" id="btnSaveDisciplinaryDetails" class="ButtonGray" />
+                <input type="button" value="Save" id="btnSaveDisciplinaryDetails" class="ButtonGray" style="visibility:hidden"  disabled="disabled" />
                 @*<input id="cancel" type="button" value="Reset" class="ButtonGray " />*@
             </div>
 

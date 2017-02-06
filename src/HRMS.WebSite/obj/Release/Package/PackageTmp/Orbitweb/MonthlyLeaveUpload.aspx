@@ -130,11 +130,11 @@
                             <div class="leftcol">
                                 <div class="formrow clearfix selectYr">
                                     <div class="LabelDiv">
-                                        <asp:Label ID="lblSelectYear" Text="Select Year:" runat="server"></asp:Label>
+                                        <asp:Label ID="lblSelectYear" Text="Select Year:" runat="server" Enabled="false"></asp:Label>
                                     </div>
                                     <div class="InputDiv">
                                         <asp:DropDownList ID="DDlYear" runat="server" AutoPostBack="True" OnSelectedIndexChanged="DDlYear_SelectedIndexChanged"
-                                            CausesValidation="True">
+                                            CausesValidation="True" Enabled="false">
                                         </asp:DropDownList>
                                     </div>
                                 </div>

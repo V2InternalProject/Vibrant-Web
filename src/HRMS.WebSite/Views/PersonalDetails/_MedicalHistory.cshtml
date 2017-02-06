@@ -1,11 +1,10 @@
-﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
+﻿﻿@model HRMS.Models.MedicalHistoryDetailsViewModel
 @{
     ViewBag.Title = "Medical Details";
     Layout = "~/Views/Shared/_PersonalLayout.cshtml";
 }
 <link href="../../Content/New%20Design/employee.css" rel="stylesheet" type="text/css" />
 <script src="../../Scripts/New%20Design/common.js" type="text/javascript"></script>
-
 <script src="../../Scripts/PersonalDetails/_MedicalHistory.js" type="text/javascript"></script>
 <script src="../../Scripts/Global.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -109,7 +108,10 @@
                 if (colName['index'] == "Delete" && '@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') && rowid != "new_row"
 					 ) {
-                    DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                    if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') && ('@Model.EmpStatusMasterID' != 2))
+                    {
+                        DeleteMedicalDetail(deleteId, '@ViewBag.MedicalEmployeeId');
+                    }
                 } else {
                     if ('@Model.EmpStatusMasterID' != 2 && ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin' || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
 					|| ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId') || '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeId')
@@ -242,6 +244,19 @@
                  mtype: "POST"
              }
          });
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+            //$("#certificationTable").find('tr').find('td').find('img').removeAttr('style','visibility');
+        }
+        else
+        {
+            $("#jqMedicalTable").find('tr').find('td').find('img').attr('disabled','disabled');
+            $("#btnSave").attr('disabled','disabled');
+            $("#btnSave").css("visibility","hidden");
+            $("#jqMedicalTable_iladd").css("visibility","hidden");
+            $("#jqMedicalTable_iledit").css("visibility","hidden");
+            $("#jqMedicalTable_ilsave").css("visibility","hidden");
+            $("#jqMedicalTable_ilcancel").css("visibility","hidden");
+        }
 
         $("#ddlBloodGroup").next().next().text($("#ddlBloodGroup :selected").text());
         if (($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' || $('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive') && '@ViewBag.LoggedInEmployeeId' != '@Model.EmployeeId') {
@@ -288,7 +303,7 @@
             }
         });
         $('#MedicalDetailsForm #Year').val(ID);
-         $('#' + SelectdRowID + '_Year').attr('title', yearName);
+        $('#' + SelectdRowID + '_Year').attr('title', yearName);
     }//end function
 
     function filldropdownlist() {
@@ -444,7 +459,6 @@
             </div>
         </div>
     </div>*@
-
 <section class="EmployeeContainer Container">
     <div class="FixedHeader">
         <div class="clearfix">
@@ -516,7 +530,6 @@
             </div>
         </div>
         <div class="mrgnT33">
-
             <div class="tablestyle3">
                 <table id="jqMedicalTable"></table>
             </div>

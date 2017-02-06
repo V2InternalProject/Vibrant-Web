@@ -1957,7 +1957,7 @@ namespace HRMS.Controllers
         public void SetTimerValue()
         {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
-            DateTime requiredTime = DateTime.Today.AddHours(12).AddMinutes(22);
+            DateTime requiredTime = DateTime.Today.AddHours(9).AddMinutes(30);
             if (DateTime.Now > requiredTime)
             {
                 requiredTime = requiredTime.AddDays(1);
@@ -1972,15 +1972,15 @@ namespace HRMS.Controllers
         public void TimerAction(object e)
         {
             // do some work
-            //AutoSendMail();
+            AutoSendMail();
             // now, call the set timer method to reset its next call time
             SetTimerValue();
         }
 
         public void AutoSendMail()
         {
-            ConfirmationDAL dal = new ConfirmationDAL();
 
+            ConfirmationDAL dal = new ConfirmationDAL();
             //After Probation Review Date
             DataSet dsConfirmationDetails = dal.GetAutoTriggerMailDetailsForConfirmation();
             var values = new List<Tuple<string, string, string, string>>();
@@ -2004,34 +2004,30 @@ namespace HRMS.Controllers
                     values.Add(new Tuple<string, string, string, string>(EmployeeName, EmpEmailId, ReportingToName, ManagerEmailId));
                 }
             }
-            MailMessage mail = new MailMessage();
 
-            string[] Loginroles = { "HR Admin" };
-            foreach (string r in Loginroles)
-            {
-                string[] users = Roles.GetUsersInRole(r);
-                foreach (string userR in users)
-                {
-                    HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                    if (employee == null)
-                        continue;
-                    else
-                        mail.CC.Add(employee.EmailID);
-                }
-            }
             for (int i = 0; i < values.Count; i++)
             {
+                MailMessage mail = new MailMessage();
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+                string[] Loginroles = { "HR Admin" };
+                foreach (string r in Loginroles)
+                {
+                    string[] users = Roles.GetUsersInRole(r);
+                    foreach (string userR in users)
+                    {
+                        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                        if (employee == null)
+                            continue;
+                        else
+                            mail.CC.Add(employee.EmailID);
+                    }
+                }
                 mail.CC.Add(values[i].Item2);
                 mail.To.Add(values[i].Item4);
-                //string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
-                //string Email = string.Empty;
-                //Email = RMGEmail;
-                //mail.CC.Add(RMGEmail);
                 mail.From = new MailAddress(values[i].Item2, "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
                 model.Mail = new TravelMailTemplate();
                 int templateId = 11;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
@@ -2052,7 +2048,7 @@ namespace HRMS.Controllers
                 myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
                 myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 myMailClient.Send(mail);
-                mail.Dispose();
+                // mail.Dispose();
             }
 
             //Befor Probation Review date
@@ -2074,34 +2070,86 @@ namespace HRMS.Controllers
 
             for (int i = 0; i < valuesBeforeProbation.Count; i++)
             {
+                SmtpClient smtpClient = new SmtpClient();
+                MailMessage mail = new MailMessage();
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+                string[] Loginroles = { "HR Admin" };
+                foreach (string r in Loginroles)
+                {
+                    string[] users = Roles.GetUsersInRole(r);
+                    foreach (string userR in users)
+                    {
+                        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                        if (employee == null)
+                            continue;
+                        else
+                        {
+                            mail.CC.Add(employee.EmailID);
+                        }
+                    }
+                }
                 mail.CC.Add(valuesBeforeProbation[i].Item2);
                 mail.To.Add(valuesBeforeProbation[i].Item4);
                 mail.From = new MailAddress(valuesBeforeProbation[i].Item2, "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
                 model.Mail = new TravelMailTemplate();
-                int templateId = 79;
-                List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
-                foreach (var emailTemplate in template)
+                DateTime DT = new DateTime();
+                DT = DateTime.Now;
+                if (valuesBeforeProbation[i].Item5.ToString("MM/dd/yyyy") == DT.ToString("MM/dd/yyyy"))
                 {
-                    model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
-                    model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
-                    model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
-                    model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
-                    model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
-                    model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    int templateId = 96;
+                    List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
+                    foreach (var emailTemplate in template)
+                    {
+                        model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
+                        model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
+                        model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
+                        model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    }
+                    mail.Subject = model.Mail.Subject;
+                    mail.Body = model.Mail.Message;
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.EnableSsl = true;
+                    smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                    //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                    string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                    string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                    smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                    smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                    smtpClient.Send(mail);
+                    mail.Dispose();
                 }
-                mail.Subject = model.Mail.Subject;
-                mail.Body = model.Mail.Message;
-                mail.Priority = MailPriority.High;
-                SmtpClient myMailClient = new SmtpClient();
-                myMailClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
-                myMailClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
-                myMailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                myMailClient.Send(mail);
-                mail.Dispose();
+                else
+                {
+                    int templateId1 = 79;
+                    List<EmployeeMailTemplate> template1 = Commondal.GetEmailTemplate(templateId1);
+                    foreach (var emailTemplate in template1)
+                    {
+                        model.Mail.Subject = emailTemplate.Subject.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = emailTemplate.Message.Replace("<br>", Environment.NewLine);
+                        model.Mail.Message = model.Mail.Message.Replace("##employeename##", valuesBeforeProbation[i].Item1);
+                        model.Mail.Message = model.Mail.Message.Replace("##reportingmanage##", valuesBeforeProbation[i].Item3);
+                        model.Mail.Message = model.Mail.Message.Replace("##probationdate##", valuesBeforeProbation[i].Item5.ToShortDateString());
+                        model.Mail.Message = model.Mail.Message.Replace("##logged in user##", "HR Admin");
+                    }
+                    mail.Subject = model.Mail.Subject;
+                    mail.Body = model.Mail.Message;
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.EnableSsl = true;
+                    smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
+                    //smtpClient.Host = "v2mailserver.in.v2solutions.com";
+                    string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
+                    string Password = System.Configuration.ConfigurationManager.AppSettings["Password"].ToString();
+                    smtpClient.Credentials = new System.Net.NetworkCredential(UserName, Password);
+                    smtpClient.Port = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["PortNumber"].ToString());
+                    smtpClient.Send(mail);
+                    mail.Dispose();
+                }
+                // mail.Dispose();
             }
         }
 
@@ -2258,6 +2306,30 @@ namespace HRMS.Controllers
             //}
 
             return Json(new { results = totalWorkingDays }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AddWorkingDaysforPIP(string empcode, int count, DateTime PIPstartDate)
+        {
+            ConfirmationDAL dal = new ConfirmationDAL();
+            int EmpId = int.Parse(empcode);
+            ////DateTime start = DateTime.Now;
+            SemDAL semDal = new SemDAL();
+            EmployeeDAL EmpDal = new EmployeeDAL();
+            tbl_CF_Confirmation confirmationDetails = dal.getConfirmationId(Convert.ToInt32(EmpId));
+            HRMS_tbl_PM_Employee Empdetails = new HRMS_tbl_PM_Employee();
+            HRMSDBEntities dbContext = new HRMSDBEntities();
+            var Empcode = (from resource in dbContext.HRMS_tbl_PM_Employee
+                           where resource.EmployeeID == EmpId
+                           select resource.Probation_Review_Date).FirstOrDefault();
+            DateTime start = Convert.ToDateTime(Empcode);
+            //if (confirmationDetails.PIPDate == null)
+            //{
+            //    start = Convert.ToDateTime(PIPstartDate);
+            //}
+            int daysToAdd = count;
+            var end = PIPstartDate.AddDays(daysToAdd);
+            return Json(new { results = end }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -2423,6 +2495,9 @@ namespace HRMS.Controllers
                     }
                     else if (tempConfirmation.ConfirmationStatus == 2)
                     {
+                        ConfirmationFormViewModel model1 = new ConfirmationFormViewModel();
+                        DataSet dset1 = new DataSet();
+                        dset1 = dal.GetTempConfirmationNew(confirmationDetails.ConfirmationID);
                         if (model.IsManagerOrEmployee != "Manager")
                         {
                             model.ConfirmationDate = DateTime.Now;
@@ -2435,6 +2510,14 @@ namespace HRMS.Controllers
                                 model.PIPDate = Convert.ToDateTime(tempConfirmation.PIPDate);
                             if (tempConfirmation.PIPComments != null)
                                 model.PIPComments = tempConfirmation.PIPComments.Trim();
+                            if (dset1.Tables[0].Rows[0]["PIPstartDate"] == null || dset1.Tables[0].Rows[0]["PIPstartDate"] == System.DBNull.Value)
+                            {
+                                model.PIPstartDate = DateTime.Parse(model.ProbationReviewDate);
+                            }
+                            else
+                            {
+                                model.PIPstartDate = Convert.ToDateTime(dset1.Tables[0].Rows[0]["PIPstartDate"]);
+                            }
                         }
                         model.IsAcceptedOrExtended = "sendPIP";
                     }
@@ -2942,7 +3025,7 @@ namespace HRMS.Controllers
                             subject = subject.Replace("##employee name##", employeeDetails.EmployeeName);
                             model.MailDetail.Subject = subject;
                             mailbody = mailbody.Replace("##employee name##", employeeDetails.EmployeeName);
-                            mailbody = mailbody.Replace("##new probation review date##", Convert.ToString(confirmationDetail.ExtendedProbationDate));
+                            mailbody = mailbody.Replace("##new probation review date##", Convert.ToString(Convert.ToDateTime(confirmationDetail.PIPDate).ToShortDateString()));
                             mailbody = mailbody.Replace("##logged in user##", loginuser.EmployeeName);
                             model.MailDetail.Message = mailbody.Replace("<br>", Environment.NewLine);
                             ViewBag.body = mailbody;

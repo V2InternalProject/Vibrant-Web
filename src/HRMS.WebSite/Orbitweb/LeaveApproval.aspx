@@ -333,16 +333,16 @@
                                 <asp:TemplateField HeaderText="Action" ShowHeader="False">
                                     <ItemStyle HorizontalAlign="Center" Width="14%"></ItemStyle>
                                     <EditItemTemplate>
-                                        <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"
-                                            CausesValidation="false"></asp:LinkButton>
+                                        <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" 
+                                            CausesValidation="false" Enabled="false"></asp:LinkButton>
                                         &nbsp;
                                         <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="lbnCancel"
-                                            CausesValidation="false"></asp:LinkButton>
+                                            CausesValidation="false" Enabled="false"></asp:LinkButton>
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                         <asp:Label ID="lblApproved" runat="server"></asp:Label>
                                         <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
-                                            CommandArgument='<%#  Eval("LeaveDetailID") %>'>Edit</asp:LinkButton>
+                                            CommandArgument='<%#  Eval("LeaveDetailID") %>' Enabled="false">Edit</asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>

@@ -1,4 +1,4 @@
-﻿@model HRMS.Models.TravelDetailsViewModel
+﻿﻿@model HRMS.Models.TravelDetailsViewModel
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("../../Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
@@ -42,7 +42,15 @@
             $('.ValidationDropDown').next(".selectBox-dropdown").css({ 'position': 'relative', 'visibility': 'visible', 'top': '-20px' });
             $('.ValidationDropDown').next(".selectBox-dropdown").next(".qualif-detail").css({ 'margin-top': '-20px' });
         });
-
+        if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
+        }
+        else {
+            $('#btnSaveSpouseTravelDetails').hide();
+            $('#btnSaveSpouseVisaTravelDetails').hide();
+            $('#btnSaveVisaTravelDetails').hide();
+            jQuery('#btnAddVisaDetails').hide();
+            $("#gbox_jqPersonTravelTable").find('input,select').attr("disabled", true);
+        }
         $("#spouseVisa").bind("change", function (event) {
             $("#FileSpouseVisaField").val($(this).val());
             $('#spouseVisa').attr('title', $(this).val());
@@ -74,7 +82,7 @@
             url: '@Url.Action("SpousePassportLoadGrid", "EmployeeDetails")',
             datatype: "json",
             mtype: "POST",
-            postData: { EmployeeID: '@ViewBag.decryptedSpouseEmployeeId'  },
+            postData: { EmployeeID: '@ViewBag.decryptedSpouseEmployeeId' },
             // Specify the column names
             colNames: ["EmployeeId", "DocumentID", "Passport Copy", "Delete"],
             // Configure the columns
@@ -693,14 +701,12 @@
                     @Html.Label("Upload Passport Copy"):
                 </div>
                 @*For Customized upload button*@
-
                 @*<div class="InputDiv FileUpload">
                     <input type="file" name="doc" id="empPassport" size="24" />
                         <p class="qualif-detail">
                             <span id="PassportUploadError" class="field-validation-error"></span>
                         </p>
                     </div>*@
-
                 <div class="BrowseSpacingFix InputDiv positionR">
                     @*<input type="file" name="doc" id="empPassport" size="24" class="FileUploadBtn" onchange="readImage(this)" />*@
                     <input type="file" name="doc" id="empPassport" size="24" class="FileUploadBtn" />
@@ -736,7 +742,6 @@
 
         <div class="fill-dtls clearfix VisaDetails">
             <h4>Add Visa Details</h4>
-
             <div class="formrow clearfix">
                 <div class="leftcol clearfix">
                     <div class="LabelDiv">
@@ -749,7 +754,6 @@
                                 <option>abc</option>
                                 <option>abc</option>
                             </select>*@
-
                         @Html.DropDownListFor(model => model.VisaDetailsModel.SelectedCountryId, new SelectList(Model.VisaDetailsModel.CountryList, "key", "value"), "Select", new { id = "ddlSpouseCountryList", @class = "ValidationDropDown" })
                         <p class="qualif-detail">@Html.ValidationMessageFor(model => model.VisaDetailsModel.SelectedCountryId)</p>
                         @Html.HiddenFor(m => m.VisaDetailsModel.SelectedCountryId, new { @id = "hdnAddSpouseSelectedCountryId" })
@@ -768,7 +772,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="formrow clearfix">
                 <div class="leftcol clearfix">
                     <div class="LabelDiv">
@@ -784,34 +787,33 @@
                         @Html.DropDownListFor(model => model.VisaDetailsModel.VisaTypeID, new SelectList(Model.VisaDetailsModel.visatypeList, "VisaTypeID", "VisaTypeName", "Select"), "Select", new { @id = "Visa_SpouseVisaTypeID", @class = "ValidationDropDown" })
                         <p class="qualif-detail">
                             @Html.ValidationMessageFor(model => model.VisaDetailsModel.VisaTypeID)
-                        @Html.HiddenFor(model => model.VisaDetailsModel.VisaTypeID, new { id = "SpouseVisaTypeName" })
-                    </p>
+                            @Html.HiddenFor(model => model.VisaDetailsModel.VisaTypeID, new { id = "SpouseVisaTypeName" })
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="rightcol">
-                <div class="LabelDiv">
-                    @* <label>* Upload Visa Copy</label>*@
-                    <span class="mandatory">*</span> @Html.Label("Upload Visa Copy"):
-                </div>
-                @*For Customized upload button*@
-                @*<div class="InputDiv FileUpload">
-                        <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" />
-                            <p class="qualif-detail">
-                                <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
-                            </p>
-                    </div>*@
-
-                <div class="BrowseSpacingFix InputDiv positionR">
-                    @*<input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" onchange="readImage(this)" />*@
-                    <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" />
-                    <div class="BrowserVisible"><input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileSpouseVisaField" class="FileField" value="No files selected" /></div>
-                    <p class="qualif-detail">
-                        <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
-                    </p>
+                <div class="rightcol">
+                    <div class="LabelDiv">
+                        @* <label>* Upload Visa Copy</label>*@
+                        <span class="mandatory">*</span> @Html.Label("Upload Visa Copy"):
+                    </div>
+                    @*For Customized upload button*@
+                    @*<div class="InputDiv FileUpload">
+                            <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" />
+                                <p class="qualif-detail">
+                                    <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
+                                </p>
+                        </div>*@
+                    <div class="BrowseSpacingFix InputDiv positionR">
+                        @*<input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" onchange="readImage(this)" />*@
+                        <input type="file" name="doc" id="spouseVisa" size="24" data-val="true" data-val-required="please select a file to Upload" class="FileUploadBtn" />
+                        <div class="BrowserVisible"><input type="button" class="BtnForCustomUpload" value="Browse.." /><input type="text" id="FileSpouseVisaField" class="FileField" value="No files selected" /></div>
+                        <p class="qualif-detail">
+                            <span id="VisaUploadErrorSpouse" class="field-validation-error"></span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
         <div class="ButtonContainer1">
             <input type="submit" value="Save" id="btnSaveSpouseVisaTravelDetails" class="ButtonGray" />
         </div>
@@ -836,7 +838,6 @@
             Some error occurred while uploading document.Please try again.
         </center>
     </div>
-
     <div id="ConfirmEmployeePassportDelete" title="Delete" style="display: none">
         <p>
             <center>
@@ -844,7 +845,6 @@
             </center>
         </p>
     </div>
-
     <div id="DeleteEmployeePassportSuccess" title="Delete Successful" style="display: none">
         <p>
             <center>
@@ -852,7 +852,6 @@
             </center>
         </p>
     </div>
-
     <div id="errorUploadSpouseVisaDialog" style="display: none">
         <center>
             Some error occurred while uploading document.Please try again.
@@ -863,7 +862,6 @@
             Visa Saved Successfully.
         </center>
     </div>
-
     <div id="spouseDeleteDialogAction" style="display: none">
         <p>
             Are you sure you want to delete the records?
@@ -879,7 +877,6 @@
     </div>
     <div id="spouseTravelDetailsDialog" title="Travel Details" style="display: none">
     </div>
-
     <p style="display: none;" id="NoteforVisaExpiredspouse" class="visarednote">
         Your visa has expired. Please enter the renewed date to continue with the travel
         process.

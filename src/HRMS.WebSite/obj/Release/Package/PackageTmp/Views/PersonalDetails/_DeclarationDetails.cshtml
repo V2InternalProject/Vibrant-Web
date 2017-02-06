@@ -45,13 +45,13 @@
             // Configure the columns
             colModel: [
                 { name: "EmployeeID", index: "EmployeeID", hidden: true, width: 100, align: "left" },
-                { name: "DeclarationId", index: "DeclarationId", editable: true, hidden: true, width: 100, align: "left" },
-                { name: "Name", index: "Name", editable: true, editrules: { required: true }, width: 150, align: "left" },
-                { name: "RelationshipName", index: "RelationshipName", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDeclarationRelation(e); } }]} },
-                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" },
-                { name: "V2EmployeeName", index: "V2EmployeeName", editable: true, width: 70, align: "left", editrules: { custom: true, custom_func: isStatusSelected}, edittype: "select", editoptions: { value: status, dataEvents: [{ type: 'change', fn: function(e) {ChangeStatus(e); } }]} },
-                { name: "V2EmployeeID", index: "V2EmployeeID", hidden: true, align: "left", visible: "false" },
-                { name: "EmployeeCode", index: "EmployeeCode", editable: true, editrules: { required: true, custom: true, custom_func: isValidEmployeeCode }, editoptions: { maxlength: 10}, width: 70, align: "left" },
+                { name: "DeclarationId", index: "DeclarationId", editable: false, hidden: true, width: 100, align: "left" },
+                { name: "Name", index: "Name", editable: false, editrules: { required: true }, width: 150, align: "left" },
+                { name: "RelationshipName", index: "RelationshipName", editable: false, width: 70, align: "left", editrules: { custom: true, custom_func: isRelationSelected}, edittype: "select", editoptions: { value: relation, dataEvents: [{ type: 'change', fn: function(e) {ChangeDeclarationRelation(e); } }]} },
+                { name: "uniqueID", index: "uniqueID", hidden: true, align: "left", visible: "false" ,editable: false},
+                { name: "V2EmployeeName", index: "V2EmployeeName", editable: false, width: 70, align: "left", editrules: { custom: true, custom_func: isStatusSelected}, edittype: "select", editoptions: { value: status, dataEvents: [{ type: 'change', fn: function(e) {ChangeStatus(e); } }]} },
+                { name: "V2EmployeeID", index: "V2EmployeeID", hidden: true, align: "left", visible: "false" ,editable: false},
+                { name: "EmployeeCode", index: "EmployeeCode", editable: false, editrules: { required: true, custom: true, custom_func: isValidEmployeeCode }, editoptions: { maxlength: 10}, width: 70, align: "left" },
                 {
                     name: "Delete",
                     index: "Delete",
@@ -115,7 +115,7 @@
                         if ((($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') || ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRExecutive' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID')
                         || ($('#UserRole').val() == '@HRMS.Models.UserRoles.RMG' && '@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID') || ('@ViewBag.LoggedInEmployeeId' == '@Model.EmployeeID'))
                          && ('@Model.EmpStatusMasterID' != 2)) {
-                            DeleteDecalrationDetail(selectedDeclarationId, '@ViewBag.declarationEmployeeId');
+                            //DeleteDecalrationDetail(selectedDeclarationId, '@ViewBag.declarationEmployeeId');
                         }
                     }
                 }@*else {
@@ -136,15 +136,15 @@
 
         $("#declarationTable").jqGrid('inlineNav', "#DeclarationTablePager",
       {
-          edit: true,
-          editicon: "ui-icon-pencil",
-          edittext: "Edit",
-          add: true,
-          addicon: "ui-icon-plus",
-          addtext: "Add",
-          save: true,
-          saveicon: "ui-icon-disk",
-          savetext: "Save",
+          //edit: true,
+          //editicon: "ui-icon-pencil",
+          //edittext: "Edit",
+          //add: true,
+          //addicon: "ui-icon-plus",
+          //addtext: "Add",
+          //save: true,
+          //saveicon: "ui-icon-disk",
+          //savetext: "Save",
           cancle: true,
           cancelicon: "ui-icon-cancel",
           canceltext: "Cancel",

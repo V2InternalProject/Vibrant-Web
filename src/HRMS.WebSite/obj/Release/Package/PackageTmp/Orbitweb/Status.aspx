@@ -119,14 +119,14 @@
                                             Text="Cancel" />
                                     </FooterTemplate>
                                     <ItemTemplate>
-                                        &nbsp;<asp:LinkButton ID="btnEdit" runat="server" CausesValidation="False" CommandName="EditStatus"
+                                        &nbsp;<asp:LinkButton ID="btnEdit" runat="server" CausesValidation="False" CommandName="EditStatus" Enabled="false"
                                             Text="Edit" />
                                     </ItemTemplate>
                                     <EditItemTemplate>
-                                        <asp:LinkButton ID="btnUpdate" runat="server" CommandName="UpdateStatus" Text="Update"
+                                        <asp:LinkButton ID="btnUpdate" runat="server" CommandName="UpdateStatus" Text="Update" Enabled="false"
                                             CausesValidation="true" />&nbsp;
 
-                                        <asp:LinkButton ID="btnCancel1" runat="server" CausesValidation="False" CommandName="CancelUpdate"
+                                        <asp:LinkButton ID="btnCancel1" runat="server" CausesValidation="False" CommandName="CancelUpdate" Enabled="false"
                                             Text="Cancel" />
                                     </EditItemTemplate>
                                 </asp:TemplateColumn>

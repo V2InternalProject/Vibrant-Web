@@ -280,6 +280,13 @@
                 $(".ContractempDuration").hide();
             }
         }
+        if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') {
+            $(".ButtonContainer1").show();
+        }
+        else
+        {
+            $(".ButtonContainer1").hide();
+        }
 
         if ($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin') {
             jQuery('form#PersonalDetailForm').find('textarea,select,input').removeAttr('disabled');
@@ -358,8 +365,7 @@
             $(".ChildBDDIV").show();
             $("#weddingDate").attr("disabled", "disabled");
             $("#spouseName").attr("disabled", "disabled");
-            if ($("#spouseName").text() == "")
-            {
+            if ($("#spouseName").text() == "") {
                 $("#spouseName").next().text('');
             }
             $("#spouseBirthDate").attr("disabled", "disabled");
@@ -1302,7 +1308,8 @@
     <div class="FixedHeader">
         <div class="clearfix">
             <h2 class="MainHeading">
-                Personal Details</h2>
+                Personal Details
+            </h2>
         </div>
         <nav class="sub-menu-colored">
             @*@if (ViewBag.EmployeeId != null)
@@ -1310,36 +1317,50 @@
             @if (ViewBag.UserRole == "RMG" && Model.SearchUserID != ViewBag.loggedinEmployeeID)
             {
                 <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
-                    Personal</a>
+                    Personal
+                </a>
                 <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Education</a>
+                    Education
+                </a>
                 <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Certification</a>
+                    Certification
+                </a>
                 <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Skill</a>
+                    Skill
+                </a>
                 <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Contact</a>
+                    Contact
+                </a>
             }
             else
             {
                 <a href="@Url.Action("PersonalDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })" class="selected">
-                    Personal</a>
+                    Personal
+                </a>
                 <a href="@Url.Action("DependentDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Dependent</a>
+                    Dependent
+                </a>
                 <a href="@Url.Action("DeclarationMethodDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Declaration</a>
+                    Declaration
+                </a>
                 <a href="@Url.Action("ResidentialDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Residence</a>
+                    Residence
+                </a>
                 <a href="@Url.Action("ContactDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Contact</a>
+                    Contact
+                </a>
                 <a href="@Url.Action("EmployeeQualifications", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Education</a>
+                    Education
+                </a>
                 <a href="@Url.Action("CertificationDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Certification</a>
+                    Certification
+                </a>
                 <a href="@Url.Action("EmployeeSkillDetails", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Skill</a>
+                    Skill
+                </a>
                 <a href="@Url.Action("MedicalHistory", "PersonalDetails", new { employeeId = ViewBag.EmployeeId })">
-                    Medical History</a>
+                    Medical History
+                </a>
 
             }
 
@@ -1422,7 +1443,7 @@
                     </div>
                     <div class="formrow clearfix">
                         <div class="LabelDiv">
-                        * @Html.Label("Employee Code")
+                            * @Html.Label("Employee Code")
                         </div>
                         <div class="InputDiv">
                             @Html.TextBoxFor(model => model.EmployeeCode, new { @disabled = "disabled", @class = "ClassDisabledFields" })
@@ -1685,7 +1706,7 @@
                     </div>
                     <div class="formrow clearfix">
                         <div class="LabelDiv">
-                             * @Html.Label("User Name:", new { @id = "lblUserName" })
+                            * @Html.Label("User Name:", new { @id = "lblUserName" })
                         </div>
                         <div class="InputDiv">
                             @Html.TextBoxFor(model => model.UserName, new { id = "UserName", @class = "ClassDisabledFields" })
@@ -1697,7 +1718,7 @@
                     </div>
                     <div class="formrow clearfix">
                         <div class="LabelDiv">
-                             * @Html.Label("Date Of Birth:")
+                            * @Html.Label("Date Of Birth:")
                         </div>
                         <div class="InputDiv" id="DateOfBirthCollection">
                             @Html.TextBoxFor(model => model.BirthDate, String.Format("{0:MM/dd/yyyy}", Model.BirthDate), new { @id = "birthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
@@ -1708,7 +1729,7 @@
                     </div>
                     <div class="formrow clearfix">
                         <div class="LabelDiv">
-                           <span class="hiddenstar">* </span>@Html.Label("Age:")
+                            <span class="hiddenstar">* </span>@Html.Label("Age:")
                         </div>
                         <div class="InputDiv">
                             @Html.TextBoxFor(model => model.Age, null, new { @disabled = "disabled", @class = "ClassDisabledFields" })
@@ -1798,7 +1819,7 @@
                         <div class="divFourthChild">
                             <div class="formrow clearfix">
                                 <div class="LabelDiv">
-                                   <span class="hiddenstar">* </span>@Html.Label("Child 4 Birth Date:", new { @id = "lblChild4BirthDate" })
+                                    <span class="hiddenstar">* </span>@Html.Label("Child 4 Birth Date:", new { @id = "lblChild4BirthDate" })
                                 </div>
                                 <div class="InputDiv" id="children4BirthDateCollection">
                                     @Html.TextBoxFor(model => model.Child4BirthDate, String.Format("{0:MM/dd/yyyy}", Model.Child4BirthDate), new { @id = "children4BirthDate", @disabled = "disabled", @class = "ClassDisabledFields" })
@@ -1856,20 +1877,19 @@
                     </div>
                 </div>
             </div>
-            <div class="ButtonContainer1">
-                <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" onclick="SavePersonalData()" />
-                <input type="button" class="ButtonGray" value="Reset" onclick="RestoreValues()" id="btnReset" />
-            </div>
-
+                <div class="ButtonContainer1">
+                    <input type="button" class="ButtonGray mrgnR11" value="Save" id="btnSave" onclick="SavePersonalData()" />
+                    <input type="button" class="ButtonGray" value="Reset" onclick="RestoreValues()" id="btnReset"  />
+                </div>
         }
         <div class="commondivider mrgnL30 mrgnR30">
         </div>
         <div class="Container96">
             <h4 class="SmallHeading">
-                Employment Status History Details</h4>
+                Employment Status History Details
+            </h4>
             <div class="tablestyle3">
-                <table id="jqPersonalHistory">
-                </table>
+                <table id="jqPersonalHistory"></table>
             </div>
             <div id="jqjqPersonalHistoryTablePager">
             </div>
@@ -2558,8 +2578,8 @@
                     $("#UserName").removeAttr("disabled");
                     $("#UserName").attr("enabled", true);
                 }
-//                $("#loading").dialog("close");
-//                $("#loading").dialog("destroy");
+                //                $("#loading").dialog("close");
+                //                $("#loading").dialog("destroy");
                 var st = $.parseJSON(results);
                 if (st.status == true) {
                     $("#successDialog").dialog({

@@ -34,20 +34,26 @@ function renderImages(cellvalue, options, rowobject) {
     var obj;
     obj = "";
     for (var i = 1; i < 8; i++) {
-        if (rowobject['ExitStageOrder'] >= i) {
-            if ((rowobject['Field'] == "Reject" && rowobject['ExitStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['ExitStageOrder'] == i)) {
-                obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesRed'> "; //  Red
-            } else if (rowobject['ExitStageOrder'] != i) {
-                obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+        if (i == 3)//RMG Stage Approval : by Rahul R
+            obj = obj + "<img src='../../Images/New Design/not-conducted.png' width='31px' height='31px' class='StatusImagesGray' title='Moved to Next Stage'>";//RMG
+        else {
+            if (rowobject['ExitStageOrder'] >= i) {
+                if ((rowobject['Field'] == "Reject" && rowobject['ExitStageOrder'] == i) || (rowobject['Field'] == "Push Back" && rowobject['ExitStageOrder'] == i)) {
+                    obj = obj + "<img src='../../Images/New Design/status-rejected.png' width='31px' height='31px' class='StatusImagesGreen'> "; //  Red
+                }
+                else if (rowobject['ExitStageOrder'] != i) {
+                    obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                }
+                else {
+                    obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
+                    if (rowobject['StageID'] == 7) {
+                        obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
+                    }
+                }
             }
             else {
                 obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
-                if (rowobject['StageID'] == 7) {
-                    obj = obj + "<img src='../../Images/New Design/status-on.png' width='31px' height='31px' class='StatusImagesGreen'> "; // Green
-                }
             }
-        } else {
-            obj = obj + "<img src='../../Images/New Design/status-off.png' width='31px' height='31px' class='StatusImagesGray'>"; //  Yellow
         }
     }
 

@@ -29,10 +29,10 @@ $(document).ready(
                 mtype: "POST",
                 colNames: ["Organization Name", "Location", "Worked From", "Worked Till", "Employee History Id", "Type", "Working Type Id", "Last Designation", "Reporting Manager", "Last Salary Drawn (LPA)", ""],
                 colModel: [
-                    { name: "OrganizationName", index: "OrganizationName", width: 100, align: "left", editable: true, editrules: { required: true } },
-                    { name: "Location", index: "Location", width: 100, align: "left", editable: true, editrules: { required: true } },
+                    { name: "OrganizationName", index: "OrganizationName", width: 100, align: "left", editable: false, editrules: { required: true } },
+                    { name: "Location", index: "Location", width: 100, align: "left", editable: false, editrules: { required: true } },
                    {
-                       name: "WorkedFrom", index: "WorkedFrom", width: 70, editable: true, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                       name: "WorkedFrom", index: "WorkedFrom", width: 70, editable: false, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                            readonly: true,
                            dataEvents: [{ type: 'change', fn: function (e) { ChangePastFromDate(e); } }],
                            dataInit: function (element) {
@@ -64,7 +64,7 @@ $(document).ready(
                        }
                    },
                     {
-                        name: "WorkedTill", index: "WorkedTill", width: 70, editable: true, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
+                        name: "WorkedTill", index: "WorkedTill", width: 70, editable: false, sorttype: 'date', editrules: { required: true }, align: "left", formatter: 'date', formatoptions: { newformat: 'm/d/Y' }, editoptions: {
                             readonly: true,
                             dataEvents: [{
                                 type: 'change', fn: function (e) {
@@ -106,12 +106,12 @@ $(document).ready(
                             }
                         }
                     },
-                    { name: "EmployeeHistoryId", index: "EmployeeHistoryId", hidden: true, width: 100, align: "left" },
-                    { name: "EmployeeWorkingType", index: "EmployeeWorkingType", align: "left", width: 60, editable: true, editrules: { required: true, custom: true, custom_func: IsTypeSelected }, edittype: "select", editoptions: { value: TypeList, dataEvents: [{ type: 'change', fn: function (e) { getTypesList(e); } }] } },
-                   { name: "EmployeeTypeId", index: "EmployeeTypeId", hidden: true, width: 100, align: "left" },
-                    { name: "LastDesignation", index: "LastDesignation", width: 120, align: "left", editable: true, required: true },
-                    { name: "ReportingManager", index: "ReportingManager", width: 120, align: "left", editable: true, editrules: { custom: true, custom_func: isValidName } },
-                    { name: "LastSalaryDrawn", index: "LastSalaryDrawn", width: 100, align: "left", editable: true, editrules: { custom: true, custom_func: isValidNumber } },
+                    { name: "EmployeeHistoryId", index: "EmployeeHistoryId", hidden: true,editable: false, width: 100, align: "left" },
+                    { name: "EmployeeWorkingType", index: "EmployeeWorkingType", align: "left", width: 60, editable: false, editrules: { required: true, custom: true, custom_func: IsTypeSelected }, edittype: "select", editoptions: { value: TypeList, dataEvents: [{ type: 'change', fn: function (e) { getTypesList(e); } }] } },
+                   { name: "EmployeeTypeId", index: "EmployeeTypeId", hidden: true, width: 100, align: "left", editable: false},
+                    { name: "LastDesignation", index: "LastDesignation", width: 120, align: "left", editable: false, required: true },
+                    { name: "ReportingManager", index: "ReportingManager", width: 120, align: "left", editable: false, editrules: { custom: true, custom_func: isValidName } },
+                    { name: "LastSalaryDrawn", index: "LastSalaryDrawn", width: 100, align: "left", editable: false, editrules: { custom: true, custom_func: isValidNumber } },
                     {
                         name: "Delete",
                         index: "Delete",
@@ -158,7 +158,7 @@ $(document).ready(
                     var empHistoryId = rowData['EmployeeHistoryId'];
                     employeeHistoryId = rowData['EmployeeHistoryId'];
                     if (iCol == 10 && (window.Empstatusmasterid != 2) && rowid != "new_row") {
-                        DeleteEmployeePastExperienceDetailDialog(empHistoryId);
+                       // DeleteEmployeePastExperienceDetailDialog(empHistoryId);
                     } else {
                         if (window.Empstatusmasterid != 2) {
                             //EditEmployeePastExperienceDetails(rowData);
@@ -174,16 +174,16 @@ $(document).ready(
             );
             $("#pastExperiencejqTable").jqGrid('inlineNav', "#pastExperiencejqTablePager",
       {
-          edit: true,
-          editicon: "ui-icon-pencil",
-          add: true,
-          addicon: "ui-icon-plus",
-          save: true,
-          saveicon: "ui-icon-disk",
-          cancle: true,
-          cancelicon: "ui-icon-cancel",
-          addtext: "Add",
-          savetext: "Save",
+          //edit: true,
+          //editicon: "ui-icon-pencil",
+          //add: true,
+          //addicon: "ui-icon-plus",
+          //save: true,
+          //saveicon: "ui-icon-disk",
+          //cancle: true,
+          //cancelicon: "ui-icon-cancel",
+          //addtext: "Add",
+          //savetext: "Save",
           edittext: "Edit",
           canceltext: "Cancel",
           addParams: {
@@ -254,7 +254,7 @@ $(document).ready(
           }
       });
 
-            if ($('#UserRole').val() != HRAdmin) {
+            if ($('#UserRole').val() != HRAdmin && $('#UserRole').val() == HRAdmin) {
                 $("#pastExperiencejqTablePager_left").css("visibility", "hidden");
                 $("#pastExperiencejqTable").hideCol("LastSalaryDrawn");
                 $("#pastExperiencejqTable").jqGrid('hideCol', 'Delete');
@@ -434,25 +434,25 @@ var DeleteEmployeePastExperienceDetailDialog = function (empHistoryId) {
 };
 
 function DeleteEmployeePastExperienceDetailsCall(empHistoryId) {
-    $.ajax({
-        url: window.detailPastExperience,
-        data: { empHistoryId: empHistoryId },
-        success: function (data) {
-            if (data == true) {
-                jQuery("#pastExperiencejqTable").trigger("reloadGrid");
-                $("#AddPastExperienceDetailsSuccessErrorDialog").dialog('close');
-                TaskCompletionShowDialog("Record has been deleted.");
-                RefreshTotalExperienceView();
-            } else {
-                TaskCompletionShowDialog("Unexpected Error Occurred!");
-            }
+    //$.ajax({
+    //    url: window.detailPastExperience,
+    //    data: { empHistoryId: empHistoryId },
+    //    success: function (data) {
+    //        if (data == true) {
+    //            jQuery("#pastExperiencejqTable").trigger("reloadGrid");
+    //            $("#AddPastExperienceDetailsSuccessErrorDialog").dialog('close');
+    //            TaskCompletionShowDialog("Record has been deleted.");
+    //            RefreshTotalExperienceView();
+    //        } else {
+    //            TaskCompletionShowDialog("Unexpected Error Occurred!");
+    //        }
 
-            jQuery("#pastExperiencejqTable").trigger("reloadGrid");
-            $("#AddPastExperienceDetailsSuccessErrorDialog").dialog('close');
-            TaskCompletionShowDialog("Record has been deleted.");
-        },
-        Error: function () { TaskCompletionShowDialog("Unexpected Error Occurred!"); }
-    });
+    //        jQuery("#pastExperiencejqTable").trigger("reloadGrid");
+    //        $("#AddPastExperienceDetailsSuccessErrorDialog").dialog('close');
+    //        TaskCompletionShowDialog("Record has been deleted.");
+    //    },
+    //    Error: function () { TaskCompletionShowDialog("Unexpected Error Occurred!"); }
+    //});
 }
 
 function TaskCompletionShowDialog(dialogMessage) {

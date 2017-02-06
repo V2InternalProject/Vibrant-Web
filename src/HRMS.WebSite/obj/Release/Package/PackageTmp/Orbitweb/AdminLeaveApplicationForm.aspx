@@ -239,7 +239,7 @@
                         </div>
                         <div class="clearfix">
                             <asp:Button ID="btnSubmit" OnClick="btnSubmit_Click" class="ButtonGray" runat="server"
-                                Text="Submit"></asp:Button>
+                                Text="Submit" Visible="false" Enabled="false" ></asp:Button>
                         </div>
                     </div>
                 </section>
@@ -408,20 +408,20 @@
                         <asp:TemplateField HeaderText="Action" ShowHeader="False">
                             <ItemStyle HorizontalAlign="Center"></ItemStyle>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" Enabled="false"></asp:LinkButton>
                                 &nbsp;
 
-                                <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel"
+                                <asp:LinkButton ID="lnkCancel" runat="server" Text="Cancel" CommandName="lnkCancel" Enabled="false"
                                     CausesValidation="false"></asp:LinkButton>
                             </EditItemTemplate>
                             <ItemTemplate>
                                 <itemstyle horizontalalign="Center" width="16%"></itemstyle>
                                 <asp:Label ID="lblApprove" runat="server"></asp:Label>
-                                <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False"
+                                <asp:LinkButton ID="lnkbutEdit" runat="server" CommandName="Edit" CausesValidation="False" Enabled="false"
                                     CommandArgument='<%#  Eval("LeaveDetailID") %>'>Edit</asp:LinkButton>&nbsp;
 
-                                <asp:LinkButton ID="lnkButCancel" runat="server" CommandName="LeaveCancel" CausesValidation="False"
-                                    CommandArgument='<%#  Eval("LeaveDetailID") %>' OnClientClick="return confirm('Are you sure you want to Cancel this Leave?');">Cancel Leave</asp:LinkButton>
+                                <asp:LinkButton ID="lnkButCancel" runat="server" CommandName="LeaveCancel" CausesValidation="False" Enabled="false"
+                                    CommandArgument='<%#  Eval("LeaveDetailID") %>'>Cancel Leave</asp:LinkButton>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

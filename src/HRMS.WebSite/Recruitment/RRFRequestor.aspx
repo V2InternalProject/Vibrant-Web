@@ -346,7 +346,7 @@
                                                     <span class="hiddenstar">*</span><asp:Label ID="lblProjectName" runat="server" Text="Project Name"></asp:Label>
                                                 </div>
                                                 <div class="InputDiv">
-                                                    <asp:TextBox ID="txtProjectName" runat="server" MaxLength="30"></asp:TextBox>
+                                                    <asp:TextBox ID="txtProjectName" runat="server" MaxLength="100"></asp:TextBox>
                                                 </div>
                                             </div>
                                         </div>

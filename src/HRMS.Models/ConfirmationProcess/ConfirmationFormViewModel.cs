@@ -48,6 +48,7 @@ namespace HRMS.Models
         public int NumberOfDaysPIP { get; set; }
 
         public DateTime PIPDate { get; set; }
+        public DateTime PIPstartDate { get; set; }
         public string ProbationTemplate { get; set; }
         public string ConfirmationTemplate { get; set; }
         public List<EmployeementTypeList> EmployeeType { get; set; }
