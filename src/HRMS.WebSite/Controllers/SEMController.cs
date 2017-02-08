@@ -143,6 +143,9 @@ namespace HRMS.Controllers
                 model.IsProjectApprover = true;
             if (LogeedInEmRoles.Contains("RMG"))
                 ViewBag.user = "RMG";
+            //Added by Rahul R:PMO too needs the access to add the Project.
+            if (LogeedInEmRoles.Contains("PMO"))
+                ViewBag.user = "PMO";
             projectDetails = dal.GetPMSProjectDetails(ProjectID);
 
             List<DateTime> HolidayDates = dal.getHolidayDateList();
