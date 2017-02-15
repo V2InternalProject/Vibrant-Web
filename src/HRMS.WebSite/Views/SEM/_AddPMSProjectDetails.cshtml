@@ -968,7 +968,7 @@
         $('#txt_PMSCustomer').text($('#PMSCustomerDD').find(":selected").text());
         $('#txt_PMSLifeCycle').text($('#PMSLifeCycle').find(":selected").text());
 
-        if('@ViewBag.user' == "RMG")
+        if('@ViewBag.user' == "RMG" ||'@ViewBag.user' == "PMO")//Rahul R: appended or condition too for Enabling the add project form for PMO too.
         {
             $("#AddProjectDetails").find('input, select,tr, textarea, dropdown,checkbox').removeAttr("disabled");
             $('.ui-datepicker-trigger').show();
