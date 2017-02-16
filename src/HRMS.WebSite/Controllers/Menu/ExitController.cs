@@ -397,9 +397,10 @@ namespace HRMS.Controllers
                             mailBody = mailBody.Replace("##date selected by HR##", empexitTermination.TentativeReleavingDate.Value.Date.ToString("d"));
                             mailBody = mailBody.Replace("##comments enter by HR##", empexitTermination.HRComment);
                             mailBody = mailBody.Replace("##HR Admin##", Server.HtmlEncode(terminationDetails.EmployeeName));
-                            model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);  
+                            model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
                             //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
-                            string[] Loginroles = { "HR Admin"};
+                            //Adding RMG roles so they can recieve the seperation Mails:Rahul R
+                            string[] Loginroles = { "HR Admin", "RMG" };
                             foreach (string r in Loginroles)
                             {
                                 string[] users = Roles.GetUsersInRole(r);
@@ -448,7 +449,8 @@ namespace HRMS.Controllers
                                 mailBody = mailBody.Replace("##HR Closure stakeholder##", Server.HtmlEncode(employeeD.EmployeeName));
                                 model.Mail.Message = mailBody.Replace("<br>", Environment.NewLine);
                                 //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
-                                string[] Loginroles = { "HR Admin" };
+                                //Adding RMG roles so they can recieve the seperation Mails:Rahul R
+                                string[] Loginroles = { "HR Admin", "RMG" };
                                 foreach (string r in Loginroles)
                                 {
                                     string[] users = Roles.GetUsersInRole(r);
@@ -489,8 +491,9 @@ namespace HRMS.Controllers
                                     ViewBag.Body = mailBody;
                                     model.Mail.Cc = model.Mail.Cc + ReportingManager.EmailID + ";";
                                     model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
-                                    //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
-                                    string[] Loginroles = { "HR Admin" };
+                                    //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R 
+                                    //Adding RMG roles so they can recieve the seperation Mails:Rahul R
+                                    string[] Loginroles = { "HR Admin", "RMG" };
                                     foreach (string r in Loginroles)
                                     {
                                         string[] users = Roles.GetUsersInRole(r);
@@ -532,7 +535,8 @@ namespace HRMS.Controllers
                                         if (CompetencyManager != null)
                                             model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
                                         //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
-                                        string[] Loginroles = { "HR Admin"};
+                                        //Adding RMG roles so they can recieve the seperation Mails:Rahul R
+                                        string[] Loginroles = { "HR Admin", "RMG" };
                                         foreach (string r in Loginroles)
                                         {
                                             string[] users = Roles.GetUsersInRole(r);
@@ -627,19 +631,20 @@ namespace HRMS.Controllers
                                                         model.Mail.Cc = model.Mail.Cc + employeeDetails.EmailID + ";";
                                                         //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
 
-                                                        //string[] Loginroles = { "RMG" };
-                                                        //foreach (string r in Loginroles)
-                                                        //{
-                                                        //    string[] users = Roles.GetUsersInRole(r);
-                                                        //    foreach (string userR in users)
-                                                        //    {
-                                                        //        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                        //        if (employee == null)
-                                                        //            model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                        //        else
-                                                        //            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                        //    }
-                                                        //}
+                                                        //UnCommented RMG roles cc section so RMG can recieve the seperation Mails:Rahul R                                                      
+                                                        string[] Loginroles = { "RMG" };
+                                                        foreach (string r in Loginroles)
+                                                        {
+                                                            string[] users = Roles.GetUsersInRole(r);
+                                                            foreach (string userR in users)
+                                                            {
+                                                                HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                                                if (employee == null)
+                                                                    model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                                                else
+                                                                    model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                                            }
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -665,19 +670,21 @@ namespace HRMS.Controllers
                                                                         + ReportingManager.EmailID + ";" + employeeDetails.EmailID + ";";
                                                         //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
 
-                                                        //string[] Loginroles = { "RMG" };
-                                                        //foreach (string r in Loginroles)
-                                                        //{
-                                                        //    string[] users = Roles.GetUsersInRole(r);
-                                                        //    foreach (string userR in users)
-                                                        //    {
-                                                        //        HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
-                                                        //        if (employee == null)
-                                                        //            model.Mail.Cc = model.Mail.Cc + string.Empty;
-                                                        //        else
-                                                        //            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                                                        //    }
-                                                        //}
+                                                        //UnCommented RMG roles cc section so RMG can recieve the seperation Mails:Rahul R  
+
+                                                        string[] Loginroles = { "RMG" };
+                                                        foreach (string r in Loginroles)
+                                                        {
+                                                            string[] users = Roles.GetUsersInRole(r);
+                                                            foreach (string userR in users)
+                                                            {
+                                                                HRMS_tbl_PM_Employee employee = employeeDAL.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(userR));
+                                                                if (employee == null)
+                                                                    model.Mail.Cc = model.Mail.Cc + string.Empty;
+                                                                else
+                                                                    model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 else
@@ -814,8 +821,8 @@ namespace HRMS.Controllers
                                                             ViewBag.Body = mailBody;
                                                             model.Mail.Cc = model.Mail.Cc + CompetencyManager.EmailID + ";";
                                                             //Removed RMG Roles to skip their names in seperation mail:Changes by Rahul R
-                                                            
-                                                            string[] Loginroles = { "HR Admin"};
+                                                            //Adding RMG roles so they can recieve the seperation Mails:Rahul R
+                                                            string[] Loginroles = { "HR Admin", "RMG" };
                                                             foreach (string r in Loginroles)
                                                             {
                                                                 string[] users = Roles.GetUsersInRole(r);
