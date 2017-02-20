@@ -3112,7 +3112,7 @@ namespace HRMS.Controllers
             string[] Managers = { };
             ProjectApprovers = Roles.GetUsersInRole("Project_Approver");
             RMGs = Roles.GetUsersInRole("RMG");
-            Managers = Roles.GetUsersInRole("Manager");
+            Managers = Roles.GetUsersInRole("PMO");
 
             SqlDataAdapter ProjectApproversEmail = new SqlDataAdapter();
             DataSet dsProjectApproversEmail = new DataSet();
