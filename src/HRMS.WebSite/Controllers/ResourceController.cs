@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.EntityClient;
 
 namespace HRMS.Controllers
 {
@@ -1281,7 +1282,7 @@ namespace HRMS.Controllers
         public System.Threading.Timer myTimer;
 
         public void SetTimerValue()
-        {
+        {           
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
             DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)
@@ -1303,8 +1304,18 @@ namespace HRMS.Controllers
             SetTimerValue();
         }
 
+        private string GetADOConnectionString()
+        {
+            WSEMDBEntities ctx = new WSEMDBEntities(); //create your entity object here
+            EntityConnection ec = (EntityConnection)ctx.Connection;
+            SqlConnection sc = (SqlConnection)ec.StoreConnection; //get the SQLConnection that your entity object would use
+            string adoConnStr = sc.ConnectionString;
+            return adoConnStr;
+        }
         public void sendMail()
         {
+            string constring = GetADOConnectionString();
+            SqlConnection con = new SqlConnection(constring);
             SemDAL dal = new SemDAL();
             DataSet dsResourceDetails = dal.GetAutoTriggerMailDetailsForResource();
             //Rahul R: Removing Employee from the Allocation End Mailer
@@ -1334,9 +1345,33 @@ namespace HRMS.Controllers
             for (int i = 0; i < values.Count; i++)
             {
                 MailMessage mail = new MailMessage();
-                mail.To.Add(values[i].Item4);
+                //mail.To.Add(values[i].Item4);
                 //mail.To.Add(values[i].Item5);
                 PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+
+                SqlCommand cmd4 = new SqlCommand();
+                cmd4.CommandType = CommandType.StoredProcedure;
+                cmd4.CommandText = "GetProjectReviewerDetails_sp";//write sp name here
+                cmd4.Connection = con;
+                cmd4.Parameters.Add("@ProjectID", Convert.ToInt32(values[i].Item1));
+                SqlDataAdapter Reviwer = new SqlDataAdapter(cmd4);
+                DataSet ReviwerDS = new DataSet();
+                Reviwer.Fill(ReviwerDS);
+                foreach (DataTable t in ReviwerDS.Tables)
+                {
+                    foreach (DataRow row in t.Rows)
+                    {
+                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeId"]));
+                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmailPM = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+                        if (fromEmployeeDetailsEmailPM != null)
+                        {
+                            mail.To.Add(fromEmployeeDetailsEmailPM.EmailID);
+                        }
+
+                    }
+                }
+
                 string[] users = Roles.GetUsersInRole("RMG");
 
                 foreach (string user in users)
@@ -1355,7 +1390,7 @@ namespace HRMS.Controllers
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
-                EmployeeDAL employeeDAL = new EmployeeDAL();
+
                 model.Mail = new TravelMailTemplate();
                 int templateId = 66;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
