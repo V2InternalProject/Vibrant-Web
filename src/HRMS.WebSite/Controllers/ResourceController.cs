@@ -784,6 +784,13 @@ namespace HRMS.Controllers
 
                     tbl_PM_Employee_SEM EmpDetails = dal.GetEmployeeDetailsFromEmployeeID(loggedinEmpID.HasValue ? loggedinEmpID.Value : 0);
 
+                    tbl_PM_Employee_SEM ReportingTODetailsForCC = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(ResouceDeatils.ReportingTo));
+                    if (ReportingTODetailsForCC != null)
+                    {
+                        model.Mail.Cc = model.Mail.Cc + ReportingTODetailsForCC.EmailID + ";";
+
+                    }
+
                     foreach (var emailTemplate in template)
                     {
                         model.Mail.Subject = emailTemplate.Subject;
@@ -1282,7 +1289,7 @@ namespace HRMS.Controllers
         public System.Threading.Timer myTimer;
 
         public void SetTimerValue()
-        {           
+        {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
             DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)
