@@ -1820,6 +1820,19 @@ namespace HRMS.DAL
                 throw;
             }
         }
+        //Added By Rahul R: Issue-#138133791
+        public Tbl_HR_Travel GetTravelDetailsbyTRF(string TRFNo)
+        {
+            try
+            {
+                Tbl_HR_Travel empDetails = dbContext.Tbl_HR_Travel.Where(ed => ed.TRFNo == TRFNo).FirstOrDefault();
+                return empDetails;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<TravelTypeList> GetTravelTypes()
         {

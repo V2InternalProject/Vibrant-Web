@@ -3397,11 +3397,41 @@ namespace HRMS.Controllers
                 HRMS_tbl_PM_Employee fromEmployeeDetails = employeeDAL.GetEmployeeDetails(Convert.ToInt32(successEmpIDs));
                 HRMS_tbl_PM_Employee ToEmployeeDetails = employeeDAL.GetEmployeeDetails(loggedinEmpID);
 
+                TravelDAL dal = new TravelDAL();
+                Tbl_HR_Travel TravelDetails = new Tbl_HR_Travel();
+                TravelDetails = dal.GetTravelDetailsbyTRF(travelTrfNo.ToString());
+                if (TravelDetails != null)
+                {
+                    int ProjectApproverID;
+                    if (TravelDetails.ProjectManagerId.HasValue)
+                    {
+                        ProjectApproverID = TravelDetails.ProjectManagerId.Value;
+                        HRMS_tbl_PM_Employee ProjectApproverDetails = employeeDAL.GetEmployeeDetails(ProjectApproverID);
+                        if (ProjectApproverDetails != null)
+                            model.Mail.Cc = ProjectApproverDetails.EmailID + ";";
+                    }
+                    int GroupHeadID;
+                    if (TravelDetails.GroupHeadId.HasValue)
+                    {
+                        GroupHeadID = TravelDetails.GroupHeadId.Value;
+                        HRMS_tbl_PM_Employee GroupHeadDetails = employeeDAL.GetEmployeeDetails(GroupHeadID);
+                        if (GroupHeadDetails != null)
+                            model.Mail.Cc = model.Mail.Cc + GroupHeadDetails.EmailID + ";";
+                    }
+                    int AdminApproverID;
+                    if (TravelDetails.AdminApproverId.HasValue)
+                    {
+                        AdminApproverID = TravelDetails.AdminApproverId.Value;
+                        HRMS_tbl_PM_Employee AdminApproverDetails = employeeDAL.GetEmployeeDetails(AdminApproverID);
+                        if (AdminApproverDetails != null)
+                            model.Mail.Cc = model.Mail.Cc + AdminApproverDetails.EmailID + ";";
+                    }
+                }
                 if (fromEmployeeDetails != null)
                 {
                     model.Mail.From = fromEmployeeDetails.EmailID;
                     model.Mail.To = ToEmployeeDetails.EmailID;
-                    if (templateID == 94 || templateID == 95)
+                    if (templateID == 94 || templateID == 95 || templateID == 98)
                     {
                         string[] Loginroles = { "Travel_Admin" };
                         foreach (string r in Loginroles)
@@ -3428,9 +3458,26 @@ namespace HRMS.Controllers
                         {
                             model.Mail.Message = model.Mail.Message.Replace("##rejection comments##", travelComments).Replace("##trf no.##", String.Format("'{0}'", travelTrfNo.ToString()));
                         }
-                        if (templateID == 95)
+                        else if (templateID == 95)
                         {
                             model.Mail.Message = model.Mail.Message.Replace("##cancellation comments##", travelComments).Replace("##trf no.##", String.Format("'{0}'", travelTrfNo.ToString()));
+                        }
+                        else if (templateID == 98)
+                        {
+                            if (TravelDetails.StageID == 1)
+                            {
+                                model.Mail.Message = model.Mail.Message.Replace("##trf no.##", String.Format("'{0}'", travelTrfNo.ToString()));
+                            }
+                            else
+                            {
+                                model.Mail.Subject = "Travel Approval";
+                                model.Mail.Message = "";
+                                model.Mail.Message = "Hi, <br> Travel Request ##trf no.## has been approved.<br><br>  Regards,<br>  ##logged in user##<br>";
+                                model.Mail.Message = model.Mail.Message.Replace("<br>", Environment.NewLine);
+                                model.Mail.Message = model.Mail.Message.Replace("##logged in user##", fromEmployeeDetails.EmployeeName);
+                                model.Mail.Message = model.Mail.Message.Replace("##trf no.##", String.Format("'{0}'", travelTrfNo.ToString()));
+                            }
+
                         }
                     }
                 }
@@ -3585,7 +3632,7 @@ namespace HRMS.Controllers
                 PassG = status[1];
                 ContactG = status[2];
                 Contact1G = status[3];
-                VisaG = isVisaFreeCountry > 0 ? false:status[4];
+                VisaG = isVisaFreeCountry > 0 ? false : status[4];
                 JourneyG = status[5];
                 return Json(new { ClientG = ClientG, PassG = PassG, ContactG = ContactG, Contact1G = Contact1G, VisaG = VisaG, JourneyG = JourneyG }, JsonRequestBehavior.AllowGet);
             }
@@ -3789,13 +3836,13 @@ namespace HRMS.Controllers
                 if (app.GetAccomodationDetailsList != null)
                 {
                     app.GetAccomodationDetailsList.ForEach(x =>
-                        {
-                            AccomodationAdmin rep4 = new AccomodationAdmin();
-                            rep4.HotelAddress = x.HotelAddress;
-                            rep4.HotelContactNumber = x.HotelContactNumber;
-                            rep4.TravelId = x.TravelId;
-                            report4.Add(rep4);
-                        });
+                    {
+                        AccomodationAdmin rep4 = new AccomodationAdmin();
+                        rep4.HotelAddress = x.HotelAddress;
+                        rep4.HotelContactNumber = x.HotelContactNumber;
+                        rep4.TravelId = x.TravelId;
+                        report4.Add(rep4);
+                    });
                 }
                 List<ClientViewModel> report5 = new List<ClientViewModel>();
                 if (app.GetClientDetailsList != null)

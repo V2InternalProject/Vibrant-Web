@@ -1162,7 +1162,7 @@
 
     // Delete all Travel Details
     $('#btnCancelTravelRequestForm').click(function () {
-        debugger;
+         
         var IsloggedUser = '@ViewBag.IsLoggedInUser';
         if (IsloggedUser == 'True' && '@ViewBag.StageID' == 3) {
             $("#ErrorForselfAdminCancel").dialog({
@@ -2372,8 +2372,11 @@
                         dialogClass: 'noclose',
                         buttons: {
                             Ok: function () {
+                                 
                                 $(this).dialog("close");
-                                window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
+                                DisplayLoadingDialog();
+                                sendcallmailforTravel(98, @Model.TravelTRFNo, "Submit");
+                                //window.location.href = '@Url.Action("GetTravelStatus", "Travel")';
                             }
                         }
                     });
@@ -2735,7 +2738,7 @@
         //}
         // return false;
     }
-    function sendcallmailforTravel(mailTemplateID, travelID, travelComments) {
+    function sendcallmailforTravel(mailTemplateID, travelID, travelComments) {         
         var empId = '@ViewBag.loginUserId';
         var EmployeeID = '@ViewBag.TravelEmp';
         $.ajax({
@@ -2743,7 +2746,7 @@
             type: 'POST',
             data: { successEmpIDs: empId, loggedinEmpID: EmployeeID, templateID: mailTemplateID, travelTrfNo: travelID, travelComments: travelComments },
             datatype: "json",
-            success: function (data) {
+            success: function (data) {                 
                 $("#loading").dialog("close");
                 $("#loading").dialog("destroy");
                 if (data) {
