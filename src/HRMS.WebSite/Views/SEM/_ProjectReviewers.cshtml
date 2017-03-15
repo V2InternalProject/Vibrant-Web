@@ -20,7 +20,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
          id=0;
-        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG") {
+         if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO") {
             $('#SelectAllReviewerBtn').hide();
             $('#DeselectAllReviewerBtn').hide();
             $('#DeleteReviewerBtn').hide();
@@ -126,7 +126,7 @@
                     $('#jqAddProjectReviewersTablePager_center').hide();
                 }
 
-                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG") {
+                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO") {
                     $('#jqAddProjectReviewersTable_iladd').css('visibility','hidden');
                     $('#jqAddProjectReviewersTable_iledit').css('visibility','hidden');
                     $('#jqAddProjectReviewersTable_ilsave').css('visibility','hidden');

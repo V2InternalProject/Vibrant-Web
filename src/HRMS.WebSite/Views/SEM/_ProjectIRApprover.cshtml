@@ -20,7 +20,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" ) {
+        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO" ) {
             $('#SelectAllIRApproverBtn').hide();
             $('#DeselectAllIRApproverBtn').hide();
             $('#DeleteIRApproverBtn').hide();
@@ -98,7 +98,7 @@
                     $('#jqAddProjectIRApproverTablePager_center').hide();
                 }
 
-                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') &&  '@ViewBag.user' != "RMG" )  {
+                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') &&  '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO")  {
                     $('#jqAddProjectIRApproverTable_iladd').css('visibility','hidden');
                     $('#jqAddProjectIRApproverTable_iledit').css('visibility','hidden');
                     $('#jqAddProjectIRApproverTable_ilsave').css('visibility','hidden');
