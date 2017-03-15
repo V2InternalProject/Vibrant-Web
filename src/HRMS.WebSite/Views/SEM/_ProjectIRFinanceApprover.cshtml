@@ -18,7 +18,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" ) {
+        if('@Model.IsProjectApprover' == 'True' && '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO") {
             $('#SelectAllIRFinanceApproverBtn').hide();
             $('#DeselectAllIRFinanceApproverBtn').hide();
             $('#DeleteIRFinanceApproverBtn').hide();
@@ -95,7 +95,7 @@
                     $('#jqAddProjectIRFinanceApproverTablePager_center').hide();
                 }
 
-                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG") {
+                if (('@Model.IsProjectApprover' == 'True'  || '@Model.SearchedUserDetails.IsProjectReviewer' == 'True') && '@ViewBag.user' != "RMG" && '@ViewBag.user'!="PMO") {
                     $('#jqAddProjectIRFinanceApproverTable_iladd').css('visibility','hidden');
                     $('#jqAddProjectIRFinanceApproverTable_iledit').css('visibility','hidden');
                     $('#jqAddProjectIRFinanceApproverTable_ilsave').css('visibility','hidden');
