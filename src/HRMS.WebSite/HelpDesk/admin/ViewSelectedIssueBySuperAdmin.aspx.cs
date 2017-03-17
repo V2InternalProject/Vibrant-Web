@@ -1418,8 +1418,10 @@ namespace V2.Helpdesk.web.admin
                 }
                 else
                 {
-                    ddlStatus.Items.FindByText("Assigned").Selected = true;
-                    ddlStatus.Enabled = false;
+                    //added by Rahul:#141306571(Remove Assign stage from HelpDesk)
+                    ddlStatus.Items.Remove(ddlStatus.Items.FindByText("Assigned"));
+                    ddlStatus.Items.FindByText("InProgress").Selected = true;
+                    ddlStatus.SelectedItem.Text = "InProgress";
                 }
             }
             catch (System.Exception)
