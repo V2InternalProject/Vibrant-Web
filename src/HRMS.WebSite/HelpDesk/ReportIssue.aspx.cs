@@ -922,7 +922,8 @@ namespace HRMS.HelpDesk
                 objClsReportIssue.ProjectRoleId = Convert.ToInt32(ddlProjectRole.SelectedItem.Value);
                 objClsReportIssue.ResourcePoolId = Convert.ToInt32(ddlResourcePool.SelectedItem.Value);
 
-                if (objClsReportIssue.ReportingToId != 0)
+                //Commented by Rahul:#141306597(Report Manager is not Displayed in Admin view)
+                //if (objClsReportIssue.ReportingToId != 0)
                 {
                     objClsReportIssue.ReportingToId = Convert.ToInt32(ddlReportingTo.SelectedItem.Value);
                 }

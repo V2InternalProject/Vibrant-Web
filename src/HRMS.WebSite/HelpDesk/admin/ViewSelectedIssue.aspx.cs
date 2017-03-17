@@ -199,7 +199,7 @@ namespace V2.Helpdesk.web.admin
                     //Added By Nikhil
                     lblProjectName.Text = dsSelectedIssue.Tables[0].Rows[0]["ProjectName"].ToString();
                     lblProjectRole.Text = dsSelectedIssue.Tables[0].Rows[0]["RoleDescription"].ToString();
-                    lblReportingTo.Text = dsSelectedIssue.Tables[0].Rows[0]["EmployeeName"].ToString();
+                    lblReportingTo.Text = dsSelectedIssue.Tables[0].Rows[0][25].ToString();
                     lblResourcePool.Text = dsSelectedIssue.Tables[0].Rows[0]["ResourcePoolName"].ToString();
                     txtWorkHours.Text = dsSelectedIssue.Tables[0].Rows[0]["WorkHours"].ToString();
                     txtFromDate.Text = dsSelectedIssue.Tables[0].Rows[0]["FromDate"].ToString();
