@@ -47,7 +47,8 @@ namespace HRMS.DAL
             {
                 var approverlist = (from e in dbContext.tbl_HR_ExitInstance
                                     join ex in dbContext.tbl_HR_ExitProcess_StageApprovers on e.stageID equals ex.stageID
-                                    where ex.ExitInstanceID == 0 && e.ExitInstanceID == exitInstanceId
+                                    join h in dbContext.HRMS_tbl_PM_Employee on ex.ApproverID equals h.EmployeeID
+                                    where ex.ExitInstanceID == 0 && e.ExitInstanceID == exitInstanceId && h.Status == false
                                     select ex).ToList();
 
                 if (approverlist.Count > 0)
