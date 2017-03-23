@@ -683,6 +683,43 @@ namespace HRMS.Controllers
 
                 tbl_PM_Project projectDetails = dal.GetProjectDetails(Convert.ToInt32(projectId));
 
+                PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
+                string[] users = Roles.GetUsersInRole("RMG");
+
+                foreach (string user in users)
+                {
+                    HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
+                    if (employee == null)
+                        model.Mail.Cc = model.Mail.Cc + string.Empty;
+                    else
+                        model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
+                }
+
+                string constring = GetADOConnectionString();
+                SqlConnection con = new SqlConnection(constring);
+                SqlCommand cmd4 = new SqlCommand();
+                cmd4.CommandType = CommandType.StoredProcedure;
+                cmd4.CommandText = "GetProjectReviewerDetails_sp";//write sp name here
+                cmd4.Connection = con;
+                cmd4.Parameters.AddWithValue("@ProjectID", projectId);
+                SqlDataAdapter Reviwer = new SqlDataAdapter(cmd4);
+                DataSet ReviwerDS = new DataSet();
+                Reviwer.Fill(ReviwerDS);
+                foreach (DataTable t in ReviwerDS.Tables)
+                {
+                    foreach (DataRow row in t.Rows)
+                    {
+                        tbl_PM_Employee_SEM EmployeeDetailsemail = employeeDAL.GetEmployeeDetailsEmail(Convert.ToInt32(row["EmployeeId"]));
+                        HRMS_tbl_PM_Employee fromEmployeeDetailsEmailPM = employeeDAL.GetEmployeeDetailsByEmployeeCode(EmployeeDetailsemail.EmployeeCode);
+                        if (fromEmployeeDetailsEmailPM != null)
+                        {
+                            model.Mail.Cc = model.Mail.Cc + fromEmployeeDetailsEmailPM.EmailID + ";";
+                        }
+
+                    }
+                }
+
+
                 SearchedUserDetails fromAndCCEmployeeDetails = dal.GetEmployeeDetailsByName(EmployeeName);
 
                 ResourseType ResourseTypeList = dal.GetResourceTypesByResourceId(Convert.ToInt32(ResorceType));
@@ -703,7 +740,7 @@ namespace HRMS.Controllers
                 tbl_PM_Employee_SEM EmpDetailsForCCAndFrom = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(loggedinEmpID));
                 if (EmpDetailsForCCAndFrom != null)
                 {
-                    model.Mail.Cc = EmpDetailsForCCAndFrom.EmailID + ";";
+                    //model.Mail.Cc = EmpDetailsForCCAndFrom.EmailID + ";";
                     model.Mail.From = EmpDetailsForCCAndFrom.EmailID;
                 }
                 if (btnClick == "Add/Edit Resource")
@@ -763,18 +800,7 @@ namespace HRMS.Controllers
 
                     tbl_PM_ProjectEmployeeRole ResouceDeatils = new tbl_PM_ProjectEmployeeRole();
                     tbl_PM_Project project = dal.GetResorcetProjectDetails(projectId);
-                    PersonalDetailsDAL personalDal = new PersonalDetailsDAL();
 
-                    string[] users = Roles.GetUsersInRole("RMG");
-
-                    foreach (string user in users)
-                    {
-                        HRMS_tbl_PM_Employee employee = personalDal.GetEmployeeDetailsFromEmpCode(Convert.ToInt32(user));
-                        if (employee == null)
-                            model.Mail.Cc = model.Mail.Cc + string.Empty;
-                        else
-                            model.Mail.Cc = model.Mail.Cc + employee.EmailID + ";";
-                    }
 
                     if (fromAndCCEmployeeDetails != null)
 
@@ -784,12 +810,12 @@ namespace HRMS.Controllers
 
                     tbl_PM_Employee_SEM EmpDetails = dal.GetEmployeeDetailsFromEmployeeID(loggedinEmpID.HasValue ? loggedinEmpID.Value : 0);
 
-                    tbl_PM_Employee_SEM ReportingTODetailsForCC = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(ResouceDeatils.ReportingTo));
-                    if (ReportingTODetailsForCC != null)
-                    {
-                        model.Mail.Cc = model.Mail.Cc + ReportingTODetailsForCC.EmailID + ";";
+                    //tbl_PM_Employee_SEM ReportingTODetailsForCC = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(ResouceDeatils.ReportingTo));
+                    //if (ReportingTODetailsForCC != null)
+                    //{
+                    //    model.Mail.Cc = model.Mail.Cc + ReportingTODetailsForCC.EmailID + ";";
 
-                    }
+                    //}
 
                     foreach (var emailTemplate in template)
                     {

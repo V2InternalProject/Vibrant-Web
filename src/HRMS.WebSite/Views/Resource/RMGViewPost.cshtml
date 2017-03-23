@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="ButtonContainer2 clearfix">
-            <input type="button"  class="ButtonGray mrgnR8" style="float: right;" value="Release" id="BtnReleaseResource" />
+            <input type="button" class="ButtonGray mrgnR8" style="float: right;" value="Release" id="BtnReleaseResource" />
         </div>
         @* <h4 class="smallhead2">
                 Current Resource Details
@@ -144,7 +144,7 @@
             </div>
         </div>
     </section>
-   <div id="ErrorProjectSelect" style="display: none">
+    <div id="ErrorProjectSelect" style="display: none">
         <center>
             Please select Project name before Export To Excel.
         </center>
@@ -563,9 +563,10 @@
             mtype: "POST",
             // Specify the column names
             //colNames: ["HelpDesk Ticket ID","","Employee Code","Employee Name","Reporting To","Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form","RMG Comments",""],
-            colNames: ["","Employee Code","Employee Name", "Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form",""],
+            colNames: ["ProjectName","","Employee Code","Employee Name", "Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form",""],
             // Configure the columns
             colModel: [
+                { name: "ProjectName", index: "ProjectName", align: "left", width: 40 },
                 { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 35,hidden:true},
                 { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
                 { name: "EmployeeName", index: "EmployeeName", align: "left", width: 60 },

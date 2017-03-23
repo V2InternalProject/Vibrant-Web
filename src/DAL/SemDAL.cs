@@ -28,15 +28,15 @@ namespace HRMS.DAL
                 CustomerRecords = (from cust in dbContext.tbl_PM_Customer
                                    where cust.CustomerName.StartsWith(searchText)
                                    select new SEMViewModel
-                                     {
-                                         CustomerId = cust.Customer,
-                                         CustomerName = cust.CustomerName,
-                                         Region = (from relation in dbContext.tbl_CNF_RegionMaster
-                                                   where relation.RegionID == cust.RegionID
-                                                   select relation.RegionName).FirstOrDefault(),
-                                         ContractSigningDate = cust.DateSigned,
-                                         ContractValidityDate = cust.ContractValidityDate
-                                     }).OrderBy(x => x.CustomerName).ToList();
+                                   {
+                                       CustomerId = cust.Customer,
+                                       CustomerName = cust.CustomerName,
+                                       Region = (from relation in dbContext.tbl_CNF_RegionMaster
+                                                 where relation.RegionID == cust.RegionID
+                                                 select relation.RegionName).FirstOrDefault(),
+                                       ContractSigningDate = cust.DateSigned,
+                                       ContractValidityDate = cust.ContractValidityDate
+                                   }).OrderBy(x => x.CustomerName).ToList();
 
                 totalCount = CustomerRecords.Count();
 
@@ -115,11 +115,11 @@ namespace HRMS.DAL
                 List<RevisionList> AuditTrailList = new List<RevisionList>();
                 AuditTrailList = (from s in auditTrail
                                   select new RevisionList
-                                {
-                                    NewValue = s.Value,
-                                    OldValue = s.OldValue,
-                                    FeildName = s.FieldName
-                                }).ToList();
+                                  {
+                                      NewValue = s.Value,
+                                      OldValue = s.OldValue,
+                                      FeildName = s.FieldName
+                                  }).ToList();
                 return AuditTrailList;
             }
             catch (Exception ex)
@@ -153,9 +153,9 @@ namespace HRMS.DAL
 
             List<PMSProjectDetailsViewModel> FeildName = (from feilds in FeildNames
                                                           select new PMSProjectDetailsViewModel
-                                                         {
-                                                             FeildName = feilds.FieldName
-                                                         }).ToList();
+                                                          {
+                                                              FeildName = feilds.FieldName
+                                                          }).ToList();
             //(from change in dbContext.tbl_PM_AuditTrail
             // where change.ProjectID == ProjectID && (change.FieldName == "End Date" || change.FieldName == "Work(Hours)")
             // orderby change.LogID ascending
@@ -1159,9 +1159,9 @@ namespace HRMS.DAL
                 projectNameExist = (from a in project
                                     where a.ProjectName == projectDetail.ProjectName
                                     select new PMSProjectDetailsViewModel
-                                      {
-                                          ProjectName = a.ProjectName
-                                      }).ToList();
+                                    {
+                                        ProjectName = a.ProjectName
+                                    }).ToList();
             }
 
             ObjectParameter ProjID = new ObjectParameter("ProjID", typeof(int));
@@ -2351,9 +2351,9 @@ namespace HRMS.DAL
             List<ManageSubProjectsModel> subprojectNameExist = (from a in subProjectDtls
                                                                 where (a.SubProjectName == SubProjectDetails.SubProjectName && a.ProjectId == ProjectID)
                                                                 select new ManageSubProjectsModel
-                                                               {
-                                                                   SubProjectId = a.SubProjectId
-                                                               }).ToList();
+                                                                {
+                                                                    SubProjectId = a.SubProjectId
+                                                                }).ToList();
 
             string SubProjectName = SubProjectDetails.SubProjectName;
             string Description = SubProjectDetails.Description;
@@ -3368,29 +3368,29 @@ namespace HRMS.DAL
                     var customerList = dbContext.GetCurrentUsersForProject(projectID, ResourcePoolId, EmployeeForProject).AsEnumerable();
                     var EmployeeList = (from s in customerList
                                         select new RMGViewPostModel
-                                            {
-                                                HelpDeskTicketID = s.HelpdeskTicketID,
-                                                ProjectEmployeeRoleID = s.ProjectEmployeeRoleID,
-                                                EmployeeCode = s.employeecode,
-                                                EmployeeId = s.EmployeeID,
-                                                EmployeeName = s.EmployeeName,
-                                                ProjectID = s.ProjectID,
-                                                ProjectName = s.ProjectName,
-                                                ReportingTo = s.reportingToName,
-                                                ResourcePool = s.ResourcePoolName,
-                                                Designation = s.DesignationName,
-                                                ProjectRole = s.RoleDescription,
-                                                ResourceType = s.ResourceStatus,
-                                                EmploymentStatus = s.EmploymentStatus,
-                                                AllocationStartDate = s.StartDate,
-                                                AllocationEndDate = s.EndDate,
-                                                Allocated = Convert.ToDecimal(s.AllocatedPercentage),
-                                                ReleaseDate = s.ActualEndDate,
-                                                ProjectEndAppraisalForm = s.EmployeeName,
-                                                RMGComments = s.Comments,
-                                                ProjectEndAppraisalStausID = s.ProjectEndAppraisalStausID,
-                                                ProjectSkillMatrixStausID = s.ProjectSkillMatrixStausID
-                                            }).ToList();
+                                        {
+                                            HelpDeskTicketID = s.HelpdeskTicketID,
+                                            ProjectEmployeeRoleID = s.ProjectEmployeeRoleID,
+                                            EmployeeCode = s.employeecode,
+                                            EmployeeId = s.EmployeeID,
+                                            EmployeeName = s.EmployeeName,
+                                            ProjectID = s.ProjectID,
+                                            ProjectName = s.ProjectName,
+                                            ReportingTo = s.reportingToName,
+                                            ResourcePool = s.ResourcePoolName,
+                                            Designation = s.DesignationName,
+                                            ProjectRole = s.RoleDescription,
+                                            ResourceType = s.ResourceStatus,
+                                            EmploymentStatus = s.EmploymentStatus,
+                                            AllocationStartDate = s.StartDate,
+                                            AllocationEndDate = s.EndDate,
+                                            Allocated = Convert.ToDecimal(s.AllocatedPercentage),
+                                            ReleaseDate = s.ActualEndDate,
+                                            ProjectEndAppraisalForm = s.EmployeeName,
+                                            RMGComments = s.Comments,
+                                            ProjectEndAppraisalStausID = s.ProjectEndAppraisalStausID,
+                                            ProjectSkillMatrixStausID = s.ProjectSkillMatrixStausID
+                                        }).ToList();
 
                     ProjectRecords = (from s in EmployeeList
                                       orderby s.EmployeeCode descending
@@ -3424,31 +3424,33 @@ namespace HRMS.DAL
                     var customerList = dbContext.GetHistoryForProject(projectID, ResourcePoolId, EmployeeForProject);
                     var EmployeeList = (from s in customerList
                                         select new RMGViewPostModel
-                                            {
-                                                HelpDeskTicketID = s.HelpdeskTicketID,
-                                                ProjectEmployeeRoleID = s.ProjectEmployeeRoleID,
-                                                EmployeeCode = s.employeecode,
-                                                EmployeeId = s.EmployeeID,
-                                                EmployeeName = s.EmployeeName,
-                                                ReportingTo = s.ResourcePoolName,
-                                                ResourcePool = s.ResourcePoolName,
-                                                Designation = s.DesignationName,
-                                                ProjectRole = s.RoleDescription,
-                                                ResourceType = s.ResourceStatus,
-                                                EmploymentStatus = s.EmploymentStatus,
-                                                AllocationStartDate = s.StartDate,
-                                                AllocationEndDate = s.EndDate,
-                                                Allocated = Convert.ToDecimal(s.AllocatedPercentage),
-                                                // ReleaseDate = s.EndDate ,
-                                                ReleaseDate = s.ActualEndDate,
-                                                ProjectEndAppraisalForm = s.EmployeeName,
-                                                RMGComments = s.Comments,
-                                                ProjectEndAppraisalStausID = s.ProjectEndAppraisalStausID
-                                            }).ToList();
+                                        {
+                                            ProjectName = s.ProjectName,
+                                            HelpDeskTicketID = s.HelpdeskTicketID,
+                                            ProjectEmployeeRoleID = s.ProjectEmployeeRoleID,
+                                            EmployeeCode = s.employeecode,
+                                            EmployeeId = s.EmployeeID,
+                                            EmployeeName = s.EmployeeName,
+                                            ReportingTo = s.ResourcePoolName,
+                                            ResourcePool = s.ResourcePoolName,
+                                            Designation = s.DesignationName,
+                                            ProjectRole = s.RoleDescription,
+                                            ResourceType = s.ResourceStatus,
+                                            EmploymentStatus = s.EmploymentStatus,
+                                            AllocationStartDate = s.StartDate,
+                                            AllocationEndDate = s.EndDate,
+                                            Allocated = Convert.ToDecimal(s.AllocatedPercentage),
+                                            // ReleaseDate = s.EndDate ,
+                                            ReleaseDate = s.ActualEndDate,
+                                            ProjectEndAppraisalForm = s.EmployeeName,
+                                            RMGComments = s.Comments,
+                                            ProjectEndAppraisalStausID = s.ProjectEndAppraisalStausID
+                                        }).ToList();
                     ProjectRecords = (from s in EmployeeList
                                       orderby s.EmployeeCode descending
                                       select new RMGViewPostModel
                                       {
+                                          ProjectName = s.ProjectName,
                                           HelpDeskTicketID = s.HelpDeskTicketID,
                                           ProjectEmployeeRoleID = s.ProjectEmployeeRoleID,
                                           EmployeeCode = s.EmployeeCode,
@@ -3478,16 +3480,16 @@ namespace HRMS.DAL
                         benchList = dbContext.GetUnallocatedResource_sp(AsOnDate, EmployeeId);
                     ProjectRecords = (from s in benchList
                                       select new RMGViewPostModel
-                                          {
-                                              SearchEmployeeCode = s.EmployeeCode,
-                                              EmployeeName = s.EmployeeName,
-                                              PrimarySkills = s.Resource_Pool,
-                                              ReportingTo = s.ReportingTo,
-                                              DesignationName = s.ORGROLE,
-                                              Allocated = Convert.ToDecimal(s.percentage),
-                                              PresentAbsent = s.Present_Absent,
-                                              UnallocatedFrom = Convert.ToString(s.unallocatedfrom)
-                                          }).ToList();
+                                      {
+                                          SearchEmployeeCode = s.EmployeeCode,
+                                          EmployeeName = s.EmployeeName,
+                                          PrimarySkills = s.Resource_Pool,
+                                          ReportingTo = s.ReportingTo,
+                                          DesignationName = s.ORGROLE,
+                                          Allocated = Convert.ToDecimal(s.percentage),
+                                          PresentAbsent = s.Present_Absent,
+                                          UnallocatedFrom = Convert.ToString(s.unallocatedfrom)
+                                      }).ToList();
                 }
                 //if (GridName != "Bench")
                 //{
@@ -4780,7 +4782,9 @@ namespace HRMS.DAL
 
         public SearchedUserDetails GetEmployeeDetailsByName(string EmployeeName)
         {
-            var employeeDetailsList = dbContext.GetEmployeeDetails_SP();
+            var employeeDetailsList = from e in dbContextHRMS.HRMS_tbl_PM_Employee
+                                      select e;
+
             SearchedUserDetails employeeDetail = (from e in employeeDetailsList
                                                   where e.EmployeeName == EmployeeName
                                                   select new SearchedUserDetails

@@ -127,6 +127,10 @@ namespace MailActivity
                                     for (int k = 0; k < objEmailActivityBOL.CCAddress.Length; k++)
                                         objMailMessage.CC.Add(new MailAddress(objEmailActivityBOL.CCAddress[k]));
                                 }
+                                if (objEmailActivityBOL.EmailTemplateName == "Send For Approval")
+                                {
+                                    objMailMessage.CC.Add("recruitmentteam@v2solutions.com");
+                                }
                                 smtpClient.Credentials = new System.Net.NetworkCredential(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), ConfigurationSettings.AppSettings["SMTPPassword"].ToString());//("v2system", "mail_123"); 
                             }
                             objMailMessage.IsBodyHtml = true;
