@@ -745,6 +745,11 @@ namespace HRMS.Controllers
                 }
                 if (btnClick == "Add/Edit Resource")
                 {
+                    //Added by Rahul to reflect the EMployee Name in To list of the Mailer.
+                    SearchedUserDetails fromAndCCEmployeeDetailsforAddEdit = dal.GetEmployeeDetailsByNameforAditEditAlloc(EmployeeName);
+                    if (fromAndCCEmployeeDetailsforAddEdit != null)
+                        model.Mail.To = model.Mail.To + fromAndCCEmployeeDetailsforAddEdit.EmployeeEmailId + ";";
+
                     int EmployeeID = dal.geteEmployeeIDFromSEMDatabase(Membership.GetUser().UserName);
                     tbl_PM_Employee_SEM employeeDetails = dal.GetEmployeeDetailsFromEmployeeID(EmployeeID);
                     tbl_PM_Employee_SEM reportingToDetails = dal.GetEmployeeDetailsFromEmployeeID(Convert.ToInt32(ReportingTo));

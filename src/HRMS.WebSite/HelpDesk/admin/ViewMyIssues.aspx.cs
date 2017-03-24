@@ -106,7 +106,8 @@ namespace V2.Helpdesk.web.admin
                 ddlStatus.Items.Add(new ListItem(dsStatus.Tables[0].Rows[i]["StatusDesc"].ToString(), dsStatus.Tables[0].Rows[i]["StatusID"].ToString()));
             }
             ddlStatus.Items.Insert(0, "All");
-            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(ddlStatus.Items.FindByText("Assigned"));
+            //Changed by Rahul to load the page with InProgress status instead of Assigned.
+            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(ddlStatus.Items.FindByText("InProgress"));
         }
 
         public void GetMyIssueList()

@@ -4798,6 +4798,23 @@ namespace HRMS.DAL
             return employeeDetail;
         }
 
+        public SearchedUserDetails GetEmployeeDetailsByNameforAditEditAlloc(string EmployeeName)
+        {
+            var employeeDetailsList = dbContext.GetEmployeeDetails_SP();
+
+            SearchedUserDetails employeeDetail = (from e in employeeDetailsList
+                                                  where e.EmployeeName == EmployeeName
+                                                  select new SearchedUserDetails
+                                                  {
+                                                      EmployeeFullName = e.EmployeeName,
+                                                      EmployeeId = e.EmployeeID,
+                                                      EmployeeCode = e.EmployeeCode,
+                                                      UserName = e.UserName,
+                                                      EmployeeEmailId = e.EmailID
+                                                  }).FirstOrDefault();
+            return employeeDetail;
+        }
+
         public List<DocumentSubCategoryDetails> GetSubCategory(int categoryId)
         {
             try
