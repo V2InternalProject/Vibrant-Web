@@ -2024,7 +2024,10 @@ namespace HRMS.Controllers
                 }
                 mail.CC.Add(values[i].Item2);
                 mail.To.Add(values[i].Item4);
-                mail.From = new MailAddress(values[i].Item2, "HR Admin");
+
+                //Changed by Rahul for issue ID #142667129.
+                //mail.From = new MailAddress(values[i].Item2, "HR Admin");
+                mail.From = new MailAddress(System.Configuration.ConfigurationSettings.AppSettings["UserName"].ToString(), "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();
@@ -2090,7 +2093,10 @@ namespace HRMS.Controllers
                 }
                 mail.CC.Add(valuesBeforeProbation[i].Item2);
                 mail.To.Add(valuesBeforeProbation[i].Item4);
-                mail.From = new MailAddress(valuesBeforeProbation[i].Item2, "HR Admin");
+
+                //Changed by Rahul for issue ID #142667129.
+                //mail.From = new MailAddress(valuesBeforeProbation[i].Item2, "HR Admin");
+                mail.From = new MailAddress(System.Configuration.ConfigurationSettings.AppSettings["UserName"].ToString(), "HR Admin");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();

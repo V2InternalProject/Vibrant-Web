@@ -1008,8 +1008,10 @@ namespace V2.Helpdesk.web.admin
                         }
                     }
                     //objSendMailToUser.To.Add(new MailAddress(strDeptCCEmailIDNew));
-                    objSendMailToUser.From = new MailAddress(Session["UserEmailId"].ToString());
 
+                    //Changed by Rahul for issue ID #142667129.
+                    //objSendMailToUser.From = new MailAddress(Session["UserEmailId"].ToString());
+                    objSendMailToUser.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
                     objSendMailToUser.Subject = "HelpDesk : Department of Issue " + lblIssueID.Text + " under " + Session["Department"].ToString() + " : "
                       + lblcategory.Text.ToString() + " has been changed to " + Session["NewDepartment"].ToString() + ".";
 
@@ -1055,8 +1057,9 @@ namespace V2.Helpdesk.web.admin
                     if (ddlStatus.SelectedItem.Text != "Assigned")
                     {
                         objSendMailToUser.To.Add(new MailAddress(GetIssueRaiserEmailID()));
-                        objSendMailToUser.From = new MailAddress(Session["UserEmailId"].ToString());
-
+                        //Changed by Rahul for issue ID #142667129.
+                        //objSendMailToUser.From = new MailAddress(Session["UserEmailId"].ToString());
+                        objSendMailToUser.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
                         objSendMailToUser.Subject = "HelpDesk : Status of Issue " + lblIssueID.Text + " under " + Session["Department"].ToString() + " : "
                           + lblcategory.Text.ToString() + " has been changed to " + ddlStatus.SelectedItem.Text.ToString() + ".";
 
@@ -1105,7 +1108,10 @@ namespace V2.Helpdesk.web.admin
                         if (ddlLoginUser.SelectedValue != "Select")
                         {
                             objSendMailToMember.To.Add(new MailAddress(getEmployeeEmailID()));
-                            objSendMailToMember.From = new MailAddress(Session["UserEmailId"].ToString());
+
+                            //Changed by Rahul for issue ID #142667129.
+                           // objSendMailToMember.From = new MailAddress(Session["UserEmailId"].ToString());
+                            objSendMailToMember.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
 
                             objSendMailToMember.Subject = "HelpDesk : Issue " + lblIssueID.Text + " under " + Session["Department"].ToString() + " : "
                           + lblcategory.Text.ToString() + " has been assigned to you.";

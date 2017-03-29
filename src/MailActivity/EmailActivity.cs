@@ -130,8 +130,9 @@ namespace V2.Orbit.Workflow.Activities.MailActivity
                 SmtpClient smtpClient = new SmtpClient();
                 MailMessage objMailMessage = new MailMessage();
 
-
-                objMailMessage.From = new MailAddress(From, From);
+                //Changed by Rahul for issue ID #142667129.
+                //objMailMessage.From = new MailAddress(From, From);
+                objMailMessage.From = new MailAddress(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString(), From);
                 objMailMessage.To.Add(new MailAddress(To));
                 objMailMessage.CC.Add(new MailAddress(Cc));
                 objMailMessage.Subject = Subject;

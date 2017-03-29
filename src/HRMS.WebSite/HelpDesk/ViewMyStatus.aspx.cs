@@ -897,7 +897,9 @@ namespace HRMS.HelpDesk
 
                     string fromEmailId = Convert.ToString(Session["UserEmail"]);
                     if (fromEmailId != string.Empty)
-                        reopenSentToMember.From = new MailAddress(fromEmailId);
+                        //Changed by Rahul for issue ID #142667129.
+                        //reopenSentToMember.From = new MailAddress(fromEmailId);
+                        reopenSentToMember.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
                     //}
                     if (AssignedToEmailID != string.Empty)
                     {
@@ -995,7 +997,9 @@ namespace HRMS.HelpDesk
 
                     string fromEmailId = Convert.ToString(Session["UserEmail"]);
                     if (fromEmailId != string.Empty)
-                        reopenSentToMember.From = new MailAddress(fromEmailId);
+                        //Changed by Rahul for issue ID #142667129.
+                        //reopenSentToMember.From = new MailAddress(fromEmailId);
+                        reopenSentToMember.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
                     //}
                     if (AssignedToEmailId != string.Empty)
                     {

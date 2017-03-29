@@ -40,7 +40,9 @@ namespace MailActivity
 
                         //##EmployeeName## (##Code##)   ##toname##
 
-                        objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                        //Changed by Rahul for issue ID #142667129.
+                        //objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                        objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["UserName"].ToString(), objEmailActivityBOL.FromAddress);
 
                         objEmailActivityBOL.Subject = objEmailActivityBOL.Subject.Replace("##EmployeeName##", empName).Replace("##Code##", empCode);
 
@@ -92,7 +94,9 @@ namespace MailActivity
                                 body = objEmailActivityBOL.Body.Replace("##EmployeeName##", name);
 
                             MailMessage objMailMessage = new MailMessage();
-                            objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                            //Changed by Rahul for issue ID #142667129.
+                            //objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                            objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["UserName"].ToString(), objEmailActivityBOL.FromAddress);
                             objMailMessage.To.Add(new MailAddress(objEmailActivityBOL.ToAddress[i]));
                             objMailMessage.Subject = objEmailActivityBOL.Subject;
                             objMailMessage.Subject = objEmailActivityBOL.Subject.Replace("\r\n", " ");
@@ -107,7 +111,8 @@ namespace MailActivity
                             if (!objEmailActivityBOL.ToAddress[i].ToString().Contains("@v2solutions.com"))
                             {
                                 //objMailMessage.From = new MailAddress("v2system@in.v2solutions.com");
-                                objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["MailAddress"].ToString());
+                                //Changed by Rahul for issue ID #142667129.
+                                objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString());
                                 body = body.Replace("##RRFNO##", objEmailActivityBOL.RRFNo.ToString());
                                 body = body.Replace("##skills##", objEmailActivityBOL.skills.ToString());
                                 body = body.Replace("##designation##", objEmailActivityBOL.Position.ToString());
@@ -116,7 +121,9 @@ namespace MailActivity
                             }
                             else
                             {
-                                objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                                //Changed by Rahul for issue ID #142667129.
+                                //objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                                objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["UserName"].ToString(), objEmailActivityBOL.FromAddress);
                                 body = objEmailActivityBOL.Body.Replace("##RRFNO##", objEmailActivityBOL.RRFNo.ToString());
 
                                 body = body.Replace("##skills##", objEmailActivityBOL.skills.ToString());
@@ -162,8 +169,10 @@ namespace MailActivity
                             objMailMessage.To.Add(new MailAddress(objEmailActivityBOL.ToAddress[i]));
                         }
                     }
-
-                    objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                    
+                    //Changed by Rahul for issue ID #142667129.
+                   // objMailMessage.From = new MailAddress(objEmailActivityBOL.FromAddress);
+                    objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["UserName"].ToString(), objEmailActivityBOL.FromAddress);
                     objMailMessage.Subject = objEmailActivityBOL.Subject;
                     objMailMessage.Subject = objEmailActivityBOL.Subject.Replace("\r\n", " ");
 

@@ -118,8 +118,8 @@ public partial class SendMailPopUP : System.Web.UI.Page
             }
 
             //else only user will be there.
-
-            sendMail.From = new MailAddress(txtFrom.Text, txtFrom.Text);
+            //Changed by Rahul for issue ID #142667129.
+            sendMail.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), txtFrom.Text);
             sendMail.Subject = "New Employeecode " + Convert.ToString(Session["EmployeeCode"]);
 
             sendMail.Body = txtMessage.Text;

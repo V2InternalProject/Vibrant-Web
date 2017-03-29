@@ -169,7 +169,9 @@ namespace HRMS.Notification
                 //Assign From
                 if (fromAddress != null && fromAddress != string.Empty)
                 {
-                    MailAddress fromMailAddress = new MailAddress(fromAddress, fromAddress);
+                    //Changed by Rahul for issue ID #142667129.
+                    //MailAddress fromMailAddress = new MailAddress(fromAddress, fromAddress);
+                    MailAddress fromMailAddress = new MailAddress(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString(), fromAddress);
                     mailMessage.From = fromMailAddress;
                 }
                 else

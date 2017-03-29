@@ -1612,7 +1612,9 @@ namespace HRMS.Controllers
                 smtpClient.Credentials = new System.Net.NetworkCredential(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), ConfigurationSettings.AppSettings["SMTPPassword"].ToString());//("v2system", "mail_123");
                 //smtpClient.Credentials = NTLMAuthentication;
                 MailMessage objMailMessage = new MailMessage();
-                objMailMessage.From = new MailAddress(FormEmployeeEmail, FormEmployeeEmail);
+                //Changed by Rahul for issue ID #142667129.
+                //objMailMessage.From = new MailAddress(FormEmployeeEmail, FormEmployeeEmail);
+                objMailMessage.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), FormEmployeeEmail);
                 ArrayList ToListEmail = new ArrayList();
                 ArrayList ToCCEmails = new ArrayList();
                 //****** Future Use *********//

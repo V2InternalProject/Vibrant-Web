@@ -3063,8 +3063,9 @@ namespace HRMS.Controllers
                 {
                     mail.CC.Add(item);
                 }
-
-                mail.From = new MailAddress(Email, "helpdesk@v2solutions.com");
+                //Changed by Rahul for issue ID #142667129.
+                mail.From = new MailAddress(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString(), Email);
+                //mail.From = new MailAddress(Email, "helpdesk@v2solutions.com");
                 model.Mail = new TravelMailTemplate();
                 int templateId = 97;
                 List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);
@@ -3202,8 +3203,9 @@ namespace HRMS.Controllers
                 {
                     mail.CC.Add(item);
                 }
-
-                mail.From = new MailAddress(Email, "Project Approver");
+                //Changed by Rahul for issue ID #142667129.
+                //mail.From = new MailAddress(Email, "Project Approver");
+                mail.From = new MailAddress(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString(), "Project Approver");
 
                 TravelViewModel model = new TravelViewModel();
                 CommonMethodsDAL Commondal = new CommonMethodsDAL();

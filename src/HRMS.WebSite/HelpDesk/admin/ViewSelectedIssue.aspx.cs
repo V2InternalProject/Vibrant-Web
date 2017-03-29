@@ -686,8 +686,10 @@ namespace V2.Helpdesk.web.admin
                     if (Session["status"] != ddlStatus.SelectedValue)
                     {
                         objSendMailToUser.To.Add(new MailAddress(GetIssueRaiserEmailID()));
+                        //Changed by Rahul for issue ID #142667129.
                         //objSendMailToUser.From = new MailAddress(getFromEmailID());
-                        objSendMailToUser.From = new MailAddress(FromEmailID);
+                        //objSendMailToUser.From = new MailAddress(FromEmailID);
+                        objSendMailToUser.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), FromEmailID);
 
                         objSendMailToUser.Subject = "HelpDesk : Status of Issue " + lblIssueID.Text + " under " + Session["Department"].ToString() + " : "
                              + lblProblemType.Text.ToString() + " has been changed to " + ddlStatus.SelectedItem.Text.ToString() + ".";
@@ -726,8 +728,9 @@ namespace V2.Helpdesk.web.admin
                     else
                     {
                         objSendMailToUser.To.Add(new MailAddress(GetIssueRaiserEmailID()));
-                        objSendMailToUser.From = new MailAddress(FromEmailID);
-
+                        //Changed by Rahul for issue ID #142667129.
+                        //objSendMailToUser.From = new MailAddress(FromEmailID);
+                        objSendMailToUser.From = new MailAddress(ConfigurationSettings.AppSettings["SMTPUserName"].ToString(), FromEmailID);
                         objSendMailToUser.Subject = "HelpDesk : Issue " + lblIssueID.Text + " under " + Session["Department"].ToString() + " : "
                            + lblProblemType.Text.ToString() + " has a new comment. ";
 

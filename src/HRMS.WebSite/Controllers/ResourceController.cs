@@ -1419,8 +1419,9 @@ namespace HRMS.Controllers
                         mail.CC.Add(employee.EmailID);
 
                 }
-
-                string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
+                //Changed by Rahul for issue ID #142667129.
+               // string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
+                string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
                 string Email = string.Empty;
                 Email = RMGEmail;
                 mail.CC.Add(RMGEmail);
@@ -1446,6 +1447,7 @@ namespace HRMS.Controllers
                 mail.Body = model.Mail.Message;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.EnableSsl = true;
+                
                 smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
                 //smtpClient.Host = "v2mailserver.in.v2solutions.com";
                 string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
