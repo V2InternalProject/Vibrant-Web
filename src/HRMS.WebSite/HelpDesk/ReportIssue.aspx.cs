@@ -925,7 +925,8 @@ namespace HRMS.HelpDesk
                 //Commented by Rahul:#141306597(Report Manager is not Displayed in Admin view)
                 //if (objClsReportIssue.ReportingToId != 0)
                 {
-                    objClsReportIssue.ReportingToId = Convert.ToInt32(ddlReportingTo.SelectedItem.Value);
+                    if (ddlReportingTo.SelectedIndex > 0)
+                        objClsReportIssue.ReportingToId = Convert.ToInt32(ddlReportingTo.SelectedItem.Value);
                 }
                 objClsReportIssue.FromDate = null;
                 objClsReportIssue.ToDate = null;
