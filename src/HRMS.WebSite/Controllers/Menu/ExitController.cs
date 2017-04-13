@@ -181,7 +181,7 @@ namespace HRMS.Controllers
                         {
                             model.NoticePeriod = probationNoticePeriod;
 
-                            checkDay = DateTime.Now.AddDays((probationNoticePeriod));
+                            checkDay = DateTime.Now.AddDays((probationNoticePeriod - 1));
                             if (checkDay.Value.DayOfWeek == DayOfWeek.Saturday)
                             {
                                 checkDay = checkDay.Value.AddDays(-1);
@@ -197,7 +197,7 @@ namespace HRMS.Controllers
                         {
                             model.NoticePeriod = confirmedNoticePeriod;
 
-                            checkDay = DateTime.Now.AddDays((confirmedNoticePeriod));
+                            checkDay = DateTime.Now.AddDays((confirmedNoticePeriod - 1));
                             if (checkDay.Value.DayOfWeek == DayOfWeek.Saturday)
                             {
                                 checkDay = checkDay.Value.AddDays(-1);
@@ -859,7 +859,7 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult SendEmail(SeparationMailTemplate model)
+        public ActionResult SendEmail(SeparationMailTemplate smodel)
         {
             try
             {
@@ -867,10 +867,10 @@ namespace HRMS.Controllers
                 char[] symbols = new char[] { ';', ' ', ',', '\r', '\n' };
                 int CcCounter = 0;
                 int ToCounter = 0;
-                if (model.Cc != "" && model.Cc != null)
+                if (smodel.Cc != "" && smodel.Cc != null)
                 {
-                    string CcMailIds = model.Cc.TrimEnd(symbols);
-                    model.Cc = CcMailIds;
+                    string CcMailIds = smodel.Cc.TrimEnd(symbols);
+                    smodel.Cc = CcMailIds;
                     string[] EmailId = CcMailIds.Split(symbols);
                     string[] EmailIds = EmailId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
                     foreach (string id in EmailIds)
@@ -885,7 +885,7 @@ namespace HRMS.Controllers
                             break;
                         }
                     }
-                    string[] EmailToId = model.To.Split(symbols);
+                    string[] EmailToId = smodel.To.Split(symbols);
                     string[] EmailToIds = EmailToId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
                     foreach (string email in EmailToIds)
                     {
@@ -902,7 +902,7 @@ namespace HRMS.Controllers
                 else
                 {
                     CcCounter = 1;
-                    string[] EmailToId = model.To.Split(symbols);
+                    string[] EmailToId = smodel.To.Split(symbols);
                     string[] EmailToIds = EmailToId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
                     foreach (string email in EmailToIds)
                     {
@@ -919,7 +919,7 @@ namespace HRMS.Controllers
 
                 if (CcCounter == 1 && ToCounter == 1)
                 {
-                    result = SendMail(model);
+                    result = SendMail(smodel);
                     if (result == true)
                         return Json(new { status = true, validCcId = true, validtoId = true });
                     else
