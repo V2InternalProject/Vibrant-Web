@@ -37,7 +37,7 @@
                     onSelect: function (dateStr) {
                         var noticePeriod = parseInt($('#NoticePeriod').val());
                         var resignedDate = $.datepicker.parseDate("mm/dd/yy", dateStr);
-                        resignedDate.setDate(resignedDate.getDate("mm/dd/yy") + noticePeriod);
+                        resignedDate.setDate(resignedDate.getDate("mm/dd/yy") + (noticePeriod - 1));
                         var dayOfWeek = $.datepicker.formatDate('DD', resignedDate);
                         if (dayOfWeek == "Saturday") {
                             resignedDate.setDate(resignedDate.getDate("mm/dd/yy") - 1);
@@ -47,6 +47,7 @@
                         }
                         resignedDate = $.datepicker.formatDate("mm/dd/yy", resignedDate);
                         $("label[for='SystemReleavingDate']").text(resignedDate);
+                        $('#SystemReleavingDate').val(resignedDate);
                         $('#hdSystemReleavingDate').val($('#SystemReleavingDate').val());
                     }
 

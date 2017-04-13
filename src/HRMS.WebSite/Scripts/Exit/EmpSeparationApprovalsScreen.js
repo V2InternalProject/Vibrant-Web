@@ -103,6 +103,8 @@ function WithdrawResign() {
                                             height: 'auto',
                                             width: 800,
                                             modal: true,
+                                            closeOnEscape: false,
+                                            dialogClass: 'noclose',
                                             title: "Send Mail",
                                             open: function () {
                                                 $(this).parent().prev('.ui-widget-overlay').css('z-index', '30');
@@ -700,7 +702,7 @@ function FillCheckList() {
             }
         });
     }
-    ///
+        ///
 
     else if ($("#loginUsersDepartment").val() == "FINANCE CLEARANCE" && $("#LoggedInUser").val() == $("#hdnReportingTo").val()) {
         $("#FinanceSelection").dialog({
