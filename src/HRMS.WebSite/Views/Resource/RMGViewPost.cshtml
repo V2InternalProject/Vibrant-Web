@@ -227,81 +227,87 @@
     </div>
     <script type="text/javascript">
 
-    /*---Grid Params--*/
+        /*---Grid Params--*/
 
-    $('#totalCountOfResource').hide();
-    $('#totalCountOfHistory').hide();
-    ResourcePoolId = null;
-    EmployeeForProject = null;
-    ResourceID = 0;
-    resourceReportingToId = [];
-    var ProjectRoleList = @(Html.Raw(Json.Encode(Model.ProjectRolesList)));
-    ResList=[];
-    var ProjectID;
-    var ProjectName;
-    var ProjectEmployeeRoleID;
-    var EmployeeId;
-    var ProjectID;
+        $('#totalCountOfResource').hide();
+        $('#totalCountOfHistory').hide();
+        ResourcePoolId = null;
+        EmployeeForProject = null;
+        ResourceID = 0;
+        resourceReportingToId = [];
+        var ProjectRoleList = @(Html.Raw(Json.Encode(Model.ProjectRolesList)))
 
-    function SkillMatrixViewForm(EmployeeCode,ProjectEmployeeRoleID,ProjectSkillMatrixStatusID) {
-        var EmployeeID = '@ViewBag.loginUserId';
+        ResList=[];
+        var ProjectID;
+        var ProjectName;
+        var ProjectEmployeeRoleID;
+        var EmployeeId;
+        var ProjectID;
+        var ResourceTypeList = @(Html.Raw(Json.Encode(Model.ResourceTypeList)))
+        function SkillMatrixViewForm(EmployeeCode,ProjectEmployeeRoleID,ProjectSkillMatrixStatusID) {
+            var EmployeeID = '@ViewBag.loginUserId';
 
-        //DisplayLoadingDialog();
+            //DisplayLoadingDialog();
 
-        var url="@Url.Action("Index_Skillmatrix", "SkillMatrix")?EmployeeCode="+ EmployeeCode+"&ProjectEmployeeRoleID="+ ProjectEmployeeRoleID+"&ProjectSkillMatrixStatusID="+ProjectSkillMatrixStatusID+"&LoginEmployeeID="+@ViewBag.loginUserId+"";
-        $("#SkillMatrixDetails").dialog({
-            autoOpen: false,
-            width:1200,
-            resizable: true,
-            draggable: true,
-            title: "History",
-            modal: true,
-            //show: 'slide',
-            closeText: 'x',
-            dialogClass: "alert",
-            closeOnEscape: true,
-            open: function (event, ui) {
-                $(this).load(url);
-            },
-            close: function (event, ui) {
-                $("#SkillMatrixDetails").empty();
-                $("#SkillMatrixDetails").dialog("destroy");
-            }
-        });
+            var url="@Url.Action("Index_Skillmatrix", "SkillMatrix")?EmployeeCode="+ EmployeeCode+"&ProjectEmployeeRoleID="+ ProjectEmployeeRoleID+"&ProjectSkillMatrixStatusID="+ProjectSkillMatrixStatusID+"&LoginEmployeeID="+@ViewBag.loginUserId+"";
+            $("#SkillMatrixDetails").dialog({
+                autoOpen: false,
+                width:1200,
+                resizable: true,
+                draggable: true,
+                title: "History",
+                modal: true,
+                //show: 'slide',
+                closeText: 'x',
+                dialogClass: "alert",
+                closeOnEscape: true,
+                open: function (event, ui) {
+                    $(this).load(url);
+                },
+                close: function (event, ui) {
+                    $("#SkillMatrixDetails").empty();
+                    $("#SkillMatrixDetails").dialog("destroy");
+                }
+            });
 
-        $("#SkillMatrixDetails").dialog("open");
+            $("#SkillMatrixDetails").dialog("open");
 
-    }
-    $(document).ready(function () {
-        var ProjectId=0;
-        var a = [];
-        a.push("Select");
-        $.each(ProjectRoleList, function (index,value) {
-            a.push(value.RoleDescription);
-        });
+        }
+        $(document).ready(function () {
+            var ProjectId=0;
+            var a = [];
+            a.push("Select");
+            $.each(ProjectRoleList, function (index,value) {
+                a.push(value.RoleDescription);
+            });
 
-        // RMG TypeAhead
+            var resourceType = [];
+            $.each(ResourceTypeList, function (index,value) {
+                resourceType.push(value.TypeName);
+            });
 
-        $("#ResourceID").keyup(function () {
+            // RMG TypeAhead
 
-            if (!this.value) {
-                $("#Employeename").html('');
-                $("#EmployeeId").html('');
-                $('#DetailInfo').hide();
-                $('#pager').hide();
-                $("#jqCurrentResourceTable").jqGrid('clearGridData');
+            $("#ResourceID").keyup(function () {
 
-            }
+                if (!this.value) {
+                    $("#Employeename").html('');
+                    $("#EmployeeId").html('');
+                    $('#DetailInfo').hide();
+                    $('#pager').hide();
+                    $("#jqCurrentResourceTable").jqGrid('clearGridData');
 
-        });
+                }
 
-        $("#ResourceID").autocomplete({
-            source: function (request, response) {
-                var id = '@ViewBag.EmployeeId1';
-                ResourcePoolId = 0;
-                ProjectId = 0;
-                EmployeeForProject=0;
-                $.getJSON('@Url.Action("GetResourceListForProjectTypeAhead", "Resource")', { term: request.term}, function (data) {
+            });
+
+            $("#ResourceID").autocomplete({
+                source: function (request, response) {
+                    var id = '@ViewBag.EmployeeId1';
+                    ResourcePoolId = 0;
+                    ProjectId = 0;
+                    EmployeeForProject=0;
+                    $.getJSON('@Url.Action("GetResourceListForProjectTypeAhead", "Resource")', { term: request.term}, function (data) {
                         response($.map(data, function (el) {
                             var emplyeeInformation = el.EmployeeId + "{" + el.EmployeeName + "}";
                             return {
@@ -314,7 +320,6 @@
                     });
                 },
                 select: function (event, ui) {
-                  //  debugger;
                     var empname=ui.item.value;
                     if(empname=="")
                     {
@@ -392,604 +397,555 @@
                     }
                 });*@
 
-        $('#AsOnDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-20:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
-        .bind("change", function () {
-            $("#jqResourceBenchTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        });
+            $('#AsOnDate').datepicker({ dateFormat: "mm/dd/yy", changeMonth: true, changeYear: true, yearRange: "-20:+10", showOn: "both", buttonImage: "../../Images/New Design/calender-icon.png", buttonImageOnly: true, beforeShow: BeforeShowForDatePicker, onClose: onCloseForDatePicker })
+            .bind("change", function () {
+                $("#jqResourceBenchTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            });
 
-        $("#jqCurrentResourceTable").jqGrid({
-            //Grid for Current Resource Details
-            // Ajax related configurations
+            $("#jqCurrentResourceTable").jqGrid({
+                //Grid for Current Resource Details
+                // Ajax related configurations
 
-            url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
-            postData: {projectId:0},
-            datatype: "json",
-            mtype: "POST",
-            // Specify the column names
-            colNames: ["","Employee Code","","","Employee Name","","Project Name","Reporting To","Resource Pool","","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form","Skill Matrix","Edit","",""],
+                url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
+                postData: {projectId:0},
+                datatype: "json",
+                mtype: "POST",
+                // Specify the column names
+                colNames: ["","Employee Code","","","Employee Name","","Project Name","Project Reporting","Resource Pool","","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form","Skill Matrix","Edit","",""],
 
-            // Configure the columns
-            colModel: [
-                { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 10, hidden:true, editable: true},
-                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
-                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 10, hidden:true, editable: true },
-                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 10, hidden:true, editable: true },
-                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 40 },
-                { name: "ProjectID", index: "ProjectID", align: "left", width: 40 , hidden:true},
-                { name: "ProjectName", index: "ProjectName", align: "left", width: 40 },
-                { name: "ReportingTo", index: "ReportingTo", align: "left", width: 40 , editable: true, editrules: { required: true, custom: true, custom_func: reportingToRequiredFunction }, edittype: "select", editoptions: { value: function(){ return ResList}, dataEvents: [{ type: 'change', fn: function(e) { ChangeResource(e); } }]} },
-                { name: "ResourcePool", index: "ResourcePool", align: "left", width: 40 },
-                { name: "ResourcePool", index: "ResourcePool", align: "left", width: 10,hidden:true, editable: false },
-                { name: "Designation", index: "Designation", align: "left", width: 45 },
-                { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30, editrules: { required: true }, edittype: "select", editoptions: { value: a, dataEvents: [{ type: 'change', fn: function(e) { ChangeRole(e); } }]} },
-                { name: "ResourceType", index: "ResourceType", align: "left", width: 35 },
-                { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
-                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
-                { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
-                { name: "Allocated", index: "Allocated", align: "left", width: 35 },
-                { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50,editable: true,editoptions:{
-                    readonly:true,
-                    dataInit: function(element) {
-                        $(element).datepicker({
-                            dateFormat: 'mm/dd/yy',
-                            changeMonth: true,
-                            changeYear: true,
-                            minDate: new Date($.now()),
-                        });
-                    }
-                },formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date'
-                },
-                { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50,formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
-                //{ name: "ReleaseResource", index: "ReleaseResource", align: "left", width: 50,formatter:returnReleaseLink , formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
-                { name: "SkillMatrix", index: "ReleaseResource", align: "center", width: 50,formatter:returnSkillMatrixLink , formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
-                { name: "Action", index: "Action", align: "left", width: 50 },
-                { name: "ProjectEndAppraisalStausID", index: "ProjectEndAppraisalStausID", align: "left", width: 10, hidden:true },
-                 { name: "ProjectSkillMatrixStausID", index: "ProjectSkillMatrixStausID", align: "center", width: 10, hidden:true },
-            ],
-            // Grid total width and height
-            width: 700,
-            // Paging
-            toppager: false,
-            jsonReader: { repeatitems: false },
-            pager: $("#jqCurrentResourceTablePager"),
-            rowNum: 20,
-            rowList: [],
-            viewrecords: true, // Specify if "total number of records" is displayed
-            height: 'auto',
-            editurl: '@Url.Action("SaveProjectRoleForemployee", "Resource")',
-            autowidth: true,
-            // Default sorting
-            sortname: "",
-            sortorder: "asc",
-            loadonce: true,
-
-            gridComplete: function () {
-
-                var grid = $(this).getRowData();
-                var count = jQuery("#jqCurrentResourceTable").jqGrid('getGridParam', 'records');
-                $("#ResourceRMGContainer").find('p').text("");
-                if (count == 0) {
-                    $('#BtnReleaseResource').hide();
-                    $('#gbox_jqCurrentResourceTable').hide();
-                    $('#totalCountOfResource').hide();
-                    var pro=$('#RMGprojectnameId').text();
-                    var rep=$('#ResourcePoolId').text();
-                    var empname=$('#ResourceID').text();
-                    if(pro=="Select" && rep=="Select" && empname=="")
-                    {
-                        $('#jqCurrentResourceTable').hide();
-                        $("#ResourceRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>")
-                    }
-                    else
-                    {
-                        $("#ResourceRMGContainer").append("<p>No records found</p>")
-                    }
-                }
-                else {
-
-                    $('#totalCountOfResource').show();
-                    $('#totalCountOfResource').text("Total Records : " + count);
-                    $('#gbox_jqCurrentResourceTable').show();
-                    if (count > 20) {
-
-                        $('#jqCurrentResourceTablePager').show();
-                    }
-                    else {
-                        $('#jqCurrentResourceTablePager').hide();
-                    }
-                }
-                //
-                var ids = $("#jqCurrentResourceTable").jqGrid('getDataIDs');
-                for (var i = 0; i < ids.length; i++) {
-                    //debugger;
-                    //
-                    var itemId = ids[i];
-                    var rowData = $("#jqCurrentResourceTable").getRowData(itemId);
-                    var projectID = rowData["ProjectID"];
-                    be = "<input style='height:25px;width:50px;' type='button' class='buttonAsLink' id='btnEdit" +itemId+ "' value='Edit' onclick=\"EditEmpRole('" + itemId +"','"+ projectID + "');\"  />";
-                    se = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnUpdate" +itemId+ "'  value='Update' onclick=\"UpdateEmpoyeeRole('" + itemId + "');\"  />";
-                    ce = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancel" +itemId+ "'  value='Cancel' onclick=\"CancleEditRole('" + itemId + "');\"  />";
-                    selector = "<input class='elist' type='checkbox' id='chk_" + itemId + "' value='" + itemId + "' />";
-                    $("#jqCurrentResourceTable").jqGrid('setRowData', ids[i], { Select: selector, Action: be + se +ce  });
-
-                    //xe = "<input style='height:25px;width:50px;' type='button' class='buttonAsLink' id='btnEditReportingTo" +itemId+ "' value='Edit' onclick=\"EditEmployeeReportingTo('" + itemId + "');\"  />";
-                    //e = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnUpdateReportingTo" +itemId+ "'  value='Update' onclick=\"UpdateEmpoyeeReportingTo('" + itemId + "');\"  />";
-                    //ze = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancelReportingTo" +itemId+ "'  value='Cancel' onclick=\"CancelEmpoyeeReportingTo('" + itemId + "');\"  />";
-
-                    //$("#jqCurrentResourceTable").jqGrid('setRowData', ids[i], { Select: selector, ResourceAction: xe + ye +ze  });
-
-                    if(rowData["ReleaseDate"] != "") {
-                        $('#btnReleaseedit'+itemId).hide();
-                        $('#btnCancelUpdate'+itemId).hide();
-                        $('#btnReleaseUpdate'+itemId).hide();
-                        $('#btnCancelSecond'+itemId).hide();
-                        $('#btnchangedate'+itemId).show();
-                        $('#btnCancelRelease'+itemId).show();
-                    }
-                    else {
-                        $('#btnCancelUpdate'+itemId).hide();
-                        $('#btnReleaseUpdate'+itemId).hide();
-                        $('#btnCancelSecond'+itemId).hide();
-                        $('#btnchangedate'+itemId).hide();
-                        $('#btnCancelRelease'+itemId).hide();
-                        $('#btnReleaseedit'+itemId).show();
-                    }
-                }
-
-            },
-
-            onCellSelect: function(rowid, iCol) {
-
-                var rowData = $(this).getRowData(rowid);
-                var EmployeeName = rowData['EmployeeName'];
-                EmployeeId = rowData['EmployeeId'];
-                ProjectEmployeeRoleID = rowData['ProjectEmployeeRoleID'];
-                ProjectID= rowData['ProjectID']
-                $('#BtnReleaseResource').show();
-            }
-        }).navGrid("#jqCurrentResourceTablePager",
-            { search: false, refresh: false, add: false, edit: false, del: false },
-            {}, // settings for edit
-            {},
-            {}
-        );
-
-        $("#jqResourceHistoryTable").jqGrid({
-            // Ajax related configurations
-            // Grid for Resource History
-            url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
-            postData: { projectId:0 },
-            datatype: "json",
-            mtype: "POST",
-            // Specify the column names
-            //colNames: ["HelpDesk Ticket ID","","Employee Code","Employee Name","Reporting To","Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form","RMG Comments",""],
-            colNames: ["ProjectName","","Employee Code","Employee Name", "Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form",""],
-            // Configure the columns
-            colModel: [
-                { name: "ProjectName", index: "ProjectName", align: "left", width: 40 },
-                { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 35,hidden:true},
-                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
-                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 60 },
-                //{ name: "ReportingTo", index: "ReportingTo", align: "left", width: 60 },
-                { name: "ResourcePool", index: "ResourcePool", align: "left", width: 50 },
-                { name: "Designation", index: "Designation", align: "left", width: 50 },
-                { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30 },
-                { name: "ResourceType", index: "ResourceType", align: "left", width: 35 },
-                { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
-                { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
-                { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
-                { name: "Allocated", index: "Allocated", align: "left", width: 30 },
-                { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50,formatter: 'date', formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
-                { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50,formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
-                { name: "ProjectEndAppraisalStausID", index: "ProjectEndAppraisalStausID", align: "left", width: 10, hidden:true },
-            ],
-            // Grid total width and height
-            width: 700,
-            // Paging
-            toppager: false,
-            jsonReader: { repeatitems: false },
-            pager: $("#jqResourceHistoryTablePager"),
-            rowNum: 20,
-            rowList: [],
-            viewrecords: true, // Specify if "total number of records" is displayed
-            height: 'auto',
-            autowidth: true,
-            // Default sorting
-            sortname: "",
-            sortorder: "asc",
-            loadonce: true,
-            // Grid caption
-            //caption: "Resource History",
-            gridComplete: function () {
-                $("#HistoryRMGContainer").find('p').text("");
-                var grid = $(this).getRowData();
-                var count = jQuery("#jqResourceHistoryTable").jqGrid('getGridParam', 'records');
-                if (count == 0) {
-                    $('#totalCountOfHistory').hide();
-                    $('#gbox_jqResourceHistoryTable').hide();
-                    $("#HistoryRMGContainer").append("<p>No records found</p>");
-                }
-                else {
-                    $('#totalCountOfHistory').show();
-                    $('#totalCountOfHistory').text("Total Records : " + count);
-                    $('#gbox_jqResourceHistoryTable').show();
-                    if (count > 20) {
-
-                        $('#jqResourceHistoryTablePager').show();
-                    }
-                    else {
-                        $('#jqResourceHistoryTablePager').hide();
-                    }
-                }
-
-            },
-            onCellSelect: function(rowid, iCol) {
-            }
-        }).navGrid("#jqResourceHistoryTablePager",
-               { search: false, refresh: false, add: false, edit: false, del: false },
-               {}, // settings for edit
-               {},
-               {}
-           );
-
-        $("#jqResourceBenchTable").jqGrid({
-            // Ajax related configurations
-            // Grid for Resource History
-            url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
-            postData: {EmployeeId:function () { return  $('#SearchEmployeeId').val() }, projectID: function () { return ProjectId },AsOnDate:function () { return  $('#AsOnDate').val() },GridName :function(){return "Bench"} },
-            datatype: "json",
-            mtype: "POST",
-            // Specify the column names
-            colNames: ["Employee ID","Employee Code","Employee Name","Unallocated From","Primary Skills","Designation Name","Reporting To","Allocated (%)","Present/Absent"],
-            // Configure the columns
-            colModel: [
-                { name: "EmployeeId", index: "EmployeeId", align: "left", width: 35,hidden:true},
-                { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35,hidden:true},
-                { name: "EmployeeName", index: "EmployeeName", align: "left", width: 35 },
-                { name: "UnallocatedFrom", index: "UnallocatedFrom", align: "left", width: 60 },
-                { name: "PrimarySkills", index: "PrimarySkills", align: "left", width: 60 },
-                { name: "DesignationName", index: "DesignationName", align: "left", width: 50 },
-                { name: "ReportingTo", index: "ReportingTo", align: "left", width: 50 },
-                { name: "Allocated", index: "Allocated", align: "left", width: 30 },
-                { name: "PresentAbsent", index: "PresentAbsent", align: "left", width: 30 }
-            ],
-            // Grid total width and height
-            width: 700,
-            // Paging
-            toppager: false,
-            jsonReader: { repeatitems: false },
-            pager: $("#jqResourceBenchTablePager"),
-            rowNum: 20,
-            rowList: [20,30,40],
-            viewrecords: true, // Specify if "total number of records" is displayed
-            height: 'auto',
-            autowidth: true,
-            // Default sorting
-            sortname: "",
-            sortorder: "asc",
-            // Grid caption
-            //caption: "Resource History",
-            gridComplete: function () {
-                $("#BenchRMGContainer").find('p').text("");
-                var grid = $(this).getRowData();
-                var count = jQuery("#jqResourceBenchTable").jqGrid('getGridParam', 'records');
-                if (count == 0) {
-                    $('#BtnExportToexcelUnallocatedResource').hide();
-                    $('#gbox_jqResourceBenchTable').hide();
-                    $("#BenchRMGContainer").append("<p>No records found</p>")
-                }
-                else {
-                    $('#BtnExportToexcelUnallocatedResource').show();
-                    $('#gbox_jqResourceBenchTable').show();
-                    if (count > 20) {
-
-                        $('#jqResourceBenchTablePager').show();
-                    }
-                    else {
-                        $('#jqResourceBenchTablePager').hide();
-                    }
-                }
-
-            },
-            onCellSelect: function(rowid, iCol) {
-            }
-        }).navGrid("#jqResourceBenchTablePager",
-               { search: false, refresh: false, add: false, edit: false, del: false },
-               {}, // settings for edit
-               {},
-               {}
-           );
-
-        $('#RMGprojectnameId').change(function()
-        {
-            //  debugger;
-            var pro=$('#RMGprojectnameId option:selected').text();
-            if(pro=="Select")
-            {
-                showMsg();
-            }
-            else
-            {
-                cleanup(this);
-                $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceData(this)}).trigger("reloadGrid");
-                $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceDataForHistory(this)}).trigger("reloadGrid");
-            }
-        });
-
-        $('#ResourcePoolId').change(function()
-        {
-            //debugger;
-            var rep=$('#ResourcePoolId option:selected').text();
-            if(rep=="Select")
-            {
-                showMsg();
-            }
-            else
-            {
-                cleanup(this);
-                $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceData(this)}).trigger("reloadGrid");
-                $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceDataForHistory(this)}).trigger("reloadGrid");
-            }
-
-        });
-
-        var managerResourceData=function(obj){
-            // debugger;
-            obj=$(obj);
-            var currentGrid= {projectId:0,GridName :"Current", ResourcePoolId: 0, EmployeeForProject:0};
-
-            currentGrid[obj.parent().attr("inp")]=obj.val();
-            return currentGrid;
-
-        };
-
-        var managerResourceDataForHistory=function(obj){
-            //    debugger;
-            obj=$(obj);
-            var currentGrid= {projectId:0,GridName :"History", ResourcePoolId: 0, EmployeeForProject:0};
-
-            currentGrid[obj.parent().attr("inp")]=obj.val();
-            return currentGrid;
-
-        };
-
-        var cleanup=function(forId)
-        {
-            var cleanUpFactory={
-                projectId:function(){
-                    document.getElementById("ResourceID").value = "";
-                    $("#ResourcePoolId").val(0);
-                    $("#ResourcePoolId").next().find('.selectBox-label').text("Select");
-                },
-                ResourcePoolId:function(){
-                    document.getElementById("ResourceID").value = "";
-                    $("#RMGprojectnameId").val(0);
-                    $("#RMGprojectnameId").next().find('.selectBox-label').text("Select");
-                },
-                EmployeeForProject:function(){
-                    $("#ResourcePoolId").val(0);
-                    $("#ResourcePoolId").next().find('.selectBox-label').text("Select");
-                    $("#RMGprojectnameId").val(0);
-                    $("#RMGprojectnameId").next().find('.selectBox-label').text("Select");
-                }
-            }
-            cleanUpFactory[$(forId).parent().attr("inp")]();
-        }
-
-        var showMsg=function()
-        {
-            // debugger;
-            var pro=$('#RMGprojectnameId option:selected').text();
-            var rep=$('#ResourcePoolId option:selected').text();
-            var empname=$('#ResourceID').text();
-            if(pro=="Select" && rep=="Select" && empname=="")
-            {
-                //$('#jqCurrentResourceTable').hide();
-                //$("#ResourceRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>")
-                //$('#gbox_jqResourceHistoryTable').hide();
-                //$("#HistoryRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>");
-                $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:{projectId:0,GridName :null, ResourcePoolId: null, EmployeeForProject:null}}).trigger("reloadGrid");
-                $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:{projectId:0,GridName :null, ResourcePoolId: null, EmployeeForProject:null}}).trigger("reloadGrid");
-            }
-        }
-
-        function returnSkillMatrixLink(cellValue, options, rowdata, action)
-        {
-
-            if(rowdata["ProjectSkillMatrixStausID"] == 0 || rowdata["ProjectSkillMatrixStausID"] == null)
-            {
-
-                return "<a onclick=SkillMatrixViewForm('" + rowdata['EmployeeCode'] + "','"  + rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectSkillMatrixStausID"] + "'); >Submit</a>";
-            }
-            else
-            {
-                return "<a onclick=SkillMatrixViewForm('" + rowdata['EmployeeCode'] + "','" +  rowdata["ProjectEmployeeRoleID"] + "','"  + rowdata["ProjectSkillMatrixStausID"] + "'); >View</a>";
-            }
-        }
-        function returnReleaseLink(cellValue, options, rowdata, action) {
-            edit = "<input style='height:25px;width:50px;' class='buttonAsLink' type='button' id='btnReleaseedit" +options['rowId'] + "'  value='Release' onclick=\"EditReleaseDate('" + options['rowId'] + "');\"  />";
-            update = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnReleaseUpdate" +options['rowId'] + "'  value='Update' onclick=\"UpdateRelaseDate('" + options['rowId'] + "');\"  />";
-            Cancel = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancelUpdate" +options['rowId'] + "'  value='Cancel' onclick=\"CancleDateUpdate('" + options['rowId'] + "');\"  />";
-
-            changedate = "<input style='height:25px;width:90px;display:none;' class='buttonAsLink' type='button' id='btnchangedate" +options['rowId'] + "'  value='Change Date' onclick=\"ChangeReleaseDate('" + options['rowId'] + "');\"  />";
-            CancelRelease = "<input style='height:25px;width:90px;display:none;' class='buttonAsLink' type='button' id='btnCancelRelease" +options['rowId'] + "'  value='Cancel Release' onclick=\"CancelRelaseDate('" + options['rowId'] + "');\"  />";
-            CancelSecond = "<input style='height:25px;width:50px;display:none;' class='buttonAsLink' type='button' id='btnCancelSecond" +options['rowId'] + "'  value='Cancel' onclick=\"CancleDateUpdateSecond('" + options['rowId'] + "');\"  />";
-
-            return edit+update+Cancel+changedate+CancelRelease+CancelSecond;
-        }
-
-        function returnPhaseLink(cellValue, options, rowdata, action) {
-            var linkClick = "";
-            if(rowdata["ProjectEndAppraisalStausID"] == 1) {
-                linkClick = "View";
-                return "<a onclick=ApprisalViewForm('" + rowdata['EmployeeCode'] + "','" + rowdata['EmployeeId'] + "','" + ProjectId + "','" + linkClick + "','"+ rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectEndAppraisalStausID"] + "','" + rowdata["ReleaseDate"] + "'); >View</a>";
-            }
-            else {
-                linkClick = "Sumbit";
-                return "<a onclick=ApprisalViewForm('" + rowdata['EmployeeCode'] + "','" + rowdata['EmployeeId'] + "','" + ProjectId +"','" + linkClick + "','" + rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectEndAppraisalStausID"] + "','" + rowdata["ReleaseDate"] + "'); >Submit</a>";
-
-            }
-        }
-
-        $('#BtnExportToexcelUnallocatedResource').click(function () {
-            var Benchcount = jQuery("#jqResourceBenchTable").jqGrid('getGridParam', 'records');
-            if (Benchcount == 0) {
-                $("#TableError").dialog({
-                    resizable: false,
-                    height: 140,
-                    width: 300,
-                    modal: true,
-                    dialogClass:'noclose',
-                    buttons: {
-                        Ok: function () {
-                            $(this).dialog("destroy");
+                // Configure the columns
+                //Modified ResourceType,AllocationStartDate,AllocationEndDate,Allocated for #147416905.
+                colModel: [
+                    { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 10, hidden:true, editable: true},
+                    { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
+                    { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 10, hidden:true, editable: true },
+                    { name: "EmployeeId", index: "EmployeeId", align: "left", width: 10, hidden:true, editable: true },
+                    { name: "EmployeeName", index: "EmployeeName", align: "left", width: 40 },
+                    { name: "ProjectID", index: "ProjectID", align: "left", width: 40 , hidden:true},
+                    { name: "ProjectName", index: "ProjectName", align: "left", width: 40 },
+                    { name: "ReportingTo", index: "ReportingTo", align: "left", width: 40 , editable: true, editrules: { required: true, custom: true, custom_func: reportingToRequiredFunction }, edittype: "select", editoptions: { value: function(){ return ResList}, dataEvents: [{ type: 'change', fn: function(e) { ChangeResource(e); } }]} },
+                    { name: "ResourcePool", index: "ResourcePool", align: "left", width: 40 },
+                    { name: "ResourcePool", index: "ResourcePool", align: "left", width: 10,hidden:true, editable: false },
+                    { name: "Designation", index: "Designation", align: "left", width: 45 },
+                    { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30, editrules: { required: true }, edittype: "select", editoptions: { value: a, dataEvents: [{ type: 'change', fn: function(e) { ChangeRole(e); } }]} },
+                    { name: "ResourceType", index: "ResourceType",align: "left", width: 35,editable:true, editrules: { required: true }, edittype: "select", editoptions: { value:resourceType ,dataEvents: [{ type: 'change', fn: function(e) { ChangeResourceStatus(e); } }]} },
+                    { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
+                    { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 50,editable: true, editoptions:{
+                        readonly:true,
+                        dataInit: function(element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true
+                            });
                         }
-                    }
-                });
-                $.preventDefault();
-            }
-            GetProjetId();
-            window.location.href = '@Url.Action("ExportToExcelBenchResourceData", "Resource")?projectID=' + ProjectID + '&ProjectName=' + ProjectName+'&AsOnDate=' + $('#AsOnDate').val()+'&EmployeeId='+$('#SearchEmployeeId').val();
-        });
-
-        $("#SearchEmployeeName").autocomplete({
-            source: function (request, response) {
-                $.getJSON('@Url.Action("SearchEmployeeAutoSuggestFoeSEM", "EmployeeDetails")', { term: request.term }, function (data) {
-                    response($.map(data, function (el) {
-                        var emplyeeInformation = el.EmployeeName;
-                        return {
-                            label: emplyeeInformation,
-                            value: emplyeeInformation,
-                            text:el.EmployeeCode
-                        };
-                    }));
-                });
-            },
-            select: function (event, ui) {
-                loadGridForAllocation(event, ui);
-            }
-        });
-
-        function loadGridForAllocation(event, ui) {
-            var searchEmployeeId = ui.item.text;
-            $('#SearchEmployeeId').val(searchEmployeeId);
-            $("#jqResourceBenchTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        }
-
-        $('#ResourcePoolId').bind('change',function(){
-            ResourcePoolId = 0;
-            ProjectId = 0;
-            EmployeeForProject=0;
-            ResourcePoolId = $(this).val();
-            $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-            $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        });
-
-        //$('#ResourceId').bind('change',function(){
-        //    EmployeeForProject = $(this).val();
-        //    $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        //    $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        //});
-
-    });
-    window.onload = function () {
-        var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["ResourceNodeLevelAccess"])));
-        if(stringNodeLevelAccessList==null)
-
-            if(stringNodeLevelAccessList!=null){
-                if(stringNodeLevelAccessList.CanEdit==false){
-                    $('#jqCurrentResourceTable').hideCol("ReleaseResource");
-                    $('#jqCurrentResourceTable').hideCol("Action");
-                }
-            }
-    }
-
-    function UpdateEmpoyeeRole(itemID)
-    {
-        //
-        var reportTo = ResourceID;
-        //var reportingTo = jQuery('#' + itemID + '_ReportingTo').val();
-
-        // var ResourceName = e.target[e.target.selectedIndex].text;
-        //$.each(resourceReportingToId,function(index, value) {
-        //    if((value.name).replace(/\s+/g, '') == (reportingTo).replace(/\s+/g, ''))
-        //    {
-        //
-        //        ResourceID = value.index;
-        //    }
-        //});
-
-        var dropdownValue = jQuery('#' + itemID + '_ProjectRole').val();
-        if(dropdownValue==0){
-            $("#RoleNotSelected").dialog({
-                resizable: false,
-                autoOpen: true,
+                    },formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                    { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 50,editable: true, editoptions:{
+                        readonly:true,
+                        dataInit: function(element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true
+                            });
+                        }
+                    },formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                    { name: "Allocated", index: "Allocated", align: "left", width: 35 ,editable: true},
+                    { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50,editable: true,editoptions:{
+                        readonly:true,
+                        dataInit: function(element) {
+                            $(element).datepicker({
+                                dateFormat: 'mm/dd/yy',
+                                changeMonth: true,
+                                changeYear: true,
+                                minDate: new Date($.now()),
+                            });
+                        }
+                    },formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date'
+                    },
+                    { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50,formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                    //{ name: "ReleaseResource", index: "ReleaseResource", align: "left", width: 50,formatter:returnReleaseLink , formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                    { name: "SkillMatrix", index: "ReleaseResource", align: "center", width: 50,formatter:returnSkillMatrixLink , formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                    { name: "Action", index: "Action", align: "left", width: 50 },
+                    { name: "ProjectEndAppraisalStausID", index: "ProjectEndAppraisalStausID", align: "left", width: 10, hidden:true },
+                     { name: "ProjectSkillMatrixStausID", index: "ProjectSkillMatrixStausID", align: "center", width: 10, hidden:true },
+                ],
+                // Grid total width and height
+                width: 700,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqCurrentResourceTablePager"),
+                rowNum: 20,
+                rowList: [],
+                viewrecords: true, // Specify if "total number of records" is displayed
                 height: 'auto',
-                width: 300,
-                modal: true,
-                dialogClass: "noclose",
-                buttons: {
-                    Ok: function () {
-                        $(this).dialog("close");
-                        $('#jqCurrentResourceTable').restoreRow(itemID);
-                        $('#btnEdit'+itemID).show();
-                        $('#btnUpdate'+itemID).hide()
-                        $('#btnCancel'+itemID).hide();
-                    }
-                }
-            });
-            $.preventDefault();
-        }
-        else
-        {
-            var dropdown = jQuery('#' + itemID + '_ProjectRole')[0];
-            var selectedOption = dropdown.options[dropdown.selectedIndex];
-            var RoleName = selectedOption.text;
-            $.each(ProjectRoleList,function(index, value) {
-                if(value.RoleDescription == RoleName)
-                {
-                    RoleID=value.RoleID;
-                }
-            });
-        }
+                editurl: '@Url.Action("SaveProjectRoleForemployee", "Resource")',
+                autowidth: true,
+                // Default sorting
+                sortname: "",
+                sortorder: "asc",
+                loadonce: true,
 
-        DisplayLoadingDialog();
-        jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:false});
-        jQuery("#jqCurrentResourceTable").jqGrid('saveRow', itemID,
-    {
-        aftersavefunc: function (id, response, options) {
-            CloseLoadingPopup();
-            var result = $.parseJSON(response.responseText);
-            if(result.status == true)
-            {
-                $("#RoleChangeSucess").dialog({
-                    resizable: false,
-                    autoOpen: true,
-                    height: 'auto',
-                    width: 300,
-                    modal: true,
-                    dialogClass: "noclose",
-                    buttons: {
-                        Ok: function () {
-                            $(this).dialog("close");
-                            $('#btnEdit'+itemID).show();
-                            $('#btnUpdate'+itemID).hide()
-                            $('#btnCancel'+itemID).hide();
-                            jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
-                            //
-                            var rowData = $("#jqCurrentResourceTable").getRowData(itemID);
-                            var EmployeeName = rowData["EmployeeName"];
-                            var ProjectID = rowData["ProjectID"];
-                            GetProjetId();
-                            $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-                            sendMailForReleseResource("btnReleaseUpdate",ProjectID,EmployeeName);
+                gridComplete: function () {
+
+                    var grid = $(this).getRowData();
+                    var count = jQuery("#jqCurrentResourceTable").jqGrid('getGridParam', 'records');
+                    $("#ResourceRMGContainer").find('p').text("");
+                    if (count == 0) {
+                        $('#BtnReleaseResource').hide();
+                        $('#gbox_jqCurrentResourceTable').hide();
+                        $('#totalCountOfResource').hide();
+                        var pro=$('#RMGprojectnameId').text();
+                        var rep=$('#ResourcePoolId').text();
+                        var empname=$('#ResourceID').text();
+                        if(pro=="Select" && rep=="Select" && empname=="")
+                        {
+                            $('#jqCurrentResourceTable').hide();
+                            $("#ResourceRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>")
+                        }
+                        else
+                        {
+                            $("#ResourceRMGContainer").append("<p>No records found</p>")
                         }
                     }
-                });
-            }
-            else
+                    else {
+
+                        $('#totalCountOfResource').show();
+                        $('#totalCountOfResource').text("Total Records : " + count);
+                        $('#gbox_jqCurrentResourceTable').show();
+                        if (count > 20) {
+
+                            $('#jqCurrentResourceTablePager').show();
+                        }
+                        else {
+                            $('#jqCurrentResourceTablePager').hide();
+                        }
+                    }
+                    //
+                    var ids = $("#jqCurrentResourceTable").jqGrid('getDataIDs');
+                    for (var i = 0; i < ids.length; i++) {
+                        //debugger;
+                        //
+                        var itemId = ids[i];
+                        var rowData = $("#jqCurrentResourceTable").getRowData(itemId);
+                        var projectID = rowData["ProjectID"];
+                        be = "<input style='height:25px;width:50px;' type='button' class='buttonAsLink' id='btnEdit" +itemId+ "' value='Edit' onclick=\"EditEmpRole('" + itemId +"','"+ projectID + "');\"  />";
+                        se = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnUpdate" +itemId+ "'  value='Update' onclick=\"UpdateEmpoyeeRole('" + itemId + "');\"  />";
+                        ce = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancel" +itemId+ "'  value='Cancel' onclick=\"CancleEditRole('" + itemId + "');\"  />";
+                        selector = "<input class='elist' type='checkbox' id='chk_" + itemId + "' value='" + itemId + "' />";
+                        $("#jqCurrentResourceTable").jqGrid('setRowData', ids[i], { Select: selector, Action: be + se +ce  });
+
+                        //xe = "<input style='height:25px;width:50px;' type='button' class='buttonAsLink' id='btnEditReportingTo" +itemId+ "' value='Edit' onclick=\"EditEmployeeReportingTo('" + itemId + "');\"  />";
+                        //e = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnUpdateReportingTo" +itemId+ "'  value='Update' onclick=\"UpdateEmpoyeeReportingTo('" + itemId + "');\"  />";
+                        //ze = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancelReportingTo" +itemId+ "'  value='Cancel' onclick=\"CancelEmpoyeeReportingTo('" + itemId + "');\"  />";
+
+                        //$("#jqCurrentResourceTable").jqGrid('setRowData', ids[i], { Select: selector, ResourceAction: xe + ye +ze  });
+
+                        if(rowData["ReleaseDate"] != "") {
+                            $('#btnReleaseedit'+itemId).hide();
+                            $('#btnCancelUpdate'+itemId).hide();
+                            $('#btnReleaseUpdate'+itemId).hide();
+                            $('#btnCancelSecond'+itemId).hide();
+                            $('#btnchangedate'+itemId).show();
+                            $('#btnCancelRelease'+itemId).show();
+                        }
+                        else {
+                            $('#btnCancelUpdate'+itemId).hide();
+                            $('#btnReleaseUpdate'+itemId).hide();
+                            $('#btnCancelSecond'+itemId).hide();
+                            $('#btnchangedate'+itemId).hide();
+                            $('#btnCancelRelease'+itemId).hide();
+                            $('#btnReleaseedit'+itemId).show();
+                        }
+                    }
+
+                },
+
+                onCellSelect: function(rowid, iCol) {
+                    debugger;
+                    var rowData = $(this).getRowData(rowid);
+                    var EmployeeName = rowData['EmployeeName'];
+                    EmployeeId = rowData['EmployeeId'];
+                    ProjectEmployeeRoleID = rowData['ProjectEmployeeRoleID'];
+                    ProjectID= rowData['ProjectID']
+                    $('#BtnReleaseResource').show();
+                }
+            }).navGrid("#jqCurrentResourceTablePager",
+                { search: false, refresh: false, add: false, edit: false, del: false },
+                {}, // settings for edit
+                {},
+                {}
+            );
+
+            $("#jqResourceHistoryTable").jqGrid({
+                // Ajax related configurations
+                // Grid for Resource History
+                url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
+                postData: { projectId:0 },
+                datatype: "json",
+                mtype: "POST",
+                // Specify the column names
+                //colNames: ["HelpDesk Ticket ID","","Employee Code","Employee Name","Reporting To","Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form","RMG Comments",""],
+                colNames: ["ProjectName","","Employee Code","Employee Name", "Resource Pool","Designation","Project Role","Resource Type","Employment Status","Allocation Start Date","Allocation End Date","Allocated (%)","Release Date","Project End Appraisal Form",""],
+                // Configure the columns
+                colModel: [
+                    { name: "ProjectName", index: "ProjectName", align: "left", width: 40 },
+                    { name: "ProjectEmployeeRoleID", index: "ProjectEmployeeRoleID", align: "left", width: 35,hidden:true},
+                    { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35 },
+                    { name: "EmployeeName", index: "EmployeeName", align: "left", width: 60 },
+                    //{ name: "ReportingTo", index: "ReportingTo", align: "left", width: 60 },
+                    { name: "ResourcePool", index: "ResourcePool", align: "left", width: 50 },
+                    { name: "Designation", index: "Designation", align: "left", width: 50 },
+                    { name: "ProjectRole", index: "ProjectRole", align: "left", width: 30 },
+                    { name: "ResourceType", index: "ResourceType", align: "left", width: 35 },
+                    { name: "EmploymentStatus", index: "EmploymentStatus", align: "left", width: 55 },
+                    { name: "AllocationStartDate", index: "AllocationStartDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                    { name: "AllocationEndDate", index: "AllocationEndDate", align: "left", width: 50, formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                    { name: "Allocated", index: "Allocated", align: "left", width: 30 },
+                    { name: "ReleaseDate", index: "ReleaseDate", align: "left", width: 50,formatter: 'date', formatter: 'date', formatoptions: { srcformat: 'm/d/Y', newformat: 'm/d/Y' },sorttype:'date' },
+                    { name: "ProjectEndAppraisalForm", index: "ProjectEndAppraisalForm", align: "left", width: 50,formatter: returnPhaseLink, formatoptions: { target: "_new", baseLinkUrl: 'viewAppFile.php'} },
+                    { name: "ProjectEndAppraisalStausID", index: "ProjectEndAppraisalStausID", align: "left", width: 10, hidden:true },
+                ],
+                // Grid total width and height
+                width: 700,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqResourceHistoryTablePager"),
+                rowNum: 20,
+                rowList: [],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                autowidth: true,
+                // Default sorting
+                sortname: "",
+                sortorder: "asc",
+                loadonce: true,
+                // Grid caption
+                //caption: "Resource History",
+                gridComplete: function () {
+                    $("#HistoryRMGContainer").find('p').text("");
+                    var grid = $(this).getRowData();
+                    var count = jQuery("#jqResourceHistoryTable").jqGrid('getGridParam', 'records');
+                    if (count == 0) {
+                        $('#totalCountOfHistory').hide();
+                        $('#gbox_jqResourceHistoryTable').hide();
+                        $("#HistoryRMGContainer").append("<p>No records found</p>");
+                    }
+                    else {
+                        $('#totalCountOfHistory').show();
+                        $('#totalCountOfHistory').text("Total Records : " + count);
+                        $('#gbox_jqResourceHistoryTable').show();
+                        if (count > 20) {
+
+                            $('#jqResourceHistoryTablePager').show();
+                        }
+                        else {
+                            $('#jqResourceHistoryTablePager').hide();
+                        }
+                    }
+
+                },
+                onCellSelect: function(rowid, iCol) {
+                }
+            }).navGrid("#jqResourceHistoryTablePager",
+                   { search: false, refresh: false, add: false, edit: false, del: false },
+                   {}, // settings for edit
+                   {},
+                   {}
+               );
+
+            $("#jqResourceBenchTable").jqGrid({
+                // Ajax related configurations
+                // Grid for Resource History
+                url: '@Url.Action("RMGCurrentResourceLoadGrid", "Resource")',
+                postData: {EmployeeId:function () { return  $('#SearchEmployeeId').val() }, projectID: function () { return ProjectId },AsOnDate:function () { return  $('#AsOnDate').val() },GridName :function(){return "Bench"} },
+                datatype: "json",
+                mtype: "POST",
+                // Specify the column names
+                colNames: ["Employee ID","Employee Code","Employee Name","Unallocated From","Primary Skills","Designation Name","Reporting To","Allocated (%)","Present/Absent"],
+                // Configure the columns
+                colModel: [
+                    { name: "EmployeeId", index: "EmployeeId", align: "left", width: 35,hidden:true},
+                    { name: "EmployeeCode", index: "EmployeeCode", align: "left", width: 35,hidden:true},
+                    { name: "EmployeeName", index: "EmployeeName", align: "left", width: 35 },
+                    { name: "UnallocatedFrom", index: "UnallocatedFrom", align: "left", width: 60 },
+                    { name: "PrimarySkills", index: "PrimarySkills", align: "left", width: 60 },
+                    { name: "DesignationName", index: "DesignationName", align: "left", width: 50 },
+                    { name: "ReportingTo", index: "ReportingTo", align: "left", width: 50 },
+                    { name: "Allocated", index: "Allocated", align: "left", width: 30 },
+                    { name: "PresentAbsent", index: "PresentAbsent", align: "left", width: 30 }
+                ],
+                // Grid total width and height
+                width: 700,
+                // Paging
+                toppager: false,
+                jsonReader: { repeatitems: false },
+                pager: $("#jqResourceBenchTablePager"),
+                rowNum: 20,
+                rowList: [20,30,40],
+                viewrecords: true, // Specify if "total number of records" is displayed
+                height: 'auto',
+                autowidth: true,
+                // Default sorting
+                sortname: "",
+                sortorder: "asc",
+                // Grid caption
+                //caption: "Resource History",
+                gridComplete: function () {
+                    $("#BenchRMGContainer").find('p').text("");
+                    var grid = $(this).getRowData();
+                    var count = jQuery("#jqResourceBenchTable").jqGrid('getGridParam', 'records');
+                    if (count == 0) {
+                        $('#BtnExportToexcelUnallocatedResource').hide();
+                        $('#gbox_jqResourceBenchTable').hide();
+                        $("#BenchRMGContainer").append("<p>No records found</p>")
+                    }
+                    else {
+                        $('#BtnExportToexcelUnallocatedResource').show();
+                        $('#gbox_jqResourceBenchTable').show();
+                        if (count > 20) {
+
+                            $('#jqResourceBenchTablePager').show();
+                        }
+                        else {
+                            $('#jqResourceBenchTablePager').hide();
+                        }
+                    }
+
+                },
+                onCellSelect: function(rowid, iCol) {
+                }
+            }).navGrid("#jqResourceBenchTablePager",
+                   { search: false, refresh: false, add: false, edit: false, del: false },
+                   {}, // settings for edit
+                   {},
+                   {}
+               );
+
+            $('#RMGprojectnameId').change(function()
             {
-                $("#RoleChangeFail").dialog({
+                //  debugger;
+                var pro=$('#RMGprojectnameId option:selected').text();
+                if(pro=="Select")
+                {
+                    showMsg();
+                }
+                else
+                {
+                    cleanup(this);
+                    $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceData(this)}).trigger("reloadGrid");
+                    $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceDataForHistory(this)}).trigger("reloadGrid");
+                }
+            });
+
+            $('#ResourcePoolId').change(function()
+            {
+                //debugger;
+                var rep=$('#ResourcePoolId option:selected').text();
+                if(rep=="Select")
+                {
+                    showMsg();
+                }
+                else
+                {
+                    cleanup(this);
+                    $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceData(this)}).trigger("reloadGrid");
+                    $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:managerResourceDataForHistory(this)}).trigger("reloadGrid");
+                }
+
+            });
+
+            var managerResourceData=function(obj){
+                // debugger;
+                obj=$(obj);
+                var currentGrid= {projectId:0,GridName :"Current", ResourcePoolId: 0, EmployeeForProject:0};
+
+                currentGrid[obj.parent().attr("inp")]=obj.val();
+                return currentGrid;
+
+            };
+
+            var managerResourceDataForHistory=function(obj){
+                //    debugger;
+                obj=$(obj);
+                var currentGrid= {projectId:0,GridName :"History", ResourcePoolId: 0, EmployeeForProject:0};
+
+                currentGrid[obj.parent().attr("inp")]=obj.val();
+                return currentGrid;
+
+            };
+
+            var cleanup=function(forId)
+            {
+                var cleanUpFactory={
+                    projectId:function(){
+                        document.getElementById("ResourceID").value = "";
+                        $("#ResourcePoolId").val(0);
+                        $("#ResourcePoolId").next().find('.selectBox-label').text("Select");
+                    },
+                    ResourcePoolId:function(){
+                        document.getElementById("ResourceID").value = "";
+                        $("#RMGprojectnameId").val(0);
+                        $("#RMGprojectnameId").next().find('.selectBox-label').text("Select");
+                    },
+                    EmployeeForProject:function(){
+                        $("#ResourcePoolId").val(0);
+                        $("#ResourcePoolId").next().find('.selectBox-label').text("Select");
+                        $("#RMGprojectnameId").val(0);
+                        $("#RMGprojectnameId").next().find('.selectBox-label').text("Select");
+                    }
+                }
+                cleanUpFactory[$(forId).parent().attr("inp")]();
+            }
+
+            var showMsg=function()
+            {
+                // debugger;
+                var pro=$('#RMGprojectnameId option:selected').text();
+                var rep=$('#ResourcePoolId option:selected').text();
+                var empname=$('#ResourceID').text();
+                if(pro=="Select" && rep=="Select" && empname=="")
+                {
+                    //$('#jqCurrentResourceTable').hide();
+                    //$("#ResourceRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>")
+                    //$('#gbox_jqResourceHistoryTable').hide();
+                    //$("#HistoryRMGContainer").append("<p>Select Project Or ResourcePool Or EmployeeName</p>");
+                    $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json",postData:{projectId:0,GridName :null, ResourcePoolId: null, EmployeeForProject:null}}).trigger("reloadGrid");
+                    $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json",postData:{projectId:0,GridName :null, ResourcePoolId: null, EmployeeForProject:null}}).trigger("reloadGrid");
+                }
+            }
+
+            function returnSkillMatrixLink(cellValue, options, rowdata, action)
+            {
+
+                if(rowdata["ProjectSkillMatrixStausID"] == 0 || rowdata["ProjectSkillMatrixStausID"] == null)
+                {
+
+                    return "<a onclick=SkillMatrixViewForm('" + rowdata['EmployeeCode'] + "','"  + rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectSkillMatrixStausID"] + "'); >Submit</a>";
+                }
+                else
+                {
+                    return "<a onclick=SkillMatrixViewForm('" + rowdata['EmployeeCode'] + "','" +  rowdata["ProjectEmployeeRoleID"] + "','"  + rowdata["ProjectSkillMatrixStausID"] + "'); >View</a>";
+                }
+            }
+            function returnReleaseLink(cellValue, options, rowdata, action) {
+                edit = "<input style='height:25px;width:50px;' class='buttonAsLink' type='button' id='btnReleaseedit" +options['rowId'] + "'  value='Release' onclick=\"EditReleaseDate('" + options['rowId'] + "');\"  />";
+                update = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnReleaseUpdate" +options['rowId'] + "'  value='Update' onclick=\"UpdateRelaseDate('" + options['rowId'] + "');\"  />";
+                Cancel = "<input style='height:25px;width:50px;display:none' class='buttonAsLink' type='button' id='btnCancelUpdate" +options['rowId'] + "'  value='Cancel' onclick=\"CancleDateUpdate('" + options['rowId'] + "');\"  />";
+
+                changedate = "<input style='height:25px;width:90px;display:none;' class='buttonAsLink' type='button' id='btnchangedate" +options['rowId'] + "'  value='Change Date' onclick=\"ChangeReleaseDate('" + options['rowId'] + "');\"  />";
+                CancelRelease = "<input style='height:25px;width:90px;display:none;' class='buttonAsLink' type='button' id='btnCancelRelease" +options['rowId'] + "'  value='Cancel Release' onclick=\"CancelRelaseDate('" + options['rowId'] + "');\"  />";
+                CancelSecond = "<input style='height:25px;width:50px;display:none;' class='buttonAsLink' type='button' id='btnCancelSecond" +options['rowId'] + "'  value='Cancel' onclick=\"CancleDateUpdateSecond('" + options['rowId'] + "');\"  />";
+
+                return edit+update+Cancel+changedate+CancelRelease+CancelSecond;
+            }
+
+            function returnPhaseLink(cellValue, options, rowdata, action) {
+                var linkClick = "";
+                if(rowdata["ProjectEndAppraisalStausID"] == 1) {
+                    linkClick = "View";
+                    return "<a onclick=ApprisalViewForm('" + rowdata['EmployeeCode'] + "','" + rowdata['EmployeeId'] + "','" + ProjectId + "','" + linkClick + "','"+ rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectEndAppraisalStausID"] + "','" + rowdata["ReleaseDate"] + "'); >View</a>";
+                }
+                else {
+                    linkClick = "Sumbit";
+                    return "<a onclick=ApprisalViewForm('" + rowdata['EmployeeCode'] + "','" + rowdata['EmployeeId'] + "','" + ProjectId +"','" + linkClick + "','" + rowdata["ProjectEmployeeRoleID"] + "','" + rowdata["ProjectEndAppraisalStausID"] + "','" + rowdata["ReleaseDate"] + "'); >Submit</a>";
+
+                }
+            }
+
+            $('#BtnExportToexcelUnallocatedResource').click(function () {
+                var Benchcount = jQuery("#jqResourceBenchTable").jqGrid('getGridParam', 'records');
+                if (Benchcount == 0) {
+                    $("#TableError").dialog({
+                        resizable: false,
+                        height: 140,
+                        width: 300,
+                        modal: true,
+                        dialogClass:'noclose',
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("destroy");
+                            }
+                        }
+                    });
+                    $.preventDefault();
+                }
+                GetProjetId();
+                window.location.href = '@Url.Action("ExportToExcelBenchResourceData", "Resource")?projectID=' + ProjectID + '&ProjectName=' + ProjectName+'&AsOnDate=' + $('#AsOnDate').val()+'&EmployeeId='+$('#SearchEmployeeId').val();
+            });
+
+            $("#SearchEmployeeName").autocomplete({
+                source: function (request, response) {
+                    $.getJSON('@Url.Action("SearchEmployeeAutoSuggestFoeSEM", "EmployeeDetails")', { term: request.term }, function (data) {
+                        response($.map(data, function (el) {
+                            var emplyeeInformation = el.EmployeeName;
+                            return {
+                                label: emplyeeInformation,
+                                value: emplyeeInformation,
+                                text:el.EmployeeCode
+                            };
+                        }));
+                    });
+                },
+                select: function (event, ui) {
+                    loadGridForAllocation(event, ui);
+                }
+            });
+
+            function loadGridForAllocation(event, ui) {
+                var searchEmployeeId = ui.item.text;
+                $('#SearchEmployeeId').val(searchEmployeeId);
+                $("#jqResourceBenchTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            }
+
+            $('#ResourcePoolId').bind('change',function(){
+                ResourcePoolId = 0;
+                ProjectId = 0;
+                EmployeeForProject=0;
+                ResourcePoolId = $(this).val();
+                $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            });
+
+            //$('#ResourceId').bind('change',function(){
+            //    EmployeeForProject = $(this).val();
+            //    $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            //    $("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            //});
+
+        });
+        window.onload = function () {
+            var stringNodeLevelAccessList = @(Html.Raw(Json.Encode(Session["ResourceNodeLevelAccess"])));
+            if(stringNodeLevelAccessList==null)
+
+                if(stringNodeLevelAccessList!=null){
+                    if(stringNodeLevelAccessList.CanEdit==false){
+                        $('#jqCurrentResourceTable').hideCol("ReleaseResource");
+                        $('#jqCurrentResourceTable').hideCol("Action");
+                    }
+                }
+        }
+
+        function UpdateEmpoyeeRole(itemID)
+        {
+            //
+            var reportTo = ResourceID;
+            //var reportingTo = jQuery('#' + itemID + '_ReportingTo').val();
+
+            // var ResourceName = e.target[e.target.selectedIndex].text;
+            //$.each(resourceReportingToId,function(index, value) {
+            //    if((value.name).replace(/\s+/g, '') == (reportingTo).replace(/\s+/g, ''))
+            //    {
+            //
+            //        ResourceID = value.index;
+            //    }
+            //});
+
+            var dropdownValue = jQuery('#' + itemID + '_ProjectRole').val();
+            if(dropdownValue==0){
+                $("#RoleNotSelected").dialog({
                     resizable: false,
                     autoOpen: true,
                     height: 'auto',
@@ -1003,369 +959,447 @@
                             $('#btnEdit'+itemID).show();
                             $('#btnUpdate'+itemID).hide()
                             $('#btnCancel'+itemID).hide();
-                            jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
                         }
                     }
                 });
+                $.preventDefault();
             }
-        },
-        extraparam: {
-            RoleId: function () {
-                return RoleID;
-            },
-            reportTo : function(){
-                //
-                return reportTo;
-            }
-        }
-
-    });
-
-    }
-
-    function EditEmpRole(itemID,projectID)
-    {
-        // debugger;
-        returnResourceDetails(projectID);
-        var rowData = $("#jqCurrentResourceTable").getRowData(itemID);
-
-        var reportingTo = rowData["ReportingTo"];
-        $.each(resourceReportingToId,function(index, value) {
-            if((value.name).replace(/\s+/g, '') == (reportingTo).replace(/\s+/g, ''))
+            else
             {
-                //
-                ResourceID = value.index;
-            }
-        });
-
-        jQuery('#jqCurrentResourceTable').setColProp('ReleaseDate',{editable:true});
-        jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:true});
-        //jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:tr});
-        $('#btnEdit'+itemID).hide();
-        $('#btnUpdate'+itemID).show()
-        $('#btnCancel'+itemID).show();
-        $('#jqCurrentResourceTable').editRow(itemID);
-    }
-
-    function returnResourceDetails(projectID)
-    {
-        //  debugger;
-        $.ajax({
-            url: '@Url.Action("GetResourceListForProject", "Resource")',
-            type: 'POST',
-            data: { projectID:projectID },
-            datatype: "json",
-            async:false,
-            success: function (result) {
-                // debugger;
-                var EmployeeName="";
-                ResList=[];
-                resourceReportingToId = [];
-                ResList.push("Select");
-                resourceReportingToId.push({name: "Select", index: 0});
-                $('#ResourceId').selectBox("destroy");
-                $('#ResourceId').empty();
-                $('#ResourceId').append($("<option></option>")
-          .attr("value", "")
-          .text("Select"));
-                $.each(result, function (index,value) {
-                    //
-                    ResList.push(value.EmployeeName);
-                    //resourceReportingToId.push(value.EmployeeId);
-                    resourceReportingToId.push({name: value.EmployeeName,  index:  value.EmployeeId});
-
-                    var optionhtml = '<option value="' +
-                                          value.EmployeeId + '">' + value.EmployeeName + '</option>';
-                    $('#ResourceId').append(optionhtml);
-                });
-                $('#ResourceId').selectBox('create');
-            }
-        });
-        $('#AsOnDate').val('@Model.AsOnDate');
-        $('#SearchEmployeeName').val('');
-        $("#BenchDetails").hide();
-        $("#ResourceHistoryDetails,#CurrentResourceDetails").show();
-        //$("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-        //$("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-    }
-
-    function CancleEditRole(itemID)
-    {
-        //
-        $('#btnEdit'+itemID).show();
-        $('#btnUpdate'+itemID).hide();
-        $('#btnCancel'+itemID).hide();
-        $('#jqCurrentResourceTable').jqGrid('setColProp', 'ProjectRole', {editable:false});
-        //jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:false});
-        $('#jqCurrentResourceTable').restoreRow(itemID);
-        $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-    }
-
-    function CancelEmpoyeeReportingTo(itemID)
-    {
-        $('#btnEditReportingTo'+itemID).show();
-        $('#btnUpdateReportingTo'+itemID).hide()
-        $('#btnCancelReportingTo'+itemID).hide();
-        $('#jqCurrentResourceTable').restoreRow(itemID);
-    }
-
-    var RoleID;
-    function ChangeRole(e) {
-        var RoleName = e.target[e.target.selectedIndex].text;
-        $.each(ProjectRoleList,function(index, value) {
-            if(value.RoleDescription == RoleName)
-            {
-                RoleID=value.RoleID;
-            }
-        });
-    }
-    function ChangeResource(e) {
-        var ResourceName = e.target[e.target.selectedIndex].text;
-        var reportingToID = e.target.id;
-        var employeeName = $("#"+reportingToID).parent().prev().text();
-        if($.trim(ResourceName.replace(/\s+/g, '')) == $.trim(employeeName.replace(/\s+/g, '')))
-        {
-            $("#ReportingToSameAsEmployee").dialog({
-                resizable: false,
-                autoOpen: true,
-                height: 'auto',
-                width: 300,
-                modal: true,
-                dialogClass: "noclose",
-                buttons: {
-                    Ok: function () {
-                        $(this).dialog("destroy");
-                        $("#"+reportingToID).val(0);
+                var dropdown = jQuery('#' + itemID + '_ProjectRole')[0];
+                var selectedOption = dropdown.options[dropdown.selectedIndex];
+                var RoleName = selectedOption.text;
+                $.each(ProjectRoleList,function(index, value) {
+                    if(value.RoleDescription == RoleName)
+                    {
+                        RoleID=value.RoleID;
                     }
-                }
-            });
-        }
-        else
+                });
+            }
+
+            DisplayLoadingDialog();
+            jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:false});
+            jQuery("#jqCurrentResourceTable").jqGrid('saveRow', itemID,
         {
+            aftersavefunc: function (id, response, options) {
+                CloseLoadingPopup();
+                var result = $.parseJSON(response.responseText);
+                if(result.status == true)
+                {
+                    $("#RoleChangeSucess").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $('#btnEdit'+itemID).show();
+                                $('#btnUpdate'+itemID).hide()
+                                $('#btnCancel'+itemID).hide();
+                                jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
+                                //
+                                var rowData = $("#jqCurrentResourceTable").getRowData(itemID);
+                                var EmployeeName = rowData["EmployeeName"];
+                                var ProjectID = rowData["ProjectID"];
+                                GetProjetId();
+                                $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+                                sendMailForReleseResource("btnReleaseUpdate",ProjectID,EmployeeName);
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    $("#RoleChangeFail").dialog({
+                        resizable: false,
+                        autoOpen: true,
+                        height: 'auto',
+                        width: 300,
+                        modal: true,
+                        dialogClass: "noclose",
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                $('#jqCurrentResourceTable').restoreRow(itemID);
+                                $('#btnEdit'+itemID).show();
+                                $('#btnUpdate'+itemID).hide()
+                                $('#btnCancel'+itemID).hide();
+                                jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
+                            }
+                        }
+                    });
+                }
+            },
+            extraparam: {
+                RoleId: function () {
+                    return RoleID;
+                },
+                reportTo : function(){
+                    //
+                    return reportTo;
+                },
+                ResourceStatus:function(){
+                    return ResourceTypeStatus;
+                }
+            }
+
+        });
+
+        }
+
+        function EditEmpRole(itemID,projectID)
+        {
+            debugger;
+            returnResourceDetails(projectID);
+            var rowData = $("#jqCurrentResourceTable").getRowData(itemID);
+            ResourceTypeStatus=rowData['ResourceType'];
+            var reportingTo = rowData["ReportingTo"];
             $.each(resourceReportingToId,function(index, value) {
-                if((value.name).replace(/\s+/g, '') == (ResourceName).replace(/\s+/g, ''))
+                if((value.name).replace(/\s+/g, '') == (reportingTo).replace(/\s+/g, ''))
                 {
                     //
                     ResourceID = value.index;
                 }
             });
+
+            jQuery('#jqCurrentResourceTable').setColProp('ReleaseDate',{editable:true});
+            jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:true});
+            //jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:tr});
+            $('#btnEdit'+itemID).hide();
+            $('#btnUpdate'+itemID).show()
+            $('#btnCancel'+itemID).show();
+            $('#jqCurrentResourceTable').editRow(itemID);
         }
-    }
-    //        function DisplayLoadingDialog() {
-    //            $("#loading").dialog(
-    //                                    {
-    //                                        closeOnEscape: false,
-    //                                        resizable: false,
-    //                                        height: 140,
-    //                                        width: 300,
-    //                                        modal: true,
-    //                                        dialogClass: "noclose"
-    //                                    });
-    //        }
 
-    function CloseLoadingPopup() {
-        $("#loading").dialog("close");
-        $("#loading").dialog("destroy");
-    }
-
-    function GetProjetId()
-    {
-        //
-        ProjectName = $("#RMGprojectnameId option:selected").text();
-        var ProList = @(Html.Raw(Json.Encode(Model.ProjectApprovedListdata)));
-        if(ProjectName != 'Select')
+        function returnResourceDetails(projectID)
         {
-            $.each(ProList, function (index,value) {
-                if(value.ProjectName == ProjectName)
+            //  debugger;
+            $.ajax({
+                url: '@Url.Action("GetResourceListForProject", "Resource")',
+                type: 'POST',
+                data: { projectID:projectID },
+                datatype: "json",
+                async:false,
+                success: function (result) {
+                    // debugger;
+                    var EmployeeName="";
+                    ResList=[];
+                    resourceReportingToId = [];
+                    ResList.push("Select");
+                    resourceReportingToId.push({name: "Select", index: 0});
+                    $('#ResourceId').selectBox("destroy");
+                    $('#ResourceId').empty();
+                    $('#ResourceId').append($("<option></option>")
+              .attr("value", "")
+              .text("Select"));
+                    $.each(result, function (index,value) {
+                        //
+                        ResList.push(value.EmployeeName);
+                        //resourceReportingToId.push(value.EmployeeId);
+                        resourceReportingToId.push({name: value.EmployeeName,  index:  value.EmployeeId});
+
+                        var optionhtml = '<option value="' +
+                                              value.EmployeeId + '">' + value.EmployeeName + '</option>';
+                        $('#ResourceId').append(optionhtml);
+                    });
+                    $('#ResourceId').selectBox('create');
+                }
+            });
+            $('#AsOnDate').val('@Model.AsOnDate');
+            $('#SearchEmployeeName').val('');
+            $("#BenchDetails").hide();
+            $("#ResourceHistoryDetails,#CurrentResourceDetails").show();
+            //$("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+            //$("#jqResourceHistoryTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+        }
+
+        function CancleEditRole(itemID)
+        {
+            //
+            $('#btnEdit'+itemID).show();
+            $('#btnUpdate'+itemID).hide();
+            $('#btnCancel'+itemID).hide();
+            $('#jqCurrentResourceTable').jqGrid('setColProp', 'ProjectRole', {editable:false});
+            //jQuery('#jqCurrentResourceTable').setColProp('ProjectRole',{editable:false});
+            $('#jqCurrentResourceTable').restoreRow(itemID);
+            $("#jqCurrentResourceTable").jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+        }
+
+        function CancelEmpoyeeReportingTo(itemID)
+        {
+            $('#btnEditReportingTo'+itemID).show();
+            $('#btnUpdateReportingTo'+itemID).hide()
+            $('#btnCancelReportingTo'+itemID).hide();
+            $('#jqCurrentResourceTable').restoreRow(itemID);
+        }
+
+        var RoleID;
+        function ChangeRole(e) {
+            var RoleName = e.target[e.target.selectedIndex].text;
+            $.each(ProjectRoleList,function(index, value) {
+                if(value.RoleDescription == RoleName)
                 {
-                    ProjectID = value.Projectids;
+                    RoleID=value.RoleID;
                 }
             });
         }
-        /* else
-           {
-              $("#ErrorProjectSelect").dialog({
-                   resizable: false,
-                   height: 140,
-                   width: 300,
-                   modal: true,
-                   buttons: {
-                       Ok: function () {
-                           $(this).dialog("destroy");
-                       }
-                   }
-               });
-               $.preventDefault();
-           }*/
-    }
 
-    //Send Mail Funtion
-    function sendMailForReleseResource(btnClick,ProjectID,EmployeeName) {
-        DisplayLoadingDialog();
-        var empId = '@ViewBag.loginUserId';
-        var projectId = ProjectID;
-        //  projectId: ProjectID,
-        $.ajax({
-            url: '@Url.Action("ResourceSendMail", "Resource")',
-            type: 'POST',
-            data: { loggedinEmpID: empId, btnClick: btnClick,EmployeeName:EmployeeName,projectId:projectId,loggedinEmpID:empId },
-            datatype: "json",
-            success: function (result) {
-                CloseLoadingPopup();
-                $("#SendMailPopUpForResourceRelease").empty().append(result);
-                $("#SendMailPopUpForResourceRelease").dialog({
+        function ChangeResourceStatus(e){
+            debugger;
+            ResourceTypeStatus=e.target[e.target.selectedIndex].text;
+            return ResourceTypeStatus;
+        }
+
+        function ChangeResource(e) {
+            var ResourceName = e.target[e.target.selectedIndex].text;
+            var reportingToID = e.target.id;
+            var employeeName = $("#"+reportingToID).parent().prev().text();
+            if($.trim(ResourceName.replace(/\s+/g, '')) == $.trim(employeeName.replace(/\s+/g, '')))
+            {
+                $("#ReportingToSameAsEmployee").dialog({
                     resizable: false,
-                    height: 520,
-                    width: 800,
+                    autoOpen: true,
+                    height: 'auto',
+                    width: 300,
                     modal: true,
-                    title: "Send Mail",
-                    close: function () {
-                        $(this).dialog('destroy');
-                        jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
+                    dialogClass: "noclose",
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("destroy");
+                            $("#"+reportingToID).val(0);
+                        }
                     }
                 });
+            }
+            else
+            {
+                $.each(resourceReportingToId,function(index, value) {
+                    if((value.name).replace(/\s+/g, '') == (ResourceName).replace(/\s+/g, ''))
+                    {
+                        //
+                        ResourceID = value.index;
+                    }
+                });
+            }
+        }
+        //        function DisplayLoadingDialog() {
+        //            $("#loading").dialog(
+        //                                    {
+        //                                        closeOnEscape: false,
+        //                                        resizable: false,
+        //                                        height: 140,
+        //                                        width: 300,
+        //                                        modal: true,
+        //                                        dialogClass: "noclose"
+        //                                    });
+        //        }
 
-                $.validator.unobtrusive.parse($("#CustMailDetails"));
-                $('#sendCustomerMail').click(function () {
-                    $("#CCErrorMessage").hide();
-                    $("#ToErrorMessage").hide();
-                    if ($('#CustMailDetails').valid()) {
-                        DisplayLoadingDialog();
-                        var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
-                        $.ajax(
-                            {
-                                url: sendMailUrl,
-                                type: 'POST',
-                                data: $('#CustMailDetails').serialize(),
-                                async:false,
-                                success: function (serverData) {
-                                    CloseLoadingPopup();
-                                    if (serverData.validCcId == true && serverData.validtoId == true) {
-                                        if (serverData.status == true) {
-                                            $("#SendMailPopUpForResourceRelease").dialog('close');
-                                            jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
-                                            //location.reload();
+        function CloseLoadingPopup() {
+            $("#loading").dialog("close");
+            $("#loading").dialog("destroy");
+        }
+
+        function GetProjetId()
+        {
+            //
+            ProjectName = $("#RMGprojectnameId option:selected").text();
+            var ProList = @(Html.Raw(Json.Encode(Model.ProjectApprovedListdata)));
+            if(ProjectName != 'Select')
+            {
+                $.each(ProList, function (index,value) {
+                    if(value.ProjectName == ProjectName)
+                    {
+                        ProjectID = value.Projectids;
+                    }
+                });
+            }
+            /* else
+               {
+                  $("#ErrorProjectSelect").dialog({
+                       resizable: false,
+                       height: 140,
+                       width: 300,
+                       modal: true,
+                       buttons: {
+                           Ok: function () {
+                               $(this).dialog("destroy");
+                           }
+                       }
+                   });
+                   $.preventDefault();
+               }*/
+        }
+
+        //Send Mail Funtion
+        function sendMailForReleseResource(btnClick,ProjectID,EmployeeName) {
+            DisplayLoadingDialog();
+            var empId = '@ViewBag.loginUserId';
+            var projectId = ProjectID;
+            //  projectId: ProjectID,
+            $.ajax({
+                url: '@Url.Action("ResourceSendMail", "Resource")',
+                type: 'POST',
+                data: { loggedinEmpID: empId, btnClick: btnClick,EmployeeName:EmployeeName,projectId:projectId,loggedinEmpID:empId },
+                datatype: "json",
+                success: function (result) {
+                    CloseLoadingPopup();
+                    $("#SendMailPopUpForResourceRelease").empty().append(result);
+                    $("#SendMailPopUpForResourceRelease").dialog({
+                        resizable: false,
+                        height: 520,
+                        width: 800,
+                        modal: true,
+                        title: "Send Mail",
+                        close: function () {
+                            $(this).dialog('destroy');
+                            jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
+                        }
+                    });
+
+                    $.validator.unobtrusive.parse($("#CustMailDetails"));
+                    $('#sendCustomerMail').click(function () {
+                        $("#CCErrorMessage").hide();
+                        $("#ToErrorMessage").hide();
+                        if ($('#CustMailDetails').valid()) {
+                            DisplayLoadingDialog();
+                            var sendMailUrl = '@Url.Action("SendEmail", "SEM")';
+                            $.ajax(
+                                {
+                                    url: sendMailUrl,
+                                    type: 'POST',
+                                    data: $('#CustMailDetails').serialize(),
+                                    async:false,
+                                    success: function (serverData) {
+                                        CloseLoadingPopup();
+                                        if (serverData.validCcId == true && serverData.validtoId == true) {
+                                            if (serverData.status == true) {
+                                                $("#SendMailPopUpForResourceRelease").dialog('close');
+                                                jQuery("#jqCurrentResourceTable").trigger("reloadGrid");
+                                                //location.reload();
+                                            }
                                         }
-                                    }
-                                    else if (serverData.status == "Error") {
+                                        else if (serverData.status == "Error") {
+                                            $("#errorDialog").dialog({
+                                                resizable: false,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                modal: true,
+                                                title: 'Mail Error',
+                                                dialogClass: "noclose",
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            }); //end dialog
+                                        }
+                                        else {
+                                            if (serverData.validCcId == false)
+                                                $("#CCErrorMessage").show();
+                                            if (serverData.validtoId == false)
+                                                $("#ToErrorMessage").show();
+                                            return false;
+                                        }
+                                    },
+                                    error: function () {
                                         $("#errorDialog").dialog({
+                                            title: 'Mail Error',
                                             resizable: false,
                                             height: 'auto',
                                             width: 'auto',
                                             modal: true,
-                                            title: 'Mail Error',
                                             dialogClass: "noclose",
-                                            buttons: {
+                                            buttons:
+                                            {
                                                 Ok: function () {
                                                     $(this).dialog("close");
                                                 }
                                             }
                                         }); //end dialog
+                                        CloseLoadingPopup();
                                     }
-                                    else {
-                                        if (serverData.validCcId == false)
-                                            $("#CCErrorMessage").show();
-                                        if (serverData.validtoId == false)
-                                            $("#ToErrorMessage").show();
-                                        return false;
-                                    }
-                                },
-                                error: function () {
-                                    $("#errorDialog").dialog({
-                                        title: 'Mail Error',
-                                        resizable: false,
-                                        height: 'auto',
-                                        width: 'auto',
-                                        modal: true,
-                                        dialogClass: "noclose",
-                                        buttons:
-                                        {
-                                            Ok: function () {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    }); //end dialog
-                                    CloseLoadingPopup();
-                                }
-                            }); //end ajax
-                    }
-                });
-
-            }
-        });   //end Mail
-    }
-
-    function ApprisalViewForm(EmployeeCode, employeeId, ProjectID,linkClick,ProjectEmployeeRoleID,ProjectEndAppraisalStatusID,releaseDate) {
-        @*var EmployeeID = '@ViewBag.loginUserId';*@
-        var EmployeeID = employeeId;
-        DisplayLoadingDialog();
-        $.ajax({
-            url: '@Url.Action("CheckTimeSheetDetails", "Resource")',
-            type: 'POST',
-            data: { releaseDate:releaseDate,EmployeeID:EmployeeID },
-            datatype: "json",
-            async:false,
-            success: function (result) {
-                CloseLoadingPopup();
-                if(result.status == false && linkClick != "View")
-                {
-                    $("#EndDateChnagedError").dialog({
-                        resizable: false,
-                        height: 'auto',
-                        width: 453,
-                        modal: true,
-                        title: 'Mail Error',
-                        dialogClass: "noclose",
-                        buttons: {
-                            Yes:function() {
-                                window.location.href='/Resource/ProjectEndAppraisalFormView/?EmployeeCode=' + EmployeeCode  + '&ProjectID=' + ProjectID+ '&ProjectEmployeeRoleID=' + ProjectEmployeeRoleID + '&ProjectEndAppraisalStatusID=' +ProjectEndAppraisalStatusID;
-                            },
-                            No: function () {
-                                $(this).dialog("close");
-                            }
+                                }); //end ajax
                         }
-                    }); //end dialog
-                    return false;
+                    });
 
                 }
-                else {
-                    window.location.href='/Resource/ProjectEndAppraisalFormView/?EmployeeCode=' + EmployeeCode  + '&ProjectID=' + ProjectID+ '&ProjectEmployeeRoleID=' + ProjectEmployeeRoleID + '&ProjectEndAppraisalStatusID=' +ProjectEndAppraisalStatusID;
-                }
-            }
-        });
+            });   //end Mail
+        }
 
-    }
+        function ApprisalViewForm(EmployeeCode, employeeId, ProjectID,linkClick,ProjectEmployeeRoleID,ProjectEndAppraisalStatusID,releaseDate) {
+            @*var EmployeeID = '@ViewBag.loginUserId';*@
+            var EmployeeID = employeeId;
+            DisplayLoadingDialog();
+            $.ajax({
+                url: '@Url.Action("CheckTimeSheetDetails", "Resource")',
+                type: 'POST',
+                data: { releaseDate:releaseDate,EmployeeID:EmployeeID },
+                datatype: "json",
+                async:false,
+                success: function (result) {
+                    CloseLoadingPopup();
+                    if(result.status == false && linkClick != "View")
+                    {
+                        $("#EndDateChnagedError").dialog({
+                            resizable: false,
+                            height: 'auto',
+                            width: 453,
+                            modal: true,
+                            title: 'Mail Error',
+                            dialogClass: "noclose",
+                            buttons: {
+                                Yes:function() {
+                                    window.location.href='/Resource/ProjectEndAppraisalFormView/?EmployeeCode=' + EmployeeCode  + '&ProjectID=' + ProjectID+ '&ProjectEmployeeRoleID=' + ProjectEmployeeRoleID + '&ProjectEndAppraisalStatusID=' +ProjectEndAppraisalStatusID;
+                                },
+                                No: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }); //end dialog
+                        return false;
 
-    function reportingToRequiredFunction(value,colname)
-    {
-        if(value == "" || value == 0)
-        {
-            CloseLoadingPopup();
-            $("#ReportingToNotSelected").dialog({
-                modal: true,
-                resizable: false,
-                height: 'auto',
-                width: 300,
-                dialogClass: "noclose",
-                buttons:
-                {
-                    "Ok": function () {
-                        $(this).dialog("close");
+                    }
+                    else {
+                        window.location.href='/Resource/ProjectEndAppraisalFormView/?EmployeeCode=' + EmployeeCode  + '&ProjectID=' + ProjectID+ '&ProjectEmployeeRoleID=' + ProjectEmployeeRoleID + '&ProjectEndAppraisalStatusID=' +ProjectEndAppraisalStatusID;
                     }
                 }
             });
-            $.preventDefault();
+
         }
-        else
+
+        function reportingToRequiredFunction(value,colname)
         {
-            return [true,""];
+            if(value == "" || value == 0)
+            {
+                CloseLoadingPopup();
+                $("#ReportingToNotSelected").dialog({
+                    modal: true,
+                    resizable: false,
+                    height: 'auto',
+                    width: 300,
+                    dialogClass: "noclose",
+                    buttons:
+                    {
+                        "Ok": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $.preventDefault();
+            }
+            else
+            {
+                return [true,""];
+            }
+        }//
+
+        /*Helper Functions*/
+
+        function ResetControls()
+        {
+
         }
-    }//
-
-    /*Helper Functions*/
-
-    function ResetControls()
-    {
-
-    }
     </script>
