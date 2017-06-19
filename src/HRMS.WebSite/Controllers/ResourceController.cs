@@ -207,7 +207,8 @@ namespace HRMS.Controllers
             int ProjectStatus = 2;
             model.ProjectApprovedListdata = Dal.GetResourceAllocationProjectList(ProjectStatus, employeeCodeEmp, "Admin", empRole);
             model.ProjectRolesList = Dal.getEmployeeRoles();
-
+            model.ResourceTypeList = Dal.GetResourceTypeList();
+          
             //  ViewBag.IsProjectManager = role.Contains("Manager");
             ConfigurationViewModel orbit = new ConfigurationViewModel();
             CommonMethodsDAL Commondal = new CommonMethodsDAL();
@@ -1279,7 +1280,7 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveProjectRoleForemployee(RMGViewPostModel model, string RoleId, int reportTo)
+        public ActionResult SaveProjectRoleForemployee(RMGViewPostModel model, string RoleId, int reportTo, string ResourceStatus)
         {
             try
             {
@@ -1288,7 +1289,9 @@ namespace HRMS.Controllers
                 if (RoleId == "undefined")
                     RoleId = "0";
                 SemDAL dal = new SemDAL();
-                status = dal.SaveEmployeeRole(model, Convert.ToInt32(RoleId), Convert.ToInt32(reportTo));
+                //status = dal.SaveEmployeeRole(model, Convert.ToInt32(RoleId), Convert.ToInt32(reportTo));
+                /*Changed the Method for ticket ID #147416905 */
+                status = dal.SaveEmployeeAllocation(model, Convert.ToInt32(RoleId), Convert.ToInt32(reportTo), ResourceStatus);
                 if (status)
                     resultMessage = "Saved";
                 else
@@ -1320,7 +1323,7 @@ namespace HRMS.Controllers
         public System.Threading.Timer myTimer;
 
         public void SetTimerValue()
-        {
+        {            
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
             DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)

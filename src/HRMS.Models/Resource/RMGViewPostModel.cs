@@ -55,6 +55,7 @@ namespace HRMS.Models
         public int? SearchEmployeeCode { get; set; }
         public List<ResourcePoolList> ResourcePoolListData = new List<ResourcePoolList>();
         public List<ResourceList> ResourceListData = new List<ResourceList>();
+        public List<ResourceTypeDetails> ResourceTypeList = new List<ResourceTypeDetails>();
 
         public class ProjectAppListApproved
         {
@@ -73,6 +74,11 @@ namespace HRMS.Models
         {
             public int ResourceID { get; set; }
             public string ResourceName { get; set; }
+        }
+        //Addition for #147416905 : Resource Status List in dropDown
+        public class ResourceTypeDetails
+        {            
+            public string TypeName { get; set; }
         }
     }
 }

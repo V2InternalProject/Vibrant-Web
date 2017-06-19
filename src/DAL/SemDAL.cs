@@ -5,10 +5,12 @@ using System.Data;
 using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.SqlClient;
+using Microsoft.ApplicationBlocks.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
+using System.Configuration;
 
 namespace HRMS.DAL
 {
@@ -3614,6 +3616,26 @@ namespace HRMS.DAL
             }
         }
 
+        //Added for providing values to grid in editable mode.
+        public List<HRMS.Models.RMGViewPostModel.ResourceTypeDetails> GetResourceTypeList()
+        {
+            try
+            {
+                List<HRMS.Models.RMGViewPostModel.ResourceTypeDetails> resourceType = new List<HRMS.Models.RMGViewPostModel.ResourceTypeDetails>();
+                var resourcetypes = dbContext.GetResourceType_SP();
+                resourceType = (from r in resourcetypes
+                                select new HRMS.Models.RMGViewPostModel.ResourceTypeDetails
+                                {                                   
+                                    TypeName = r.ResourceStatus
+                                }).ToList();
+                return resourceType;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public SaveAddEditResources SaveAddEditResource(AddEdirResourseModel model)
         {
             try
@@ -4128,6 +4150,61 @@ namespace HRMS.DAL
             tbl_PM_ProjectEmployeeRole emp = dbContext.tbl_PM_ProjectEmployeeRole.Where(ed => ed.ProjectEmployeeRoleID == model.ProjectEmployeeRoleID).FirstOrDefault();
             dbContext.UpdateEmployeeResorceAllocationDetails_SP(model.ProjectEmployeeRoleID, model.ReleaseDate, ReportingTo, RoleId);
             return true;
+        }
+
+        ///*New method for ticket ID #147416905 for the replacement for SaveEmployeeRole to avoid Entity Framework updations*/
+        public bool SaveEmployeeAllocation(RMGViewPostModel model, int RoleId, int ReportingTo, string ResourceStatus)
+        {
+            string strConnectionString = "Server=192.168.50.248;database=V2Intranet;user id=sa;Password=mail_123; Connect Timeout=180000;";
+           
+            SqlParameter[] sqlParams = new SqlParameter[8];
+            bool flag = false;
+
+            sqlParams[0] = new SqlParameter("@ProjectEmployeeRoleID", SqlDbType.Int);
+            sqlParams[0].Value = model.ProjectEmployeeRoleID;
+            sqlParams[0].Direction = ParameterDirection.Input;
+
+            sqlParams[1] = new SqlParameter("@ActualEndDate", SqlDbType.VarChar, 50);
+            sqlParams[1].Value = model.ReleaseDate;
+            sqlParams[1].Direction = ParameterDirection.Input;
+
+            sqlParams[2] = new SqlParameter("@ReportingTo", SqlDbType.Int);
+            sqlParams[2].Value = ReportingTo;
+            sqlParams[2].Direction = ParameterDirection.Input;
+
+            sqlParams[3] = new SqlParameter("@Role", SqlDbType.Int);
+            sqlParams[3].Value = RoleId;
+            sqlParams[3].Direction = ParameterDirection.Input;
+
+            sqlParams[4] = new SqlParameter("@ResourceStatus", SqlDbType.VarChar,50);
+            sqlParams[4].Value = ResourceStatus;
+            sqlParams[4].Direction = ParameterDirection.Input;
+
+            sqlParams[5] = new SqlParameter("@StartDate", SqlDbType.VarChar, 50);
+            sqlParams[5].Value = model.AllocationStartDate;
+            sqlParams[5].Direction = ParameterDirection.Input;
+
+            sqlParams[6] = new SqlParameter("@EndDate", SqlDbType.VarChar, 50);
+            sqlParams[6].Value = model.AllocationEndDate;
+            sqlParams[6].Direction = ParameterDirection.Input;
+
+            sqlParams[7] = new SqlParameter("@AllocatedPercentage", SqlDbType.Int);
+            sqlParams[7].Value = model.Allocated;
+            sqlParams[7].Direction = ParameterDirection.Input;
+
+
+
+            try
+            {
+                SqlHelper.ExecuteNonQuery(strConnectionString, CommandType.StoredProcedure, "UpdateEmployeeResorceAllocationDetails_SP",sqlParams);
+                flag = true;
+            }
+            catch
+            {
+                flag = false;
+            }
+
+            return flag;
         }
 
         public bool UpdateReallocationOfResource(AddEdirResourseModel model)
