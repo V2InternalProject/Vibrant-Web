@@ -390,7 +390,7 @@ function LinkClick(event, StageId, EncryptedId, ActionType, ConfirmationID, IsMa
         $("#btnFillFormConfirmation").show();
         $("#btnShowDetailsConfirmation").hide();
     }
-    else if (IsAdmin == "true" && (StageId == 1 || StageId == 3)) {
+    else if (IsAdmin == "true" && (StageId == 1 || StageId == 3 || StageId == 0)) {
         $("#btnFillFormConfirmation").show();
         $("#btnShowDetailsConfirmation").hide();
     }

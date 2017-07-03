@@ -2349,13 +2349,13 @@ namespace HRMS.DAL
             bool isAdded = false;
             if (empCorporate != null)
             {
+                int confID = 0;
                 dbContext = new HRMSDBEntities();
                 if (empCorporate != null)
                 {
                     int count = empCorporate.Count();
                     int comptncyID = 0;
-                    int confID = 0;
-                    string str;
+
                     int emp = 0;
                     for (int i = 0; i < count; i++)
                     {
@@ -2363,9 +2363,10 @@ namespace HRMS.DAL
                         comptncyID = empCorporate[i].competencyID;
                         confID = empCorporate[i].confirmationID;
                         tbl_CF_ValueDrivers objValueDrivers = dbContext.tbl_CF_ValueDrivers.Where(ed => ed.CompetencyID == comptncyID && ed.EmployeeID == emp && ed.ConfirmationID == confID).FirstOrDefault();
+                        tbl_CF_Confirmation cnf = dbContext.tbl_CF_Confirmation.Where(ed => ed.ConfirmationID == confID).FirstOrDefault();
                         if (objValueDrivers != null)
                         {
-                            if (empCorporate[0].IsManagerOrEmployee == "Manager")
+                            if (empCorporate[0].IsManagerOrEmployee == "Manager" || (empCorporate[0].IsManagerOrEmployee == "HR" && cnf.stageID == 0))
                             {
                                 objValueDrivers.ManagerRating1 = empCorporate[i].ManagerRating1 == null ? 0 : empCorporate[i].ManagerRating1;
                                 objValueDrivers.ManagerComments1 = empCorporate[i].MngrComments1 == null ? "" : empCorporate[i].MngrComments1.Trim();
@@ -2378,7 +2379,9 @@ namespace HRMS.DAL
                     {
                         if (item != null)
                         {
-                            if (empCorporate[0].IsManagerOrEmployee == "Manager")
+                            confID = empCorporate[0].confirmationID;
+                            tbl_CF_Confirmation cnf = dbContext.tbl_CF_Confirmation.Where(ed => ed.ConfirmationID == confID).FirstOrDefault();
+                            if (empCorporate[0].IsManagerOrEmployee == "Manager" || (empCorporate[0].IsManagerOrEmployee == "HR" && cnf.stageID == 0))
                             {
                                 item.OverallManagerRating = empCorporate[count - 1].OverallManagerRating == null ? 0 : empCorporate[count - 1].OverallManagerRating;
                                 item.OverallManagerComments = empCorporate[count - 1].OverallManagerRatingComments == null ? "" : empCorporate[count - 1].OverallManagerRatingComments.Trim();
@@ -2466,7 +2469,7 @@ namespace HRMS.DAL
             tbl_CF_TempConfirmation tempConf = dbContext.tbl_CF_TempConfirmation.Where(ed => ed.ConfirmationID == empCorporate.confirmationID).FirstOrDefault();
             tbl_CF_Confirmation ConfDetails = dbContext.tbl_CF_Confirmation.Where(ed => ed.ConfirmationID == empCorporate.confirmationID).FirstOrDefault();
             HRMS_tbl_PM_Employee EmpDetails = dbContext.HRMS_tbl_PM_Employee.Where(ed => ed.EmployeeID == empCorporate.EmployeeIdConfirmation).FirstOrDefault();
-            if (empCorporate.IsManagerOrEmployee == "Manager")
+            if (empCorporate.IsManagerOrEmployee == "Manager" || (empCorporate.IsManagerOrEmployee == "HR" && ConfDetails.stageID == 0))
             {
                 if (tempConf == null)
                 {
