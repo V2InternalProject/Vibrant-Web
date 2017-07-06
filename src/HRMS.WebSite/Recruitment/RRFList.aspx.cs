@@ -39,7 +39,16 @@ public partial class RRFList : System.Web.UI.Page
         if (!IsPostBack)
         {
             BindData();
+            BindStatus();
         }
+    }
+
+    public void BindStatus()
+    {
+        ddStatusFilter.DataSource = objRRFListBLL.RRFStatus();
+        ddStatusFilter.DataTextField = "RRFStatus";
+        ddStatusFilter.DataValueField = "ID";
+        ddStatusFilter.DataBind();
     }
 
     public void BindData()
@@ -470,11 +479,11 @@ public partial class RRFList : System.Web.UI.Page
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        if (txtRRFNOSearch.Text == "")
-        {
-            BindData();
-        }
-        else
+        //if (txtRRFNOSearch.Text == "" && )
+        //{
+        //    BindData();
+        //}
+        //else
         {
             BindDataForRRFSearch();
         }
@@ -489,6 +498,7 @@ public partial class RRFList : System.Web.UI.Page
 
         objRRFListBOL.UserID = Convert.ToInt32(HttpContext.Current.User.Identity.Name);
         objRRFListBOL.RRFNo = txtRRFNOSearch.Text.Trim();
+        objRRFListBOL.RRFStatus = int.Parse(ddStatusFilter.SelectedValue);
         //Approver
         if (title == "RRF Approver List")
         {

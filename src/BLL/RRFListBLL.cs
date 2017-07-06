@@ -11,7 +11,7 @@ namespace BLL
     public class RRFListBLL
     {
         RRFListDAL objRRFListDAL = new RRFListDAL();
-       // int countOfOfferIssedToAnyCandidate = 0;
+        // int countOfOfferIssedToAnyCandidate = 0;
         DataSet dsGetRRFForList = new DataSet();
         DataSet OfferIssedToAnyCandidate = new DataSet();
 
@@ -42,6 +42,13 @@ namespace BLL
         public DataSet SearchRRFNoData(RRFListBOL objRRfListBOL)
         {
             return dsGetRRFForList = objRRFListDAL.SearchRRFNoData(objRRfListBOL);
+        }
+
+        public DataSet RRFStatus()
+        {
+            DataSet ds = new DataSet();
+            ds = objRRFListDAL.RRFStatus();
+            return ds;
         }
     }
 }
