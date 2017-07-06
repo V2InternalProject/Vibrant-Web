@@ -75,14 +75,23 @@ namespace DAL
 
         public DataSet SearchRRFNoData(RRFListBOL objRRFListBOL)
         {
-            SqlParameter[] param = new SqlParameter[3];
+            SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@UserId", SqlDbType.Int);
             param[0].Value = objRRFListBOL.UserID;
             param[1] = new SqlParameter("@RoleType", SqlDbType.VarChar);
             param[1].Value = objRRFListBOL.RoleType;
             param[2] = new SqlParameter("@RRFNo", SqlDbType.VarChar);
             param[2].Value = objRRFListBOL.RRFNo;
-            return dsGetRRFForList = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.StoredProcedure,"sp_RRFNoSearch", param);
+            param[3] = new SqlParameter("@RRFStatus", SqlDbType.Int);
+            param[3].Value = objRRFListBOL.RRFStatus;
+            return dsGetRRFForList = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.StoredProcedure, "sp_RRFNoSearch", param);
+        }
+
+        public DataSet RRFStatus()
+        {
+            DataSet ds = new DataSet();
+            ds = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.Text, "select ID,RRFStatus from tbl_RRFStatus");
+            return ds;
         }
     }
 }

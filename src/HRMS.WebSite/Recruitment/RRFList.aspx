@@ -89,7 +89,17 @@
                 <asp:Label ID="lblSuccessMessage" runat="server" Visible="false" Text="Label" SkinID="lblSuccess"></asp:Label>
                 <div class="rwrap clearfix">
                     <div class="clearfix">
-                        <h3 class="smartrackH floatL">RRF List</h3>
+                        <h3 class="smartrackH floatL">RRF List</h3> 
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <asp:DropDownList ID="ddStatusFilter" ClientIDMode="Static" runat="server" Width="150px"></asp:DropDownList>                  
                         <div class="HRMrightsec clearfix">
                             <div class="leftcol">
                                 <div class="LabelDiv">
@@ -97,11 +107,11 @@
                                 </div>
                                 <div class="InputDiv">
                                     <asp:TextBox ID="txtRRFNOSearch" runat="server" CssClass="srchinput mrgnR10">
-                                            </asp:TextBox>
+                                    </asp:TextBox>
                                 </div>
                             </div>
                             <div class="rightcol">
-                                <asp:Button ID="btnSearch" runat="server" Text="Search RRF No" CssClass="ButtonGray" OnClick="btnSearch_Click" />
+                                <asp:Button ID="btnSearch" runat="server" Text="Search RRF" CssClass="ButtonGray" OnClick="btnSearch_Click" />
                                 <asp:Button ID="btnReset" runat="server" Text="Clear Filters" CssClass="ButtonGray" OnClick="btnReset_Click" />
                             </div>
                         </div>
