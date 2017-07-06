@@ -30,11 +30,16 @@
         if ('@ViewBag.clickedViewDetails' == "yes") {
             $('.InnerContainer').find('input,tr,textarea,select').attr('disabled', 'disabled');
         }
-
         $('.ClassDisplayLabel').hide();
-
-        if ($('#IsManagerOrEmployee').val() != "Manager") {
+        if (($('#IsManagerOrEmployee').val() == "HR") && '@Model.StageID' == 0) {
             // $('#HRapprove').prop("disabled", true);
+            $('#ReportingManagerComments').removeAttr("disabled");
+            $('input[name="HRapprove"]').removeAttr("disabled");
+            $('#frmConfirmationFormQuetions').find('input,textarea').removeAttr("disabled");
+            $('#frmValueDriverConfirmation').find('select,textarea').removeAttr("disabled");
+        }
+        else if ($('#IsManagerOrEmployee').val() != "Manager")
+        {
             $('#ReportingManagerComments').attr("disabled", "disabled");
             $('input[name="HRapprove"]').attr("disabled", "disabled");
             $('#frmConfirmationFormQuetions').find('input,textarea').attr("disabled", "disabled");
@@ -72,6 +77,12 @@
             $("#HRComments").show();
             $("#FurtherApproverName").show();
             $('#confirmationFormHRDetails').hide();
+        }
+        else if ($("#IsFurtherApproverNeeded").is(':checked') === false && '@Model.StageID' === '0' && $('#IsManagerOrEmployee').val() === "HR") {
+            $("#HRComments").hide();
+            $("#FurtherApproverName").hide();
+            $('#confirmationFormHRDetails').hide();
+            $('#FurtherApprover').hide();
         }
         else {
             $("#FurtherApproverName").hide();
@@ -301,7 +312,7 @@
                                     var descriptionelement = thisparent.find('.paramDescription').val();
                                     var competencyelement = thisparent.find('.competency').val();
 
-                                    if ($('#IsManagerOrEmployee').val() == "Manager") {
+                                    if ($('#IsManagerOrEmployee').val() == "Manager" || $('#IsManagerOrEmployee').val() == "HR") {
                                         var ConfirmationParameter = {
                                             ManagerRating1: ratingelement,
                                             MngrComments1: commentelement.val(),
@@ -315,7 +326,7 @@
 
                                 }
                                 if ($(this).find('.footer-rating-class').length) {
-                                    if ($('#IsManagerOrEmployee').val() == "Manager") {
+                                    if ($('#IsManagerOrEmployee').val() == "Manager" || $('#IsManagerOrEmployee').val() == "HR") {
                                         var overallratingelement = thisparent.find('.footer-rating-class').not(':disabled').val();
                                         //                                        var overallratingelement = thisparent.find('.footer-rating-class').next().find('.sbSelector').text();
                                         var overallcommentelement = thisparent.find('.footer-comment-TxtBox').not(':disabled').not(':hidden');
@@ -330,6 +341,9 @@
                             });
                             if ($('#IsManagerOrEmployee').val() == "Manager") {
                                 $('#IsManagerOrEmployee').val('Manager')
+                            }
+                            else if( $('#IsManagerOrEmployee').val() == "HR"){
+                                $('#IsManagerOrEmployee').val('HR')
                             }
                             var datasecond = JSON.stringify(myArray);
                             // if ($('#frmValueDriverConfirmation').valid()) {
@@ -587,7 +601,6 @@
             }
 
             if ('@Model.IsManagerOrEmployee.Equals("HR")' == 'True' && '@Model.StageID' == 1) {
-
                 if ($('#IsFurtherApproverNeeded').is(':checked') == true) {
                     if ($('#Text_HRComments').val() == "") {
                         $('#AddCommentsHR').dialog({
@@ -1395,7 +1408,7 @@
             $('#btnAgreeConfirmation').hide();
         }
 
-        if ('@Model.IsFurtherApproverStageCleared' == 'True' && '@Model.IsManagerOrEmployee.Equals("HR")' == 'True') {
+        if ('@Model.IsFurtherApproverStageCleared' == 'True' && ('@Model.IsManagerOrEmployee.Equals("HR")' == 'True')) {
             $('#confirmationFormHRDetails').show();
             $('#txt_DUManagerComments').attr("disabled", "disabled");
         }

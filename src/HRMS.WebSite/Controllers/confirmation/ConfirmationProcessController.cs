@@ -2401,6 +2401,11 @@ namespace HRMS.Controllers
                 }
                 else if (confirmationDetails.FurtherApproverId == loginuser.EmployeeID)
                     model.IsManagerOrEmployee = "FurtherApprover";
+                else if (confirmationDetails.stageID == 0)
+                {
+                    ViewBag.IsManagerOrEMployee = "HR";
+                    model.IsManagerOrEmployee = "HR";
+                }
                 else
                     model.IsManagerOrEmployee = "HR";
                 model.PerfHinderListTable = new PerformanceHinderTable();
