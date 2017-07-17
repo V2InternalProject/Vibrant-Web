@@ -4155,7 +4155,7 @@ namespace HRMS.DAL
         ///*New method for ticket ID #147416905 for the replacement for SaveEmployeeRole to avoid Entity Framework updations*/
         public bool SaveEmployeeAllocation(RMGViewPostModel model, int RoleId, int ReportingTo, string ResourceStatus)
         {
-            string strConnectionString = "Server=192.168.50.248;database=V2Intranet;user id=sa;Password=mail_123; Connect Timeout=180000;";
+            string strConnectionString = ConfigurationManager.ConnectionStrings["myConnectionString"].ToString();//"Server=192.168.50.248;database=V2Intranet;user id=sa;Password=mail_123; Connect Timeout=180000;";
            
             SqlParameter[] sqlParams = new SqlParameter[8];
             bool flag = false;
