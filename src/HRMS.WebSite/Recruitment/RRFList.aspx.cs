@@ -49,6 +49,7 @@ public partial class RRFList : System.Web.UI.Page
         ddStatusFilter.DataTextField = "RRFStatus";
         ddStatusFilter.DataValueField = "ID";
         ddStatusFilter.DataBind();
+        ddStatusFilter.Items.Insert(0, new ListItem("All", "0"));
     }
 
     public void BindData()
