@@ -214,6 +214,8 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $("#ProjectRole").next().children().first().text($("#projectrole").val());
+        $("#ProjectRole option:contains(" + $('#projectrole').val().trim() + ")").attr('selected', true);
 
         $("#HelpdeskTicketID,#ProjectName,#ProjectStartDate,#ProjectEndDate").hide();
         $(".ValidationDropDown").each(function () {
@@ -229,7 +231,7 @@
             else
                 $("#ResourceTypeValidation").show();
         });
-        $("#ProjectRole").bind("change", function () {
+        $("#ProjectRole").bind("change", function () {            
             var selectedValue = $(this)[0].value;
             if (selectedValue != "")
                 $("#ProjectRoleValidation").hide();

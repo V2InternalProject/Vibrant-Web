@@ -372,7 +372,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="formrow clearfix">
+                        <div class="formrow clearfix" style="display:none;">
                             <div class="leftcol clearfix">
                                 <div class="LabelDiv">
                                     <label>
@@ -451,7 +451,7 @@
                             <div class="rightcol PMSCategories BulkCategories" id="noOfResources">
                                 <div class="LabelDiv">
                                     <label>
-                                        * Number Of Resources:
+                                        *Count Of Resources:
                                     </label>
                                 </div>
                                 <div class="InputDiv">
@@ -516,7 +516,7 @@
                             <div class="leftcol clearfix">
                                 <div class="LabelDiv">
                                     <label>
-                                        * Description:</label>
+                                        * Description(Resource Names with Billable status/Any other comments over the specific action to be taken.):</label>
                                 </div>
                                 <div class="InputDiv">
                                     <textarea class="txtfield" id="txtDescription" onkeydown="textCounter(txtDescription,txtDescCount,1000)"

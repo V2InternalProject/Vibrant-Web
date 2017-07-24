@@ -3625,7 +3625,7 @@ namespace HRMS.DAL
                 var resourcetypes = dbContext.GetResourceType_SP();
                 resourceType = (from r in resourcetypes
                                 select new HRMS.Models.RMGViewPostModel.ResourceTypeDetails
-                                {                                   
+                                {
                                     TypeName = r.ResourceStatus
                                 }).ToList();
                 return resourceType;
@@ -4156,7 +4156,7 @@ namespace HRMS.DAL
         public bool SaveEmployeeAllocation(RMGViewPostModel model, int RoleId, int ReportingTo, string ResourceStatus)
         {
             string strConnectionString = ConfigurationManager.ConnectionStrings["myConnectionString"].ToString();//"Server=192.168.50.248;database=V2Intranet;user id=sa;Password=mail_123; Connect Timeout=180000;";
-           
+
             SqlParameter[] sqlParams = new SqlParameter[8];
             bool flag = false;
 
@@ -4176,7 +4176,7 @@ namespace HRMS.DAL
             sqlParams[3].Value = RoleId;
             sqlParams[3].Direction = ParameterDirection.Input;
 
-            sqlParams[4] = new SqlParameter("@ResourceStatus", SqlDbType.VarChar,50);
+            sqlParams[4] = new SqlParameter("@ResourceStatus", SqlDbType.VarChar, 50);
             sqlParams[4].Value = ResourceStatus;
             sqlParams[4].Direction = ParameterDirection.Input;
 
@@ -4196,7 +4196,7 @@ namespace HRMS.DAL
 
             try
             {
-                SqlHelper.ExecuteNonQuery(strConnectionString, CommandType.StoredProcedure, "UpdateEmployeeResorceAllocationDetails_SP",sqlParams);
+                SqlHelper.ExecuteNonQuery(strConnectionString, CommandType.StoredProcedure, "UpdateEmployeeResorceAllocationDetails_SP", sqlParams);
                 flag = true;
             }
             catch
@@ -4410,7 +4410,9 @@ namespace HRMS.DAL
                 SqlCommand cmd = new SqlCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "GetHelpDeskIssueDetailsForResourceAllocation_SP";//write sp name here
+                cmd.Parameters.AddWithValue("@HelpDeskIssueID", HelpDeskTicketIssueID);
                 cmd.Connection = con;
+
                 // string records = "Select PRE.projectId,proj.projectName,PRE.employeeId,convert(varchar(12), PRE.expectedEndDate, 101) AllocationEndDate,empEmployee.employeename EmpName,empEmployee.emailId EmpEMailId,empManager.employeename ManagerName,empManager.emailId ManagerEmailId from tbl_PM_ProjectEmployeeRole PRE left join Tbl_PM_Project proj on proj.projectId = PRE.projectId left join tbl_pm_employee empEmployee on empEmployee.employeeid = PRE.employeeId left join tbl_pm_employee empManager on empManager.employeeid = empEmployee.reportingTo where PRE.expectedEndDate = '" + sevenDaysBefore + "'";
 
                 con.Open();

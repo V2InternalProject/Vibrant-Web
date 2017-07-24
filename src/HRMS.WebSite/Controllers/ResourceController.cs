@@ -59,30 +59,17 @@ namespace HRMS.Controllers
                     model.ProjectEndDate = projectDetails.ExpectedEndDate;
             }
             model.ButtonClick = Mode;
-            if (model.ButtonClick == "UpdateAllocation")
+            //if (model.ButtonClick == "UpdateAllocation")
             {
                 model.ProjectRole = decryptedProjectRoles;
                 model.AllocationStartDate = Convert.ToDateTime(decryptedFromDates);
                 model.AllocationEndDate = Convert.ToDateTime(decryptedToDates);
                 model.AllocatedPercentage = double.Parse(WorkHours.ToString());
+
             }
             model.HelpdeskTicketID = HelpdeskTicketID;
-            //DataSet dsResourceDetails = dal.GetHelpDeskDetailsFromHelpDeskIssueID(HelpdeskTicketID);
-            //var values = new List<Tuple<DateTime, DateTime>>();
-            //foreach (DataTable t in dsResourceDetails.Tables)
-            //{
-            //    foreach (DataRow row in t.Rows)
-            //    {
-            //        string StartDate = row["FromDate"].ToString();
-            //        string EndDate = row["ToDate"].ToString();
-            //        values.Add(new Tuple<DateTime, DateTime>(Convert.ToDateTime(StartDate), Convert.ToDateTime(EndDate)));
-            //    }
-            //}
-            //for (int i = 0; i < values.Count; i++)
-            //{
-            //    model.ProjectStartDate = values[i].Item1;
-            //    model.ProjectEndDate = values[i].Item1;
-            //}
+            DataSet dsResourceDetails = dal.GetHelpDeskDetailsFromHelpDeskIssueID(HelpdeskTicketID);
+            model.ReportingTo = dsResourceDetails.Tables[0].Rows[0]["EmployeeID"].ToString();
 
             return View("AddEditResourceDetails", model);
         }
@@ -208,7 +195,7 @@ namespace HRMS.Controllers
             model.ProjectApprovedListdata = Dal.GetResourceAllocationProjectList(ProjectStatus, employeeCodeEmp, "Admin", empRole);
             model.ProjectRolesList = Dal.getEmployeeRoles();
             model.ResourceTypeList = Dal.GetResourceTypeList();
-          
+
             //  ViewBag.IsProjectManager = role.Contains("Manager");
             ConfigurationViewModel orbit = new ConfigurationViewModel();
             CommonMethodsDAL Commondal = new CommonMethodsDAL();
@@ -1323,7 +1310,7 @@ namespace HRMS.Controllers
         public System.Threading.Timer myTimer;
 
         public void SetTimerValue()
-        {            
+        {
             // trigger the event at 9 AM. For 7 PM use 21 i.e. 24 hour format
             DateTime requiredTime = DateTime.Today.AddHours(10).AddMinutes(30);
             if (DateTime.Now > requiredTime)
@@ -1423,7 +1410,7 @@ namespace HRMS.Controllers
 
                 }
                 //Changed by Rahul for issue ID #142667129.
-               // string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
+                // string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["RMGEmailId"].ToString();
                 string RMGEmail = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
                 string Email = string.Empty;
                 Email = RMGEmail;
@@ -1450,7 +1437,7 @@ namespace HRMS.Controllers
                 mail.Body = model.Mail.Message;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.EnableSsl = true;
-                
+
                 smtpClient.Host = System.Configuration.ConfigurationManager.AppSettings["SMTPServerName"].ToString();
                 //smtpClient.Host = "v2mailserver.in.v2solutions.com";
                 string UserName = System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
