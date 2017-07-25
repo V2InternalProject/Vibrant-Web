@@ -1972,7 +1972,7 @@ namespace HRMS.Controllers
         public void TimerAction(object e)
         {
             // do some work
-            AutoSendMail();
+            //AutoSendMail();
             // now, call the set timer method to reset its next call time
             SetTimerValue();
         }

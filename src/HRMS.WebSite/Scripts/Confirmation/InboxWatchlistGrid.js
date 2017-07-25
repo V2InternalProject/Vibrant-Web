@@ -383,19 +383,19 @@ function LinkClick(event, StageId, EncryptedId, ActionType, ConfirmationID, IsMa
     var table = $("#" + target + "").parent().parent().parent().parent();
     var tableid = $(table).attr('id');
     if (IsManager == "true" && (StageId == null || StageId == 0)) {
-        $("#btnFillFormConfirmation").show();
+        //$("#btnFillFormConfirmation").show();
         $("#btnShowDetailsConfirmation").hide();
     }
     else if (IsFurtherApprover == "true" && StageId == 2) {
-        $("#btnFillFormConfirmation").show();
+        //$("#btnFillFormConfirmation").show();
         $("#btnShowDetailsConfirmation").hide();
     }
     else if (IsAdmin == "true" && (StageId == 1 || StageId == 3 || StageId == 0)) {
-        $("#btnFillFormConfirmation").show();
+        //$("#btnFillFormConfirmation").show();
         $("#btnShowDetailsConfirmation").hide();
     }
     else {
-        $("#btnFillFormConfirmation").hide();
+        //$("#btnFillFormConfirmation").hide();
         $("#btnShowDetailsConfirmation").show();
     }
     $("#hiddenid").val(EncryptedId);
