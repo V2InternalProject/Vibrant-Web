@@ -214,8 +214,16 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $("#ProjectRole").next().children().first().text($("#projectrole").val());
-        $("#ProjectRole option:contains(" + $('#projectrole').val().trim() + ")").attr('selected', true);
+        var projectRole = $.trim($("#projectrole").val());
+        $("#ProjectRole").next().children().first().text(projectRole);
+        //$("#ProjectRole option:contains(" + $('#projectrole').val().trim() + ")").attr('selected', true);
+
+        $('#ProjectRole option').each(function () {
+            if (this.text == projectRole) {
+                this.setAttribute("selected", "true");
+                return false;
+            }
+        });
 
         $("#HelpdeskTicketID,#ProjectName,#ProjectStartDate,#ProjectEndDate").hide();
         $(".ValidationDropDown").each(function () {
