@@ -2448,7 +2448,13 @@ namespace HRMS.DAL
             {
                 int? OldStageId = 0;
                 bool status = false;
+                Tbl_HR_ExitStageEvent flag = (from e in dbContext.Tbl_HR_ExitStageEvent
+                                              where e.FromStageId == 4 && e.ExitInstanceId == model.ExitInstanceId && e.QuestionnaireID == model.QuestionnaireID
+                                              orderby e.EventDateTime descending
+                                              select e).FirstOrDefault();
 
+                if (flag != null)
+                    return status;
                 status = savefinanceseparationDetails(model);
                 if (status)
                 {
