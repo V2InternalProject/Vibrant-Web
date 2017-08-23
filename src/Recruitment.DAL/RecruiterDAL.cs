@@ -44,13 +44,15 @@ namespace DAL
 
         public DataSet SearchRRFCodeData(RecruiterBOL objRecruiterBOL)
         {
-            SqlParameter[] param = new SqlParameter[3];
+            SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@UserId", SqlDbType.Int);
             param[0].Value = objRecruiterBOL.UserID;
             param[1] = new SqlParameter("@RoleType", SqlDbType.VarChar);
             param[1].Value = objRecruiterBOL.RoleType;
             param[2] = new SqlParameter("@RRFNo", SqlDbType.VarChar);
             param[2].Value = objRecruiterBOL.RRFCode;
+            param[3] = new SqlParameter("@RRFStatus", SqlDbType.Int);
+            param[3].Value = 0;
             return dsGetRRFCodeList = SqlHelper.ExecuteDataset(AppConfiguration.ConnectionString, CommandType.StoredProcedure, "sp_RRFNoSearch", param);
         }
 
