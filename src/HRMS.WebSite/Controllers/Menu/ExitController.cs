@@ -845,11 +845,23 @@ namespace HRMS.Controllers
                             }
                             char[] symbols = new char[] { ';' };
 
+                            model.Mail.Cc = model.Mail.Cc + "helpdesk@v2solutions.com;";
                             string CC = model.Mail.Cc.TrimEnd(symbols);
                             model.Mail.Cc = CC + ";" + model.Mail.From;
                         }
                     }
                 }
+                if (Isterminated != "yes")
+                {
+                    result = sendMail(model.Mail);
+                    //return RedirectToAction("sendEmail","Exit",model.Mail);
+                    if (result == true)
+                        return RedirectToAction("Index", "Error", new { errorCode = "You have resigned" });
+                    else
+                        return RedirectToAction("Index", "Error", new { errorCode = "There are some errors." });
+                }
+
+
                 return PartialView("_MailTemplateSeparation", model.Mail);
             }
             catch (Exception)
@@ -943,6 +955,78 @@ namespace HRMS.Controllers
             catch (Exception)
             {
                 return Json(new { status = "Error" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public bool sendMail(SeparationMailTemplate smodel)
+        {
+            try
+            {
+                bool result = false;
+                char[] symbols = new char[] { ';', ' ', ',', '\r', '\n' };
+                int CcCounter = 0;
+                int ToCounter = 0;
+                if (smodel.Cc != "" && smodel.Cc != null)
+                {
+                    string CcMailIds = smodel.Cc.TrimEnd(symbols);
+                    smodel.Cc = CcMailIds;
+                    string[] EmailId = CcMailIds.Split(symbols);
+                    string[] EmailIds = EmailId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
+                    foreach (string id in EmailIds)
+                    {
+                        HRMS_tbl_PM_Employee employeeDetails = employeeDAL.GetEmployeeDetailsFromEmailId(id);
+
+                        if (employeeDetails != null)
+                            CcCounter = 1;
+                        else
+                        {
+                            CcCounter = 0;
+                            break;
+                        }
+                    }
+                    string[] EmailToId = smodel.To.Split(symbols);
+                    string[] EmailToIds = EmailToId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
+                    foreach (string email in EmailToIds)
+                    {
+                        HRMS_tbl_PM_Employee employeeDetails = employeeDAL.GetEmployeeDetailsFromEmailId(email);
+                        if (employeeDetails != null)
+                            ToCounter = 1;
+                        else
+                        {
+                            ToCounter = 0;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    CcCounter = 1;
+                    string[] EmailToId = smodel.To.Split(symbols);
+                    string[] EmailToIds = EmailToId.Where(s => !String.IsNullOrEmpty(s)).ToArray();
+                    foreach (string email in EmailToIds)
+                    {
+                        HRMS_tbl_PM_Employee employeeDetails = employeeDAL.GetEmployeeDetailsFromEmailId(email);
+                        if (employeeDetails != null)
+                            ToCounter = 1;
+                        else
+                        {
+                            ToCounter = 0;
+                            break;
+                        }
+                    }
+                }
+
+                result = SendMail(smodel);
+                if (result == true)
+                    return result;
+                else
+                    return result;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

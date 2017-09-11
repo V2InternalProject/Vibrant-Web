@@ -1461,15 +1461,16 @@ namespace HRMS.Controllers
 
                 model.Mail = new TravelMailTemplate();
                 HRMS_tbl_PM_Employee fromEmployeeDetails = employeeDAL.GetEmployeeDetails(Convert.ToInt32(successEmpIDs));
-                string SendMailToPerson1 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailToPerson1"];
-                string SendMailCCPerson1 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailCCPerson1"];
+                //string SendMailToPerson1 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailToPerson1"];
+                string SendMailToPerson1 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailCCPerson1"];
+                //string SendMailCCPerson1 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailCCPerson1"];
                 string SendMailCCPerson2 = System.Configuration.ConfigurationManager.AppSettings["CustomerSendMailCCPerson2"];
                 CustomerContract contractDetails = dal.GetLatestContractDetails(Convert.ToInt32(CustomerId));
                 if (fromEmployeeDetails != null)
                 {
                     model.Mail.From = fromEmployeeDetails.EmailID;
                     model.Mail.To = SendMailToPerson1;
-                    model.Mail.Cc = fromEmployeeDetails.EmailID + ";" + SendMailCCPerson1 + ";" + SendMailCCPerson2;
+                    model.Mail.Cc = fromEmployeeDetails.EmailID + ";" + SendMailCCPerson2;
 
                     int templateId = 55;
                     List<EmployeeMailTemplate> template = Commondal.GetEmailTemplate(templateId);

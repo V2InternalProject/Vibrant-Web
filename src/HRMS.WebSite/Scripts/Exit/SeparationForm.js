@@ -39,6 +39,7 @@ function SaveSeparationForm() {
 			    buttons:
 						{
 						    "Ok": function () {
+						        debugger;
 						        DisplayLoadingDialog();  //checked
 						        $("#loading").dialog('open');
 						        $.ajax({
@@ -50,7 +51,7 @@ function SaveSeparationForm() {
 						                $("#terminationconfirmation").dialog("destroy");
 
 						                $("#loading").dialog("destroy");
-
+						                debugger;
 						                if (results.status == true && results.exitId) {
 						                    var MailUrl = "MailTemplate/Exit";
 						                    var Parameter = { exitInstanceId: results.exitId, isApproveCall: false, IsRejectCall: false, Isterminated: $("#Isterminate").val() }
@@ -211,7 +212,7 @@ function SaveSeparationForm() {
                     data: $('#SeparationForm').serialize(),
                     datatype: 'json',
                     success: function (results) {
-                        $("#loading").dialog("destroy");
+                        //$("#loading").dialog("destroy");
                         if (results.status == true && results.exitId) {
                             var MailUrl = "MailTemplate/Exit";
                             var Parameter = { exitInstanceId: results.exitId, isApproveCall: false, IsRejectCall: false }
@@ -221,6 +222,8 @@ function SaveSeparationForm() {
                                 cache: false,
                                 data: Parameter,
                                 success: function (data) {
+                                    window.location.href = "EmpSeparationApprovals";
+
                                     if (data) {
                                         $("#SeparationMailDialog").html(data);
                                         $("#SeparationMailDialog").dialog({
