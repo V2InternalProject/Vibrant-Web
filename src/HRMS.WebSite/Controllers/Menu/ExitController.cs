@@ -848,7 +848,7 @@ namespace HRMS.Controllers
                             }
                             char[] symbols = new char[] { ';' };
 
-                            model.Mail.Cc = model.Mail.Cc + "helpdesk@v2solutions.com;";
+                            model.Mail.Cc = model.Mail.Cc + System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString();
                             string CC = model.Mail.Cc.TrimEnd(symbols);
                             model.Mail.Cc = CC + ";" + model.Mail.From;
                         }
