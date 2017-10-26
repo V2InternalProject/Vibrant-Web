@@ -384,7 +384,10 @@ namespace HRMS.Controllers
                         {
                             model.Mail.From = terminationDetails.EmailID;
                             model.Mail.To = employeeDetails.EmailID;
-                            templateId = 33;
+                            if (empexitTermination.ReasonID == 40)
+                                templateId = 99;
+                            else
+                                templateId = 33;
                             template = Commondal.GetEmailTemplate(templateId);
                             foreach (var emailTemplate in template)
                             {
