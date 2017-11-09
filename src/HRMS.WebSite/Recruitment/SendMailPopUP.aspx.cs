@@ -164,7 +164,7 @@ public partial class SendMailPopUP : System.Web.UI.Page
         }
 
         txtMessage.Text = Server.HtmlDecode("Hello, " + "<br>" + "<br>" +
-           "This is to notify that, a new employee code has been generated in Vibrantweb as " + Convert.ToString(Session["EmployeeCode"]) + "<br>" + "<br>" + "Regards," + "<br>" +
+           "This is to notify that, a new employee code has been generated in Vibrantweb as " + Convert.ToString(Session["EmployeeCode"]) + " for " + Convert.ToString(Session["JoinersNameForEmail"]) + ".<br>" + "<br>" + "Regards," + "<br>" +
              Convert.ToString(EmployeeInfo.Tables[0].Rows[0]["EmployeeName"]));
         txtMessage.Text = txtMessage.Text.Replace("<br>", Environment.NewLine);
     }

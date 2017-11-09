@@ -788,6 +788,7 @@ public partial class Candidate : System.Web.UI.Page
                                 BindOnPageLoad(dsExperience, grdExperienceDetails);
                                 Session["UserName"] = txtFirstName.Text.ToLower() + "." + txtLastName.Text.ToLower();
                                 Session["CandidateID"] = Convert.ToString(candidateID);
+                                Session["JoinersNameForEmail"] = txtFirstName.Text + " " + txtLastName.Text;
                                 log.Info(Convert.ToString(Session["UserName"]) + " details are saved and joining pop-up window opened.");
                                 ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", "window.open('JoinEmployeePopup.aspx',null,'height=550, width=1200,status= no, resizable= no, scrollbars=yes, toolbar=no,location=no,menubar=no');", true);
                             }
