@@ -172,87 +172,87 @@ $(document).ready(
                 {},
                 {}
             );
-            $("#pastExperiencejqTable").jqGrid('inlineNav', "#pastExperiencejqTablePager",
-      {
-          edit: true,
-          editicon: "ui-icon-pencil",
-          add: true,
-          addicon: "ui-icon-plus",
-          save: true,
-          saveicon: "ui-icon-disk",
-          cancle: true,
-          cancelicon: "ui-icon-cancel",
-          addtext: "Add",
-          savetext: "Save",
-          edittext: "Edit",
-          canceltext: "Cancel",
-          addParams: {
-              // position: "last",
-              addRowParams: {
-                  // the parameters of editRow used to edit new row
-                  keys: true,
-                  oneditfunc: function (rowid) {
-                      $('#undefined').hide();
-                  }
-              }
-          },
-          editParams: {
-              keys: true,
-              oneditfunc: function (data, value) {
-              },
-              sucessfunc: function (data) {
-              },
-              url: null,
-              extraparam: {
-                  EmployeeId: function () {
-                      return empId
-                  },
-                  EmpHistroyId: function () {
-                      return employeeHistoryId
-                  },
-                  EmpTypeId: function () {
-                      return $('#EmployeeTypeId').val();
-                  }
-              },
-              aftersavefunc: function (data, response) {
-                  var result = $.parseJSON(response.responseText);
-                  if (result == true) {
-                      $("#pastExperiencejqTable").trigger("reloadGrid");
-                      RefreshTotalExperienceView();
-                      $("#pastExperienceSuccessDialog").dialog({
-                          resizable: false,
-                          height: 140,
-                          modal: true,
-                          dialogClass: "noclose",
-                          title: 'Experience Details',
-                          buttons: {
-                              Ok: function () {
-                                  $(this).dialog("close");
-                              }
-                          }
-                      });
-                  }
-                  else {
-                      $("#pastExperienceErrorDialog").dialog({
-                          resizable: false,
-                          height: 140,
-                          modal: true,
-                          dialogClass: "noclose",
-                          title: 'Experience Details',
-                          buttons: {
-                              Ok: function () {
-                                  $(this).dialog("close");
-                              }
-                          }
-                      });
-                  }
-              },
-              errorfunc: null,
-              afterrestorefunc: null,
-              restoreAfterError: true,
-              mtype: "POST"
-          }
-      });
+      //      $("#pastExperiencejqTable").jqGrid('inlineNav', "#pastExperiencejqTablePager",
+      //{
+      //    edit: true,
+      //    editicon: "ui-icon-pencil",
+      //    add: true,
+      //    addicon: "ui-icon-plus",
+      //    save: true,
+      //    saveicon: "ui-icon-disk",
+      //    cancle: true,
+      //    cancelicon: "ui-icon-cancel",
+      //    addtext: "Add",
+      //    savetext: "Save",
+      //    edittext: "Edit",
+      //    canceltext: "Cancel",
+      //    addParams: {
+      //        // position: "last",
+      //        addRowParams: {
+      //            // the parameters of editRow used to edit new row
+      //            keys: true,
+      //            oneditfunc: function (rowid) {
+      //                $('#undefined').hide();
+      //            }
+      //        }
+      //    },
+      //    editParams: {
+      //        keys: true,
+      //        oneditfunc: function (data, value) {
+      //        },
+      //        sucessfunc: function (data) {
+      //        },
+      //        url: null,
+      //        extraparam: {
+      //            EmployeeId: function () {
+      //                return empId
+      //            },
+      //            EmpHistroyId: function () {
+      //                return employeeHistoryId
+      //            },
+      //            EmpTypeId: function () {
+      //                return $('#EmployeeTypeId').val();
+      //            }
+      //        },
+      //        aftersavefunc: function (data, response) {
+      //            var result = $.parseJSON(response.responseText);
+      //            if (result == true) {
+      //                $("#pastExperiencejqTable").trigger("reloadGrid");
+      //                RefreshTotalExperienceView();
+      //                $("#pastExperienceSuccessDialog").dialog({
+      //                    resizable: false,
+      //                    height: 140,
+      //                    modal: true,
+      //                    dialogClass: "noclose",
+      //                    title: 'Experience Details',
+      //                    buttons: {
+      //                        Ok: function () {
+      //                            $(this).dialog("close");
+      //                        }
+      //                    }
+      //                });
+      //            }
+      //            else {
+      //                $("#pastExperienceErrorDialog").dialog({
+      //                    resizable: false,
+      //                    height: 140,
+      //                    modal: true,
+      //                    dialogClass: "noclose",
+      //                    title: 'Experience Details',
+      //                    buttons: {
+      //                        Ok: function () {
+      //                            $(this).dialog("close");
+      //                        }
+      //                    }
+      //                });
+      //            }
+      //        },
+      //        errorfunc: null,
+      //        afterrestorefunc: null,
+      //        restoreAfterError: true,
+      //        mtype: "POST"
+      //    }
+      //});
 
             if ($('#UserRole').val() != HRAdmin) {
                 $("#pastExperiencejqTablePager_left").css("visibility", "hidden");

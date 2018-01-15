@@ -143,86 +143,86 @@ $(document).ready(
                 {},
                 {}
             );
-            $("#gapExperiencejqTable").jqGrid('inlineNav', "#gapExperiencejqTablePager",
-    {
-        edit: true,
-        editicon: "ui-icon-pencil",
-        add: true,
-        addicon: "ui-icon-plus",
-        save: true,
-        saveicon: "ui-icon-disk",
-        cancle: true,
-        cancelicon: "ui-icon-cancel",
-        addtext: "Add",
-        savetext: "Save",
-        edittext: "Edit",
-        canceltext: "Cancel",
-        addParams: {
-            // position: "last",
-            addRowParams: {
-                // the parameters of editRow used to edit new row
-                keys: true,
-                oneditfunc: function (rowid) {
-                    $(".DependandGapClass").find("input").attr("readonly", "readonly");
-                    $('#undefined').hide();
-                }
-            }
-        },
-        editParams: {
-            keys: true,
-            oneditfunc: function (data, value) {
-                $(".DependandGapClass").find("input").attr("readonly", "readonly");
-            },
-            sucessfunc: function (data) {
-            },
-            url: null,
-            extraparam: {
-                EmployeeId: function () {
-                    return empId
-                },
-                EmployeeGapExpId: function () {
-                    return employeeGapExpId
-                }
-            },
-            aftersavefunc: function (data, response) {
-                var result = $.parseJSON(response.responseText);
-                if (result == true) {
-                    $("#gapExperiencejqTable").trigger("reloadGrid");
-                    RefreshTotalExperienceView();
-                    $("#GapExperienceSuccessDialog").dialog({
-                        resizable: false,
-                        height: 140,
-                        modal: true,
-                        title: 'Experience Details',
-                        dialogClass: "noclose",
-                        buttons: {
-                            Ok: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-                }
-                else {
-                    $("#GapExperienceErrorDialog").dialog({
-                        resizable: false,
-                        height: 140,
-                        modal: true,
-                        title: 'Experience Details',
-                        dialogClass: "noclose",
-                        buttons: {
-                            Ok: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-                }
-            },
-            errorfunc: null,
-            afterrestorefunc: null,
-            restoreAfterError: true,
-            mtype: "POST"
-        }
-    })
+    //        $("#gapExperiencejqTable").jqGrid('inlineNav', "#gapExperiencejqTablePager",
+    //{
+    //    edit: true,
+    //    editicon: "ui-icon-pencil",
+    //    add: true,
+    //    addicon: "ui-icon-plus",
+    //    save: true,
+    //    saveicon: "ui-icon-disk",
+    //    cancle: true,
+    //    cancelicon: "ui-icon-cancel",
+    //    addtext: "Add",
+    //    savetext: "Save",
+    //    edittext: "Edit",
+    //    canceltext: "Cancel",
+    //    addParams: {
+    //        // position: "last",
+    //        addRowParams: {
+    //            // the parameters of editRow used to edit new row
+    //            keys: true,
+    //            oneditfunc: function (rowid) {
+    //                $(".DependandGapClass").find("input").attr("readonly", "readonly");
+    //                $('#undefined').hide();
+    //            }
+    //        }
+    //    },
+    //    editParams: {
+    //        keys: true,
+    //        oneditfunc: function (data, value) {
+    //            $(".DependandGapClass").find("input").attr("readonly", "readonly");
+    //        },
+    //        sucessfunc: function (data) {
+    //        },
+    //        url: null,
+    //        extraparam: {
+    //            EmployeeId: function () {
+    //                return empId
+    //            },
+    //            EmployeeGapExpId: function () {
+    //                return employeeGapExpId
+    //            }
+    //        },
+    //        aftersavefunc: function (data, response) {
+    //            var result = $.parseJSON(response.responseText);
+    //            if (result == true) {
+    //                $("#gapExperiencejqTable").trigger("reloadGrid");
+    //                RefreshTotalExperienceView();
+    //                $("#GapExperienceSuccessDialog").dialog({
+    //                    resizable: false,
+    //                    height: 140,
+    //                    modal: true,
+    //                    title: 'Experience Details',
+    //                    dialogClass: "noclose",
+    //                    buttons: {
+    //                        Ok: function () {
+    //                            $(this).dialog("close");
+    //                        }
+    //                    }
+    //                });
+    //            }
+    //            else {
+    //                $("#GapExperienceErrorDialog").dialog({
+    //                    resizable: false,
+    //                    height: 140,
+    //                    modal: true,
+    //                    title: 'Experience Details',
+    //                    dialogClass: "noclose",
+    //                    buttons: {
+    //                        Ok: function () {
+    //                            $(this).dialog("close");
+    //                        }
+    //                    }
+    //                });
+    //            }
+    //        },
+    //        errorfunc: null,
+    //        afterrestorefunc: null,
+    //        restoreAfterError: true,
+    //        mtype: "POST"
+    //    }
+    //})
 
             function ToDateChange(e) {
                 var selectedDateID = e.target.id;

@@ -134,109 +134,110 @@ $(document).ready(function () {
     }).navGrid("#jqTableBondDetailsPager",
           { search: false, refresh: false, add: false, edit: false, del: false }
       );
-    $("#jqBondDetailsTable").jqGrid('inlineNav', "#jqTableBondDetailsPager",
-   {
-       edit: true,
-       editicon: "ui-icon-pencil",
-       add: true,
-       addicon: "ui-icon-plus",
-       save: true,
-       saveicon: "ui-icon-disk",
-       cancle: true,
-       cancelicon: "ui-icon-cancel",
-       addtext: "Add",
-       savetext: "Save",
-       edittext: "Edit",
-       canceltext: "Cancel",
-       addParams: {
-           // position: "last",
-           addRowParams: {
-               // the parameters of editRow used to edit new row
-               keys: true,
-               oneditfunc: function (rowid) {
-                   $('#undefined').hide();
-               }
-           }
-       },
-       editParams: {
-           keys: true,
-           //oneditfunc: function (data, value) {
-           oneditfunc: function (rowId) {
-               var rowData = $("#jqBondDetailsTable").getRowData(rowId);
-               var bstatus = rowData["BondStatusHidden"];
-               if (bstatus == "No") {
-                   $("#new_row_ReservationNumber").val("");
-                   $("#" + rowId + "_BondAmount").addClass("bg-gray");
-                   $("#" + rowId + "_BondAmount").attr("disabled", "disabled");
 
-                   $("#" + rowId + "_BondOverDate").addClass("bg-gray");
-                   $("#" + rowId + "_BondOverDate").attr("disabled", "disabled");
-               }
-               else {
-                   $("#" + rowId + "_BondAmount").removeClass("bg-gray");
-                   $("#" + rowId + "_BondAmount").removeAttr("disabled");
+   // $("#jqBondDetailsTable").jqGrid('inlineNav', "#jqTableBondDetailsPager",
+   //{
+   //    edit: true,
+   //    editicon: "ui-icon-pencil",
+   //    add: true,
+   //    addicon: "ui-icon-plus",
+   //    save: true,
+   //    saveicon: "ui-icon-disk",
+   //    cancle: true,
+   //    cancelicon: "ui-icon-cancel",
+   //    addtext: "Add",
+   //    savetext: "Save",
+   //    edittext: "Edit",
+   //    canceltext: "Cancel",
+   //    addParams: {
+   //        // position: "last",
+   //        addRowParams: {
+   //            // the parameters of editRow used to edit new row
+   //            keys: true,
+   //            oneditfunc: function (rowid) {
+   //                $('#undefined').hide();
+   //            }
+   //        }
+   //    },
+   //    editParams: {
+   //        keys: true,
+   //        //oneditfunc: function (data, value) {
+   //        oneditfunc: function (rowId) {
+   //            var rowData = $("#jqBondDetailsTable").getRowData(rowId);
+   //            var bstatus = rowData["BondStatusHidden"];
+   //            if (bstatus == "No") {
+   //                $("#new_row_ReservationNumber").val("");
+   //                $("#" + rowId + "_BondAmount").addClass("bg-gray");
+   //                $("#" + rowId + "_BondAmount").attr("disabled", "disabled");
 
-                   $("#" + rowId + "_BondOverDate").removeClass("bg-gray");
-                   $("#" + rowId + "_BondOverDate").removeAttr("disabled");
-               }
-           },
-           sucessfunc: function (data) {
-           },
-           url: null,
-           extraparam: {
-               EmployeeId: function () {
-                   return bondEmployeeId
-               },
-               BondId: function () {
-                   return bondId
-               },
-               BondStatus: function () {
-                   return $('#BondStatus').val();
-               },
-               BondTypeId: function () {
-                   return $('#BondTypeID').val();
-               }
-           },
-           aftersavefunc: function (data, response) {
-               var result = $.parseJSON(response.responseText);
-               if (result.status == true) {
-                   selectedRowId = 0;
-                   $("#jqBondDetailsTable").trigger("reloadGrid");
-                   //RefreshTotalExperienceView();
-                   $("#successBondDialog").dialog({
-                       resizable: false,
-                       height: 140,
-                       modal: true,
-                       title: 'Bond Details',
-                       dialogClass: "noclose",
-                       buttons: {
-                           Ok: function () {
-                               $(this).dialog("close");
-                           }
-                       }
-                   });
-               }
-               else {
-                   $("#errorBondDialog").dialog({
-                       resizable: false,
-                       height: 140,
-                       modal: true,
-                       dialogClass: "noclose",
-                       title: 'Bond Details',
-                       buttons: {
-                           Ok: function () {
-                               $(this).dialog("close");
-                           }
-                       }
-                   });
-               }
-           },
-           errorfunc: null,
-           afterrestorefunc: null,
-           restoreAfterError: true,
-           mtype: "POST"
-       }
-   })
+   //                $("#" + rowId + "_BondOverDate").addClass("bg-gray");
+   //                $("#" + rowId + "_BondOverDate").attr("disabled", "disabled");
+   //            }
+   //            else {
+   //                $("#" + rowId + "_BondAmount").removeClass("bg-gray");
+   //                $("#" + rowId + "_BondAmount").removeAttr("disabled");
+
+   //                $("#" + rowId + "_BondOverDate").removeClass("bg-gray");
+   //                $("#" + rowId + "_BondOverDate").removeAttr("disabled");
+   //            }
+   //        },
+   //        sucessfunc: function (data) {
+   //        },
+   //        url: null,
+   //        extraparam: {
+   //            EmployeeId: function () {
+   //                return bondEmployeeId
+   //            },
+   //            BondId: function () {
+   //                return bondId
+   //            },
+   //            BondStatus: function () {
+   //                return $('#BondStatus').val();
+   //            },
+   //            BondTypeId: function () {
+   //                return $('#BondTypeID').val();
+   //            }
+   //        },
+   //        aftersavefunc: function (data, response) {
+   //            var result = $.parseJSON(response.responseText);
+   //            if (result.status == true) {
+   //                selectedRowId = 0;
+   //                $("#jqBondDetailsTable").trigger("reloadGrid");
+   //                //RefreshTotalExperienceView();
+   //                $("#successBondDialog").dialog({
+   //                    resizable: false,
+   //                    height: 140,
+   //                    modal: true,
+   //                    title: 'Bond Details',
+   //                    dialogClass: "noclose",
+   //                    buttons: {
+   //                        Ok: function () {
+   //                            $(this).dialog("close");
+   //                        }
+   //                    }
+   //                });
+   //            }
+   //            else {
+   //                $("#errorBondDialog").dialog({
+   //                    resizable: false,
+   //                    height: 140,
+   //                    modal: true,
+   //                    dialogClass: "noclose",
+   //                    title: 'Bond Details',
+   //                    buttons: {
+   //                        Ok: function () {
+   //                            $(this).dialog("close");
+   //                        }
+   //                    }
+   //                });
+   //            }
+   //        },
+   //        errorfunc: null,
+   //        afterrestorefunc: null,
+   //        restoreAfterError: true,
+   //        mtype: "POST"
+   //    }
+   //})
 
     if ($('#UserRole').val() != window.hrAdmin) {
         $("#jqTableBondDetailsPager_left").css("visibility", "hidden");
