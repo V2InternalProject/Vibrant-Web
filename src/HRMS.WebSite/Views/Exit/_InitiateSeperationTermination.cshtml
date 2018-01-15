@@ -50,10 +50,11 @@
             mtype: "POST",
             postData: { term: function () { return $("#txtSearchTextExit").val(); }, OrganizationUnit: function () { return $("#ddlOrganizationGroup").val(); } },
             // Specify the column names
-            colNames: ["Initiate", "Employee Code", "Employee Id", "Employee Name", "Joining Date", "Reporting Manager", "Business Group", "Organization Group", "Is Exit"],
+            //colNames: ["Initiate", "Employee Code", "Employee Id", "Employee Name", "Joining Date", "Reporting Manager", "Business Group", "Organization Group", "Is Exit"],
+            colNames: ["Employee Code", "Employee Id", "Employee Name", "Joining Date", "Reporting Manager", "Business Group", "Organization Group", "Is Exit"],
             // Configure the columns
             colModel: [
-                { name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'left' },
+                //{ name: "Initiate", index: "Initiate", width: 50, formatter: checkstatus, align: 'left' },//Removed Initiate Column -- Rahul R
                 { name: "EmployeeCode", index: "EmployeeCode", hidden: true, width: 50, align: "left" },
                 { name: "EmployeeId", index: "EmployeeId", hidden: true, width: 50, align: "left" },
                 { name: "EmployeeName", index: "EmployeeName", width: 150, align: "left" },
