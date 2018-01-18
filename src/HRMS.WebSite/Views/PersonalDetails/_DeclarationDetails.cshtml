@@ -132,93 +132,93 @@
             {}
         );
 
-        $("#declarationTable").jqGrid('inlineNav', "#DeclarationTablePager",
-      {
-          edit: true,
-          editicon: "ui-icon-pencil",
-          edittext: "Edit",
-          add: true,
-          addicon: "ui-icon-plus",
-          addtext: "Add",
-          save: true,
-          saveicon: "ui-icon-disk",
-          savetext: "Save",
-          cancle: true,
-          cancelicon: "ui-icon-cancel",
-          canceltext: "Cancel",
-          addParams: {
-              useFormatter: false,
-              addRowParams: {
-                  oneditfunc: function (rowid) {
-                      isDeclarationRowInAddEditMode = true;
-                      SelectedDeclarationRowId = rowid;
-                  }
-              }
-          },
-          editParams: {
-              keys: false,
-              oneditfunc: function (rowid) {
-                  isDeclarationRowInAddEditMode = true;
-              },
-              sucessfunc: function (data) {
-              },
-              url: null,
-              extraparam: {
-                  RelationId: function () {
-                      return $('#DeclarationDetailsForm #uniqueID').val();
-                  },
-                  StatusID: function () {
-                      return $('#DeclarationDetailsForm #V2EmployeeID').val();
-                  },
-                  EmployeeId: function() {
-                      return $('#DeclarationDetailsForm #EmployeeID').val();
-                  }
-              },
-              aftersavefunc: function (data, response) {
-                  isDeclarationRowInAddEditMode = false;
-                  var results = $.parseJSON(response.responseText);
-                  $("#declarationTable").trigger("reloadGrid");
-                  if (results.status == true) {
-                      $("#AddDeclarationSuccessMessege").dialog({
-                          resizable: false,
-                          height: 140,
-                          width: 300,
-                          modal: true,
-                          dialogClass: "noclose",
-                          buttons: {
-                              Ok: function () {
-                                  $(this).dialog("close");
-                              }
-                          }
-                      });
-                  }
-                  else if (results.status == "Error") {
-                      DisplayErrorDialog('Declaration Details');
-                  }
-                  else {
-                      $("#AddDeclarationErrorMessege").dialog({
-                          resizable: false,
-                          height: 140,
-                          width: 300,
-                          modal: true,
-                          dialogClass: "noclose",
-                          buttons: {
-                              Ok: function () {
-                                  $(this).dialog("close");
-                              }
-                          }
-                      });
-                  }
+      //  $("#declarationTable").jqGrid('inlineNav', "#DeclarationTablePager",
+      //{
+      //    edit: true,
+      //    editicon: "ui-icon-pencil",
+      //    edittext: "Edit",
+      //    add: true,
+      //    addicon: "ui-icon-plus",
+      //    addtext: "Add",
+      //    save: true,
+      //    saveicon: "ui-icon-disk",
+      //    savetext: "Save",
+      //    cancle: true,
+      //    cancelicon: "ui-icon-cancel",
+      //    canceltext: "Cancel",
+      //    addParams: {
+      //        useFormatter: false,
+      //        addRowParams: {
+      //            oneditfunc: function (rowid) {
+      //                isDeclarationRowInAddEditMode = true;
+      //                SelectedDeclarationRowId = rowid;
+      //            }
+      //        }
+      //    },
+      //    editParams: {
+      //        keys: false,
+      //        oneditfunc: function (rowid) {
+      //            isDeclarationRowInAddEditMode = true;
+      //        },
+      //        sucessfunc: function (data) {
+      //        },
+      //        url: null,
+      //        extraparam: {
+      //            RelationId: function () {
+      //                return $('#DeclarationDetailsForm #uniqueID').val();
+      //            },
+      //            StatusID: function () {
+      //                return $('#DeclarationDetailsForm #V2EmployeeID').val();
+      //            },
+      //            EmployeeId: function() {
+      //                return $('#DeclarationDetailsForm #EmployeeID').val();
+      //            }
+      //        },
+      //        aftersavefunc: function (data, response) {
+      //            isDeclarationRowInAddEditMode = false;
+      //            var results = $.parseJSON(response.responseText);
+      //            $("#declarationTable").trigger("reloadGrid");
+      //            if (results.status == true) {
+      //                $("#AddDeclarationSuccessMessege").dialog({
+      //                    resizable: false,
+      //                    height: 140,
+      //                    width: 300,
+      //                    modal: true,
+      //                    dialogClass: "noclose",
+      //                    buttons: {
+      //                        Ok: function () {
+      //                            $(this).dialog("close");
+      //                        }
+      //                    }
+      //                });
+      //            }
+      //            else if (results.status == "Error") {
+      //                DisplayErrorDialog('Declaration Details');
+      //            }
+      //            else {
+      //                $("#AddDeclarationErrorMessege").dialog({
+      //                    resizable: false,
+      //                    height: 140,
+      //                    width: 300,
+      //                    modal: true,
+      //                    dialogClass: "noclose",
+      //                    buttons: {
+      //                        Ok: function () {
+      //                            $(this).dialog("close");
+      //                        }
+      //                    }
+      //                });
+      //            }
 
-              },
-              errorfunc: null,
-              afterrestorefunc: function(){
-                  isDeclarationRowInAddEditMode = false;
-              },
-              restoreAfterError: true,
-              mtype: "POST"
-          }
-      });
+      //        },
+      //        errorfunc: null,
+      //        afterrestorefunc: function(){
+      //            isDeclarationRowInAddEditMode = false;
+      //        },
+      //        restoreAfterError: true,
+      //        mtype: "POST"
+      //    }
+      //});
         if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
 
         }

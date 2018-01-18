@@ -174,104 +174,104 @@
     {},
     {}
     );
-        $("#employeeTable").jqGrid('inlineNav', "#employeeTablePager",
-    {
-        edit: true,
-        editicon: "ui-icon-pencil",
-        edittext: "Edit",
-        add: true,
-        addicon: "ui-icon-plus",
-        addtext: "Add",
-        save: true,
-        saveicon: "ui-icon-disk",
-        savetext: "Save",
-        cancle: true,
-        cancelicon: "ui-icon-cancel",
-        canceltext: "Cancel",
-        addParams: {
-            useFormatter: false,
-            addRowParams: {
-                oneditfunc: function (rowid) {
-                    isEducationRowInAddEditMode = true;
-                    SelectedEducationRowId = rowid;
-                    //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
-                }
-            }
-        },
-        editParams: {
-            keys: false,
-            oneditfunc: function (rowid) {
-                isEducationRowInAddEditMode = true;
-                //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
-            },
-            sucessfunc: function (data) {
-            },
-            url: null,
-            extraparam: {
-                SelectedQualificationID: function () {
-                    return $('#QualificationDetailsForm #QualificationID').val();
-                },
-                SelectedDegreeID: function () {
-                    return $('#QualificationDetailsForm #DegreeID').val();
-                },
-                SelectedYearID: function () {
-                    return $('#QualificationDetailsForm #YearID').val();
-                },
-                SelectedTypeID: function () {
-                    return  $('#QualificationDetailsForm #TypeID').val();
-                },
-                EmployeeId: function () {
-                    return $('#QualificationDetailsForm #EmployeeID').val();
-                }
-            },
-            aftersavefunc: function (data, response) {
-                isEducationRowInAddEditMode = false;
-                var results = $.parseJSON(response.responseText);
-                $("#employeeTable").trigger("reloadGrid");
-                if (results.status == true) {
-                    $($('#btnEmpSendEmail')).removeAttr('disabled');
-                    $("#AddQualificationSuccessMessege").dialog({
-                        title: 'Qualification Details',
-                        resizable: false,
-                        height: 140,
-                        width: 300,
-                        modal: true,
-                        dialogClass: "noclose",
-                        buttons: {
-                            Ok: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-                }
-                else if (results.status == "Error") {
-                    DisplayErrorDialog('Qualification Details');
-                }
-                else {
-                    $("#AddQualificationErrorMessege").dialog({
-                        title: 'Qualification Details',
-                        resizable: false,
-                        height: 140,
-                        width: 300,
-                        modal: true,
-                        dialogClass: "noclose",
-                        buttons: {
-                            Ok: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-                }
+    //    $("#employeeTable").jqGrid('inlineNav', "#employeeTablePager",
+    //{
+    //    edit: true,
+    //    editicon: "ui-icon-pencil",
+    //    edittext: "Edit",
+    //    add: true,
+    //    addicon: "ui-icon-plus",
+    //    addtext: "Add",
+    //    save: true,
+    //    saveicon: "ui-icon-disk",
+    //    savetext: "Save",
+    //    cancle: true,
+    //    cancelicon: "ui-icon-cancel",
+    //    canceltext: "Cancel",
+    //    addParams: {
+    //        useFormatter: false,
+    //        addRowParams: {
+    //            oneditfunc: function (rowid) {
+    //                isEducationRowInAddEditMode = true;
+    //                SelectedEducationRowId = rowid;
+    //                //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
+    //            }
+    //        }
+    //    },
+    //    editParams: {
+    //        keys: false,
+    //        oneditfunc: function (rowid) {
+    //            isEducationRowInAddEditMode = true;
+    //            //$(".DependandAgeClass").find("input").attr("readonly", "readonly");
+    //        },
+    //        sucessfunc: function (data) {
+    //        },
+    //        url: null,
+    //        extraparam: {
+    //            SelectedQualificationID: function () {
+    //                return $('#QualificationDetailsForm #QualificationID').val();
+    //            },
+    //            SelectedDegreeID: function () {
+    //                return $('#QualificationDetailsForm #DegreeID').val();
+    //            },
+    //            SelectedYearID: function () {
+    //                return $('#QualificationDetailsForm #YearID').val();
+    //            },
+    //            SelectedTypeID: function () {
+    //                return  $('#QualificationDetailsForm #TypeID').val();
+    //            },
+    //            EmployeeId: function () {
+    //                return $('#QualificationDetailsForm #EmployeeID').val();
+    //            }
+    //        },
+    //        aftersavefunc: function (data, response) {
+    //            isEducationRowInAddEditMode = false;
+    //            var results = $.parseJSON(response.responseText);
+    //            $("#employeeTable").trigger("reloadGrid");
+    //            if (results.status == true) {
+    //                $($('#btnEmpSendEmail')).removeAttr('disabled');
+    //                $("#AddQualificationSuccessMessege").dialog({
+    //                    title: 'Qualification Details',
+    //                    resizable: false,
+    //                    height: 140,
+    //                    width: 300,
+    //                    modal: true,
+    //                    dialogClass: "noclose",
+    //                    buttons: {
+    //                        Ok: function () {
+    //                            $(this).dialog("close");
+    //                        }
+    //                    }
+    //                });
+    //            }
+    //            else if (results.status == "Error") {
+    //                DisplayErrorDialog('Qualification Details');
+    //            }
+    //            else {
+    //                $("#AddQualificationErrorMessege").dialog({
+    //                    title: 'Qualification Details',
+    //                    resizable: false,
+    //                    height: 140,
+    //                    width: 300,
+    //                    modal: true,
+    //                    dialogClass: "noclose",
+    //                    buttons: {
+    //                        Ok: function () {
+    //                            $(this).dialog("close");
+    //                        }
+    //                    }
+    //                });
+    //            }
 
-            },
-            errorfunc: null,
-            afterrestorefunc: function(){
-                isEducationRowInAddEditMode = false;
-            },
-            restoreAfterError: true,
-            mtype: "POST"
-        }
-    });
+    //        },
+    //        errorfunc: null,
+    //        afterrestorefunc: function(){
+    //            isEducationRowInAddEditMode = false;
+    //        },
+    //        restoreAfterError: true,
+    //        mtype: "POST"
+    //    }
+    //});
 
         if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
             $("#employeeTable").find('tr').find('td').find('img').removeAttr('style','visibility');
@@ -505,7 +505,7 @@
             </div>
         </div>
         <div class="ButtonContainer1">
-            <input type="button" value="Send Approval Mail" id="btnEmpSendEmail" disabled="disabled" class="ButtonGray" onclick=" sendMail()" />
+            @*<input type="button" value="Send Approval Mail" id="btnEmpSendEmail" disabled="disabled" class="ButtonGray" onclick=" sendMail()" />*@
         </div>
     </div>
 </section>

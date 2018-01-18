@@ -132,110 +132,110 @@
             {}
         );
 
-        $("#dependantTable").jqGrid('inlineNav', "#dependantTablePager",
-       {
-           edit: true,
-           editicon: "ui-icon-pencil",
-           edittext:"Edit",
-           add: true,
-           addicon: "ui-icon-plus",
-           addtext:"Add",
-           save: true,
-           saveicon: "ui-icon-disk",
-           savetext:"Save",
-           cancle: true,
-           cancelicon: "ui-icon-cancel",
-           canceltext:"Cancel",
-           addParams: {
-               useFormatter: false,
-               addRowParams: {
-                   oneditfunc: function (rowid) {
-                       isDependentRowInAddEditMode = true;
-                       $(".DependandAgeClass").find("input").attr("readonly","readonly");
-                       SelectedDependentRowId = rowid;
-                   }
-               }
-           },
-           editParams: {
-               keys: false,
-               oneditfunc: function (rowid) {
-                   isDependentRowInAddEditMode = true;
-                   $(".DependandAgeClass").find("input").attr("readonly","readonly");
-               },
-               sucessfunc: function (data) {
-               },
-               url: null,
-               extraparam: {
-                   RelationId: function () {
-                       return $('#DependantsDetailsForm #uniqueID').val();
-                   },
-                   EmployeeID: function () {
-                       return $('#DependantsDetailsForm #EmployeeId').val();
-                   }
-                   //ProjectID: function () {
-                   //    return $('#addProjectModule #ProjectID').val();
-                   //},
-                   //SelectedModuleName: function () {
-                   //    return $("#addProjectModule #SelectedModuleName").val();
-                   //}
-               },
-               aftersavefunc: function (data, response) {
-                   isDependentRowInAddEditMode = false;
-                   var results = $.parseJSON(response.responseText);
-                   $("#dependantTable").trigger("reloadGrid");
-                   if (results.status == true) {
-                       $("#AddDependantSuccessMessege").dialog({
-                           resizable: false,
-                           height: 140,
-                           width: 300,
-                           modal: true,
-                           dialogClass: "noclose",
-                           buttons: {
-                               Ok: function () {
-                                   $(this).dialog("close");
-                               }
-                           }
-                       });
-                   }
-                   else if (results.status == "Error") {
-                       $("#errorDialog").dialog({
-                           resizable: false,
-                           height: 'auto',
-                           width: 'auto',
-                           modal: true,
-                           title: 'Dependent Details',
-                           dialogClass: "noclose",
-                           buttons: {
-                               Ok: function () {
-                                   $(this).dialog("close");
-                               }
-                           }
-                       }); //end dialog
-                   }
-                   else {
-                       $("#AddDependantErrorMessege").dialog({
-                           resizable: false,
-                           height: 140,
-                           width: 300,
-                           modal: true,
-                           dialogClass: "noclose",
-                           buttons: {
-                               Ok: function () {
-                                   $(this).dialog("close");
-                               }
-                           }
-                       });
-                   }
+       // $("#dependantTable").jqGrid('inlineNav', "#dependantTablePager",
+       //{
+       //    edit: true,
+       //    editicon: "ui-icon-pencil",
+       //    edittext:"Edit",
+       //    add: true,
+       //    addicon: "ui-icon-plus",
+       //    addtext:"Add",
+       //    save: true,
+       //    saveicon: "ui-icon-disk",
+       //    savetext:"Save",
+       //    cancle: true,
+       //    cancelicon: "ui-icon-cancel",
+       //    canceltext:"Cancel",
+       //    addParams: {
+       //        useFormatter: false,
+       //        addRowParams: {
+       //            oneditfunc: function (rowid) {
+       //                isDependentRowInAddEditMode = true;
+       //                $(".DependandAgeClass").find("input").attr("readonly","readonly");
+       //                SelectedDependentRowId = rowid;
+       //            }
+       //        }
+       //    },
+       //    editParams: {
+       //        keys: false,
+       //        oneditfunc: function (rowid) {
+       //            isDependentRowInAddEditMode = true;
+       //            $(".DependandAgeClass").find("input").attr("readonly","readonly");
+       //        },
+       //        sucessfunc: function (data) {
+       //        },
+       //        url: null,
+       //        extraparam: {
+       //            RelationId: function () {
+       //                return $('#DependantsDetailsForm #uniqueID').val();
+       //            },
+       //            EmployeeID: function () {
+       //                return $('#DependantsDetailsForm #EmployeeId').val();
+       //            }
+       //            //ProjectID: function () {
+       //            //    return $('#addProjectModule #ProjectID').val();
+       //            //},
+       //            //SelectedModuleName: function () {
+       //            //    return $("#addProjectModule #SelectedModuleName").val();
+       //            //}
+       //        },
+       //        aftersavefunc: function (data, response) {
+       //            isDependentRowInAddEditMode = false;
+       //            var results = $.parseJSON(response.responseText);
+       //            $("#dependantTable").trigger("reloadGrid");
+       //            if (results.status == true) {
+       //                $("#AddDependantSuccessMessege").dialog({
+       //                    resizable: false,
+       //                    height: 140,
+       //                    width: 300,
+       //                    modal: true,
+       //                    dialogClass: "noclose",
+       //                    buttons: {
+       //                        Ok: function () {
+       //                            $(this).dialog("close");
+       //                        }
+       //                    }
+       //                });
+       //            }
+       //            else if (results.status == "Error") {
+       //                $("#errorDialog").dialog({
+       //                    resizable: false,
+       //                    height: 'auto',
+       //                    width: 'auto',
+       //                    modal: true,
+       //                    title: 'Dependent Details',
+       //                    dialogClass: "noclose",
+       //                    buttons: {
+       //                        Ok: function () {
+       //                            $(this).dialog("close");
+       //                        }
+       //                    }
+       //                }); //end dialog
+       //            }
+       //            else {
+       //                $("#AddDependantErrorMessege").dialog({
+       //                    resizable: false,
+       //                    height: 140,
+       //                    width: 300,
+       //                    modal: true,
+       //                    dialogClass: "noclose",
+       //                    buttons: {
+       //                        Ok: function () {
+       //                            $(this).dialog("close");
+       //                        }
+       //                    }
+       //                });
+       //            }
 
-               },
-               errorfunc: null,
-               afterrestorefunc: function(){
-                   isDependentRowInAddEditMode = false;
-               },
-               restoreAfterError: true,
-               mtype: "POST"
-           }
-       });
+       //        },
+       //        errorfunc: null,
+       //        afterrestorefunc: function(){
+       //            isDependentRowInAddEditMode = false;
+       //        },
+       //        restoreAfterError: true,
+       //        mtype: "POST"
+       //    }
+       //});
         if (($('#UserRole').val() == '@HRMS.Models.UserRoles.HRAdmin')) {
             
         }
