@@ -39,8 +39,7 @@ namespace HRMS.Controllers
         // POST: /Account/LogOn
 
         [HttpPost]
-        public ActionResult LogOn(LogOnModel model, string returnUrl)
-        {
+        public ActionResult LogOn(LogOnModel model, string returnUrl)        {
             if (ModelState.IsValid)
             {
                 model.UserName = model.UserName.Trim();
@@ -106,7 +105,8 @@ namespace HRMS.Controllers
 
                         Session["MenuDataList"] = JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.None, true);
 
-                        return RedirectPermanent("~/Orbitweb/SignInSignOut.aspx");
+                        return RedirectToAction("PersonalDetails", "PersonalDetails", new { employeeId = encryptedEmployeeid });
+
                     }
                 }
                 else
@@ -179,7 +179,7 @@ namespace HRMS.Controllers
 
                     Session["MenuDataList"] = JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.None, true);
 
-                    return RedirectPermanent("~/Orbitweb/SignInSignOut.aspx");
+                    return RedirectToAction("PersonalDetails", "PersonalDetails", new { employeeId = encryptedEmployeeid });
                 }
                 else
                 {
